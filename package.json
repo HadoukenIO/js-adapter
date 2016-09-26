@@ -1,0 +1,25 @@
+{
+    "name": "js-adapter",
+    "version": "0.0.0",
+    "main": "./out/index.js",
+    "scripts": {
+        "build": "npm run webpack",
+        "webpack": "webpack",
+        "pretest": "npm run build",
+        "test": "mocha"
+    },
+    "devDependencies": {
+        "webpack": "~1.13.2",
+        "ts-loader": "~0.8.2",
+        "typescript": "~2.0.3",
+        "tsdoc": "~0.0.4",
+        "mocha": "~3.0.2",
+        "should": "~11.1.0",
+
+        "@types/q": "~0.0.31"
+    },
+    "dependencies": {
+        "q": "~1.4.1",
+        "ws": "~1.1.1"
+    }
+}
