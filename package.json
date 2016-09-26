@@ -15,10 +15,10 @@
     "tsdoc": "~0.0.4",
     "mocha": "~3.0.2",
     "should": "~11.1.0",
-    "@types/q": "~0.0.31"
+    "@types/bluebird": "~3.0.33"
   },
   "dependencies": {
-    "q": "~1.4.1",
+    "bluebird": "~3.4.6",
     "ws": "~1.1.1"
   }
 }
