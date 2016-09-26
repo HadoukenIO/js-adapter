@@ -1,11 +1,11 @@
 const { describe, it } = require("mocha"),
     should = require("should"),
-    connectToOpenFin = require("../."),
+    { connect } = require("../."),
     PORT = 9696
 
-describe("connectToOpenFin()", () => {
+describe("connect()", () => {
     it("authorisation", () => {
-        connectToOpenFin(`ws://localhost:${PORT}`, Math.random().toString(36))
-            .should.be.fulfilledWith("ok")
+        connect(`ws://localhost:${PORT}`, Math.random().toString(36))
+            .should.be.fulfilled()
     })
 })    

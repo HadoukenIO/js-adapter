@@ -1,5 +1,6 @@
-//import { Promise } from "q"
+import Promise = require("bluebird")
+import OpenFinAPI from "./api"
 
-export = function(address: string, uuid: string): Promise<any>/*OpenFinAPI*/ {
-    return Promise.resolve("two")
+export function connect(address: string, uuid: string): Promise<OpenFinAPI> {
+    return Promise.resolve(new OpenFinAPI)
 }
