@@ -2,6 +2,7 @@
   "name": "js-adapter",
   "version": "0.0.1",
   "main": "./out/index.js",
+  "types": "./out/index.d.ts",
   "scripts": {
     "build": "npm run webpack",
     "webpack": "webpack",
@@ -13,9 +14,10 @@
     "ts-loader": "~0.8.2",
     "typescript": "~2.0.3",
     "tsdoc": "~0.0.4",
-    "mocha": "~3.0.2",
+    "mocha": "~3.1.0",
     "should": "~11.1.0",
-    "@types/bluebird": "~3.0.33"
+    "@types/bluebird": "~3.0.33",
+    "@types/ws": "~0.0.33"
   },
   "dependencies": {
     "bluebird": "~3.4.6",
