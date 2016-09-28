@@ -4,8 +4,8 @@ const { describe, it } = require("mocha"),
     PORT = 9696
 
 describe("connect()", () => {
-    it("authorisation", () => {
-        connect(`ws://localhost:${PORT}`, Math.random().toString(36))
-            .should.be.fulfilled()
+    it("authentication", () => {
+        return connect(`ws://localhost:${PORT}`, Math.random().toString(36))
+            .should.eventually.have.property("_token")
     })
 })    
