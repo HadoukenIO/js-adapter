@@ -7,6 +7,10 @@ module.exports = {
         filename: "index.js",
         libraryTarget: "umd"
     },
+    externals: [
+        "ws",
+        "fs"
+    ],
     resolve: {
         extensions: [ "", ".ts", ".js" ]
     },
