@@ -2,14 +2,14 @@ const { describe, it } = require("mocha"),
     should = require("should"),
     connect = require("./connect")
 
-describe("connect()", () => {
+describe("System.", () => {
     var api 
     before(() => {
         return connect()
-            .should.be.fulfilled()
             .then(a => api = a)
     })
-    it("authentication", () => {
-        api.should.have.property("_token")
+    it("getVersion()", () => {
+        return api.System.getVersion()
+            .should.be.fulfilledWith("0.0.0")
     })
 })     
