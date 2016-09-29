@@ -90,6 +90,11 @@ export default class Transport {
         else
             this.listeners[id].call(null, data)
     }
+
+    assertAck(action: string, reject: Function): void {
+        if (action != "ack")
+            reject(new Error(`Got ${action}, not "ack"`))
+    }
 }
 
 class UnexpectedAction extends Error {

@@ -3,13 +3,13 @@ const { describe, it } = require("mocha"),
     connect = require("./connect")
 
 describe("System.", () => {
-    var api 
+    var System 
     before(() => {
         return connect()
-            .then(a => api = a)
+            .then(a => System = a.System)
     })
     it("getVersion()", () => {
-        return api.System.getVersion()
+        return System.getVersion()
             .should.be.fulfilledWith("0.0.0")
     })
 })     
