@@ -9,7 +9,8 @@ module.exports = {
     },
     externals: [
         "ws",
-        "fs"
+        "fs",
+        "bluebird"
     ],
     resolve: {
         extensions: [ "", ".ts", ".js" ]
