@@ -1,0 +1,16 @@
+{
+    "startup_app": {
+        "name": "adapter-test-window",
+        "url": "https://openfin.co",
+        "uuid": "adapter-test-window",
+        "autoShow": true,
+        "accelerator": {
+            "devtools": true
+        }
+    },
+    "runtime": {
+        "arguments": "--v=1",
+        "version": "beta"
+    },
+    "shortcut": {}
+}
