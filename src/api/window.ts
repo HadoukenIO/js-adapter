@@ -1,6 +1,7 @@
 import Promise = require("bluebird")
 import Base from "./base"
 
+// The window.Window name is taken
 export default class _Window extends Base {
     wrap(uuid: string, name: string): WrapWindow {
         return new WrapWindow(this.wire, uuid, name)
