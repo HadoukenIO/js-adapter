@@ -1,5 +1,5 @@
 import Promise = require("bluebird")
-import OpenFinAPI from "./api"
+import OpenFinAPI from "./api/api"
 import Transport from "./transport"
 
 export function connect(address: string, uuid: string): Promise<OpenFinAPI> {
