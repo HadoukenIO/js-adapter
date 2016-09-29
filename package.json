@@ -5,7 +5,7 @@
   "types": "./out/index.d.ts",
   "scripts": {
     "build": "npm run webpack",
-    "webpack": "webpack",
+    "webpack": "webpack -d --config node.config.js",
     "pretest": "npm run build",
     "test": "mocha"
   },
