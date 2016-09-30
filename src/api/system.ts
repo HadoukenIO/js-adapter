@@ -3,6 +3,10 @@ import Base from "./base"
 
 export default class System extends Base {
     getVersion(): Promise<string> {
-        return Promise.resolve("0.0.0")
+        return new Promise((resolve, reject) => {
+            return this.wire.sendAction("get-version")
+                .then(({ payload }) => resolve(payload.data))
+                .catch(reject)
+        })
     }
 }
