@@ -1,5 +1,4 @@
 import WebSocket = require("ws")
-import Promise = require("bluebird")
 import writeToken from "./write-token"
 
 export default class Transport {

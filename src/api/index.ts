@@ -1,4 +1,3 @@
-import Promise = require("bluebird")
 import Transport from "../transport"
 import Base from "./base"
 import System from "./system"

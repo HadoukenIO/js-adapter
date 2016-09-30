@@ -1,4 +1,3 @@
-import Promise = require("bluebird")
 import { OpenFinAPI } from "./api/index"
 import Transport from "./transport"
 

@@ -1,4 +1,3 @@
-import Promise = require("bluebird")
 import Base from "./base"
 
 export default class System extends Base {

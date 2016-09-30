@@ -1,4 +1,3 @@
-import Promise = require("bluebird")
 import Base from "./base"
 
 // The window.Notification name is taken
