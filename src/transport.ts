@@ -7,7 +7,7 @@ export default class Transport {
     private messageCounter = 0
     private listeners = []
     private uncorrelatedListener: Function
-    connect(address: string): Promise<any> { // Type?
+    connect(address: string): Promise<void> { 
         return new Promise((resolve, reject) => {
             this.wire = new WebSocket(address)
             this.wire.addEventListener("open", resolve)
@@ -49,12 +49,12 @@ export default class Transport {
                 .catch(reject)
         })
     }
-    send(data, flags?): Promise<any> {
+    send(data, flags?): Promise {
         return new Promise(resolve => {
             this.wire.send(JSON.stringify(data), flags, resolve)
         })
     }
-    sendAction(action: string, payload = null, uncorrelated = false): Promise<any> {
+    sendAction(action: string, payload = null, uncorrelated = false): Promise {
         return new Promise((resolve, reject) => {
             const id = this.messageCounter++
             this.send({
@@ -65,7 +65,7 @@ export default class Transport {
             this.addListener(id, resolve, reject, uncorrelated)
         })
     }
-    shutdown(): Promise {
+    shutdown(): Promise<void> {
         this.wire.terminate()
         return Promise.resolve()
     }

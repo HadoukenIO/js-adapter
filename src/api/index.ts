@@ -21,5 +21,4 @@ export class OpenFinAPI extends Base {
         this.InterApplicationBus = new InterApplicationBus(wire)
         this.Notification = new _Notification(wire)
     }
-    get _token() { return this.token }
 }

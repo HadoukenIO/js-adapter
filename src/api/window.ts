@@ -9,35 +9,23 @@ export default class _Window extends Base {
 }
 
 export class WrapWindow extends Base {
-    private uuid: string
-    private name: string
-    constructor(wire, uuid: string, name: string) {
+    constructor(wire, private uuid: string, private name: string) {
         super(wire)
-        this.uuid = uuid
-        this.name = name
     }
     getBounds(): Promise<Bounds> {
         return new Promise((resolve, reject) => {
             return this.wire.sendAction("get-window-bounds", { uuid: this.uuid, name: this.name })
-                .then(({ payload }) => resolve(new Bounds(payload.data)))
+                .then(({ payload }) => resolve(payload.data as Bounds))
                 .catch(reject)
         })
     }
 }
 
-export class Bounds {
+export interface Bounds {
     height: number
     width: number
     top: number
     left: number
-    right: number | void
-    bottom: number | void
-    constructor(data) {
-        this.height = data.height
-        this.width = data.width
-        this.top = data.top
-        this.left = data.left
-        this.right = data.right
-        this.bottom = data.bottom
-    }
+    right?: number
+    bottom?: number
 }
