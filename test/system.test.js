@@ -10,6 +10,6 @@ describe("System.", () => {
     })
     it("getVersion()", () => {
         return System.getVersion()
-            .should.be.fulfilledWith("0.0.0")
+            .should.be.fulfilledWith("6.49.12.62")
     })
 })     

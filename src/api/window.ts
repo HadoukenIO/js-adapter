@@ -19,13 +19,8 @@ export class WrapWindow extends Base {
     getBounds(): Promise<Bounds> {
         return new Promise((resolve, reject) => {
             return this.wire.sendAction("get-window-bounds", { uuid: this.uuid, name: this.name })
-                .then(({ action, payload }) => {
-                    this.wire.assertAck(action, reject)
-                    if (payload.success)
-                        resolve(new Bounds(payload.data))
-                    else    
-                        reject(payload)
-                })
+                .then(({ payload }) => resolve(new Bounds(payload.data)))
+                .catch(reject)
         })
     }
 }
@@ -35,12 +30,14 @@ export class Bounds {
     width: number
     top: number
     left: number
-    //right?: number
-    //bottom?: number
+    right: number | void
+    bottom: number | void
     constructor(data) {
         this.height = data.height
         this.width = data.width
         this.top = data.top
         this.left = data.left
+        this.right = data.right
+        this.bottom = data.bottom
     }
 }

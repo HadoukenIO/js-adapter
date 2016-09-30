@@ -10,6 +10,6 @@ describe("connect()", () => {
             .then(a => api = a)
     })
     it("authentication", () => {
-        api.should.have.property("_token")
+        api.should.have.property("System")
     })
 })     

@@ -12,7 +12,7 @@
     },
     "runtime": {
         "arguments": "--v=1",
-        "version": "beta"
+        "version": "6.49.12.62"
     },
     "shortcut": {}
 }
