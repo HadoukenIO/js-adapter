@@ -88,18 +88,18 @@ export default class Transport {
             throw new Error(`No listener registered for ${id}`)
         else {
             const { resolve, reject } = this.listeners[id]
-            this.assertAck(data, reject)
-            this.assertSuccess(data, reject)
+            Transport.assertAck(data, reject)
+            Transport.assertSuccess(data, reject)
             resolve.call(null, data)
             delete this.listeners[id]
         }
     }
 
-    assertAck({ action }, reject: Function): void {
+    static assertAck({ action }, reject: Function): void {
         if (action != "ack")
             reject(new Error(`Got ${action}, not "ack"`))
     }
-    assertSuccess({ payload }, reject: Function): void {
+    static assertSuccess({ payload }, reject: Function): void {
         if (!payload.success)
             reject(new Error(`No success, ${payload.success}`))
     }
