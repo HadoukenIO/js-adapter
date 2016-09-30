@@ -13,3 +13,8 @@ $ `npm install -S openfin/js-adapter`
             System.getVersion()
                 .then(v => console.log("Connected to OpenFin version", v))
         })
+
+# Testing
+
+$ `openfin -l -c test/app.json &`
+$ `npm test`
