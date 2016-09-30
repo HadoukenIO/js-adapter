@@ -16,5 +16,5 @@ $ `npm install -S openfin/js-adapter`
 
 # Testing
 
-$ `openfin -l -c test/app.json &`
+$ `openfin -l -c test/app.json &`  
 $ `npm test`

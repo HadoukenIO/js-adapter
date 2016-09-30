@@ -5,7 +5,7 @@ import writeToken from "./write-token"
 export default class Transport {
     private wire: WebSocket
     private messageCounter = 0
-    private listeners: Function[] = []
+    private listeners = []
     private uncorrelatedListener: Function
     connect(address: string): Promise<any> { // Type?
         return new Promise((resolve, reject) => {
@@ -54,7 +54,7 @@ export default class Transport {
             this.wire.send(JSON.stringify(data), flags, resolve)
         })
     }
-    sendAction(action: string, payload: any, uncorrelated = false): Promise<any> {
+    sendAction(action: string, payload = null, uncorrelated = false): Promise<any> {
         return new Promise((resolve, reject) => {
             const id = this.messageCounter++
             this.send({
@@ -70,13 +70,13 @@ export default class Transport {
         return Promise.resolve()
     }
 
-    private addListener(id: number, f: Function, reject: Function, uncorrelated: boolean): void {
+    private addListener(id: number, resolve: Function, reject: Function, uncorrelated: boolean): void {
         if (uncorrelated)  
-            this.uncorrelatedListener = f
+            this.uncorrelatedListener = resolve
         else if (id in this.listeners) 
             reject(new Error(`Listener for ${id} already registered`))
         else 
-            this.listeners[id] = f
+            this.listeners[id] = { resolve, reject }
             // Timeout and reject()?
     }
     private onmessage(message, flags?): void {
@@ -87,13 +87,22 @@ export default class Transport {
             //throw new Error("Message has no .correlationId")
         else if (!(id in this.listeners))            
             throw new Error(`No listener registered for ${id}`)
-        else
-            this.listeners[id].call(null, data)
+        else {
+            const { resolve, reject } = this.listeners[id]
+            this.assertAck(data, reject)
+            this.assertSuccess(data, reject)
+            resolve.call(null, data)
+            delete this.listeners[id]
+        }
     }
 
-    assertAck(action: string, reject: Function): void {
+    assertAck({ action }, reject: Function): void {
         if (action != "ack")
             reject(new Error(`Got ${action}, not "ack"`))
+    }
+    assertSuccess({ payload }, reject: Function): void {
+        if (!payload.success)
+            reject(new Error(`No success, ${payload.success}`))
     }
 }
 
