@@ -1,4 +1,4 @@
-import WebSocket = require("ws")
+import { WebSocket } from "ws"
 import writeToken from "./write-token"
 
 export default class Transport {
@@ -48,12 +48,12 @@ export default class Transport {
                 .catch(reject)
         })
     }
-    send(data, flags?): Promise {
+    send(data, flags?): Promise<any> {
         return new Promise(resolve => {
             this.wire.send(JSON.stringify(data), flags, resolve)
         })
     }
-    sendAction(action: string, payload = null, uncorrelated = false): Promise {
+    sendAction(action: string, payload = null, uncorrelated = false): Promise<Message> {
         return new Promise((resolve, reject) => {
             const id = this.messageCounter++
             this.send({
@@ -108,5 +108,13 @@ export default class Transport {
 class UnexpectedAction extends Error {
     constructor(action: string) {
         super(`Unexpected message with action=${action}`)
+    }
+}
+
+export class Message {
+    action: string
+    payload: {
+        success: boolean,
+        data
     }
 }
