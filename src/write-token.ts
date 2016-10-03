@@ -1,7 +1,7 @@
-import fs = require("fs")
+import { writeFile } from "fs"
 
-export default function writeToken(path: string, token: string): Promise { 
+export default function writeToken(path: string, token: string): Promise<any> { 
     return new Promise(resolve => {
-        fs.writeFile(path, token, resolve)
+        writeFile(path, token, resolve)
     })
 }
