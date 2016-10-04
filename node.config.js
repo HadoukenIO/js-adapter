@@ -4,8 +4,8 @@ module.exports = {
     entry: "./src/main",
     output: {
         path: __dirname + "/out",
-        filename: "index.js",
-        libraryTarget: "umd"
+        filename: "index.js"
+        //libraryTarget: "commonjs2"
     },
     externals: [
         "ws",

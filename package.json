@@ -2,10 +2,11 @@
   "name": "js-adapter",
   "version": "0.0.1",
   "main": "./out/index.js",
-  "types": "./out/index.d.ts",
+  "types": "./out/js-adapter.d.ts",
   "scripts": {
     "build": "npm run webpack",
     "webpack": "webpack -d --config node.config.js",
+    "dts": "dts-bundle --configJson dts-bundle.json",
     "pretest": "npm run build",
     "test": "mocha"
   },
@@ -13,6 +14,7 @@
     "webpack": "~1.13.2",
     "ts-loader": "~0.8.2",
     "typescript": "~2.0.3",
+    "dts-bundle": "~0.6.1",
     "tsdoc": "~0.0.4",
     "mocha": "~3.1.0",
     "should": "~11.1.0",
