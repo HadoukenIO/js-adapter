@@ -1,19 +1,20 @@
 import Base from "./base"
+import { Identity } from "../identity"
 
 // The window.Window name is taken
 export default class _Window extends Base {
-    wrap(uuid: string, name: string): WrapWindow {
-        return new WrapWindow(this.wire, uuid, name)
+    wrap(identity: Identity): WrapWindow {
+        return new WrapWindow(this.wire, identity)
     }
 }
 
 export class WrapWindow extends Base {
-    constructor(wire, private uuid: string, private name: string) {
+    constructor(wire, protected identity: Identity) {
         super(wire)
     }
     getBounds(): Promise<Bounds> {
         return new Promise((resolve, reject) => {
-            return this.wire.sendAction("get-window-bounds", { uuid: this.uuid, name: this.name })
+            return this.wire.sendAction("get-window-bounds", this.identity.toWireObject())
                 .then(({ payload }) => resolve(payload.data as Bounds))
                 .catch(reject)
         })
