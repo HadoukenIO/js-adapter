@@ -1,11 +1,12 @@
-import { WebSocket } from "ws"
+import * as WebSocket from "ws"
 import writeToken from "./write-token"
+import { Identity } from "./identity"
 
 export default class Transport {
-    private wire: WebSocket
-    private messageCounter = 0
-    private listeners = []
-    private uncorrelatedListener: Function
+    protected wire: WebSocket
+    protected messageCounter = 0
+    protected listeners = []
+    protected uncorrelatedListener: Function
     connect(address: string): Promise<void> { 
         return new Promise((resolve, reject) => {
             this.wire = new WebSocket(address)
@@ -15,7 +16,8 @@ export default class Transport {
             this.wire.addEventListener("message", this.onmessage.bind(this))
         })
     } 
-    authenticate(uuid: string): Promise<string> {
+    authenticate(identity: Identity): Promise<string> {
+        const { uuid } = identity
         return new Promise((resolve, reject) => {
             this.sendAction("request-external-authorization", {
                 uuid,
@@ -69,7 +71,7 @@ export default class Transport {
         return Promise.resolve()
     }
 
-    private addListener(id: number, resolve: Function, reject: Function, uncorrelated: boolean): void {
+    protected addListener(id: number, resolve: Function, reject: Function, uncorrelated: boolean): void {
         if (uncorrelated)  
             this.uncorrelatedListener = resolve
         else if (id in this.listeners) 
@@ -78,7 +80,7 @@ export default class Transport {
             this.listeners[id] = { resolve, reject }
             // Timeout and reject()?
     }
-    private onmessage(message, flags?): void {
+    protected onmessage(message, flags?): void {
         const data = JSON.parse(message.data), 
             id: number = data.correlationId 
         if (!("correlationId" in data)) 
@@ -88,20 +90,14 @@ export default class Transport {
             throw new Error(`No listener registered for ${id}`)
         else {
             const { resolve, reject } = this.listeners[id]
-            Transport.assertAck(data, reject)
-            Transport.assertSuccess(data, reject)
-            resolve.call(null, data)
+            if (data.action != "ack")
+                reject(new Error(`Got ${data.action}, not "ack"`))
+            else if (!("payload" in data) || !data.payload.success)
+                reject(new Error(`No success, ${data.payload && data.payload.success}`))
+            else
+                resolve.call(null, data)
             delete this.listeners[id]
         }
-    }
-
-    static assertAck({ action }, reject: Function): void {
-        if (action != "ack")
-            reject(new Error(`Got ${action}, not "ack"`))
-    }
-    static assertSuccess({ payload }, reject: Function): void {
-        if (!payload.success)
-            reject(new Error(`No success, ${payload.success}`))
     }
 }
 
