@@ -4,11 +4,8 @@
   "main": "./out/main.js",
   "types": "./out/main.d.ts",
   "scripts": {
-    "build": "npm run webpack",
-    "webpack": "webpack -d --config node.config.js",
-    "dts": "dts-bundle --configJson dts-bundle.json",
-    "pretest": "npm run build",
-    "test": "mocha"
+    "postinstall": "jake",
+    "test": "jake test"
   },
   "devDependencies": {
     "webpack": "~1.13.2",
