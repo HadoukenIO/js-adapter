@@ -1,4 +1,4 @@
-import { OpenFinAPI } from "./api/index"
+import { OpenFinAPI } from "./api/api"
 import Transport from "./transport"
 import { Identity } from "./identity"
 

@@ -1,7 +1,8 @@
 const { describe, it } = require("mocha"),
     should = require("should"),
     connect = require("./connect"),
-    { Identity } = require("../.") 
+    { Identity } = require("../."), 
+    id = "adapter-test-window"
 
 describe("Window.", () => {
     var Window 
@@ -14,7 +15,6 @@ describe("Window.", () => {
             .should.be.Object()
     })
     it("getBounds()", () => {
-        const id = "adapter-test-window"
         return Window.wrap(new Identity(id, id)).getBounds()
             .should.eventually.have.properties({ height: 500, width: 500 })
     })

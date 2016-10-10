@@ -1,11 +1,12 @@
 var webpack = require("webpack")
 
+// Update this, or move to Jake completely?
 module.exports = {
     entry: "./src/main",
     output: {
         path: __dirname + "/out",
-        filename: "index.js"
-        //libraryTarget: "commonjs2"
+        filename: "main.js",
+        libraryTarget: "commonjs2"
     },
     externals: [
         "ws",
