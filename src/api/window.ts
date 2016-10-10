@@ -19,6 +19,13 @@ export class WrapWindow extends Base {
                 .catch(reject)
         })
     }
+    focus(): Promise<any> {
+        return new Promise((resolve, reject) => {
+            return this.wire.sendAction("focus-window", this.identity.toWireObject())
+                .then(resolve)
+                .catch(reject)
+        })
+    }
 }
 
 export interface Bounds {
