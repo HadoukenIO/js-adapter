@@ -7,7 +7,7 @@ export default class Transport {
     protected messageCounter = 0
     protected listeners = []
     protected uncorrelatedListener: Function
-    connect(address: string): Promise<void> { 
+    connect(address: string): Promise<any> { 
         return new Promise((resolve, reject) => {
             this.wire = new WebSocket(address)
             this.wire.addEventListener("open", resolve)
