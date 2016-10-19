@@ -13,18 +13,11 @@ export class _Window extends Base {
         super(wire)
     }
     getBounds(): Promise<Bounds> {
-        return new Promise((resolve, reject) => {
-            return this.wire.sendAction("get-window-bounds", this.identity.toWireObject())
-                .then(({ payload }) => resolve(payload.data as Bounds))
-                .catch(reject)
-        })
+        return this.wire.sendAction("get-window-bounds", this.identity.toWireObject())
+            .then(({ payload }) => payload.data as Bounds)
     }
     focus(): Promise<any> {
-        return new Promise((resolve, reject) => {
-            return this.wire.sendAction("focus-window", this.identity.toWireObject())
-                .then(resolve)
-                .catch(reject)
-        })
+        return this.wire.sendAction("focus-window", this.identity.toWireObject())
     }
 }
 
