@@ -16,7 +16,7 @@ export class _Window extends Base {
         return this.wire.sendAction("get-window-bounds", this.identity.toWireObject())
             .then(({ payload }) => payload.data as Bounds)
     }
-    focus(): Promise<any> {
+    focus(): Promise<void> {
         return this.wire.sendAction("focus-window", this.identity.toWireObject())
     }
 }

@@ -1,4 +1,4 @@
-import * as WebSocket from "ws"
+import WebSocketTransport from "./websocket"
 import writeToken from "./write-token"
 import { Identity } from "../identity"
 import EventStore from "./event-store"
@@ -9,23 +9,12 @@ import {
     NoAck
 } from "./transport-errors"
 
-// Extract WebSocket specific parts
-class Transport {
-    protected wire: WebSocket
+class Transport extends WebSocketTransport {
     protected messageCounter = 0
     protected listeners: {resolve: Function, reject: Function}[] = []
     protected eventListeners = new EventStore 
     protected uncorrelatedListener: Function
     protected _identity: Identity
-    connect(address: string): Promise<any> { 
-        return new Promise((resolve, reject) => {
-            this.wire = new WebSocket(address)
-            this.wire.addEventListener("open", resolve)
-            this.wire.addEventListener("error", reject)
-            this.wire.addEventListener("ping", this.wire.pong)
-            this.wire.addEventListener("message", this.onmessage.bind(this))
-        })
-    } 
     authenticate(identity: Identity): Promise<string> {
         const { uuid } = this._identity = identity
         let token
@@ -52,11 +41,6 @@ class Transport {
                     return token
             })
     }
-    send(data, flags?): Promise<any> {
-        return new Promise(resolve => {
-            this.wire.send(JSON.stringify(data), flags, resolve)
-        })
-    }
     sendAction(action: string, payload = {}, uncorrelated = false): Promise<Message<any>> {
         return new Promise((resolve, reject) => {
             const id = this.messageCounter++
@@ -68,7 +52,7 @@ class Transport {
             this.addListener(id, resolve, reject, uncorrelated)
         })
     }
-    subscribeToEvent(identity: Identity, topic: string, type: string, listener: Function): Promise<any> {
+    subscribeToEvent(identity: Identity, topic: string, type: string, listener: Function): Promise<void> {
         this.eventListeners.add(identity, topic, type, listener)
         return this.sendAction("subscribe-to-desktop-event", {
             topic,
@@ -77,10 +61,6 @@ class Transport {
             uuid: identity.uuid, 
             name: identity.name
         })
-    }
-    shutdown(): Promise<void> {
-        this.wire.terminate()
-        return Promise.resolve()
     }
     get identity(): Identity {
         return this._identity
@@ -95,9 +75,9 @@ class Transport {
             this.listeners[id] = { resolve, reject }
             // Timeout and reject()?
     }
-    protected onmessage(message, flags?): void {
-        const data = JSON.parse(message.data), 
-            id: number = data.correlationId
+    /*protected*/
+    onmessage(data): void {
+        const id: number = data.correlationId
         if (data.action === "process-desktop-event") {
             const { topic, type, uuid, name } = data.payload
             for (let f of this.eventListeners.getAll(new Identity(uuid, name), topic, type))
@@ -136,4 +116,11 @@ export class Payload {
 export class AuthorizationPayload {
     token: string
     file: string
+}
+
+export interface Wire {
+    connect(address): Promise<any>
+    send(data): Promise<any>
+    shutdown(): Promise<any>
+    onmessage(data): void
 }
