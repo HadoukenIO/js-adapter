@@ -19,38 +19,31 @@ export default class Transport {
         })
     } 
     authenticate(identity: Identity): Promise<string> {
-        const { uuid } = identity
-        return new Promise((resolve, reject) => {
-            this.sendAction("request-external-authorization", {
-                uuid,
-                type: "file-token", // Other type for browser? Ask @xavier
-                authorizationToken: null // Needed?
-            }, true)
-                .then(({ action, payload }) => {
-                    if (action != "external-authorization-response")
-                        reject(new UnexpectedAction(action))
-                    else {
-                        const token: string = payload.token
-                        return writeToken(payload.file, token) 
-                            .then(() => {
-                                return this.sendAction("request-authorization", { 
-                                    uuid,
-                                    type: "file-token"
-                                }, true)
-                                    .then(({ action, payload }) => {
-                                        if (action != "authorization-response")
-                                            reject(new UnexpectedAction(action))
-                                        else if (payload.success !== true)
-                                            reject(new Error(`Success=${payload.success}`))
-                                        else 
-                                            resolve(token)
-                                    })
-                                    .catch(reject)
-                            })
-                    }
-                })
-                .catch(reject)
-        })
+        const { uuid } = this._identity = identity
+        let token
+        return this.sendAction("request-external-authorization", {
+            uuid,
+            type: "file-token", // Other type for browser? Ask @xavier
+            authorizationToken: null // Needed?
+        }, true)
+            // Simplify this chain.. DONE?
+            .then(({ action, payload }) => {
+                if (action !== "external-authorization-response")
+                    return Promise.reject(new UnexpectedAction(action))
+                else {
+                    token = payload.token
+                    return writeToken(payload.file, payload.token)
+                }
+            })
+            .then(() => this.sendAction("request-authorization", { uuid, type: "file-token" }, true))
+            .then(({ action, payload }) => {
+                if (action !== "authorization-response")
+                    return Promise.reject(new UnexpectedAction(action))
+                else if (payload.success !== true)
+                    return Promise.reject(new Error(`Success=${payload.success}`))
+                else 
+                    return token
+            })
     }
     send(data, flags?): Promise<any> {
         return new Promise(resolve => {
