@@ -3,18 +3,19 @@ import writeToken from "./write-token"
 import { Identity } from "./identity"
 import EventStore from "./event-store"
 
-export default class Transport {
+class Transport {
     protected wire: WebSocket
     protected messageCounter = 0
     protected listeners: {resolve: Function, reject: Function}[] = []
     protected eventListeners = new EventStore //(new loki).addCollection("eventListeners") // in-memory? when no loki(filename)
     protected uncorrelatedListener: Function
+    protected _identity: Identity
     connect(address: string): Promise<any> { 
         return new Promise((resolve, reject) => {
             this.wire = new WebSocket(address)
             this.wire.addEventListener("open", resolve)
             this.wire.addEventListener("error", reject)
-            this.wire.addEventListener("ping", (data, flags) => this.wire.pong(data, flags, true))
+            this.wire.addEventListener("ping", this.wire.pong)
             this.wire.addEventListener("message", this.onmessage.bind(this))
         })
     } 
@@ -24,9 +25,8 @@ export default class Transport {
         return this.sendAction("request-external-authorization", {
             uuid,
             type: "file-token", // Other type for browser? Ask @xavier
-            authorizationToken: null // Needed?
+            //authorizationToken: null // Needed?
         }, true)
-            // Simplify this chain.. DONE?
             .then(({ action, payload }) => {
                 if (action !== "external-authorization-response")
                     return Promise.reject(new UnexpectedAction(action))
@@ -50,7 +50,7 @@ export default class Transport {
             this.wire.send(JSON.stringify(data), flags, resolve)
         })
     }
-    sendAction(action: string, payload = null, uncorrelated = false): Promise<Message> {
+    sendAction(action: string, payload = {}, uncorrelated = false): Promise<Message<any>> {
         return new Promise((resolve, reject) => {
             const id = this.messageCounter++
             this.send({
@@ -75,11 +75,14 @@ export default class Transport {
         this.wire.terminate()
         return Promise.resolve()
     }
+    get identity(): Identity {
+        return this._identity
+    }
 
     protected addListener(id: number, resolve: Function, reject: Function, uncorrelated: boolean): void {
         if (uncorrelated)  
             this.uncorrelatedListener = resolve
-        else if (id in this.listeners) 
+        else if (id in this.listeners)
             reject(new Error(`Listener for ${id} already registered`))
         else 
             this.listeners[id] = { resolve, reject }
@@ -87,15 +90,19 @@ export default class Transport {
     }
     protected onmessage(message, flags?): void {
         const data = JSON.parse(message.data), 
-            id: number = data.correlationId 
-        if (!("correlationId" in data)) 
+            id: number = data.correlationId
+        if (data.action === "process-desktop-event") {
+            const { topic, type, uuid, name } = data.payload
+            for (let f of this.eventListeners.getAll(new Identity(uuid, name), topic, type))
+                f.call(null, data.payload)
+        } else if (!("correlationId" in data)) 
             this.uncorrelatedListener.call(null, data)
             //throw new Error("Message has no .correlationId")
         else if (!(id in this.listeners))            
             throw new Error(`No listener registered for ${id}`)
         else {
             const { resolve, reject } = this.listeners[id]
-            if (data.action != "ack")
+            if (data.action !== "ack")
                 reject(new Error(`Got ${data.action}, not "ack"`))
             else if (!("payload" in data) || !data.payload.success)
                 reject(new Error(`No success, ${data.payload && data.payload.success}`))
@@ -105,6 +112,11 @@ export default class Transport {
         }
     }
 }
+export default Transport
+interface Transport {
+    sendAction(action: "request-external-authorization", payload: {}, uncorrelated: true): Promise<Message<AuthorizationPayload>>
+    sendAction(action: string, payload: {}, uncorrelated: boolean): Promise<Message<Payload>>
+}
 
 class UnexpectedAction extends Error {
     constructor(action: string) {
@@ -112,10 +124,15 @@ class UnexpectedAction extends Error {
     }
 }
 
-export class Message {
+export class Message<T> {
     action: string
-    payload: {
-        success: boolean,
-        data
-    }
+    payload: T
+}
+export class Payload {
+    success: boolean
+    data: any
+}
+export class AuthorizationPayload {
+    token: string
+    file: string
 }
