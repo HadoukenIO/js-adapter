@@ -5,7 +5,7 @@ const { describe, it } = require("mocha"),
     id = "adapter-test-window"
 
 describe("Window.", () => {
-    var Window 
+    let Window 
     before(() => {
         return connect()
             .then(a => Window = a.Window)
