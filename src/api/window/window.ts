@@ -20,6 +20,9 @@ export class _Window extends Base {
         return this.wire.sendAction("focus-window", this.identity.toWireObject())
     }
 }
+export interface _Window {
+    addEventListener(type: "focused", listener: Function) 
+}
 
 export interface Bounds {
     height: number
