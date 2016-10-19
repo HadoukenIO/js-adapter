@@ -1,6 +1,6 @@
 {
   "name": "js-adapter",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "main": "./out/main.js",
   "types": "./out/main.d.ts",
   "scripts": {
