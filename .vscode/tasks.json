@@ -4,7 +4,7 @@
     "isShellCommand": true,
     "showOutput": "always",
     "tasks": [
-        {   "taskName": "prepublish",
+        {   "taskName": "postinstall",
             "isBuildCommand": true
         },
         {   "taskName": "test",

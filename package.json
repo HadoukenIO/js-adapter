@@ -4,7 +4,7 @@
   "main": "./out/main.js",
   "types": "./out/main.d.ts",
   "scripts": {
-    "prepublish": "jake",
+    "postinstall": "jake",
     "test": "jake test"
   },
   "devDependencies": {

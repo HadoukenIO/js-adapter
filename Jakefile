@@ -6,7 +6,7 @@ const { task, rule, directory, exec, complete } = require("jake"),
     async = { async: true }
 
 task("default", [ "tsc" ])
-task("lint", [ ]) // tslint is VERY opinionated :(
+task("lint", [ ]) // TSLint is VERY opinionated :(
 
 task("test", [ "default" ], async, function() {
     exec(npmBin("mocha"), execOpts, complete)
