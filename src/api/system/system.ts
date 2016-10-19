@@ -1,4 +1,4 @@
-import Base from "./base"
+import Base from "../base"
 
 export default class System extends Base {
     getVersion(): Promise<string> {

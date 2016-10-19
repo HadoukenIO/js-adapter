@@ -23,9 +23,9 @@ describe("Window.addEventListener()", () => {
         })
         it.skip("called", () => {
             const spy = sinon.spy()
+            //spy.should.be.calledOnce() // Move this line?
             return win.addEventListener("focused", spy)
                 .then(() => win.focus())
-                .then(() => spy.should.be.calledOnce())
         })
     })
 })     

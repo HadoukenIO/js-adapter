@@ -1,5 +1,0 @@
-{
-    "name": "js-adapter",
-    "main": "./out/**/*.d.ts",
-    "outputAsModuleFolder": true
-}

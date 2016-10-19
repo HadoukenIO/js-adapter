@@ -1,8 +1,9 @@
 import * as WebSocket from "ws"
 import writeToken from "./write-token"
-import { Identity } from "./identity"
+import { Identity } from "../identity"
 import EventStore from "./event-store"
 
+// Extract WebSocket specific parts
 class Transport {
     protected wire: WebSocket
     protected messageCounter = 0

@@ -1,4 +1,4 @@
-import { Identity } from "./identity"
+import { Identity } from "../identity"
 
 export default class EventStore {
     protected map: Map<string, Function[]> = new Map

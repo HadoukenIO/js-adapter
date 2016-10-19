@@ -1,5 +1,5 @@
-import Base from "./base"
-import { Identity } from "../identity"
+import Base from "../base"
+import { Identity } from "../../identity"
 
 // The window.Window name is taken
 export default class _WindowModule extends Base {

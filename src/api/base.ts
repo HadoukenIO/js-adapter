@@ -1,5 +1,5 @@
-import Transport from "../transport"
-import { Identity } from "../identity"
+import Transport from "../transport/transport"
+import { Identity, NoIdentityError } from "../identity"
 
 abstract class Base {
     protected identity: Identity 
@@ -8,7 +8,7 @@ abstract class Base {
         if (this.identity)
             return this.wire.subscribeToEvent(this.identity, this.topic, type, listener)
         else    
-            return Promise.reject(new Error("No identity set on instance"))
+            return Promise.reject(new NoIdentityError)
     }
     protected get topic(): string {
         return this.constructor.name.replace("_", "").toLowerCase()
