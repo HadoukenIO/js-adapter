@@ -2,13 +2,13 @@ import Base from "./base"
 import { Identity } from "../identity"
 
 // The window.Window name is taken
-export default class _Window extends Base {
-    wrap(identity: Identity): WrapWindow {
-        return new WrapWindow(this.wire, identity)
+export default class _WindowModule extends Base {
+    wrap(identity: Identity): _Window {
+        return new _Window(this.wire, identity)
     }
 }
 
-export class WrapWindow extends Base {
+export class _Window extends Base {
     constructor(wire, protected identity: Identity) {
         super(wire)
     }
