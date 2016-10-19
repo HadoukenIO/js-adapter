@@ -1,11 +1,13 @@
 import * as WebSocket from "ws"
 import writeToken from "./write-token"
 import { Identity } from "./identity"
+import EventStore from "./event-store"
 
 export default class Transport {
     protected wire: WebSocket
     protected messageCounter = 0
-    protected listeners = []
+    protected listeners: {resolve: Function, reject: Function}[] = []
+    protected eventListeners = new EventStore //(new loki).addCollection("eventListeners") // in-memory? when no loki(filename)
     protected uncorrelatedListener: Function
     connect(address: string): Promise<any> { 
         return new Promise((resolve, reject) => {
@@ -64,6 +66,16 @@ export default class Transport {
                 messageId: id
             })
             this.addListener(id, resolve, reject, uncorrelated)
+        })
+    }
+    subscribeToEvent(identity: Identity, topic: string, type: string, listener: Function): Promise<any> {
+        this.eventListeners.add(identity, topic, type, listener)
+        return this.sendAction("subscribe-to-desktop-event", {
+            topic,
+            type,
+            // Spread ...identity
+            uuid: identity.uuid, 
+            name: identity.name
         })
     }
     shutdown(): Promise<void> {
