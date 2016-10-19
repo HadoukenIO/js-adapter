@@ -5,4 +5,4 @@ export class Identity {
     }
 }
 
-export class NoIdentityError extends Error {}
+export class NoIdentity extends Error {}

@@ -2,6 +2,12 @@ import * as WebSocket from "ws"
 import writeToken from "./write-token"
 import { Identity } from "../identity"
 import EventStore from "./event-store"
+import {
+    UnexpectedAction,
+    NoSuccess,
+    DuplicateCorrelation,
+    NoAck
+} from "./transport-errors"
 
 // Extract WebSocket specific parts
 class Transport {
@@ -41,7 +47,7 @@ class Transport {
                 if (action !== "authorization-response")
                     return Promise.reject(new UnexpectedAction(action))
                 else if (payload.success !== true)
-                    return Promise.reject(new Error(`Success=${payload.success}`))
+                    return Promise.reject(new NoSuccess)
                 else 
                     return token
             })
@@ -84,7 +90,7 @@ class Transport {
         if (uncorrelated)  
             this.uncorrelatedListener = resolve
         else if (id in this.listeners)
-            reject(new Error(`Listener for ${id} already registered`))
+            reject(new DuplicateCorrelation(String(id)))
         else 
             this.listeners[id] = { resolve, reject }
             // Timeout and reject()?
@@ -104,9 +110,9 @@ class Transport {
         else {
             const { resolve, reject } = this.listeners[id]
             if (data.action !== "ack")
-                reject(new Error(`Got ${data.action}, not "ack"`))
+                reject(new NoAck(data.action))
             else if (!("payload" in data) || !data.payload.success)
-                reject(new Error(`No success, ${data.payload && data.payload.success}`))
+                reject(new NoSuccess)
             else
                 resolve.call(null, data)
             delete this.listeners[id]
@@ -117,12 +123,6 @@ export default Transport
 interface Transport {
     sendAction(action: "request-external-authorization", payload: {}, uncorrelated: true): Promise<Message<AuthorizationPayload>>
     sendAction(action: string, payload: {}, uncorrelated: boolean): Promise<Message<Payload>>
-}
-
-class UnexpectedAction extends Error {
-    constructor(action: string) {
-        super(`Unexpected message with action=${action}`)
-    }
 }
 
 export class Message<T> {
