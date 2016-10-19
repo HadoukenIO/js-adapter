@@ -1,7 +1,7 @@
 {
     "startup_app": {
         "name": "adapter-test-window",
-        "url": "https://openfin.co",
+        "url": "https://openf.in",
         "uuid": "adapter-test-window",
         "autoShow": true,
         "accelerator": {

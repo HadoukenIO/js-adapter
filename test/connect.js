@@ -1,5 +1,7 @@
 const { connect } = require("../.")
 
+let conn 
 module.exports = function() {
-    return connect(`ws://localhost:9696`, Math.random().toString(36).slice(2))
+    if (!conn) conn = connect(`ws://localhost:9696`, Math.random().toString(36).slice(2))
+    return conn
 }

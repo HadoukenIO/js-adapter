@@ -3,7 +3,7 @@ const { describe, it } = require("mocha"),
     connect = require("./connect")
 
 describe("connect()", () => {
-    var api 
+    let api 
     before(() => {
         return connect()
             .should.be.fulfilled()

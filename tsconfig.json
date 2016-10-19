@@ -4,7 +4,9 @@
         "module": "commonjs",
         "sourceMap": true,
         "declaration": true,
-        "outDir": "out"
+        "outDir": "out",
+        "strictNullChecks": true,
+        "noUnusedLocals": true
     },
     "exclude": [ "node_modules", "out" ]
 }

@@ -2,9 +2,9 @@
     "version": "0.1.0",
     "command": "npm",
     "isShellCommand": true,
-    "showOutput": "always", // silent?
+    "showOutput": "always",
     "tasks": [
-        {   "taskName": "install",
+        {   "taskName": "postinstall",
             "isBuildCommand": true
         },
         {   "taskName": "test",
