@@ -7,7 +7,7 @@ class Transport {
     protected wire: WebSocket
     protected messageCounter = 0
     protected listeners: {resolve: Function, reject: Function}[] = []
-    protected eventListeners = new EventStore //(new loki).addCollection("eventListeners") // in-memory? when no loki(filename)
+    protected eventListeners = new EventStore 
     protected uncorrelatedListener: Function
     protected _identity: Identity
     connect(address: string): Promise<any> { 

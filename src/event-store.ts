@@ -1,7 +1,7 @@
 import { Identity } from "./identity"
 
 export default class EventStore {
-    protected map: Map<string, Function[]> = new Map()
+    protected map: Map<string, Function[]> = new Map
     add(identity: Identity, topic: string, type: string, listener: Function): void {
         const key = EventStore.makeKey(identity, topic, type)
         if (this.map.has(key))
