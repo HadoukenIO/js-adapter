@@ -63,6 +63,10 @@ class Transport extends WebSocketTransport {
             name: identity.name
         })
     }
+    /* TODO
+    1 {"action":"unsubscribe-to-desktop-event","payload":{"name":"adapter-test-window","topic":"window","type":"focused",
+    "uuid":"adapter-test-window"}}
+    */
     get identity(): Identity {
         return this._identity
     }

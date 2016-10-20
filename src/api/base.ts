@@ -16,6 +16,9 @@ abstract class Base {
         else    
             return Promise.reject(new NoIdentity)
     }
+    removeEventListener(type: string, listener: Function): Promise<boolean> {
+        return Promise.reject(false) // TODO implement
+    }
     protected get topic(): string {
         return this.constructor.name.replace("_", "").toLowerCase()
     }
