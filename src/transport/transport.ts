@@ -6,7 +6,8 @@ import {
     UnexpectedAction,
     NoSuccess,
     DuplicateCorrelation,
-    NoAck
+    NoAck,
+    NoCorrelation
 } from "./transport-errors"
 
 class Transport extends WebSocketTransport {
@@ -75,18 +76,17 @@ class Transport extends WebSocketTransport {
             this.listeners[id] = { resolve, reject }
             // Timeout and reject()?
     }
-    /*protected*/
-    onmessage(data): void {
+    protected onmessage(data): void {
         const id: number = data.correlationId
         if (data.action === "process-desktop-event") {
             const { topic, type, uuid, name } = data.payload
             for (let f of this.eventListeners.getAll(new Identity(uuid, name), topic, type))
                 f.call(null, data.payload)
-        } else if (!("correlationId" in data)) 
+        } else if (!("correlationId" in data)) {
             this.uncorrelatedListener.call(null, data)
-            //throw new Error("Message has no .correlationId")
-        else if (!(id in this.listeners))            
-            throw new Error(`No listener registered for ${id}`)
+            this.uncorrelatedListener = () => {}
+        } else if (!(id in this.listeners))            
+            throw new NoCorrelation(String(id))
         else {
             const { resolve, reject } = this.listeners[id]
             if (data.action !== "ack")
@@ -116,11 +116,4 @@ export class Payload {
 export class AuthorizationPayload {
     token: string
     file: string
-}
-
-export interface Wire {
-    connect(address): Promise<any>
-    send(data): Promise<any>
-    shutdown(): Promise<any>
-    onmessage(data): void
 }

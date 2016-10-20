@@ -1,7 +1,7 @@
 import * as WebSocket from "ws"
-import { Wire } from "./transport"
+import Wire from "./wire"
 
-export default class WebSocketTransport implements Wire {
+export default class WebSocketTransport extends Wire {
     private wire: WebSocket
     connect(address: string): Promise<any> { 
         return new Promise((resolve, reject) => {
@@ -17,10 +17,9 @@ export default class WebSocketTransport implements Wire {
             this.wire.send(JSON.stringify(data), flags, resolve)
         })
     }
-    shutdown(): Promise<void> {
+    shutdown(): Promise<boolean> {
         this.wire.terminate()
-        return Promise.resolve()
+        return Promise.resolve(true)
     }
-    /*protected*/
-    onmessage(data): void {}
+    protected onmessage(data): void {}
 }

@@ -1,4 +1,4 @@
-import { Fin } from "./api/fin"
+import Fin from "./api/fin"
 import Transport from "./transport/transport"
 import { Identity } from "./identity"
 

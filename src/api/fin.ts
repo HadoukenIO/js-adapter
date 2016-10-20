@@ -6,7 +6,7 @@ import Application from "./application/application"
 import InterApplicationBus from "./interappbus/interappbus"
 import _Notification from "./notification/notification"
 
-export class Fin extends Base {
+export default class Fin extends Base {
     System: System
     Window: _WindowModule
     Application: Application

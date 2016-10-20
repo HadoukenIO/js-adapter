@@ -3,7 +3,8 @@ const { describe, it } = require("mocha"),
     should = require("should"),
     connect = require("./connect"),
     { Identity } = require("../."),
-    id = "adapter-test-window"
+    id = "adapter-test-window",
+    SAFE_LISTENER_DELAY = 50
     require("should-sinon")
 
 describe("Window.addEventListener()", () => {
@@ -18,14 +19,20 @@ describe("Window.addEventListener()", () => {
     })
     describe('"focused"', () => {
         it("subscribe", () => {
-            return win.addEventListener("focused", null)
+            return win.addEventListener("focused", () => {})
                 .should.be.fulfilled()
         })
-        it.skip("called", () => {
+        it("subscribe with null", () => {
+            return win.addEventListener("focused", null)
+                .should.be.rejected()
+        })
+        it("called", () => {
             const spy = sinon.spy()
-            //spy.should.be.calledOnce() // Move this line?
             return win.addEventListener("focused", spy)
                 .then(() => win.focus())
+                .then(() => win.blur())
+                .then(() => new Promise(resolve => setTimeout(resolve, SAFE_LISTENER_DELAY)))
+                .then(() => spy.should.be.calledOnce())
         })
     })
 })     

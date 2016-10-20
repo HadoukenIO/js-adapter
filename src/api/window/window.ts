@@ -1,5 +1,6 @@
 import Base from "../base"
 import { Identity } from "../../identity"
+import Bounds from "./bounds"
 
 // The window.Window name is taken
 export default class _WindowModule extends Base {
@@ -19,16 +20,10 @@ export class _Window extends Base {
     focus(): Promise<void> {
         return this.wire.sendAction("focus-window", this.identity.toWireObject())
     }
+    blur(): Promise<void> {
+        return this.wire.sendAction("blur-window", this.identity.toWireObject())
+    }
 }
 export interface _Window {
     addEventListener(type: "focused", listener: Function) 
-}
-
-export interface Bounds {
-    height: number
-    width: number
-    top: number
-    left: number
-    right?: number
-    bottom?: number
 }
