@@ -1,7 +1,7 @@
-import WebSocketTransport from "./websocket"
+import { Wire, WireConstructor } from "./wire"
 import writeToken from "./write-token"
 import { Identity } from "../identity"
-import EventStore from "./event-store"
+import ListenerStore from "./listener-store"
 import {
     UnexpectedAction,
     NoSuccess,
@@ -10,20 +10,25 @@ import {
     NoCorrelation
 } from "./transport-errors"
 
-class Transport extends WebSocketTransport {
+class Transport {
     protected messageCounter = 0
     protected listeners: {resolve: Function, reject: Function}[] = []
-    protected eventListeners = new EventStore 
+    protected eventListeners = new ListenerStore 
     protected uncorrelatedListener: Function
     protected _identity: Identity
-    authenticate(identity: Identity): Promise<string> {
+    protected wire: Wire
+    constructor(wireType: WireConstructor) {
+        this.wire = new wireType(this.onmessage.bind(this))
+    }
+    connect(address: string, identity: Identity): Promise<string> {
         const { uuid } = this._identity = identity
         let token
-        return this.sendAction("request-external-authorization", {
-            uuid,
-            type: "file-token", // Other type for browser? Ask @xavier
-            //authorizationToken: null // Needed?
-        }, true)
+        return this.wire.connect(address)
+            .then(() => this.sendAction("request-external-authorization", {
+                uuid,
+                type: "file-token", // Other type for browser? Ask @xavier
+                //authorizationToken: null
+            }, true))
             .then(({ action, payload }) => {
                 if (action !== "external-authorization-response")
                     return Promise.reject(new UnexpectedAction(action))
@@ -45,7 +50,7 @@ class Transport extends WebSocketTransport {
     sendAction(action: string, payload = {}, uncorrelated = false): Promise<Message<any>> {
         return new Promise((resolve, reject) => {
             const id = this.messageCounter++
-            this.send({
+            this.wire.send({
                 action,
                 payload,
                 messageId: id
@@ -63,10 +68,19 @@ class Transport extends WebSocketTransport {
             name: identity.name
         })
     }
-    /* TODO
-    1 {"action":"unsubscribe-to-desktop-event","payload":{"name":"adapter-test-window","topic":"window","type":"focused",
-    "uuid":"adapter-test-window"}}
-    */
+    unsubscribeFromEvent(identity: Identity, topic: string, type: string, listener: Function): Promise<void> {
+        const wasLast = this.eventListeners.delete(identity, topic, type, listener)
+        if (wasLast)
+            return this.sendAction("unsubscribe-to-desktop-event", {
+                topic,
+                type,
+                // Spread ...identity
+                uuid: identity.uuid, 
+                name: identity.name
+            })
+        else
+            return Promise.resolve()
+    }
     get identity(): Identity {
         return this._identity
     }

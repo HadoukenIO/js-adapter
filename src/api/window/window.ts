@@ -1,4 +1,4 @@
-import Base from "../base"
+import { Base, Base_with_Identity } from "../base"
 import { Identity } from "../../identity"
 import Bounds from "./bounds"
 
@@ -9,7 +9,7 @@ export default class _WindowModule extends Base {
     }
 }
 
-export class _Window extends Base {
+export class _Window extends Base_with_Identity {
     constructor(wire, protected identity: Identity) {
         super(wire)
     }

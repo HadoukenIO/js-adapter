@@ -5,6 +5,8 @@
     "showOutput": "always",
     "tasks": [
         {   "taskName": "postinstall",
+            "suppressTaskName": true,
+            "args": [ "run", "postinstall" ],
             "isBuildCommand": true
         },
         {   "taskName": "test",

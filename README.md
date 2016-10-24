@@ -6,7 +6,7 @@ $ `npm install -S openfin/js-adapter`
 
 # Usage
 
-    import { connect } from "js-adapter"
+    const { connect } = require("js-adapter")
 
     connect("ws://localhost:9696", "my-uuid-123")
         .then(fin => fin.System.getVersion())

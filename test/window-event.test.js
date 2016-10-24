@@ -2,9 +2,9 @@ const { describe, it } = require("mocha"),
     sinon = require("sinon"),
     should = require("should"),
     connect = require("./connect"),
+    delayPromise = require("./delay-promise"),
     { Identity } = require("../."),
-    id = "adapter-test-window",
-    SAFE_LISTENER_DELAY = 50
+    id = "adapter-test-window"
     require("should-sinon")
 
 describe("Window.addEventListener()", () => {
@@ -31,8 +31,17 @@ describe("Window.addEventListener()", () => {
             return win.addEventListener("focused", spy)
                 .then(() => win.focus())
                 .then(() => win.blur())
-                .then(() => new Promise(resolve => setTimeout(resolve, SAFE_LISTENER_DELAY)))
+                .then(() => delayPromise(200))
                 .then(() => spy.should.be.calledOnce())
+        })
+        it.skip("unsubscribe", () => {
+            const spy = sinon.spy()
+            return win.addEventListener("focused", spy)
+                .then(() => win.removeEventListener("focused", spy))
+                .then(() => win.focus())
+                .then(() => win.blur())
+                .then(() => delayPromise())
+                .then(() => spy.should.not.be.called())
         })
     })
 })     
