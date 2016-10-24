@@ -20,7 +20,7 @@ class Transport {
     constructor(wireType: WireConstructor) {
         this.wire = new wireType(this.onmessage.bind(this))
     }
-    connect(address: string, identity: Identity): Promise<string> {
+    connect(address: string, identity: Identity): Promise<Token> {
         const { uuid } = this._identity = identity
         let token
         return this.wire.connect(address)

@@ -1,4 +1,4 @@
-# OpenFin JavaScript (node.js & browser) adapter
+# OpenFin JavaScript (Node.js, Electron & browser) adapter
 
 # Install as dependency
 

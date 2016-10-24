@@ -13,7 +13,7 @@ export default class Fin extends Base {
     Application: Application
     InterApplicationBus: InterApplicationBus
     Notification: _Notification
-    constructor(wire: Transport, public token: string, identity: Identity) {
+    constructor(wire: Transport, public token: Token, identity: Identity) {
         super(wire)
         this.System = new System(wire)
         this.Window = new _WindowModule(wire)
