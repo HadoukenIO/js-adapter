@@ -11,7 +11,7 @@
         "defaultHeight": 500
     },
     "runtime": {
-        "arguments": "--v=1",
+        "arguments": "--v=1 --enable-loggin",
         "version": "6.49.12.62"
     },
     "shortcut": {}
