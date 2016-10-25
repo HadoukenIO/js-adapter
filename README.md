@@ -1,4 +1,4 @@
-# OpenFin JavaScript (node.js & browser) adapter
+# OpenFin JavaScript (Node.js, Electron & browser) adapter
 
 # Install as dependency
 
@@ -6,7 +6,7 @@ $ `npm install -S openfin/js-adapter`
 
 # Usage
 
-    import { connect } from "js-adapter"
+    const { connect } = require("js-adapter")
 
     connect("ws://localhost:9696", "my-uuid-123")
         .then(fin => fin.System.getVersion())
@@ -16,7 +16,7 @@ $ `npm install -S openfin/js-adapter`
 
 $ `npm install`
 
-# Testing
+# Test
 
 $ `openfin -l -c test/app.json &`  
 $ `npm test`

@@ -1,12 +1,13 @@
-import { Fin } from "./api/fin"
+import Fin from "./api/fin"
 import Transport from "./transport/transport"
+import WebSocketTransport from "./transport/websocket"
 import { Identity } from "./identity"
 
 /** Connect to an OpenFin Runtime */
-export function connect(address: string, uuid: string): Promise<Fin> {
-    const wire = new Transport
-    return wire.connect(address)
-        .then(() => wire.authenticate(new Identity(uuid)))
+export function connect(address: string, uuid: string, name?: string): Promise<Fin> {
+    const wire = new Transport(WebSocketTransport),
+        me = new Identity(uuid, name)
+    return wire.connect(address, me)
         .then(token => new Fin(wire, token))
 }
 

@@ -1,0 +1,1 @@
+type Token = string

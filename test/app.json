@@ -1,17 +1,15 @@
 {
     "startup_app": {
         "name": "adapter-test-window",
-        "url": "https://openf.in",
+        "url": "http://acidtests.org",
         "uuid": "adapter-test-window",
         "autoShow": true,
         "accelerator": {
             "devtools": true
-        },
-        "defaultWidth": 500,
-        "defaultHeight": 500
+        }
     },
     "runtime": {
-        "arguments": "--v=1",
+        "arguments": "--v=1 --enable-logging",
         "version": "6.49.12.62"
     },
     "shortcut": {}

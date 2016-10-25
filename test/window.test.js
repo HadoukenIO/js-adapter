@@ -5,17 +5,17 @@ const { describe, it } = require("mocha"),
     id = "adapter-test-window"
 
 describe("Window.", () => {
-    let Window 
+    let fin 
     before(() => {
         return connect()
-            .then(a => Window = a.Window)
+            .then(a => fin = a)
     })
     it("wrap()", () => {
-        Window.wrap(new Identity("my-uuid-123", "my-window"))
+        fin.Window.wrap(new Identity("my-uuid-123", "my-window"))
             .should.be.Object()
     })
     it("getBounds()", () => {
-        return Window.wrap(new Identity(id, id)).getBounds()
-            .should.eventually.have.properties({ height: 500, width: 500 })
+        return fin.Window.wrap(new Identity(id, id)).getBounds()
+            .should.eventually.have.property("height").a.Number()
     })
 })     
