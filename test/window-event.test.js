@@ -5,16 +5,16 @@ const { describe, it } = require("mocha"),
     delayPromise = require("./delay-promise"),
     { Identity } = require("../."),
     id = "adapter-test-window"
-    require("should-sinon")
+require("should-sinon")
 
 describe("Window.addEventListener()", () => {
-    let Window,
+    let fin,
         win
     before(() => {
         return connect()
             .then(a => {
-                Window = a.Window
-                win = Window.wrap(new Identity(id, id)) 
+                fin = a
+                win = fin.Window.wrap(new Identity(id, id))
             })
     })
     describe('"focused"', () => {
@@ -31,15 +31,20 @@ describe("Window.addEventListener()", () => {
             return win.addEventListener("focused", spy)
                 .then(() => win.focus())
                 .then(() => win.blur())
-                .then(() => delayPromise(200))
+                .then(() => delayPromise())
                 .then(() => spy.should.be.calledOnce())
         })
-        it.skip("unsubscribe", () => {
+        it("unsubscribe unregistered", () => {
+            return win.removeEventListener.bind(win, "focused", () => {})
+                .should.throw()
+        })
+    })
+    describe('"bounds-changed"', () => {
+        it("unsubscribe", () => {
             const spy = sinon.spy()
-            return win.addEventListener("focused", spy)
-                .then(() => win.removeEventListener("focused", spy))
-                .then(() => win.focus())
-                .then(() => win.blur())
+            return win.addEventListener("bounds-changed", spy)
+                .then(() => win.removeEventListener("bounds-changed", spy))
+                .then(() => win.moveBy(1, 0))
                 .then(() => delayPromise())
                 .then(() => spy.should.not.be.called())
         })

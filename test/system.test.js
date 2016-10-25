@@ -3,17 +3,17 @@ const { describe, it } = require("mocha"),
     connect = require("./connect")
 
 describe("System.", () => {
-    let System 
+    let fin 
     before(() => {
         return connect()
-            .then(a => System = a.System)
+            .then(a => fin = a)
     })
     it("getVersion() Promise", () => {
-        System.getVersion()
+        fin.System.getVersion()
             .should.have.property("then")
     })
     it("getVersion()", () => {
-        return System.getVersion()
+        return fin.System.getVersion()
             .should.be.fulfilledWith("6.49.12.62")
     })
 })     

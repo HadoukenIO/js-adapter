@@ -3,13 +3,13 @@ const { describe, it } = require("mocha"),
     connect = require("./connect")
 
 describe("connect()", () => {
-    let api 
+    let fin 
     before(() => {
         return connect()
             .should.be.fulfilled()
-            .then(a => api = a)
+            .then(a => fin = a)
     })
     it("authentication", () => {
-        api.should.have.property("System")
+        fin.should.have.property("System")
     })
 })     
