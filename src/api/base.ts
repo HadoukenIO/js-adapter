@@ -23,3 +23,8 @@ export class Base_with_Identity extends Base {
         return this.wire.unsubscribeFromEvent(this.identity, this.topic, type, listener)
     }
 }
+
+export class Reply extends Identity {
+    topic: string
+    type: string
+}

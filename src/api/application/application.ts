@@ -1,8 +1,4 @@
-import { Base_with_Identity } from "../base"
-import { Identity } from "../../identity"
+import { Base } from "../base"
 
-export default class Application extends Base_with_Identity {
-    constructor(wire, protected identity: Identity) {
-        super(wire)
-    }
+export default class Application extends Base {
 }
