@@ -1,0 +1,27 @@
+{
+    "rules": {
+        "semicolon": [ true, "never" ],
+        "quotemark": [ true, "double" ],
+        "object-literal-key-quotes": [ true, "as-needed" ],                                                                           
+        "no-angle-bracket-type-assertion": true,
+        "no-unreachable": true,
+        "no-unused-new": true,
+        "no-var-keyword": true,
+        "max-line-length": [ true, 150 ],
+        "no-require-imports": true,
+        "align": [ true, "statements" ],
+        "no-consecutive-blank-lines": true,
+        "object-literal-shorthand": true,
+        "one-line": [ true, "check-open-brace", "check-whitespace" ],
+        "variable-name": [ true, "ban-keywords" ],
+        "whitespace": [ true, 
+            "check-branch", 
+            "check-decl", 
+            "check-module", 
+            "check-separator" 
+        ],
+        "adjacent-overload-signatures": true,
+        "no-inferrable-types": [ true, "ignore-params" ],
+        "curly": false
+    }
+}

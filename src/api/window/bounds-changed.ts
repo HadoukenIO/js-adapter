@@ -2,7 +2,7 @@ import { Reply } from "../base"
 
 export default class BoundsChangedReply extends Reply {
     changeType: BoundsChangeType
-    //deffered: boolean // Typo in API?
+    deferred: boolean 
     height: number
     width: number
     top: number

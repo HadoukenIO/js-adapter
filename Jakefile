@@ -6,7 +6,7 @@ const { task, rule, directory, exec, complete } = require("jake"),
     async = { async: true }
 
 task("default", [ "tsc" ])
-task("lint", [ ]) // TSLint is VERY opinionated :(
+task("lint", [ "tslint" ]) 
 
 task("test", [ "default" ], async, function() {
     exec(npmBin("mocha"), execOpts, complete)
@@ -33,7 +33,7 @@ task("tsc", [ "lint", OUT_DIR ], async, function() {
 })
 
 task("tslint", async, function() {
-    exec(npmBin("tslint 'src/**/*.ts'"), execOpts, complete) 
+    exec(`${npmBin("tslint")} src/**/*.ts`, execOpts, complete) 
 })
 
 function srcName(name) {
