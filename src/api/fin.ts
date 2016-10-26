@@ -1,12 +1,12 @@
 import Transport from "../transport/transport"
-import { Base } from "./base"
+import { Bare } from "./base"
 import System from "./system/system"
 import _WindowModule from "./window/window"
 import Application from "./application/application"
 import InterApplicationBus from "./interappbus/interappbus"
 import _Notification from "./notification/notification"
 
-export default class Fin extends Base {
+export default class Fin extends Bare {
     System: System
     Window: _WindowModule
     Application: Application

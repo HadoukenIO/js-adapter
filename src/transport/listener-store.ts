@@ -34,7 +34,7 @@ function makeKey(identity: Identity, topic: string, type: string): string {
     let key = ""
     key += encodeURIComponent(topic) + SEP
     key += encodeURIComponent(type) + SEP
-    key += encodeURIComponent(identity.uuid) + SEP
+    key += encodeURIComponent(identity.uuid || "*") + SEP
     key += encodeURIComponent(identity.name || "*")
     return key
 }

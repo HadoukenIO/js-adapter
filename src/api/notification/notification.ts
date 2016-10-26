@@ -1,5 +1,5 @@
-import { Base } from "../base"
+import { Bare } from "../base"
 
 // The window.Notification name is taken
-export default class _Notification extends Base {
+export default class _Notification extends Bare {
 }

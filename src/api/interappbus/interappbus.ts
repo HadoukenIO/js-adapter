@@ -1,6 +1,6 @@
-import { Base } from "../base"
+import { Bare } from "../base"
 
-export default class InterApplicationBus extends Base {
+export default class InterApplicationBus extends Bare {
     publish(topic: string, message): Promise<void> {
         return this.wire.sendAction("publish-message", {
             topic,

@@ -1,6 +1,6 @@
 import { Wire, WireConstructor } from "./wire"
 import writeToken from "./write-token"
-import { Identity } from "../identity"
+import { Identity, AppIdentity } from "../identity"
 import ListenerStore from "./listener-store"
 import {
     UnexpectedAction,
@@ -15,12 +15,12 @@ class Transport {
     protected listeners: {resolve: Function, reject: Function}[] = []
     protected eventListeners = new ListenerStore
     protected uncorrelatedListener: Function
-    me: Identity
+    me: AppIdentity
     protected wire: Wire
     constructor(wireType: WireConstructor) {
         this.wire = new wireType(this.onmessage.bind(this))
     }
-    connect(address: string, me: Identity): Promise<Token> {
+    connect(address: string, me: AppIdentity): Promise<Token> {
         const { uuid } = this.me = me
         let token
         return this.wire.connect(address)
