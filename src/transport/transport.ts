@@ -7,7 +7,8 @@ import {
     NoSuccess,
     DuplicateCorrelation,
     NoAck,
-    NoCorrelation
+    NoCorrelation,
+    RuntimeError
 } from "./transport-errors"
 
 class Transport {
@@ -95,7 +96,7 @@ class Transport {
             if (data.action !== "ack")
                 reject(new NoAck(data.action))
             else if (!("payload" in data) || !data.payload.success)
-                reject(new NoSuccess)
+                reject(new RuntimeError(data.payload))
             else
                 resolve.call(null, data)
             delete this.listeners[id]
