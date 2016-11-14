@@ -14,6 +14,6 @@ describe("System.", () => {
     })
     it("getVersion()", () => {
         return fin.System.getVersion()
-            .should.be.fulfilledWith("6.49.12.62")
+            .should.be.fulfilledWith("6.49.12.118")
     })
 })     

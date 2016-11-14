@@ -5,8 +5,8 @@ export class NoAck extends Error {}
 export class NoCorrelation extends Error {}
 export class ListenerNotRegistered extends Error {}
 export class RuntimeError extends Error {
-    constructor(payload: any) {
-        let {reason, err} = payload
+    constructor(payload) {
+        const { reason, err } = payload
         super(reason)
         this.name = "RuntimeError"
 

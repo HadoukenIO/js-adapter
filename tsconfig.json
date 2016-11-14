@@ -5,8 +5,7 @@
         "sourceMap": true,
         "declaration": true,
         "outDir": "out",
-        "strictNullChecks": true,
-        "noUnusedLocals": true
+        "strictNullChecks": true
     },
     "exclude": [ "node_modules", "out" ]
 }

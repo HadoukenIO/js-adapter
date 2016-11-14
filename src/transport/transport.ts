@@ -1,7 +1,6 @@
 import { Wire, WireConstructor } from "./wire"
 import writeToken from "./write-token"
-import { Identity, AppIdentity } from "../identity"
-import ListenerStore from "./listener-store"
+import { AppIdentity } from "../identity"
 import {
     UnexpectedAction,
     NoSuccess,
@@ -14,13 +13,16 @@ import {
 class Transport {
     protected messageCounter = 0
     protected listeners: {resolve: Function, reject: Function}[] = []
-    protected eventListeners = new ListenerStore
     protected uncorrelatedListener: Function
+    protected messageHandlers: MessageHandler[] = []
     me: AppIdentity
     protected wire: Wire
+
     constructor(wireType: WireConstructor) {
         this.wire = new wireType(this.onmessage.bind(this))
+        this.registerMessageHandler(this.handleMessage.bind(this))
     }
+
     connect(address: string, me: AppIdentity): Promise<Token> {
         const { uuid } = this.me = me
         let token
@@ -59,16 +61,8 @@ class Transport {
             this.addListener(id, resolve, reject, uncorrelated)
         })
     }
-    subscribeToEvent(identity: Identity, topic: string, type: string, listener: Function): Promise<void> {
-        this.eventListeners.add(identity, topic, type, listener)
-        return this.sendAction("subscribe-to-desktop-event", identity.mergeWith({ topic, type }))
-    }
-    unsubscribeFromEvent(identity: Identity, topic: string, type: string, listener: Function): Promise<void> {
-        const wasLast = this.eventListeners.delete(identity, topic, type, listener)
-        if (wasLast)
-            return this.sendAction("unsubscribe-to-desktop-event", identity.mergeWith({ topic, type }))
-        else
-            return Promise.resolve()
+    registerMessageHandler(handler: MessageHandler): void {
+        this.messageHandlers.unshift(handler) 
     }
 
     protected addListener(id: number, resolve: Function, reject: Function, uncorrelated: boolean): void {
@@ -80,17 +74,18 @@ class Transport {
             this.listeners[id] = { resolve, reject }
         // Timeout and reject()?
     }
-    protected onmessage(data): void {
-        const id: number = data.correlationId
-        if (data.action === "process-desktop-event") {
-            const { topic, type, uuid, name } = data.payload
-            for (let f of this.eventListeners.getAll(new Identity(uuid, name), topic, type))
-                f.call(null, data.payload)
-        } else if (!("correlationId" in data)) {
+    protected onmessage(data: Message<Payload>): void {
+        for (const h of this.messageHandlers)
+            if (h.call(null, data)) break
+    }
+    protected handleMessage(data: Message<Payload>): boolean {
+        const id: number = data.correlationId || NaN
+        if (!("correlationId" in data)) {
             this.uncorrelatedListener.call(null, data)
             this.uncorrelatedListener = () => {}
         } else if (!(id in this.listeners))
             throw new NoCorrelation(String(id))
+            // Return false?
         else {
             const { resolve, reject } = this.listeners[id]
             if (data.action !== "ack")
@@ -101,6 +96,7 @@ class Transport {
                 resolve.call(null, data)
             delete this.listeners[id]
         }
+        return true
     }
 }
 export default Transport
@@ -112,6 +108,7 @@ interface Transport {
 export class Message<T> {
     action: string
     payload: T
+    correlationId?: number
 }
 export class Payload {
     success: boolean

@@ -8,15 +8,15 @@ const { describe, it } = require("mocha"),
 require("should-sinon")
 
 describe("Window.addEventListener()", () => {
-    let fin,
-        win
+    let fin, win
+
     before(() => {
-        return connect()
-            .then(a => {
+        return connect().then(a => {
                 fin = a
                 win = fin.Window.wrap(new Identity(id, id))
             })
     })
+
     describe('"focused"', () => {
         it("subscribe", () => {
             return win.addEventListener("focused", () => {})
@@ -26,17 +26,19 @@ describe("Window.addEventListener()", () => {
             return win.addEventListener("focused", null)
                 .should.be.rejected()
         })
+        it("unsubscribe unregistered", () => {
+            return win.removeEventListener("focused", () => {})
+                .should.be.rejected()
+        })
+    })
+    describe('"hidden"', () => {
         it("called", () => {
             const spy = sinon.spy()
-            return win.addEventListener("focused", spy)
-                .then(() => win.focus())
-                .then(() => win.blur())
+            return win.addEventListener("hidden", spy)
+                .then(() => win.hide())
+                .then(() => win.show())
                 .then(() => delayPromise())
                 .then(() => spy.should.be.calledOnce())
-        })
-        it("unsubscribe unregistered", () => {
-            return win.removeEventListener.bind(win, "focused", () => {})
-                .should.throw()
         })
     })
     describe('"bounds-changed"', () => {

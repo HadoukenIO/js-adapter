@@ -1,5 +1,7 @@
-import Transport from "../transport/transport"
-import { Identity } from "../identity"
+import Transport, { Message } from "../transport/transport"
+import { Identity, AppIdentity } from "../identity"
+import ListenerStore from "../util/listener-store"
+import { createHash } from "crypto"
 import {
     Not_a_Function
 } from "./api-errors"
@@ -9,22 +11,60 @@ export class Bare {
     protected get topic(): string {
         return this.constructor.name.replace("_", "").toLowerCase()
     }
+    get me(): AppIdentity {
+        return this.wire.me
+    }
 }
 
 export class Base extends Bare {
     protected identity: Identity = new Identity
+    protected listeners = new ListenerStore<string>()
+
+    constructor(wire: Transport) {
+        super(wire)
+        wire.registerMessageHandler(this.onmessage.bind(this))
+    }
+    protected onmessage(message: Message<any>): boolean {
+        if (message.action === "process-desktop-event") {
+            for (const f of this.listeners.getAll(createKey(message.payload)))
+                f.call(null, message.payload)
+            return true
+        } else
+            return false
+    }
+
     addEventListener(type: string, listener: Function): Promise<void> {
         if (typeof listener !== "function")
             return Promise.reject(new Not_a_Function)
-        else 
-            return this.wire.subscribeToEvent(this.identity, this.topic, type, listener)
+        else { 
+            const id = this.identity.mergeWith({ 
+                    topic: this.topic,
+                    type
+                })
+            this.listeners.add(createKey(id), listener)
+            return this.wire.sendAction("subscribe-to-desktop-event", id)
+        }
     }
     removeEventListener(type: string, listener: Function): Promise<void> {
-        return this.wire.unsubscribeFromEvent(this.identity, this.topic, type, listener)
+        const id = this.identity.mergeWith({
+                topic: this.topic,
+                type
+            })
+        return this.listeners.delete(createKey(id), listener)
+            .then(wasLast => wasLast? this.wire.sendAction("unsubscribe-to-desktop-event", id) : Promise.resolve(wasLast))
     }
 } 
 
-export class Reply extends Identity {
-    topic: string
-    type: string
+export class Reply<TOPIC extends string, TYPE extends string|void> extends Identity {
+    topic: TOPIC
+    type: TYPE
+}
+
+function createKey(data): string {
+    return createHash("md4")
+        .update(data.topic)
+        .update(data.type)
+        .update(data.uuid || "*")
+        .update(data.name || "*")
+        .digest("base64")
 }
