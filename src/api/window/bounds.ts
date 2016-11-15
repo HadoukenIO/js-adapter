@@ -1,9 +1,9 @@
 interface Bounds {
-    height: number
-    width: number
-    top: number
-    left: number
-    right?: number
-    bottom?: number
+    height: number;
+    width: number;
+    top: number;
+    left: number;
+    right?: number;
+    bottom?: number;
 }
-export default Bounds
+export default Bounds;

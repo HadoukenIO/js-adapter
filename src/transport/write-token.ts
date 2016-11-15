@@ -1,7 +1,7 @@
-import { writeFile } from "fs"
+import { writeFile } from "fs";
 
 export default function writeToken(path: string, token: Token): Promise<Token> { 
     return new Promise(resolve => {
-        writeFile(path, token, () => resolve(token))
-    })
+        writeFile(path, token, () => resolve(token));
+    });
 }

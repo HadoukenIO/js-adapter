@@ -1,2 +1,2 @@
-type Token = string
-type MessageHandler = (data) => boolean  
+type Token = string;
+type MessageHandler = (data) => boolean;

@@ -1,6 +1,6 @@
 {
     "rules": {
-        "semicolon": [ true, "never" ],
+        "semicolon": [ true, "always" ],
         "quotemark": [ true, "double" ],
         "object-literal-key-quotes": [ true, "as-needed" ],                                                                           
         "no-angle-bracket-type-assertion": true,
