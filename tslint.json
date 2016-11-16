@@ -22,9 +22,9 @@
         ],
         "adjacent-overload-signatures": true,
         "no-inferrable-types": [ true, "ignore-params" ],
-        "curly": false,
         "no-use-before-declare": true,
         "no-unused-variable": true,
-        "no-unused-expression": true
+        "no-unused-expression": true,
+        "curly": true
     }
 }

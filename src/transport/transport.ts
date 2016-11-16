@@ -33,23 +33,25 @@ class Transport {
                 //authorizationToken: null
             }, true))
             .then(({ action, payload }) => {
-                if (action !== "external-authorization-response")
+                if (action !== "external-authorization-response") {
                     return Promise.reject(new UnexpectedAction(action));
-                else {
+                } else {
                     token = payload.token;
                     return writeToken(payload.file, payload.token);
                 }
             })
             .then(() => this.sendAction("request-authorization", { uuid, type: "file-token" }, true))
             .then(({ action, payload }) => {
-                if (action !== "authorization-response")
+                if (action !== "authorization-response") {
                     return Promise.reject(new UnexpectedAction(action));
-                else if (payload.success !== true)
+                } else if (payload.success !== true) {
                     return Promise.reject(new NoSuccess);
-                else
+                } else {
                     return token;
+                }
             });
     }
+    
     sendAction(action: string, payload = {}, uncorrelated = false): Promise<Message<any>> {
         return new Promise((resolve, reject) => {
             const id = this.messageCounter++;
@@ -61,45 +63,55 @@ class Transport {
             this.addListener(id, resolve, reject, uncorrelated);
         });
     }
+    
     registerMessageHandler(handler: MessageHandler): void {
         this.messageHandlers.unshift(handler);
     }
 
     protected addListener(id: number, resolve: Function, reject: Function, uncorrelated: boolean): void {
-        if (uncorrelated)
+        if (uncorrelated) {
             this.uncorrelatedListener = resolve;
-        else if (id in this.listeners)
+        } else if (id in this.listeners) {
             reject(new DuplicateCorrelation(String(id)));
-        else
+        } else {
             this.listeners[id] = { resolve, reject };
+        }
         // Timeout and reject()?
     }
+    
     protected onmessage(data: Message<Payload>): void {
-        for (const h of this.messageHandlers)
-            if (h.call(null, data)) break;
+        for (const h of this.messageHandlers) {
+            if (h.call(null, data)) {
+                break;
+            }
+        }
     }
+    
     protected handleMessage(data: Message<Payload>): boolean {
         const id: number = data.correlationId || NaN;
         if (!("correlationId" in data)) {
             this.uncorrelatedListener.call(null, data);
             this.uncorrelatedListener = () => {};
-        } else if (!(id in this.listeners))
+        } else if (!(id in this.listeners)) {
             throw new NoCorrelation(String(id));
-            // Return false?
-        else {
+        } else {
             const { resolve, reject } = this.listeners[id];
-            if (data.action !== "ack")
+            if (data.action !== "ack") {
                 reject(new NoAck(data.action));
-            else if (!("payload" in data) || !data.payload.success)
+            } else if (!("payload" in data) || !data.payload.success) {
                 reject(new RuntimeError(data.payload));
-            else
+            } else {
                 resolve.call(null, data);
+            }
+            
             delete this.listeners[id];
         }
         return true;
     }
 }
+
 export default Transport;
+
 interface Transport {
     sendAction(action: "request-external-authorization", payload: {}, uncorrelated: true): Promise<Message<AuthorizationPayload>>;
     sendAction(action: string, payload: {}, uncorrelated: boolean): Promise<Message<Payload>>;

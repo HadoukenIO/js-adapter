@@ -8,9 +8,11 @@ import {
 
 export class Bare {
     constructor(protected wire: Transport) {}
+    
     protected get topic(): string {
         return this.constructor.name.replace("_", "").toLowerCase();
     }
+    
     get me(): AppIdentity {
         return this.wire.me;
     }
@@ -24,19 +26,22 @@ export class Base extends Bare {
         super(wire);
         wire.registerMessageHandler(this.onmessage.bind(this));
     }
+    
     protected onmessage(message: Message<any>): boolean {
         if (message.action === "process-desktop-event") {
-            for (const f of this.listeners.getAll(createKey(message.payload)))
+            for (const f of this.listeners.getAll(createKey(message.payload))) {
                 f.call(null, message.payload);
+            }
             return true;
-        } else
+        } else {
             return false;
+        }
     }
 
     addEventListener(type: string, listener: Function): Promise<void> {
-        if (typeof listener !== "function")
+        if (typeof listener !== "function") {    
             return Promise.reject(new Not_a_Function);
-        else { 
+        } else { 
             const id = this.identity.mergeWith({ 
                     topic: this.topic,
                     type
@@ -45,6 +50,7 @@ export class Base extends Bare {
             return this.wire.sendAction("subscribe-to-desktop-event", id);
         }
     }
+    
     removeEventListener(type: string, listener: Function): Promise<void> {
         const id = this.identity.mergeWith({
                 topic: this.topic,
