@@ -81,9 +81,7 @@ class Transport {
     
     protected onmessage(data: Message<Payload>): void {
         for (const h of this.messageHandlers) {
-            if (h.call(null, data)) {
-                break;
-            }
+            h.call(null, data);
         }
     }
     

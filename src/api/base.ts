@@ -67,10 +67,20 @@ export class Reply<TOPIC extends string, TYPE extends string|void> extends Ident
 }
 
 function createKey(data): string {
-    return createHash("md4")
+    const key = createHash("md4")
         .update(data.topic)
-        .update(data.type)
-        .update(data.uuid || "*")
-        .update(data.name || "*")
-        .digest("base64");
+        .update(data.type);
+
+    switch (data.topic) {
+        case "window":
+        case "notifications":
+            key.update(data.uuid)
+                .update(data.name);
+            break;
+        case "application":
+        case "externalapplication":
+            key.update(data.uuid);
+            break;
+    }
+    return key.digest("base64");
 }
