@@ -3,4 +3,6 @@ npm-debug.log
 yarn-error.log
 out
 tmp
+.tscache
+src/.baseDir.ts
 TODO

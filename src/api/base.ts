@@ -27,6 +27,7 @@ export class Base extends Bare {
         wire.registerMessageHandler(this.onmessage.bind(this));
     }
     
+    /** This method is intended for handling _only_ messages relevant to this class. Override in subclasses */
     protected onmessage(message: Message<any>): boolean {
         if (message.action === "process-desktop-event") {
             for (const f of this.listeners.getAll(createKey(message.payload))) {

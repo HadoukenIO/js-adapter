@@ -79,6 +79,7 @@ class Transport {
         // Timeout and reject()?
     }
     
+    /** This method executes message handlers until the _one_ that handles the message (returns truthy) has run */
     protected onmessage(data: Message<Payload>): void {
         for (const h of this.messageHandlers) {
             h.call(null, data);
@@ -92,6 +93,7 @@ class Transport {
             this.uncorrelatedListener = () => {};
         } else if (!(id in this.listeners)) {
             throw new NoCorrelation(String(id));
+            // Return false?
         } else {
             const { resolve, reject } = this.listeners[id];
             if (data.action !== "ack") {

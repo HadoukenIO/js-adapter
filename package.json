@@ -4,12 +4,15 @@
   "main": "./out/main.js",
   "types": "./out/main.d.ts",
   "scripts": {
-    "postinstall": "jake",
-    "test": "jake test"
+    "postinstall": "grunt",
+    "test": "grunt test"
   },
   "devDependencies": {
     "@types/ws": "~0.0.36",
-    "jake": "~8.0.15",
+    "grunt": "~1.0.1",
+    "grunt-ts": "~5.5.1",
+    "grunt-tslint": "~3.3.0",
+    "grunt-mocha-test": "~0.13.2",
     "mocha": "~3.1.2",
     "openfin-cli": "~1.1.4",
     "should": "~11.1.1",
@@ -17,7 +20,7 @@
     "sinon": "~1.17.6",
     "ts-node": "~1.7.0",
     "tslint": "~3.15.1",
-    "typescript": "~2.0.9"
+    "typescript": "~2.0.10"
   },
   "dependencies": {
     "ws": "~1.1.1"
