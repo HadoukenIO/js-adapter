@@ -1,8 +1,24 @@
 module.exports = function(grunt) {
+
     grunt.initConfig({
-        ts: { default: { tsconfig: true }},
-        tslint: { default: { src: "src/**/*.ts" }, options: { configuration: "tslint.json" }},
-        mochaTest: { default: { src: "test/**/*.js" }}
+        ts: {
+            default: {
+                tsconfig: true
+            }
+        },
+        tslint: {
+            default: {
+                src: "src/**/*.ts"
+            },
+            options: {
+                configuration: "tslint.json"
+            }
+        },
+        mochaTest: {
+            default: {
+                src: "test/**/*.js"
+            }
+        }
     });
 
     grunt.loadNpmTasks("grunt-ts");
