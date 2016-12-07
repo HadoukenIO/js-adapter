@@ -5,6 +5,7 @@ import _WindowModule from "./window/window";
 import Application from "./application/application";
 import InterApplicationBus from "./interappbus/interappbus";
 import _Notification from "./notification/notification";
+import ExternalApplication from "./external-application/external-application";
 
 export default class Fin extends Bare {
     System: System;
@@ -12,6 +13,8 @@ export default class Fin extends Bare {
     Application: Application;
     InterApplicationBus: InterApplicationBus;
     Notification: _Notification;
+    ExternalApplication: ExternalApplication;
+
     constructor(wire: Transport, public token: Token) {
         super(wire);
         this.System = new System(wire);
@@ -19,5 +22,6 @@ export default class Fin extends Bare {
         this.Application = new Application(wire);
         this.InterApplicationBus = new InterApplicationBus(wire);
         this.Notification = new _Notification(wire);
+        this.ExternalApplication = new ExternalApplication(wire);
     }
 }
