@@ -1,5 +1,6 @@
 import { Base } from "../base";
 import { WriteRequestType, WriteAnyRequestType } from "./write-request";
+
 export default class Clipboard extends Base {
 
     writeText(writeObj: WriteRequestType): Promise<void> {

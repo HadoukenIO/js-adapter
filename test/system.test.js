@@ -25,9 +25,9 @@ describe("System.", () => {
 	    it("Fulfilled", () => fin.System.clearCache().should.be.fulfilled());
     });
 
-    describe("delete cache on exit", () => {
+    describe("deleteCacheOnExit()", () => {
 
-    	it("Promise", () => fin.System.clearCache().should.be.a.Promise());
+    	it("Promise", () => fin.System.deleteCacheOnExit().should.be.a.Promise());
 
         it("Fulfilled", () => fin.System.deleteCacheOnExit().should.be.fulfilled());
     });
