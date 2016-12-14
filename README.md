@@ -1,7 +1,7 @@
 # OpenFin JavaScript adapter
 
 Works in
-- Node.js v7 
+- Node.js v6+ 
 
 # Install as dependency
 
