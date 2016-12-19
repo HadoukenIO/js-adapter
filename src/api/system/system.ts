@@ -13,6 +13,25 @@ import { ExternalProcessRequestType , TerminateExternalRequestType } from "./ext
 
 export default class System extends Base {
 
+    constructor(wire) {
+        super(wire);
+
+        this.on("removeListener", eventType => {	        
+            this.deregisterEventListener(this.identity.mergeWith({
+                type: eventType,
+                topic : this.topic
+            }));
+        });
+        
+        this.on("newListener", eventType => {
+            this.registerEventListener(this.identity.mergeWith({
+                type: eventType,
+                topic : this.topic
+            }));
+        });
+        
+    }
+    
     getVersion(): Promise<string> {
         return this.wire.sendAction("get-version")
             .then(({ payload }) => payload.data);

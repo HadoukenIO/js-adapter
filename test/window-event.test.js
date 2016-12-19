@@ -3,52 +3,43 @@ const { describe, it } = require("mocha"),
     should = require("should"),
     connect = require("./connect"),
     delayPromise = require("./delay-promise"),
-    { Identity } = require("../."),
-    id = "adapter-test-window";
+      { Identity } = require("../.");
+    
 require("should-sinon");
 
 describe("Window.addEventListener()", () => {
-    let fin, win;
+    let testApp,
+        fin,
+        appConfigTemplate = {
+            "name": "adapter-test-app",
+            "url": "http://acidtests.org",
+            "uuid": "adapter-test-app",
+            "autoShow": true,
+            "accelerator": {
+                "devtools": true
+            }
+        };
 
     before(() => {
-        return connect().then(a => {
-                fin = a;
-                win = fin.Window.wrap(new Identity(id, id));
-            })
-    })
+        return connect().then(a => fin = a);
+    });
+    
+    describe('"closed"', () => {
 
-    describe('"focused"', () => {
-        it("subscribe", () => {
-            return win.addEventListener("focused", () => {})
-                .should.be.fulfilled();
-        })
-        it("subscribe with null", () => {
-            return win.addEventListener("focused", null)
-                .should.be.rejected();
-        })
-        it("unsubscribe unregistered", () => {
-            return win.removeEventListener("focused", () => {})
-                .should.be.rejected();
-        })
-    })
-    describe('"hidden"', () => {
+        before(() => fin.Application.create(appConfigTemplate).then(app => app.run()));
+        
         it("called", () => {
             const spy = sinon.spy();
-            return win.addEventListener("hidden", spy)
-                .then(() => win.hide())
-                .then(() => win.show())
-                .then(() => delayPromise())
-                .then(() => spy.should.be.calledOnce());
-        })
-    })
-    describe('"bounds-changed"', () => {
-        it("unsubscribe", () => {
-            const spy = sinon.spy();
-            return win.addEventListener("bounds-changed", spy)
-                .then(() => win.removeEventListener("bounds-changed", spy))
-                .then(() => win.moveBy(1, 0))
-                .then(() => delayPromise())
-                .then(() => spy.should.not.be.called());
-        })
-    })
-})     
+
+            return fin.Application.wrap(new Identity("adapter-test-app")).getWindow().then(win => {
+                
+                win.on("closed", spy);
+
+                return win.close()
+                    .then(() => delayPromise())
+                    .then(() => spy.should.be.calledOnce());
+            });
+        });
+    });
+    
+});

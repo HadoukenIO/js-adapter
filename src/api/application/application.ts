@@ -1,4 +1,4 @@
-import { Base, Bare, Reply } from "../base";
+import { Base, Bare, Reply, RuntimeEvent } from "../base";
 import { AppIdentity, WindowIdentity } from "../../identity";
 import { _Window } from "../window/window";
 import { Point } from "../system/point";
@@ -30,8 +30,26 @@ export class Application extends Base {
 
     constructor(wire, protected identity: AppIdentity) {
         super(wire);
+
+        this.on("removeListener", eventType => {    
+            this.deregisterEventListener(this.identity.mergeWith({
+                type: eventType,
+                topic : this.topic
+            }));
+        });
+        
+        this.on("newListener", eventType => {
+            this.registerEventListener(this.identity.mergeWith({
+                type: eventType,
+                topic : this.topic
+            }));
+        });
     }
 
+    protected runtimeEventComparator(listener: RuntimeEvent): boolean {
+        return listener.topic === this.topic && listener.uuid === this.identity.uuid;
+    }
+    
     private windowListFromNameList(nameList: Array<string>): Array<_Window> {
         let windowList:Array<_Window> = [];
 
@@ -121,17 +139,19 @@ export class Application extends Base {
 };
 
 export interface Application {
-    addEventListener(type: "closed", listener: (data: Reply<"application", "closed">) => void);
-    addEventListener(type: "connected", listener: (data: Reply<"application", "connected">) => void);
-    addEventListener(type: "crashed", listener: (data: Reply<"application", "crashed">) => void);
-    addEventListener(type: "error", listener: (data: Reply<"application", "error">) => void);
-    addEventListener(type: "not-responding", listener: (data: Reply<"application", "not-responding">) => void);
-    addEventListener(type: "out-of-memory", listener: (data: Reply<"application", "out-of-memory">) => void);
-    addEventListener(type: "responding", listener: (data: Reply<"application", "responding">) => void);
-    addEventListener(type: "started", listener: (data: Reply<"application", "started">) => void);
-    addEventListener(type: "run-requested", listener: (data: Reply<"application", "run-requested">) => void);
-    addEventListener(type: "window-navigation-rejected", listener: (data: NavigationRejectedReply) => void);
-    addEventListener(type: "window-created", listener: (data: Reply<"application", "window-created">) => void);
-    addEventListener(type: "window-closed", listener: (data: Reply<"application", "window-closed">) => void);
-    addEventListener(type: "tray-icon-clicked", listener: (data: TrayIconClickReply) => void);
+    on(type: "closed", listener: (data: Reply<"application", "closed">) => void);
+    on(type: "connected", listener: (data: Reply<"application", "connected">) => void);
+    on(type: "crashed", listener: (data: Reply<"application", "crashed">) => void);
+    on(type: "error", listener: (data: Reply<"application", "error">) => void);
+    on(type: "not-responding", listener: (data: Reply<"application", "not-responding">) => void);
+    on(type: "out-of-memory", listener: (data: Reply<"application", "out-of-memory">) => void);
+    on(type: "responding", listener: (data: Reply<"application", "responding">) => void);
+    on(type: "started", listener: (data: Reply<"application", "started">) => void);
+    on(type: "run-requested", listener: (data: Reply<"application", "run-requested">) => void);
+    on(type: "window-navigation-rejected", listener: (data: NavigationRejectedReply) => void);
+    on(type: "window-created", listener: (data: Reply<"application", "window-created">) => void);
+    on(type: "window-closed", listener: (data: Reply<"application", "window-closed">) => void);
+    on(type: "tray-icon-clicked", listener: (data: TrayIconClickReply) => void);
+    on(type: "removeListener", listener: (eventType: string) => void);
+    on(type: "newListener", listener: (eventType: string) => void);
 }

@@ -1,4 +1,4 @@
-import { Bare, Base } from "../base";
+import { Bare, Base, RuntimeEvent } from "../base";
 import { WindowIdentity } from "../../identity";
 import Bounds from "./bounds";
 import BoundsChangedReply from "./bounds-changed";
@@ -15,8 +15,27 @@ export default class _WindowModule extends Bare {
 export class _Window extends Base {
     constructor(wire, protected identity: WindowIdentity) {
         super(wire);
+
+        this.on("removeListener", eventType => {    
+            this.deregisterEventListener(this.identity.mergeWith({
+                type: eventType,
+                topic : this.topic
+            }));
+        });
+        
+        this.on("newListener", eventType => {
+            this.registerEventListener(this.identity.mergeWith({
+                type: eventType,
+                topic : this.topic
+            }));
+        });
     }
 
+    protected runtimeEventComparator(listener: RuntimeEvent): boolean {
+        return listener.topic === this.topic && listener.uuid === this.identity.uuid &&
+            listener.name === this.identity.name;
+    }
+    
     private windowListFromNameList(nameList: Array<string>): Array<_Window> {
         let windowList:Array<_Window> = [];
 
@@ -209,7 +228,9 @@ export class _Window extends Base {
     
 }
 export interface _Window {
-    addEventListener(type: "focused", listener: Function);
-    addEventListener(type: "bounds-changed", listener: (data: BoundsChangedReply) => void);
-    addEventListener(type: "hidden", listener: Function);
+    on(type: "focused", listener: Function);
+    on(type: "bounds-changed", listener: (data: BoundsChangedReply) => void);
+    on(type: "hidden", listener: Function);
+    on(type: "removeListener", listener: (eventType: string) => void);
+    on(type: "newListener", listener: (eventType: string) => void);
 }
