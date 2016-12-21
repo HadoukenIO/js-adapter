@@ -2,10 +2,11 @@
     "compilerOptions": {
         "target": "es6",
         "module": "commonjs",
-        "inlineSourceMap": true,
+        
         "declaration": true,
         "outDir": "out",
-        "strictNullChecks": true
+        "strictNullChecks": true,
+        "sourceMap": true
     },
     "exclude": [ "node_modules", "out" ]
 }
