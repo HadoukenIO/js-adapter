@@ -2,7 +2,8 @@ const { describe, it } = require("mocha"),
     should = require("should"),
       connect = require("./connect"),
       { Identity, WindowIdentity } = require("../out/identity.js"),
-      appConfig = require("./app.json");
+      appConfig = require("./app.json"),
+      { connect: rawConnect } = require("../.");
 
 
 describe("Window.", () => {
@@ -104,7 +105,14 @@ describe("Window.", () => {
         
         const scriptToExecute = "console.log('hello world')";
         
-        it("Fulfilled", () => testWindow.executeJavaScript(scriptToExecute).should.be.fulfilled());
+        it("Descendant Window", () => testWindow.executeJavaScript(scriptToExecute).should.be.fulfilled());
+
+        it("Non descendant Window", () => {
+            return rawConnect(`ws://localhost:9696`, 'SECOND_CONECTION').then((otherFin) => {
+                return otherFin.Window.wrap(new WindowIdentity(testWindow.identity.uuid, testWindow.identity.uuid)).
+                    executeJavaScript(scriptToExecute).should.be.rejected(); 
+            });
+        });
     });
 
     describe("flash()", () => {
@@ -291,7 +299,6 @@ describe("Window.", () => {
         
     //     it("Fulfilled", () => testWindow.authenticate(10, 10).should.be.fulfilled());
     // });
-
 
     describe("getZoomLevel()", () => {
         
