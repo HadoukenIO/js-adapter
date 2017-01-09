@@ -12,6 +12,7 @@
     "@types/ws": "~0.0.36",
     "grunt": "~1.0.1",
     "grunt-mocha-test": "~0.13.2",
+    "grunt-openfin": "latest",
     "grunt-ts": "~5.5.1",
     "grunt-tslint": "~3.3.0",
     "mocha": "~3.1.2",

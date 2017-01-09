@@ -1,16 +1,6 @@
 {
-    "startup_app": {
-        "name": "adapter-test-window",
-        "url": "http://acidtests.org",
-        "uuid": "adapter-test-window",
-        "autoShow": true,
-        "accelerator": {
-            "devtools": true
-        }
-    },
     "runtime": {
         "arguments": "--v=1 --enable-logging",
         "version": "6.49.15.18"
-    },
-    "shortcut": {}
+    }
 }

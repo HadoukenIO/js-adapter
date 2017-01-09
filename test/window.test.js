@@ -11,8 +11,7 @@ describe("Window.", () => {
         testApp,
         testWindow;
 
-    const appUuid = appConfig.startup_app.uuid,
-          appConfigTemplate = {
+    const appConfigTemplate = {
             "name": "adapter-test-app-win",
             "url": "about:blank",
             "uuid": "adapter-test-app-win",

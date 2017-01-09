@@ -1,8 +1,7 @@
 const { describe, it } = require("mocha"),
       should = require("should"),
       connect = require("./connect"),
-      { Identity, WindowIdentity } = require("../out/identity.js"),
-      appConfig = require("./app.json");
+      { Identity, WindowIdentity } = require("../out/identity.js");
 
 describe("Application.", () => {
     let fin,
@@ -18,11 +17,17 @@ describe("Application.", () => {
         };
     
     before(() => {
-        return connect().then(a => {
-            fin = a;
-            testApp = fin.Application.wrap(new Identity(appConfig.startup_app.uuid));
+        return connect().then(a => fin = a);
+    });
+
+     beforeEach(() => {
+        return fin.Application.create(appConfigTemplate).then(a => {
+            testApp = a;
+            return testApp.run();
         });
     });
+
+   afterEach(() => testApp.close());
 
     describe("isRunning()", () => {
 
@@ -32,12 +37,23 @@ describe("Application.", () => {
     });
 
     describe("close()",  () => {
-                
-        before(() => fin.Application.create(appConfigTemplate));
+        const appToCloseConfig = {
+            "name": "adapter-test-app-to-close",
+            "url": "about:blank",
+            "uuid": "adapter-test-app-to-close",
+            "autoShow": true
+        };
+        let appToClose;
+        
+        before(() => {
+            return fin.Application.create(appToCloseConfig).then(a => {
+                appToClose = a;
+                return appToClose.run();
+            });
+        });
 
         it("Fulfilled", () => {
-            let myApp = fin.Application.wrap(new Identity("adapter-test-app"));
-            return myApp.close().then(() => myApp.isRunning().should.be.fulfilledWith(false));
+            return appToClose.close().then(() => appToClose.isRunning().should.be.fulfilledWith(false));
         });
     });
 
@@ -62,22 +78,10 @@ describe("Application.", () => {
         it("Fulfilled", () => testApp.getGroups().should.be.fulfilledWith([]));
     });
 
-    describe("getManifest()", () => {
-        
-        it("Promise", () => testApp.getManifest().should.be.a.Promise());
-
-        it("Fulfilled", () => testApp.getManifest().should.be.fulfilledWith(appConfig));
-    });
-
     describe("getParentUuid()",  () => {
         
-        before(() => fin.Application.create(appConfigTemplate).then(app => app.run()));
-
-        after(() => fin.Application.wrap(new Identity("adapter-test-app")).close(true));
-        
         it("Fulfilled", () => {
-            let myApp = fin.Application.wrap(new Identity("adapter-test-app"));
-            return myApp.getParentUuid().should.be.fulfilledWith(fin.me.uuid);
+            return testApp.getParentUuid().should.be.fulfilledWith(fin.me.uuid);
         });
     });
              
@@ -85,7 +89,8 @@ describe("Application.", () => {
 
         it("Promise", () => testApp.getWindow().should.be.a.Promise());
 
-        it("Fulfilled", () => testApp.getWindow().should.be.fulfilledWith(fin.Window.wrap(new WindowIdentity(appConfig.startup_app.uuid, appConfig.startup_app.uuid))));
+        it("Fulfilled", () => testApp.getWindow().should.be.
+           fulfilledWith(fin.Window.wrap(new WindowIdentity(appConfigTemplate.uuid, appConfigTemplate.uuid))));
     });
 
     describe("registerCustomData()", () => {
@@ -109,13 +114,21 @@ describe("Application.", () => {
 
     describe("run()", () => {
 
-        after(() => fin.Application.wrap(new Identity("adapter-test-app")).close(true));
+        const appToCloseConfig = {
+            "name": "adapter-test-app-to-close",
+            "url": "about:blank",
+            "uuid": "adapter-test-app-to-close",
+            "autoShow": true
+        };
+        
+        let appToClose;
+
+        after(() => appToClose.close());
         
         it("Fulfilled", () => {
-            let app;
-            return fin.Application.create(appConfigTemplate).then(a => {
-                app = a;
-                return app.run().then(() => app.isRunning().should.be.fulfilledWith(true));
+            return fin.Application.create(appToCloseConfig).then(a => {
+                appToClose = a;
+                return appToClose.run().then(() => appToClose.isRunning().should.be.fulfilledWith(true));
             });
         });
     });
@@ -129,12 +142,24 @@ describe("Application.", () => {
     });
 
     describe("terminate()", () => {
-        
-        before(() => fin.Application.create(appConfigTemplate));
 
+        const appToCloseConfig = {
+            "name": "adapter-test-app-to-close",
+            "url": "about:blank",
+            "uuid": "adapter-test-app-to-close",
+            "autoShow": true
+        };
+        let appToClose;
+        
+        before(() => {
+            return fin.Application.create(appToCloseConfig).then(a => {
+                appToClose = a;
+                return appToClose.run();
+            });
+        });
+        
         it("Fulfilled", () => {
-            let myApp = fin.Application.wrap(new Identity("adapter-test-app"));
-            return myApp.terminate().then(() => myApp.isRunning().should.be.fulfilledWith(false));
+            return appToClose.terminate().then(() => appToClose.isRunning().should.be.fulfilledWith(false));
         });
     });
 });
