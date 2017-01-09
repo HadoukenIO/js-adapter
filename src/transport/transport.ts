@@ -55,11 +55,13 @@ class Transport {
     sendAction(action: string, payload = {}, uncorrelated = false): Promise<Message<any>> {
         return new Promise((resolve, reject) => {
             const id = this.messageCounter++;
-            this.wire.send({
+            const msg = {
                 action,
                 payload,
                 messageId: id
-            });
+            };
+            
+            this.wire.send(msg);
             this.addListener(id, resolve, reject, uncorrelated);
         });
     }

@@ -1,30 +1,19 @@
 import { Bare } from "../base";
 import { AppIdentity } from "../../identity";
 import Transport, { Message } from "../../transport/transport";
-import ListenerStore from "../../util/listener-store";
-import { createHash } from "crypto";
+import RefCounter from "../../util/ref-counter";
 
 export default class InterApplicationBus extends Bare {
-    protected subscribers = new ListenerStore<string>();
-    
+    events = {
+        subscriberAdded: "subscriber-added",
+        subscriberRemoved: "subscriber-removed"
+    };
+
+    refCounter = new RefCounter();
+
     constructor(wire: Transport) {
         super(wire);
         wire.registerMessageHandler(this.onmessage.bind(this));
-    }
-    
-    protected onmessage(message: Message<InterAppPayload>): boolean {
-        if (message.action === "process-message") {
-            for (const f of this.subscribers.getAll(
-                    createKey(message.payload),
-                    createKey(Object.assign({}, message.payload, { sourceWindowName: "*" })),
-                    createKey(Object.assign({}, message.payload, { sourceWindowName: "*", sourceUuid: "*" }))
-            )) {
-                f.call(null, message.payload.message, message.payload.sourceUuid, message.payload.sourceWindowName);
-            }
-            return true;
-        } else {
-            return false;
-        }
     }
 
     publish(topic: string, message): Promise<void> {
@@ -34,41 +23,101 @@ export default class InterApplicationBus extends Bare {
             sourceWindowName: this.me.name
         });
     }
-    
+
     send(destination: AppIdentity, topic: string, message): Promise<void> {
-        return this.sendCached(destination, topic, message, null);
-    }
-    
-    sendCached(destination: AppIdentity, topic: string, message, cache: string | null = "until-delivered"): Promise<void> {
         return this.wire.sendAction("send-message", {
             destinationUuid: destination.uuid,
             destinationWindowName: destination.name,
             topic,
             message,
-            cache, // Does the runtime interpret `cache: null` as I think?
             sourceWindowName: this.me.name
         });
     }
-    
+
     subscribe(source: AppIdentity, topic: string, listener: Function): Promise<void> {
-        const id = {
+        const subKey = this.createSubscriptionKey(source.uuid, source.name || "*", topic);
+        const sendSubscription = () => {
+            return this.wire.sendAction("subscribe", {
                 sourceUuid: source.uuid,
                 sourceWindowName: source.name || "*",
-                topic
-            };
-        this.subscribers.add(createKey(id), listener);
-        return this.wire.sendAction("subscribe", Object.assign({}, id, { destinationWindowName: this.me.name }));
+                topic,
+                destinationWindowName: this.me.name
+            });
+        };
+        const alreadySubscribed = () => {
+            return new Promise(r => r);
+        };
+
+        this.on(subKey, listener);
+
+        return this.refCounter.actOnFirst(subKey, sendSubscription, alreadySubscribed);
     }
-    
+
     unsubscribe(source: AppIdentity, topic: string, listener: Function): Promise<void> {
-        const id = {
+        const subKey = this.createSubscriptionKey(source.uuid, source.name || "*", topic);
+        const sendUnsubscription = () => {
+            return this.wire.sendAction("unsubscribe", {
                 sourceUuid: source.uuid,
                 sourceWindowName: source.name || "*",
-                topic
-            },
-            idx = Object.assign({}, id, { destinationWindowName: this.me.name });
-        return this.subscribers.delete(createKey(id), listener)
-            .then(wasLast => wasLast? this.wire.sendAction("unsubscribe", idx) : Promise.resolve(wasLast));
+                topic,
+                destinationWindowName: this.me.name
+            });
+        };
+        const dontSendUnsubscription = () => {
+            return new Promise(r => r);
+        };
+
+        this.removeListener(subKey, listener);
+        return this.refCounter.actOnLast(subKey, sendUnsubscription, dontSendUnsubscription);
+    }
+
+    private processMessage(message: Message<InterAppPayload>) {
+        const {payload: {message: payloadMessage, sourceWindowName, sourceUuid, topic}} = message;
+        const keys = [
+            this.createSubscriptionKey(sourceUuid, sourceWindowName, topic),
+            this.createSubscriptionKey(sourceUuid, "*", topic),
+            this.createSubscriptionKey("*", "*", topic)
+        ];
+        const idOfSender = new AppIdentity(sourceUuid, sourceWindowName);
+
+        keys.forEach((key) => {
+            this.emit(key, payloadMessage, idOfSender);
+        });
+    }
+
+    private emitSubscriverEvent(type: string, message: any) {
+        const {payload: {senderName, senderUuid, topic}} = message;
+        const payload = {
+            name: senderName,
+            uuid: senderUuid,
+            topic
+        };
+
+        this.emit(type, payload);
+    }
+
+    protected createSubscriptionKey(uuid: string, name: string, topic: string): string {
+        if (!(uuid && name && topic)) {
+            throw new Error("Missing uuid, name, or topic string");
+        }
+
+        return createKey(uuid, name, topic);
+    }
+
+    protected onmessage(message: Message<InterAppPayload>): boolean {
+        const {action} = message;
+
+        switch (action) {
+            case "process-message": this.processMessage(message);
+                break;
+            case this.events.subscriberAdded: this.emitSubscriverEvent(this.events.subscriberAdded, message);
+                break;
+            case this.events.subscriberRemoved: this.emitSubscriverEvent(this.events.subscriberRemoved, message);
+                break;
+            default: break;
+        }
+
+        return true;
     }
 }
 
@@ -80,10 +129,9 @@ export class InterAppPayload {
     message?: any;
 
 }
-function createKey(data: InterAppPayload): string {
-    return createHash("md4")
-        .update(data.sourceUuid)
-        .update(data.sourceWindowName)
-        .update(data.topic)
-        .digest("base64");
+
+function createKey(...toHash) {
+    return toHash.map((item) => {
+        return (new Buffer("" + item)).toString("base64");
+    }).join("/");
 }
