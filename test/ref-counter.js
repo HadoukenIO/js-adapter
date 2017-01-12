@@ -1,8 +1,6 @@
 const {default: RefCounter} = require('../out/util/ref-counter');
 const assert = require('assert');
 
-console.log(RefCounter);
-
 describe('ref counter', () => {
 
     it('should add and remove refs',()=>{
@@ -21,8 +19,8 @@ describe('ref counter', () => {
 
         assert.equal(firstAdd, 1, 'actOnFirst 1');
         assert.equal(secondAdd, 2, 'actOnFirst 2');
-        assert.equal(firstRef, 1), 'first ref';
-        assert.equal(secondRef, 2), 'second ref';
+        assert.equal(firstRef, 1, 'first ref');
+        assert.equal(secondRef, 2, 'second ref');
 
         assert.equal(firstRemove, 2, 'actOnLast 1');
         assert.equal(secondRemove, 1, 'actOnLast 2');

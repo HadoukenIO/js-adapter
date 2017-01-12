@@ -64,7 +64,7 @@ describe("InterApplicationBus.", () => {
 
 
     it.skip("unsubscribe()", () => {
-        const spy = sinon.spy()
+        const spy = sinon.spy();
         return fin.InterApplicationBus.subscribe(new Identity(id), topic2, spy)
             .then(() => fin.InterApplicationBus.unsubscribe(new Identity(id), topic2, spy))
             .then(() => fin.InterApplicationBus.send(new Identity(id), topic2, m))

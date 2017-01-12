@@ -1,3 +1,6 @@
+const path = require("path");
+const testAppConfig = path.join("test","app.json");
+
 module.exports = function(grunt) {
 
     grunt.initConfig({
@@ -22,7 +25,7 @@ module.exports = function(grunt) {
         openfin: {
             options: {
                 open: true,
-                configPath: process.cwd() + '/test/app.json'
+                configPath: path.resolve(testAppConfig)
             },
             launch: {
                 open:true
