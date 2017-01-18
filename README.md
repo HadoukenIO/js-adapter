@@ -8,21 +8,21 @@ Works in
 $ `npm install -S openfin/js-adapter`
 
 # Usage
+```javascript
+const { connect, Identity } = require("js-adapter");
 
-    const { connect, Identity } = require("js-adapter");
-
-    connect("ws://localhost:9696", "my-uuid-123").then(logic);
+connect("ws://localhost:9696", "my-uuid-123").then(logic);
+   
+function logic(fin) {
     
-    function logic(fin) {
-    
-        fin.System.getVersion().then(v => console.log("Connected to OpenFin version", v));
+    fin.System.getVersion().then(v => console.log("Connected to OpenFin version", v));
 
-        const win = fin.Window.wrap(new Identity("remote-app-uuid", "remote-window-name"));
+    const win = fin.Window.wrap(new Identity("remote-app-uuid", "remote-window-name"));
         
-        win.moveBy(500, 0).then(win.flash());
-        
-    }
-
+    win.moveBy(500, 0).then(win.flash());
+       
+}
+```
 # Local build
 
 $ `grunt ts`
