@@ -1,6 +1,8 @@
 import { Wire, WireConstructor } from "./wire";
 import writeToken from "./write-token";
 import { AppIdentity } from "../identity";
+import { EventEmitter } from "events";
+
 import {
     UnexpectedAction,
     NoSuccess,
@@ -10,17 +12,21 @@ import {
     RuntimeError
 } from "./transport-errors";
 
-class Transport {
+class Transport extends EventEmitter {
     protected messageCounter = 0;
-    protected listeners: {resolve: Function, reject: Function}[] = [];
+    protected wireListeners: {resolve: Function, reject: Function}[] = [];
     protected uncorrelatedListener: Function;
     protected messageHandlers: MessageHandler[] = [];
     me: AppIdentity;
     protected wire: Wire;
-
+    
     constructor(wireType: WireConstructor) {
+        super();
         this.wire = new wireType(this.onmessage.bind(this));
         this.registerMessageHandler(this.handleMessage.bind(this));
+        this.wire.on("disconnected", () => {
+            this.emit("disconnected");
+        });
     }
 
     connect(address: string, me: AppIdentity): Promise<Token> {
@@ -62,7 +68,7 @@ class Transport {
             };
             
             this.wire.send(msg);
-            this.addListener(id, resolve, reject, uncorrelated);
+            this.addWireListener(id, resolve, reject, uncorrelated);
         });
     }
     
@@ -70,13 +76,13 @@ class Transport {
         this.messageHandlers.unshift(handler);
     }
 
-    protected addListener(id: number, resolve: Function, reject: Function, uncorrelated: boolean): void {
+    protected addWireListener(id: number, resolve: Function, reject: Function, uncorrelated: boolean): void {
         if (uncorrelated) {
             this.uncorrelatedListener = resolve;
-        } else if (id in this.listeners) {
+        } else if (id in this.wireListeners) {
             reject(new DuplicateCorrelation(String(id)));
         } else {
-            this.listeners[id] = { resolve, reject };
+            this.wireListeners[id] = { resolve, reject };
         }
         // Timeout and reject()?
     }
@@ -93,11 +99,11 @@ class Transport {
         if (!("correlationId" in data)) {
             this.uncorrelatedListener.call(null, data);
             this.uncorrelatedListener = () => {};
-        } else if (!(id in this.listeners)) {
+        } else if (!(id in this.wireListeners)) {
             throw new NoCorrelation(String(id));
             // Return false?
         } else {
-            const { resolve, reject } = this.listeners[id];
+            const { resolve, reject } = this.wireListeners[id];
             if (data.action !== "ack") {
                 reject(new NoAck(data.action));
             } else if (!("payload" in data) || !data.payload.success) {
@@ -106,7 +112,7 @@ class Transport {
                 resolve.call(null, data);
             }
             
-            delete this.listeners[id];
+            delete this.wireListeners[id];
         }
         return true;
     }

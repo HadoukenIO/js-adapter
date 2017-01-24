@@ -26,5 +26,10 @@ export default class Fin extends Bare {
         this.Notification = new _NotificationModule(wire);
         this.Clipboard = new Clipbpard(wire);
         this.ExternalApplication = new ExternalApplication(wire);
+
+        //Handle disconnect events
+        wire.on("disconnected", ()=> {
+            this.emit("disconnected");
+        });
     }
 }
