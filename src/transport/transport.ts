@@ -29,9 +29,13 @@ class Transport extends EventEmitter {
         });
     }
 
-    connect(address: string, me: AppIdentity): Promise<Token> {
-        const { uuid } = this.me = me;
+    connect(config: ConnectConfig): Promise<Token> {
+        const {address, uuid, name} = config;
+        const reqAuthPaylaod = Object.assign({}, config, {type: "file-token"});
         let token;
+
+        this.me = new AppIdentity(uuid, name);
+
         return this.wire.connect(address)
             .then(() => this.sendAction("request-external-authorization", {
                 uuid,
@@ -46,7 +50,7 @@ class Transport extends EventEmitter {
                     return writeToken(payload.file, payload.token);
                 }
             })
-            .then(() => this.sendAction("request-authorization", { uuid, type: "file-token" }, true))
+            .then(() => this.sendAction("request-authorization", reqAuthPaylaod, true))
             .then(({ action, payload }) => {
                 if (action !== "authorization-response") {
                     return Promise.reject(new UnexpectedAction(action));
@@ -57,7 +61,7 @@ class Transport extends EventEmitter {
                 }
             });
     }
-    
+
     sendAction(action: string, payload = {}, uncorrelated = false): Promise<Message<any>> {
         return new Promise((resolve, reject) => {
             const id = this.messageCounter++;
@@ -66,12 +70,12 @@ class Transport extends EventEmitter {
                 payload,
                 messageId: id
             };
-            
+
             this.wire.send(msg);
             this.addWireListener(id, resolve, reject, uncorrelated);
         });
     }
-    
+
     registerMessageHandler(handler: MessageHandler): void {
         this.messageHandlers.unshift(handler);
     }
@@ -86,14 +90,14 @@ class Transport extends EventEmitter {
         }
         // Timeout and reject()?
     }
-    
+
     /** This method executes message handlers until the _one_ that handles the message (returns truthy) has run */
     protected onmessage(data: Message<Payload>): void {
         for (const h of this.messageHandlers) {
             h.call(null, data);
         }
     }
-    
+
     protected handleMessage(data: Message<Payload>): boolean {
         const id: number = data.correlationId || NaN;
         if (!("correlationId" in data)) {
@@ -111,7 +115,7 @@ class Transport extends EventEmitter {
             } else {
                 resolve.call(null, data);
             }
-            
+
             delete this.wireListeners[id];
         }
         return true;
@@ -137,4 +141,11 @@ export class Payload {
 export class AuthorizationPayload {
     token: string;
     file: string;
+}
+
+export interface ConnectConfig {
+    address: string;
+    uuid: string;
+    name?: string;
+    nonPersistent?: boolean;
 }

@@ -17,8 +17,8 @@ describe("Window.", () => {
             "uuid": "adapter-test-app-win",
             "autoShow": true
     };
-    
-    
+
+
     before(() => {
         return connect().then(a => fin = a);
     });
@@ -31,16 +31,16 @@ describe("Window.", () => {
     });
 
    afterEach(() => testApp.close());
-    
+
     describe("getBounds()", () => {
-        
+
         const bounds = {
             height: 400,
             width: 400,
             top: 10,
             left: 10
-        }; 
-        
+        };
+
         it("Fulfilled", () => testWindow.setBounds(bounds).then(testWindow.getBounds().should.eventually.have.property("height").a.Number()));
     });
 
@@ -60,7 +60,7 @@ describe("Window.", () => {
     });
 
     describe("hide()", () => {
-        
+
         it("Fulfilled", () => testWindow.hide().should.be.fulfilled());
     });
 
@@ -74,14 +74,14 @@ describe("Window.", () => {
         };
         let appToClose,
             winToClose;
-        
+
         before(() => {
             return fin.Application.create(appToCloseConfig).then(a => {
                 appToClose = a;
                 return appToClose.run().then(() =>  appToClose.getWindow().then(w =>  winToClose = w));
             });
         });
-        
+
         it("Fulfilled", () => winToClose.close().then(() => appToClose.isRunning().should.be.fulfilledWith(false)));
     });
 
@@ -101,21 +101,24 @@ describe("Window.", () => {
     });
 
     describe("executeJavaScript()", () => {
-        
+
         const scriptToExecute = "console.log('hello world')";
-        
+
         it("Descendant Window", () => testWindow.executeJavaScript(scriptToExecute).should.be.fulfilled());
 
         it("Non descendant Window", () => {
-            return rawConnect(`ws://localhost:9696`, 'SECOND_CONECTION').then((otherFin) => {
+            return rawConnect({
+                url: `ws://localhost:9696`,
+                uuid: 'SECOND_CONECTION'
+            }).then((otherFin) => {
                 return otherFin.Window.wrap(new WindowIdentity(testWindow.identity.uuid, testWindow.identity.uuid)).
-                    executeJavaScript(scriptToExecute).should.be.rejected(); 
+                    executeJavaScript(scriptToExecute).should.be.rejected();
             });
         });
     });
 
     describe("flash()", () => {
-        
+
         it("Fulfilled", () => testWindow.flash().should.be.fulfilled());
     });
 
@@ -169,7 +172,7 @@ describe("Window.", () => {
     // });
 
     describe("maximize()", () => {
-        
+
         it("Fulfilled", () => testWindow.maximize().should.be.fulfilled());
     });
 
@@ -180,36 +183,36 @@ describe("Window.", () => {
     // });
 
     describe("minimize()", () => {
-        
+
         it("Fulfilled", () => testWindow.minimize().then(() => testWindow.getState()).should.be.fulfilledWith('minimized'));
     });
 
     describe("moveBy()", () => {
-        
+
         it("Fulfilled", () => {
-            
+
             return testWindow.getBounds().then(bounds => {
                 bounds.top++;
                 bounds.left++;
                 bounds.bottom++;
                 bounds.right++;
-                
+
                 return testWindow.moveBy(1, 1).then(() => testWindow.getBounds().should.be.fulfilledWith(bounds));
             });
-            
+
         });
     });
 
     describe("moveTo()", () => {
 
         it("Fulfilled", () => {
-            
+
             return testWindow.getBounds().then(bounds => {
                 bounds.top = 10;
                 bounds.left = 10;
-                
+
                 return testWindow.moveTo(10, 10).then(() =>  testWindow.getBounds().should.be.fulfilledWith(bounds));
-            });        
+            });
         });
     });
 
@@ -217,38 +220,38 @@ describe("Window.", () => {
 
         it("Fulfilled", () => {
             let bounds;
-            
+
             return testWindow.getBounds().then(b => {
                 bounds = b;
                 bounds.bottom += 10;
                 bounds.right += 10;
                 bounds.height += 10;
                 bounds.width += 10;
-                
+
                 return testWindow.resizeBy(10, 10, "top-left").then(() => testWindow.getBounds().should.be.fulfilledWith(bounds));
             });
         });
     });
 
     describe("resizeTo()", () => {
-        
+
         it("Fulfilled", () => {
             let bounds;
-            
+
             return testWindow.getBounds().then(b => {
                 bounds = b;
                 bounds.bottom = 20;
                 bounds.right = 20;
                 bounds.height = 10;
                 bounds.width = 10;
-                
+
                 return testWindow.resizeTo(10, 10, "top-left").then(() => testWindow.getBounds().should.be.fulfilledWith(bounds));
             });
         });
     });
 
     describe("setAsForeground()", () => {
-        
+
         it("Fulfilled", () => testWindow.setAsForeground().should.be.fulfilled());
     });
 
@@ -262,12 +265,12 @@ describe("Window.", () => {
             bottom: 410,
             right: 410
         };
-        
+
         it("Fulfilled", () => testWindow.setBounds(bounds).then(() => testWindow.getBounds().should.be.fulfilledWith(bounds)));
     });
 
     describe("show()", () => {
-        
+
         it("Fulfilled", () => testWindow.show().should.be.fulfilled());
     });
 
@@ -278,7 +281,7 @@ describe("Window.", () => {
             return testWindow.getBounds().then(bounds => {
                 bounds.top = 10;
                 bounds.left = 10;
-                
+
                 return testWindow.showAt(10, 10).then(() =>  testWindow.getBounds().should.be.fulfilledWith(bounds));
             });
         });
@@ -289,25 +292,25 @@ describe("Window.", () => {
         const updatedOptions = {
             height: 100
         };
-        
+
         it("Fulfilled", () => testWindow.updateOptions(updatedOptions).should.be.fulfilled());
     });
 
     //TODO: feature needs testing.
     // describe("authenticate()", () => {
-        
+
     //     it("Fulfilled", () => testWindow.authenticate(10, 10).should.be.fulfilled());
     // });
 
     describe("getZoomLevel()", () => {
-        
+
         it("Fulfilled", () => testWindow.getZoomLevel().should.be.fulfilledWith(0));
     });
 
     describe("setZoomLevel()", () => {
 
         const zoomLevel = 1;
-        
+
         it("Fulfilled", () => testWindow.setZoomLevel(zoomLevel).then(() => testWindow.getZoomLevel()).should.be.fulfilledWith(zoomLevel));
     });
 });

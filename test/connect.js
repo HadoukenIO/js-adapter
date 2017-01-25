@@ -2,6 +2,10 @@ const { connect } = require("../.");
 
 let conn;
 module.exports = function() {
-    if (!conn) conn = connect(`ws://localhost:9696`, Math.random().toString(36).slice(2));
+    if (!conn) conn = connect({
+        address: 'ws://localhost:9696',
+        uuid: 'example_uuid' + Math.random()
+    });
     return conn;
 }
+
