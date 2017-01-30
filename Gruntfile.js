@@ -11,7 +11,7 @@ module.exports = function(grunt) {
         },
         tslint: {
             default: {
-                src: "src/**/*.ts"
+                src: ["src/**/*.ts", "repl/*.ts"]
             },
             options: {
                 configuration: "tslint.json"

@@ -11,7 +11,10 @@ $ `npm install -S openfin/js-adapter`
 ```javascript
 const { connect, Identity } = require("js-adapter");
 
-connect("ws://localhost:9696", "my-uuid-123").then(logic);
+connect({
+    address: "ws://localhost:9696",
+    uuid: "my-uuid-123"
+}).then(logic);
    
 function logic(fin) {
     
@@ -25,8 +28,12 @@ function logic(fin) {
 ```
 # Local build
 
-$ `grunt ts`
+$ `npm run build`
 
 # Test
 
-$ `grunt test`
+$ `npm test`
+
+# Repl
+
+$ `npm run repl`

@@ -1,7 +1,8 @@
 const { describe, it } = require("mocha"),
       should = require("should"),
       connect = require("./connect"),
-      { spawn } = require("child_process");
+      { spawn } = require("child_process"),
+      appConfig = require("./app.json");
 
 
 describe("System.", () => {
@@ -240,4 +241,14 @@ describe("System.", () => {
 	    it("Fulfilled", () => fin.System.getAllExternalApplications()
            .should.be.fulfilled());        
     });
+
+    describe("resolveUuid()", () => {
+        it("should resolve a known uuid", () => fin.System.resolveUuid(fin.me.uuid).should.be.fulfilledWith({
+            type: "external-app",
+            uuid: fin.me.uuid
+        }));
+
+        it("should fail on a unknown uuid", () => fin.System.resolveUuid("fake_uuid").should.be.rejected());
+    });
+    
 });

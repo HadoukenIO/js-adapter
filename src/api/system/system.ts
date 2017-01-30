@@ -9,6 +9,7 @@ import { ProxyInfo, ProxyConfig } from "./proxy";
 import { ProcessInfo } from "./process";
 import { DownloadAssetRequestType } from "./download-asset";
 import { RVMInfo } from "./rvm";
+import { Entity } from "./entity";
 import { ExternalProcessRequestType , TerminateExternalRequestType } from "./external-process";
 
 export default class System extends Base {
@@ -150,4 +151,11 @@ export default class System extends Base {
         return this.wire.sendAction("get-all-external-applications")
             .then(({ payload }) => payload.data);
     }
+
+    resolveUuid(uuid: string): Promise<Entity> {
+        return this.wire.sendAction("resolve-uuid", {
+            entityKey: uuid
+        }).then(({ payload }) => payload.data);
+    }
+    
 }
