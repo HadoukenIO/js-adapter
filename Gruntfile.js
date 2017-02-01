@@ -11,7 +11,7 @@ module.exports = function(grunt) {
         },
         tslint: {
             default: {
-                src: ["src/**/*.ts", "repl/*.ts"]
+                src: ["src/**/*.ts", "repl/*.ts", "test/*.ts"]
             },
             options: {
                 configuration: "tslint.json"
@@ -19,7 +19,7 @@ module.exports = function(grunt) {
         },
         mochaTest: {
             default: {
-                src: "test/**/*.js"
+                src: "out/test/**/*.js"
             }
         },
         openfin: {
@@ -42,4 +42,4 @@ module.exports = function(grunt) {
     grunt.registerTask("test", [ "default", "openfin", "mochaTest" ]);
     grunt.registerTask("lint", [ "tslint" ]);
     grunt.registerTask("build", [ "ts" ]);
-}
+};

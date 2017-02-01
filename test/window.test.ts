@@ -1,10 +1,7 @@
-const { describe, it } = require("mocha"),
-    should = require("should"),
-      connect = require("./connect"),
-      { Identity, WindowIdentity } = require("../out/identity.js"),
-      appConfig = require("./app.json"),
-      { connect: rawConnect } = require("../.");
-
+import { conn } from "./connect";
+import * as assert from "assert";
+import { WindowIdentity } from "../src/identity.js";
+import { connect as rawConnect } from "../src/main";
 
 describe("Window.", () => {
     let fin,
@@ -12,15 +9,14 @@ describe("Window.", () => {
         testWindow;
 
     const appConfigTemplate = {
-            "name": "adapter-test-app-win",
-            "url": "about:blank",
-            "uuid": "adapter-test-app-win",
-            "autoShow": true
+            name: "adapter-test-app-win",
+            url: "about:blank",
+            uuid: "adapter-test-app-win",
+            autoShow: true
     };
 
-
     before(() => {
-        return connect().then(a => fin = a);
+        return conn().then(a => fin = a);
     });
 
     beforeEach(() => {
@@ -30,7 +26,7 @@ describe("Window.", () => {
         });
     });
 
-   afterEach(() => testApp.close());
+    afterEach(() => testApp.close());
 
     describe("getBounds()", () => {
 
@@ -41,39 +37,40 @@ describe("Window.", () => {
             left: 10
         };
 
-        it("Fulfilled", () => testWindow.setBounds(bounds).then(testWindow.getBounds().should.eventually.have.property("height").a.Number()));
+        it("Fulfilled", () => testWindow.setBounds(bounds)
+           .then(testWindow.getBounds().then(data => assert(typeof(data.height) === "number"))));
     });
 
     describe("focus()", () => {
 
-        it("Fulfilled", () => testWindow.focus().should.be.fulfilled());
+        it("Fulfilled", () => testWindow.focus().then(() => assert(true)));
     });
 
     describe("blur()", () => {
 
-        it("Fulfilled", () => testWindow.blur().should.be.fulfilled());
+        it("Fulfilled", () => testWindow.blur().then(() => assert(true)));
     });
 
     describe("bringToFront()", () => {
 
-        it("Fulfilled", () => testWindow.bringToFront().should.be.fulfilled());
+        it("Fulfilled", () => testWindow.bringToFront().then(() => assert(true)));
     });
 
     describe("hide()", () => {
 
-        it("Fulfilled", () => testWindow.hide().should.be.fulfilled());
+        it("Fulfilled", () => testWindow.hide().then(() => assert(true)));
     });
 
     describe("close()", () => {
 
         const appToCloseConfig = {
-            "name": "adapter-test-app-to-close",
-            "url": "about:blank",
-            "uuid": "adapter-test-app-to-close",
-            "autoShow": true
+            name: "adapter-test-app-to-close",
+            url: "about:blank",
+            uuid: "adapter-test-app-to-close",
+            autoShow: true
         };
         let appToClose,
-            winToClose;
+        winToClose;
 
         before(() => {
             return fin.Application.create(appToCloseConfig).then(a => {
@@ -82,81 +79,82 @@ describe("Window.", () => {
             });
         });
 
-        it("Fulfilled", () => winToClose.close().then(() => appToClose.isRunning().should.be.fulfilledWith(false)));
+        it("Fulfilled", () => winToClose.close().then(() => appToClose.isRunning()
+                                                      .then(data => assert(data === false))));
     });
 
     describe("getNativeId()", () => {
 
-        it("Fulfilled", () => testWindow.getNativeId().should.eventually.be.String());
+        it("Fulfilled", () => testWindow.getNativeId().then(data => assert(typeof(data) === "string")));
     });
 
     describe("disableFrame()", () => {
 
-        it("Fulfilled", () => testWindow.disableFrame().should.be.fulfilled());
+        it("Fulfilled", () => testWindow.disableFrame().then(() => assert(true)));
     });
 
     describe("enableFrame()", () => {
 
-        it("Fulfilled", () => testWindow.enableFrame().should.be.fulfilled());
+        it("Fulfilled", () => testWindow.enableFrame().then(() => assert(true)));
     });
 
     describe("executeJavaScript()", () => {
 
         const scriptToExecute = "console.log('hello world')";
 
-        it("Descendant Window", () => testWindow.executeJavaScript(scriptToExecute).should.be.fulfilled());
+        it("Descendant Window", () => testWindow.executeJavaScript(scriptToExecute)
+           .then(() => assert(true)));
 
         it("Non descendant Window", () => {
             return rawConnect({
-                url: `ws://localhost:9696`,
-                uuid: 'SECOND_CONECTION'
+                address: `ws://localhost:9696`,
+                uuid: "SECOND_CONECTION"
             }).then((otherFin) => {
                 return otherFin.Window.wrap(new WindowIdentity(testWindow.identity.uuid, testWindow.identity.uuid)).
-                    executeJavaScript(scriptToExecute).should.be.rejected();
+                    executeJavaScript(scriptToExecute).catch(() => assert(true));
             });
         });
     });
 
     describe("flash()", () => {
 
-        it("Fulfilled", () => testWindow.flash().should.be.fulfilled());
+        it("Fulfilled", () => testWindow.flash().then(() => assert(true)));
     });
 
     describe("getGroup()", () => {
 
-        it("Fulfilled", () => testWindow.getGroup().should.be.fulfilledWith([]));
+        it("Fulfilled", () => testWindow.getGroup().then(data => assert(data == [])));
     });
 
     describe("getOptions()", () => {
 
-        it("Fulfilled", () => testWindow.getOptions().should.be.fulfilled());
+        it("Fulfilled", () => testWindow.getOptions().then(() => assert(true)));
     });
 
     describe("getParentApplication()", () => {
 
-        it("Fulfilled", () => testWindow.getParentApplication().should.eventually
-           .have.propertyByPath("identity", "uuid").equal(appConfigTemplate.uuid));
+        it("Fulfilled", () => testWindow.getParentApplication()
+           .then(data => assert(data.identity.uuid === appConfigTemplate.uuid)));
     });
 
     describe("getParentWindow()", () => {
 
-        it("Fulfilled", () => testWindow.getParentWindow().should.eventually
-           .have.propertyByPath("identity", "name").equal(appConfigTemplate.uuid));
+        it("Fulfilled", () => testWindow.getParentWindow().then(data => assert(data.identity.name === appConfigTemplate.uuid)));
     });
 
     describe("getSnapshot()", () => {
 
-        it("Fulfilled", () => testWindow.getSnapshot().should.be.fulfilled());
+        it("Fulfilled", () => testWindow.getSnapshot().then(() => assert(true)));
     });
 
     describe("getState()", () => {
 
-        it("Fulfilled", () => testWindow.getState().should.eventually.be.String());
+        it("Fulfilled", () => testWindow.getState().then(data => assert(typeof(data) === "string")));
     });
 
     describe("isShowing()", () => {
 
-        it("Fulfilled", () => testWindow.isShowing().should.eventually.be.Boolean());
+        it("Fulfilled", () => testWindow.isShowing().then(data => assert(typeof(data) === "boolean")));
     });
 
     //TODO: feature needs testing.
@@ -173,7 +171,7 @@ describe("Window.", () => {
 
     describe("maximize()", () => {
 
-        it("Fulfilled", () => testWindow.maximize().should.be.fulfilled());
+        it("Fulfilled", () => testWindow.maximize().then(() => assert(true)));
     });
 
     //TODO: feature needs testing.
@@ -184,7 +182,8 @@ describe("Window.", () => {
 
     describe("minimize()", () => {
 
-        it("Fulfilled", () => testWindow.minimize().then(() => testWindow.getState()).should.be.fulfilledWith('minimized'));
+        it("Fulfilled", () => testWindow.minimize().then(() => testWindow.getState())
+           .then(data => assert(data === "minimized")));
     });
 
     describe("moveBy()", () => {
@@ -197,7 +196,8 @@ describe("Window.", () => {
                 bounds.bottom++;
                 bounds.right++;
 
-                return testWindow.moveBy(1, 1).then(() => testWindow.getBounds().should.be.fulfilledWith(bounds));
+                return testWindow.moveBy(1, 1).then(() => testWindow.getBounds()
+                                                    .then(data => assert(data === bounds)));
             });
 
         });
@@ -211,7 +211,8 @@ describe("Window.", () => {
                 bounds.top = 10;
                 bounds.left = 10;
 
-                return testWindow.moveTo(10, 10).then(() =>  testWindow.getBounds().should.be.fulfilledWith(bounds));
+                return testWindow.moveTo(10, 10).then(() =>  testWindow.getBounds()
+                                                      .then(data => assert(data === bounds)));
             });
         });
     });
@@ -228,7 +229,8 @@ describe("Window.", () => {
                 bounds.height += 10;
                 bounds.width += 10;
 
-                return testWindow.resizeBy(10, 10, "top-left").then(() => testWindow.getBounds().should.be.fulfilledWith(bounds));
+                return testWindow.resizeBy(10, 10, "top-left").then(() => testWindow.getBounds()
+                                                                    .then(data => assert(data === bounds)));
             });
         });
     });
@@ -245,14 +247,15 @@ describe("Window.", () => {
                 bounds.height = 10;
                 bounds.width = 10;
 
-                return testWindow.resizeTo(10, 10, "top-left").then(() => testWindow.getBounds().should.be.fulfilledWith(bounds));
+                return testWindow.resizeTo(10, 10, "top-left").then(() => testWindow.getBounds()
+                                                                    .then(data => assert(data === bounds)));
             });
         });
     });
 
     describe("setAsForeground()", () => {
 
-        it("Fulfilled", () => testWindow.setAsForeground().should.be.fulfilled());
+        it("Fulfilled", () => testWindow.setAsForeground().then(() => assert(true)));
     });
 
     describe("setBounds()", () => {
@@ -266,12 +269,13 @@ describe("Window.", () => {
             right: 410
         };
 
-        it("Fulfilled", () => testWindow.setBounds(bounds).then(() => testWindow.getBounds().should.be.fulfilledWith(bounds)));
+        it("Fulfilled", () => testWindow.setBounds(bounds).then(() => testWindow.getBounds()
+                                                                .then(data => assert(data === bounds))));
     });
 
     describe("show()", () => {
 
-        it("Fulfilled", () => testWindow.show().should.be.fulfilled());
+        it("Fulfilled", () => testWindow.show().then(() => assert(true)));
     });
 
     describe("showAt()", () => {
@@ -282,7 +286,8 @@ describe("Window.", () => {
                 bounds.top = 10;
                 bounds.left = 10;
 
-                return testWindow.showAt(10, 10).then(() =>  testWindow.getBounds().should.be.fulfilledWith(bounds));
+                return testWindow.showAt(10, 10).then(() =>  testWindow.getBounds()
+                                                      .then(data => assert(data === bounds)));
             });
         });
     });
@@ -293,7 +298,7 @@ describe("Window.", () => {
             height: 100
         };
 
-        it("Fulfilled", () => testWindow.updateOptions(updatedOptions).should.be.fulfilled());
+        it("Fulfilled", () => testWindow.updateOptions(updatedOptions).then(() => assert(true)));
     });
 
     //TODO: feature needs testing.
@@ -304,13 +309,14 @@ describe("Window.", () => {
 
     describe("getZoomLevel()", () => {
 
-        it("Fulfilled", () => testWindow.getZoomLevel().should.be.fulfilledWith(0));
+        it("Fulfilled", () => testWindow.getZoomLevel().then(data => assert(data === 0)));
     });
 
     describe("setZoomLevel()", () => {
 
         const zoomLevel = 1;
 
-        it("Fulfilled", () => testWindow.setZoomLevel(zoomLevel).then(() => testWindow.getZoomLevel()).should.be.fulfilledWith(zoomLevel));
+        it("Fulfilled", () => testWindow.setZoomLevel(zoomLevel)
+           .then(() => testWindow.getZoomLevel()).then(data => assert(data === zoomLevel)));
     });
 });

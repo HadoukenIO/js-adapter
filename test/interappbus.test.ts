@@ -1,25 +1,23 @@
-const { describe, it } = require("mocha"),
-    sinon = require("sinon"),
-    should = require("should"),
-    connect = require("./connect"),
-    delayPromise = require("./delay-promise"),
-    { Identity } = require("../."),
-    id = "adapter-test-window",
-    topic = "topic",
-    topic2 = "topic2",
-    m = Math.random().toString(36).slice(2);
-const { connect: rawConnect } = require("../.");
-require("should-sinon");
+import  * as sinon  from "sinon";
+import { conn } from "./connect";
+import { delayPromise } from "./delay-promise";
+import { Identity } from "../src/identity";
+import * as assert from "assert";
+import { connect as rawConnect } from "../src/main";
+
+const id = "adapter-test-window";
+const topic = "topic";
+const topic2 = "topic2";
+const m = Math.random().toString(36).slice(2);
 
 describe("InterApplicationBus.", () => {
     let fin;
 
     beforeEach(() => {
-        return connect().then(a => fin = a);
+        return conn().then(a => fin = a);
     });
 
     it("subscribe()", (done) => {
-        const spy = sinon.spy();
         fin.InterApplicationBus.subscribe(new Identity("*"), topic, (...got) => {
             done();
         }).then(() => fin.InterApplicationBus.publish(topic, m));
@@ -27,10 +25,13 @@ describe("InterApplicationBus.", () => {
 
     it("subscriber added", (done) => {
         
-        rawConnect(`ws://localhost:9696`, 'SUBSCRIBER_ADDED').then((otherFin) => {
+        rawConnect({
+            address: `ws://localhost:9696`,
+            uuid: "SUBSCRIBER_ADDED"
+        }).then((otherFin) => {
             const iab = otherFin.InterApplicationBus;
-            const appid = new Identity('SUBSCRIBER_ADDED');
-            const topic = 'SUBSCRIBER_ADDED';
+            const appid = new Identity("SUBSCRIBER_ADDED");
+            const topic = "SUBSCRIBER_ADDED";
             const listener = function() { };
 
             iab.on(iab.events.subscriberAdded, () => {
@@ -44,10 +45,13 @@ describe("InterApplicationBus.", () => {
 
     it("subscriber removed", (done) => {
         
-        rawConnect(`ws://localhost:9696`, 'SUBSCRIBER_REMOVED').then((otherFin) => {
+        rawConnect({
+            address: `ws://localhost:9696`,
+            uuid: "SUBSCRIBER_REMOVED"
+        }).then((otherFin) => {
             const iab = otherFin.InterApplicationBus;
-            const appid = new Identity('SUBSCRIBER_REMOVED');
-            const topic = 'SUBSCRIBER_REMOVED';
+            const appid = new Identity("SUBSCRIBER_REMOVED");
+            const topic = "SUBSCRIBER_REMOVED";
             const listener = function() { };
 
             iab.on(iab.events.subscriberRemoved, () => {
@@ -62,13 +66,12 @@ describe("InterApplicationBus.", () => {
         });
     });
 
-
     it.skip("unsubscribe()", () => {
         const spy = sinon.spy();
         return fin.InterApplicationBus.subscribe(new Identity(id), topic2, spy)
             .then(() => fin.InterApplicationBus.unsubscribe(new Identity(id), topic2, spy))
             .then(() => fin.InterApplicationBus.send(new Identity(id), topic2, m))
             .then(() => delayPromise())
-            .then(() => spy.should.not.be.called());
+            .then(() => assert(!spy.called));
     });
 });

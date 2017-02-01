@@ -1,0 +1,41 @@
+import * as sinon from "sinon";
+import { conn } from "./connect";
+import { delayPromise } from "./delay-promise";
+import { Identity } from "../src/main";
+import * as assert from "assert";
+
+describe("Window.addEventListener()", () => {
+    let fin,
+        appConfigTemplate = {
+            name: "adapter-test-app",
+            url: "http://acidtests.org",
+            uuid: "adapter-test-app",
+            autoShow: true,
+            accelerator: {
+                devtools: true
+            }
+        };
+
+    before(() => {
+        return conn().then(a => fin = a);
+    });
+    
+    describe("'closed'", () => {
+
+        before(() => fin.Application.create(appConfigTemplate).then(app => app.run()));
+        
+        it("called", () => {
+            const spy = sinon.spy();
+
+            return fin.Application.wrap(new Identity("adapter-test-app")).getWindow().then(win => {
+                
+                win.on("closed", spy);
+
+                return win.close()
+                    .then(() => delayPromise())
+                    .then(() => assert(spy.calledOnce));
+            });
+        });
+    });
+    
+});
