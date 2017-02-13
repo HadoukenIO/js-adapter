@@ -17,7 +17,7 @@ export default class Fin extends Bare {
     Clipboard: Clipbpard;
     ExternalApplication: ExternalApplication;
 
-    constructor(wire: Transport, public token: Token) {
+    constructor(wire: Transport, public token: string) {
         super(wire);
         this.System = new System(wire);
         this.Window = new _WindowModule(wire);

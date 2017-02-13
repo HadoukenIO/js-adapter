@@ -12,6 +12,10 @@ import {
     RuntimeError
 } from "./transport-errors";
 
+export interface MessageHandler {
+    (data): boolean;
+}
+
 class Transport extends EventEmitter {
     protected messageCounter = 0;
     protected wireListeners: {resolve: Function, reject: Function}[] = [];
@@ -29,7 +33,7 @@ class Transport extends EventEmitter {
         });
     }
 
-    connect(config: ConnectConfig): Promise<Token> {
+    connect(config: ConnectConfig): Promise<string> {
         const {address, uuid, name} = config;
         const reqAuthPaylaod = Object.assign({}, config, {type: "file-token"});
         let token;
