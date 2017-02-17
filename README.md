@@ -14,7 +14,7 @@ const { connect, Identity } = require("js-adapter");
 connect({
     address: "ws://localhost:9696",
     uuid: "my-uuid-123"
-}).then(logic);
+}).then(logic).catch(connError);
    
 function logic(fin) {
     
@@ -24,6 +24,13 @@ function logic(fin) {
         
     win.moveBy(500, 0).then(win.flash());
        
+}
+
+function connError(err) {
+
+    console.log("Error triying to connect,", err.message);
+
+    console.log(err.stack);
 }
 ```
 # Local build

@@ -5,7 +5,6 @@ import { EventEmitter } from "events";
 
 import {
     UnexpectedAction,
-    NoSuccess,
     DuplicateCorrelation,
     NoAck,
     NoCorrelation,
@@ -59,7 +58,7 @@ class Transport extends EventEmitter {
                 if (action !== "authorization-response") {
                     return Promise.reject(new UnexpectedAction(action));
                 } else if (payload.success !== true) {
-                    return Promise.reject(new NoSuccess);
+                    return Promise.reject(new RuntimeError(payload));
                 } else {
                     return token;
                 }
