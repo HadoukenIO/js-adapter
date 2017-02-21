@@ -1,5 +1,5 @@
 import { Base, Bare, Reply, RuntimeEvent } from "../base";
-import { AppIdentity, WindowIdentity } from "../../identity";
+import { Identity } from "../../identity";
 import { _Window } from "../window/window";
 import { Point } from "../system/point";
 import { MonitorInfo } from "../system/monitor";
@@ -15,31 +15,31 @@ export class NavigationRejectedReply extends Reply<"window-navigation-rejected",
 }
 
 export default class ApplicationModule extends Bare {
-    wrap(identity: AppIdentity): Application {
+    wrap(identity: Identity): Application {
         const wrapped = new Application(this.wire, identity);
         return wrapped;
     }
 
     create(appOptions): Promise<Application> {
         return this.wire.sendAction("create-application", appOptions)
-            .then(() => this.wrap(new AppIdentity(appOptions.uuid)));
+            .then(() => this.wrap({ uuid: appOptions.uuid }));
     }
 }
 
 export class Application extends Base {
 
-    constructor(wire, protected identity: AppIdentity) {
+    constructor(wire, protected identity: Identity) {
         super(wire);
 
         this.on("removeListener", eventType => {    
-            this.deregisterEventListener(this.identity.mergeWith({
+            this.deregisterEventListener(Object.assign({}, this.identity, {
                 type: eventType,
                 topic : this.topic
             }));
         });
         
         this.on("newListener", eventType => {
-            this.registerEventListener(this.identity.mergeWith({
+            this.registerEventListener(Object.assign({}, this.identity, {
                 type: eventType,
                 topic : this.topic
             }));
@@ -54,8 +54,10 @@ export class Application extends Base {
         let windowList:Array<_Window> = [];
 
         for (let i = 0; i < nameList.length; i++) {
-            windowList.push(new _Window(this.wire,
-                                        new WindowIdentity(this.identity.uuid as string, nameList[i])));
+            windowList.push(new _Window(this.wire, {
+                uuid: this.identity.uuid as string,
+                name: nameList[i]
+            }));
         }
         return windowList;
     }
@@ -66,7 +68,7 @@ export class Application extends Base {
     }
 
     close(force:boolean = false): Promise<void> {
-        return this.wire.sendAction("close-application", this.identity.mergeWith({force}));
+        return this.wire.sendAction("close-application", Object.assign({}, this.identity, {force}));
     }
 
     getChildWindows(): Promise<Array<_Window>> {
@@ -97,13 +99,14 @@ export class Application extends Base {
     }
 
     getWindow(): Promise<_Window> {
-        return Promise.resolve(new _Window(this.wire,
-                                           new WindowIdentity(this.identity.uuid as string,
-                                                              this.identity.uuid as string)));
+        return Promise.resolve(new _Window(this.wire, {
+            uuid: this.identity.uuid as string,
+            name: this.identity.uuid as string
+        }));
     }
 
     registerCustomData(data: Object): Promise<void> {
-        return this.wire.sendAction("register-custom-data", this.identity.mergeWith({data}));
+        return this.wire.sendAction("register-custom-data", Object.assign({}, this.identity, {data}));
     }
 
     removeTrayIcon(): Promise<void> {
@@ -123,7 +126,7 @@ export class Application extends Base {
     }
 
     setTrayIcon(iconUrl: string): Promise<void> {
-        return this.wire.sendAction("set-tray-icon", this.identity.mergeWith({
+        return this.wire.sendAction("set-tray-icon", Object.assign({}, this.identity, {
             enabledIcon: iconUrl
         }));
     }

@@ -20,7 +20,10 @@ function logic(fin) {
     
     fin.System.getVersion().then(v => console.log("Connected to OpenFin version", v));
 
-    const win = fin.Window.wrap(new Identity("remote-app-uuid", "remote-window-name"));
+    const win = fin.Window.wrap({ 
+        uuid: "remote-app-uuid",
+        name: "remote-window-name"
+    });
         
     win.moveBy(500, 0).then(win.flash());
        

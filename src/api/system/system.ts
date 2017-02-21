@@ -18,14 +18,14 @@ export default class System extends Base {
         super(wire);
 
         this.on("removeListener", eventType => {	        
-            this.deregisterEventListener(this.identity.mergeWith({
+            this.deregisterEventListener(Object.assign({}, this.identity, {
                 type: eventType,
                 topic : this.topic
             }));
         });
         
         this.on("newListener", eventType => {
-            this.registerEventListener(this.identity.mergeWith({
+            this.registerEventListener(Object.assign({}, this.identity, {
                 type: eventType,
                 topic : this.topic
             }));

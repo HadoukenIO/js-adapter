@@ -1,30 +1,31 @@
 import { Bare, Base, RuntimeEvent } from "../base";
-import { WindowIdentity } from "../../identity";
+import { Identity } from "../../identity";
 import Bounds from "./bounds";
 import BoundsChangedReply from "./bounds-changed";
 import Animation from "./animation";
 import { Application } from "../application/application";
 
 export default class _WindowModule extends Bare {
-    wrap(identity: WindowIdentity): _Window {
+    wrap(identity: Identity): _Window {
         return new _Window(this.wire, identity);
     }
 }
 
 // The window.Window name is taken
 export class _Window extends Base {
-    constructor(wire, protected identity: WindowIdentity) {
+    
+    constructor(wire, protected identity: Identity) {
         super(wire);
-
+        
         this.on("removeListener", eventType => {    
-            this.deregisterEventListener(this.identity.mergeWith({
+            this.deregisterEventListener(Object.assign({}, this.identity, {
                 type: eventType,
                 topic : this.topic
             }));
         });
         
         this.on("newListener", eventType => {
-            this.registerEventListener(this.identity.mergeWith({
+            this.registerEventListener(Object.assign({}, this.identity, {
                 type: eventType,
                 topic : this.topic
             }));
@@ -40,8 +41,10 @@ export class _Window extends Base {
         let windowList:Array<_Window> = [];
 
         for (let i = 0; i < nameList.length; i++) {
-            windowList.push(new _Window(this.wire,
-                                        new WindowIdentity(this.identity.uuid as string, nameList[i])));
+            windowList.push(new _Window(this.wire, {
+                uuid: this.identity.uuid as string,
+                name: nameList[i]
+            }));
         }
         return windowList;
     }
@@ -72,7 +75,7 @@ export class _Window extends Base {
     }
     
     close(force = false): Promise<void> {
-        return this.wire.sendAction("close-window", this.identity.mergeWith({ force }))
+        return this.wire.sendAction("close-window", Object.assign({}, this.identity, { force }))
             .then(() => Object.setPrototypeOf(this, null));
     }
 
@@ -90,7 +93,7 @@ export class _Window extends Base {
     }
 
     executeJavaScript(code: string): Promise<void> {
-        return this.wire.sendAction("execute-javascript-in-window", this.identity.mergeWith({ code }));
+        return this.wire.sendAction("execute-javascript-in-window", Object.assign({}, this.identity, { code }));
     }
 
     flash(): Promise<void> {
@@ -137,7 +140,7 @@ export class _Window extends Base {
     }
 
     joinGroup(target: _Window): Promise<void> {
-        return this.wire.sendAction("join-window-group", this.identity.mergeWith({
+        return this.wire.sendAction("join-window-group", Object.assign({}, this.identity, {
             groupingUuid: target.identity.uuid,
             groupingWindowName: target.identity.name
         })).then(({ payload }) => payload.data);
@@ -152,7 +155,7 @@ export class _Window extends Base {
     }
 
     mergeGroups(target: _Window): Promise<void> {
-        return this.wire.sendAction("join-window-group", this.identity.mergeWith({
+        return this.wire.sendAction("join-window-group", Object.assign({}, this.identity, {
             groupingUuid: target.identity.uuid,
             groupingWindowName: target.identity.name
         })).then(({ payload }) => payload.data);
@@ -163,15 +166,15 @@ export class _Window extends Base {
     }
 
     moveBy(deltaLeft: number, deltaTop: number): Promise<void> {
-        return this.wire.sendAction("move-window-by", this.identity.mergeWith({ deltaLeft, deltaTop }));
+        return this.wire.sendAction("move-window-by", Object.assign({}, this.identity, { deltaLeft, deltaTop }));
     }
 
     moveTo(left: number, top: number): Promise<void> {
-        return this.wire.sendAction("move-window", this.identity.mergeWith({ left, top }));
+        return this.wire.sendAction("move-window", Object.assign({}, this.identity, { left, top }));
     }
 
     resizeBy(deltaWidth: number, deltaHeight: number, anchor: string): Promise<void> {
-        return this.wire.sendAction("resize-window-by", this.identity.mergeWith({
+        return this.wire.sendAction("resize-window-by", Object.assign({}, this.identity, {
             deltaWidth: Math.floor(deltaWidth),
             deltaHeight: Math.floor(deltaHeight),
             anchor
@@ -179,7 +182,7 @@ export class _Window extends Base {
     }
 
     resizeTo(width: number, height: number, anchor: string): Promise<void> {
-        return this.wire.sendAction("resize-window", this.identity.mergeWith({
+        return this.wire.sendAction("resize-window", Object.assign({}, this.identity, {
             width: Math.floor(width),
             height: Math.floor(height),
             anchor
@@ -195,15 +198,15 @@ export class _Window extends Base {
     }
 
     setBounds(bounds: Bounds): Promise<void> {
-        return this.wire.sendAction("set-window-bounds", this.identity.mergeWith(bounds));
+        return this.wire.sendAction("set-window-bounds", Object.assign({}, this.identity, bounds));
     }
 
     show(force = false): Promise<void> {
-        return this.wire.sendAction("show-window", this.identity.mergeWith({ force }));
+        return this.wire.sendAction("show-window", Object.assign({}, this.identity, { force }));
     }
 
     showAt(left: number, top: number, force = false): Promise<void> {
-        return this.wire.sendAction("show-at-window", this.identity.mergeWith({
+        return this.wire.sendAction("show-at-window", Object.assign({}, this.identity, {
             force,
             left: Math.floor(left),
             top: Math.floor(top)
@@ -211,11 +214,11 @@ export class _Window extends Base {
     }
 
     updateOptions(options: any): Promise<void> {
-        return this.wire.sendAction("show-window", this.identity.mergeWith({ options }));
+        return this.wire.sendAction("show-window", Object.assign({}, this.identity, { options }));
     }
 
     authenticate(userName: string, password: string): Promise<void> {
-        return this.wire.sendAction("window-authenticate", this.identity.mergeWith({ userName, password }));
+        return this.wire.sendAction("window-authenticate", Object.assign({}, this.identity, { userName, password }));
     }
 
     getZoomLevel(): Promise<number> {
@@ -223,7 +226,7 @@ export class _Window extends Base {
     }
 
     setZoomLevel(level: number): Promise<void> {
-        return this.wire.sendAction("set-zoom-level", this.identity.mergeWith({ level })).then(( { payload }) => payload.data);
+        return this.wire.sendAction("set-zoom-level", Object.assign({}, this.identity, { level })).then(( { payload }) => payload.data);
     }
     
 }

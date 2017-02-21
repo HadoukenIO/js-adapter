@@ -1,7 +1,6 @@
 import  * as sinon  from "sinon";
 import { conn } from "./connect";
 import { delayPromise } from "./delay-promise";
-import { Identity } from "../src/identity";
 import * as assert from "assert";
 import { connect as rawConnect } from "../src/main";
 
@@ -18,7 +17,7 @@ describe("InterApplicationBus.", () => {
     });
 
     it("subscribe()", (done) => {
-        fin.InterApplicationBus.subscribe(new Identity("*"), topic, (...got) => {
+        fin.InterApplicationBus.subscribe({ uuid: "*" }, topic, (...got) => {
             done();
         }).then(() => fin.InterApplicationBus.publish(topic, m));
     });
@@ -30,7 +29,7 @@ describe("InterApplicationBus.", () => {
             uuid: "SUBSCRIBER_ADDED"
         }).then((otherFin) => {
             const iab = otherFin.InterApplicationBus;
-            const appid = new Identity("SUBSCRIBER_ADDED");
+            const appid = { uuid: "SUBSCRIBER_ADDED" };
             const topic = "SUBSCRIBER_ADDED";
             const listener = function() { };
 
@@ -50,7 +49,7 @@ describe("InterApplicationBus.", () => {
             uuid: "SUBSCRIBER_REMOVED"
         }).then((otherFin) => {
             const iab = otherFin.InterApplicationBus;
-            const appid = new Identity("SUBSCRIBER_REMOVED");
+            const appid = { uuid: "SUBSCRIBER_REMOVED" };
             const topic = "SUBSCRIBER_REMOVED";
             const listener = function() { };
 
@@ -68,9 +67,9 @@ describe("InterApplicationBus.", () => {
 
     it.skip("unsubscribe()", () => {
         const spy = sinon.spy();
-        return fin.InterApplicationBus.subscribe(new Identity(id), topic2, spy)
-            .then(() => fin.InterApplicationBus.unsubscribe(new Identity(id), topic2, spy))
-            .then(() => fin.InterApplicationBus.send(new Identity(id), topic2, m))
+        return fin.InterApplicationBus.subscribe({ uuid: id }, topic2, spy)
+            .then(() => fin.InterApplicationBus.unsubscribe({ uuid: id }, topic2, spy))
+            .then(() => fin.InterApplicationBus.send({ uuid: id }, topic2, m))
             .then(() => delayPromise())
             .then(() => assert(!spy.called));
     });

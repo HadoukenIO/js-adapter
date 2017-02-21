@@ -1,5 +1,5 @@
 import Transport, { Message } from "../transport/transport";
-import { Identity, AppIdentity } from "../identity";
+import { Identity } from "../identity";
 import { EventEmitter } from "events";
 import { createHash } from "crypto";
 
@@ -20,13 +20,13 @@ export class Bare extends EventEmitter {
         return this.constructor.name.replace("_", "").toLowerCase();
     }
     
-    get me(): AppIdentity {
+    get me(): Identity {
         return this.wire.me;
     }
 }
 
 export class Base extends Bare {
-    protected identity: Identity = new Identity;
+    protected identity: Identity;
     
     constructor(wire: Transport) {
         super(wire);
@@ -81,9 +81,11 @@ export class Base extends Bare {
     
 } 
 
-export class Reply<TOPIC extends string, TYPE extends string|void> extends Identity {
+export class Reply<TOPIC extends string, TYPE extends string|void> implements Identity {
     topic: TOPIC;
     type: TYPE;
+    uuid: string;
+    name?: string;
 }
 
 function createKey(listener: RuntimeEvent): string {

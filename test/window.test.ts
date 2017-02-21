@@ -1,6 +1,5 @@
 import { conn } from "./connect";
 import * as assert from "assert";
-import { WindowIdentity } from "../src/identity.js";
 import { connect as rawConnect } from "../src/main";
 
 describe("Window.", () => {
@@ -110,8 +109,10 @@ describe("Window.", () => {
                 address: `ws://localhost:9696`,
                 uuid: "SECOND_CONECTION"
             }).then((otherFin) => {
-                return otherFin.Window.wrap(new WindowIdentity(testWindow.identity.uuid, testWindow.identity.uuid)).
-                    executeJavaScript(scriptToExecute).catch(() => assert(true));
+                return otherFin.Window.wrap({
+                    uuid: testWindow.identity.uuid,
+                    name: testWindow.identity.uuid
+                }).executeJavaScript(scriptToExecute).catch(() => assert(true));
             });
         });
     });

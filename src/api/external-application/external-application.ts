@@ -2,9 +2,10 @@ import { Base, Reply } from "../base";
 import { Identity } from "../../identity";
 
 class ExternalApplication extends Base {
+    identity: Identity;
     wrap(uuid: string): ExternalApplication {
         const wrapped = new ExternalApplication(this.wire);
-        wrapped.identity = new Identity(uuid);
+        wrapped.identity = { uuid };
         return wrapped;
     }
 }

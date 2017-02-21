@@ -1,6 +1,6 @@
 import { Wire, WireConstructor } from "./wire";
 import writeToken from "./write-token";
-import { AppIdentity } from "../identity";
+import { Identity } from "../identity";
 import { EventEmitter } from "events";
 
 import {
@@ -20,7 +20,7 @@ class Transport extends EventEmitter {
     protected wireListeners: {resolve: Function, reject: Function}[] = [];
     protected uncorrelatedListener: Function;
     protected messageHandlers: MessageHandler[] = [];
-    me: AppIdentity;
+    me: Identity;
     protected wire: Wire;
     
     constructor(wireType: WireConstructor) {
@@ -37,7 +37,7 @@ class Transport extends EventEmitter {
         const reqAuthPaylaod = Object.assign({}, config, {type: "file-token"});
         let token;
 
-        this.me = new AppIdentity(uuid, name);
+        this.me = { uuid, name };
 
         return this.wire.connect(address)
             .then(() => this.sendAction("request-external-authorization", {

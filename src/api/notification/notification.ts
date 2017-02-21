@@ -1,5 +1,5 @@
 import { Bare, Base } from "../base";
-import { AppIdentity } from "../../identity";
+import { Identity } from "../../identity";
 import { Message } from "../../transport/transport";
 
 const events = {
@@ -23,7 +23,7 @@ export class NotificationOptions {
     uuidOfProxiedApp: string;
     ignoreMouseOver: boolean;
 
-    constructor(options: any = {}, identity: AppIdentity, notificationId) {
+    constructor(options: any = {}, identity: Identity, notificationId) {
         let { url, message, timeout, ignoreMouseOver } = options;
 
         this.url = url;

@@ -1,7 +1,6 @@
 import * as sinon from "sinon";
 import { conn } from "./connect";
 import { delayPromise } from "./delay-promise";
-import { Identity } from "../src/main";
 import * as assert from "assert";
 
 describe("Window.addEventListener()", () => {
@@ -27,7 +26,7 @@ describe("Window.addEventListener()", () => {
         it("called", () => {
             const spy = sinon.spy();
 
-            return fin.Application.wrap(new Identity("adapter-test-app")).getWindow().then(win => {
+            return fin.Application.wrap({ uuid: "adapter-test-app" }).getWindow().then(win => {
                 
                 win.on("closed", spy);
 

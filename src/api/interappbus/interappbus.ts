@@ -1,5 +1,5 @@
 import { Bare } from "../base";
-import { AppIdentity } from "../../identity";
+import { Identity } from "../../identity";
 import Transport, { Message } from "../../transport/transport";
 import RefCounter from "../../util/ref-counter";
 
@@ -24,7 +24,7 @@ export default class InterApplicationBus extends Bare {
         });
     }
 
-    send(destination: AppIdentity, topic: string, message): Promise<void> {
+    send(destination: Identity, topic: string, message): Promise<void> {
         return this.wire.sendAction("send-message", {
             destinationUuid: destination.uuid,
             destinationWindowName: destination.name,
@@ -34,7 +34,7 @@ export default class InterApplicationBus extends Bare {
         });
     }
 
-    subscribe(source: AppIdentity, topic: string, listener: Function): Promise<void> {
+    subscribe(source: Identity, topic: string, listener: Function): Promise<void> {
         const subKey = this.createSubscriptionKey(source.uuid, source.name || "*", topic);
         const sendSubscription = () => {
             return this.wire.sendAction("subscribe", {
@@ -53,7 +53,7 @@ export default class InterApplicationBus extends Bare {
         return this.refCounter.actOnFirst(subKey, sendSubscription, alreadySubscribed);
     }
 
-    unsubscribe(source: AppIdentity, topic: string, listener: Function): Promise<void> {
+    unsubscribe(source: Identity, topic: string, listener: Function): Promise<void> {
         const subKey = this.createSubscriptionKey(source.uuid, source.name || "*", topic);
         const sendUnsubscription = () => {
             return this.wire.sendAction("unsubscribe", {
@@ -78,7 +78,7 @@ export default class InterApplicationBus extends Bare {
             this.createSubscriptionKey(sourceUuid, "*", topic),
             this.createSubscriptionKey("*", "*", topic)
         ];
-        const idOfSender = new AppIdentity(sourceUuid, sourceWindowName);
+        const idOfSender = { uuid: sourceUuid, name: sourceWindowName };
 
         keys.forEach((key) => {
             this.emit(key, payloadMessage, idOfSender);

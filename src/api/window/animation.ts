@@ -1,11 +1,11 @@
-import { WindowIdentity } from "../../identity";
+import { Identity } from "../../identity";
 import Transport from "../../transport/transport";
 const DEFAULT_DURATION = 1000;
 
 export default class Animation {
     protected payload;
 
-    constructor(protected wire: Transport, protected identity: WindowIdentity, interrupt: boolean) {
+    constructor(protected wire: Transport, protected identity: Identity, interrupt: boolean) {
         this.payload = { options: { interrupt }};
     }
 
@@ -20,6 +20,6 @@ export default class Animation {
     }
 
     animate(): Promise<void> {
-        return this.wire.sendAction("animate-window", this.identity.mergeWith(this.payload));
+        return this.wire.sendAction("animate-window", Object.assign({}, this.identity, this.payload));
     }
 }
