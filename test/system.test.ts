@@ -1,11 +1,12 @@
 import { conn } from "./connect";
+import { Fin } from "../src/main";
 import * as assert from "assert";
 
 describe("System.", () => {
-    let fin;
+    let fin: Fin;
     
     before(() => {
-        return conn().then(a => fin = a);
+        return conn().then((a: Fin) => fin = a);
     });
 
     describe("getVersion()", () => {
@@ -85,7 +86,7 @@ describe("System.", () => {
         const processOptions = {
             path: "notepad",
             arguments: "",
-            listener: code => {}
+            listener: (code: any) => {}
         };
                 
         it("Fulfilled", () => fin.System.launchExternalProcess(processOptions)
@@ -145,7 +146,8 @@ describe("System.", () => {
     describe("updateProxySettings()", () => {
         const proxySettings = {
             type: "type",
-            address:"address"
+            proxyAddress:"address",
+            proxyPort: 8080
         };
         
         it("Fulfilled", () => fin.System.updateProxySettings(proxySettings)

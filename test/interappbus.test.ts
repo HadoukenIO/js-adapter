@@ -2,7 +2,7 @@ import  * as sinon  from "sinon";
 import { conn } from "./connect";
 import { delayPromise } from "./delay-promise";
 import * as assert from "assert";
-import { connect as rawConnect } from "../src/main";
+import { connect as rawConnect, Fin } from "../src/main";
 
 const id = "adapter-test-window";
 const topic = "topic";
@@ -10,14 +10,14 @@ const topic2 = "topic2";
 const m = Math.random().toString(36).slice(2);
 
 describe("InterApplicationBus.", () => {
-    let fin;
+    let fin: Fin;
 
     beforeEach(() => {
-        return conn().then(a => fin = a);
+        return conn().then((a: Fin) => fin = a);
     });
 
     it("subscribe()", (done) => {
-        fin.InterApplicationBus.subscribe({ uuid: "*" }, topic, (...got) => {
+        fin.InterApplicationBus.subscribe({ uuid: "*" }, topic, (...got: any[]) => {
             done();
         }).then(() => fin.InterApplicationBus.publish(topic, m));
     });

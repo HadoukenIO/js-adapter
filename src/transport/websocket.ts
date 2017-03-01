@@ -4,9 +4,9 @@ import { Wire } from "./wire";
 
 export default class WebSocketTransport extends EventEmitter implements Wire {
     protected wire: WebSocket;
-    public  onmessage: (data) => void;
+    public onmessage: (data: any) => void;
     
-    constructor(onmessage: (data) => void) {
+    constructor(onmessage: (data: any) => void) {
         super();
 
         this.onmessage = onmessage;
@@ -25,7 +25,7 @@ export default class WebSocketTransport extends EventEmitter implements Wire {
         });
     }
 
-    send(data, flags?): Promise<any> {
+    send(data: any, flags?: any): Promise<any> {
         return new Promise(resolve => {
             this.wire.send(JSON.stringify(data), flags, resolve);
         });

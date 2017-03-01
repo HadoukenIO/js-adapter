@@ -1,6 +1,6 @@
 import { Bare, Base } from "../base";
 import { Identity } from "../../identity";
-import { Message } from "../../transport/transport";
+import Transport, { Message } from "../../transport/transport";
 
 const events = {
     show: "show",
@@ -23,7 +23,7 @@ export class NotificationOptions {
     uuidOfProxiedApp: string;
     ignoreMouseOver: boolean;
 
-    constructor(options: any = {}, identity: Identity, notificationId) {
+    constructor(options: any = {}, identity: Identity, notificationId: number) {
         let { url, message, timeout, ignoreMouseOver } = options;
 
         this.url = url;
@@ -50,7 +50,7 @@ export class _Notification extends Base implements Notification {
         this.listenerList.length = 0;
     };
 
-    private buildLocalPayload(rawPayload): NotificationCallback {
+    private buildLocalPayload(rawPayload: any): NotificationCallback {
         let {payload: { message}, type} = rawPayload;
 
         let payload: NotificationCallback = {};
@@ -86,7 +86,7 @@ export class _Notification extends Base implements Notification {
         return true;
     }
 
-    constructor(wire, options: NotificationOptions) {
+    constructor(wire: Transport, options: NotificationOptions) {
         super(wire);
 
         this.options = options;
@@ -94,7 +94,7 @@ export class _Notification extends Base implements Notification {
         this.timeout = options.timeout;
         this.message = options.message;
         this.notificationId = options.notificationId;
-        this.on("newListener", (event) => {
+        this.on("newListener", (event: any) => {
             this.listenerList.push(event);
         });
 
@@ -127,7 +127,7 @@ export class _Notification extends Base implements Notification {
         });
     }
 
-    public sendMessage(message): Promise<Message<any>> {
+    public sendMessage(message: any): Promise<Message<any>> {
 
         return this.wire.sendAction("send-action-to-notifications-center", {
             action: "send-notification-message",
@@ -160,7 +160,7 @@ export default class _NotificationModule extends Bare {
 
     public events = events;
 
-    public create(options): _Notification {
+    public create(options: any): _Notification {
         const noteOptions = new NotificationOptions(options, this.me, this.genNoteId());
         
         return new _Notification(this.wire,  noteOptions);

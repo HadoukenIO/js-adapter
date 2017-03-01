@@ -3,7 +3,7 @@ import Transport from "../../transport/transport";
 const DEFAULT_DURATION = 1000;
 
 export default class Animation {
-    protected payload;
+    protected payload: any;
 
     constructor(protected wire: Transport, protected identity: Identity, interrupt: boolean) {
         this.payload = { options: { interrupt }};

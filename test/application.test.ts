@@ -1,10 +1,11 @@
 import { conn } from "./connect";
+import { Fin, Application } from "../src/main";
 import * as assert from "assert";
 
 describe("Application.", () => {
-    let fin,
-    testApp,
-    appConfigTemplate = {
+    let fin: Fin;
+    let testApp: Application;
+    let appConfigTemplate = {
         name: "adapter-test-app",
         url: "http://acidtests.org",
         uuid: "adapter-test-app",
@@ -15,7 +16,7 @@ describe("Application.", () => {
     };
     
     before(() => {
-        return conn().then(a => fin = a);
+        return conn().then((a: Fin) => fin = a);
     });
 
     beforeEach(() => {
@@ -39,7 +40,7 @@ describe("Application.", () => {
             uuid: "adapter-test-app-to-close",
             autoShow: true
         };
-        let appToClose;
+        let appToClose: Application;
         
         before(() => {
             return fin.Application.create(appToCloseConfig).then(a => {
@@ -95,7 +96,7 @@ describe("Application.", () => {
             autoShow: true
         };
         
-        let appToClose;
+        let appToClose: Application;
 
         after(() => appToClose.close());
         
@@ -110,7 +111,7 @@ describe("Application.", () => {
     describe("setTrayIcon()", () => {
         
         const iconUrl = "https://developer.openf.in/download/openfin.png";
-        after(() => testApp.removeTrayIcon(iconUrl));
+        after(() => testApp.removeTrayIcon());
 
         it("Fulfilled", () => testApp.setTrayIcon(iconUrl).then(data => assert(true)));
     });
@@ -123,7 +124,7 @@ describe("Application.", () => {
             uuid: "adapter-test-app-to-close",
             autoShow: true
         };
-        let appToClose;
+        let appToClose: Application;
         
         before(() => {
             return fin.Application.create(appToCloseConfig).then(a => {

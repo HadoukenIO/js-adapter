@@ -1,11 +1,11 @@
 import { conn } from "./connect";
 import * as assert from "assert";
-import { connect as rawConnect } from "../src/main";
+import { connect as rawConnect, Fin, Application, Window } from "../src/main";
 
 describe("Window.", () => {
-    let fin,
-        testApp,
-        testWindow;
+    let fin: Fin;
+    let testApp: Application;
+    let testWindow: Window;
 
     const appConfigTemplate = {
             name: "adapter-test-app-win",
@@ -37,7 +37,9 @@ describe("Window.", () => {
         };
 
         it("Fulfilled", () => testWindow.setBounds(bounds)
-           .then(testWindow.getBounds().then(data => assert(typeof(data.height) === "number"))));
+           .then(() => {
+               return testWindow.getBounds().then(data => assert(typeof(data.height) === "number"));
+           }));
     });
 
     describe("focus()", () => {
@@ -68,8 +70,8 @@ describe("Window.", () => {
             uuid: "adapter-test-app-to-close",
             autoShow: true
         };
-        let appToClose,
-        winToClose;
+        let appToClose: Application;
+        let winToClose: Window;
 
         before(() => {
             return fin.Application.create(appToCloseConfig).then(a => {
@@ -221,10 +223,8 @@ describe("Window.", () => {
     describe("resizeBy()", () => {
 
         it("Fulfilled", () => {
-            let bounds;
 
-            return testWindow.getBounds().then(b => {
-                bounds = b;
+            return testWindow.getBounds().then(bounds => {
                 bounds.bottom += 10;
                 bounds.right += 10;
                 bounds.height += 10;
@@ -239,10 +239,8 @@ describe("Window.", () => {
     describe("resizeTo()", () => {
 
         it("Fulfilled", () => {
-            let bounds;
 
-            return testWindow.getBounds().then(b => {
-                bounds = b;
+            return testWindow.getBounds().then(bounds => {
                 bounds.bottom = 20;
                 bounds.right = 20;
                 bounds.height = 10;

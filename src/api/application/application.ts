@@ -3,6 +3,7 @@ import { Identity } from "../../identity";
 import { _Window } from "../window/window";
 import { Point } from "../system/point";
 import { MonitorInfo } from "../system/monitor";
+import Transport from "../../transport/transport";
 
 export interface TrayIconClickReply extends Point, Reply<"application", "tray-icon-clicked"> {
     button: number;
@@ -20,7 +21,7 @@ export default class ApplicationModule extends Bare {
         return wrapped;
     }
 
-    create(appOptions): Promise<Application> {
+    create(appOptions: any): Promise<Application> {
         return this.wire.sendAction("create-application", appOptions)
             .then(() => this.wrap({ uuid: appOptions.uuid }));
     }
@@ -28,7 +29,7 @@ export default class ApplicationModule extends Bare {
 
 export class Application extends Base {
 
-    constructor(wire, protected identity: Identity) {
+    constructor(wire: Transport, public identity: Identity) {
         super(wire);
 
         this.on("removeListener", eventType => {    
@@ -142,19 +143,19 @@ export class Application extends Base {
 };
 
 export interface Application {
-    on(type: "closed", listener: (data: Reply<"application", "closed">) => void);
-    on(type: "connected", listener: (data: Reply<"application", "connected">) => void);
-    on(type: "crashed", listener: (data: Reply<"application", "crashed">) => void);
-    on(type: "error", listener: (data: Reply<"application", "error">) => void);
-    on(type: "not-responding", listener: (data: Reply<"application", "not-responding">) => void);
-    on(type: "out-of-memory", listener: (data: Reply<"application", "out-of-memory">) => void);
-    on(type: "responding", listener: (data: Reply<"application", "responding">) => void);
-    on(type: "started", listener: (data: Reply<"application", "started">) => void);
-    on(type: "run-requested", listener: (data: Reply<"application", "run-requested">) => void);
-    on(type: "window-navigation-rejected", listener: (data: NavigationRejectedReply) => void);
-    on(type: "window-created", listener: (data: Reply<"application", "window-created">) => void);
-    on(type: "window-closed", listener: (data: Reply<"application", "window-closed">) => void);
-    on(type: "tray-icon-clicked", listener: (data: TrayIconClickReply) => void);
-    on(type: "removeListener", listener: (eventType: string) => void);
-    on(type: "newListener", listener: (eventType: string) => void);
+    on(type: "closed", listener: (data: Reply<"application", "closed">) => void): this;
+    on(type: "connected", listener: (data: Reply<"application", "connected">) => void): this;
+    on(type: "crashed", listener: (data: Reply<"application", "crashed">) => void): this;
+    on(type: "error", listener: (data: Reply<"application", "error">) => void): this;
+    on(type: "not-responding", listener: (data: Reply<"application", "not-responding">) => void): this;
+    on(type: "out-of-memory", listener: (data: Reply<"application", "out-of-memory">) => void): this;
+    on(type: "responding", listener: (data: Reply<"application", "responding">) => void): this;
+    on(type: "started", listener: (data: Reply<"application", "started">) => void): this;
+    on(type: "run-requested", listener: (data: Reply<"application", "run-requested">) => void): this;
+    on(type: "window-navigation-rejected", listener: (data: NavigationRejectedReply) => void): this;
+    on(type: "window-created", listener: (data: Reply<"application", "window-created">) => void): this;
+    on(type: "window-closed", listener: (data: Reply<"application", "window-closed">) => void): this;
+    on(type: "tray-icon-clicked", listener: (data: TrayIconClickReply) => void): this;
+    on(type: "removeListener", listener: (eventType: string) => void): this;
+    on(type: "newListener", listener: (eventType: string) => void): this;
 }

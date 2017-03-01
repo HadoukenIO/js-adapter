@@ -1,6 +1,6 @@
-import { connect } from "../src/main";
+import { connect, Fin } from "../src/main";
 
-let c;
+let c: Promise<Fin>;
 export function conn() {
     if (!c) {
         c = connect({

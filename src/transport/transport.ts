@@ -12,7 +12,7 @@ import {
 } from "./transport-errors";
 
 export interface MessageHandler {
-    (data): boolean;
+    (data: Function): boolean;
 }
 
 class Transport extends EventEmitter {
@@ -35,7 +35,7 @@ class Transport extends EventEmitter {
     connect(config: ConnectConfig): Promise<string> {
         const {address, uuid, name} = config;
         const reqAuthPaylaod = Object.assign({}, config, { type: "file-token" });
-        let token;
+        let token: string;
 
         this.me = { uuid, name };
 
@@ -60,7 +60,7 @@ class Transport extends EventEmitter {
                 } else if (payload.success !== true) {
                     return Promise.reject(new RuntimeError(payload));
                 } else {
-                    return token;
+                    return Promise.resolve(token);
                 }
             });
     }
@@ -90,12 +90,12 @@ class Transport extends EventEmitter {
                 messageId: id
             };
 
-            this.addWireListener(id, (res) => {
+            this.addWireListener(id, (res: any) => {
                 const {payload} = res;
 
                 resolve(payload);
 
-            }, (rej) => {
+            }, (rej: any) => {
                 const {payload} = rej;
 
                 reject(payload);

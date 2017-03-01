@@ -2,9 +2,10 @@ import * as sinon from "sinon";
 import { conn } from "./connect";
 import { delayPromise } from "./delay-promise";
 import * as assert from "assert";
+import { Fin } from "../src/main";
 
 describe("Window.addEventListener()", () => {
-    let fin,
+    let fin: Fin,
         appConfigTemplate = {
             name: "adapter-test-app",
             url: "http://acidtests.org",

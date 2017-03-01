@@ -1,12 +1,12 @@
 //import * as mocha from "mocha";
 import { conn } from "./connect";
 import * as assert from "assert";
-import { connect as rawConnect } from "../src/main";
+import { connect as rawConnect, Fin } from "../src/main";
 
 describe("connect()", () => {
-    let fin;
+    let fin: Fin;
     before(() => {
-        return conn().then(a => fin = a);
+        return conn().then((a: Fin) => fin = a);
     });
     it("authentication", () => {
         assert(fin.System !== undefined);

@@ -1,13 +1,15 @@
 import { conn } from "./connect";
 import * as assert from "assert";
+import { Fin } from "../src/main";
 
 describe("Notification", () => {
-    let fin, notification;
+    let fin: Fin;
+    let notification: any;
 
     before(() => {
         return conn().then(_fin => {
             fin = _fin;
-            notification = fin.Notification.create();
+            notification = fin.Notification.create({});
         });
     });
 

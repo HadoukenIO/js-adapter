@@ -1,12 +1,12 @@
 import { conn } from "./connect";
 import * as assert from "assert";
+import { Fin } from "../src/main";
 
 describe("Clipboard.", () => {
-    let fin;
+    let fin: Fin;
 
     const writeObj = {
-        data: "some text goes here",
-        type: null
+        data: "some text goes here"
     };
 
     const writeAllObj = {
@@ -14,12 +14,11 @@ describe("Clipboard.", () => {
             text: "a",
             html: "b",
             rtf: "c"
-        },
-        type: null
+        }
     };
     
     before(() => {
-        return conn().then(a => fin = a);
+        return conn().then((a:Fin) => fin = a);
     });
 
     describe("writeText()", () => {

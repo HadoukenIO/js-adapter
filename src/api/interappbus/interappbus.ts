@@ -16,7 +16,7 @@ export default class InterApplicationBus extends Bare {
         wire.registerMessageHandler(this.onmessage.bind(this));
     }
 
-    publish(topic: string, message): Promise<void> {
+    publish(topic: string, message: any): Promise<void> {
         return this.wire.sendAction("publish-message", {
             topic,
             message,
@@ -24,7 +24,7 @@ export default class InterApplicationBus extends Bare {
         });
     }
 
-    send(destination: Identity, topic: string, message): Promise<void> {
+    send(destination: Identity, topic: string, message: any): Promise<void> {
         return this.wire.sendAction("send-message", {
             destinationUuid: destination.uuid,
             destinationWindowName: destination.name,
@@ -130,7 +130,7 @@ export class InterAppPayload {
 
 }
 
-function createKey(...toHash) {
+function createKey(...toHash: string[]) {
     return toHash.map((item) => {
         return (new Buffer("" + item)).toString("base64");
     }).join("/");

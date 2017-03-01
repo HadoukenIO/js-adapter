@@ -4,6 +4,7 @@ import Bounds from "./bounds";
 import BoundsChangedReply from "./bounds-changed";
 import Animation from "./animation";
 import { Application } from "../application/application";
+import Transport from "../../transport/transport";
 
 export default class _WindowModule extends Bare {
     wrap(identity: Identity): _Window {
@@ -11,10 +12,17 @@ export default class _WindowModule extends Bare {
     }
 }
 
+export interface CloseEventShape {
+    name: string;
+    uuid: string;
+    type: string;
+    topic: string;
+}
+
 // The window.Window name is taken
 export class _Window extends Base {
     
-    constructor(wire, protected identity: Identity) {
+    constructor(wire: Transport, public identity: Identity) {
         super(wire);
         
         this.on("removeListener", eventType => {    
@@ -231,9 +239,10 @@ export class _Window extends Base {
     
 }
 export interface _Window {
-    on(type: "focused", listener: Function);
-    on(type: "bounds-changed", listener: (data: BoundsChangedReply) => void);
-    on(type: "hidden", listener: Function);
-    on(type: "removeListener", listener: (eventType: string) => void);
-    on(type: "newListener", listener: (eventType: string) => void);
+    on(type: "focused", listener: Function): this;
+    on(type: "bounds-changed", listener: (data: BoundsChangedReply) => void): this;
+    on(type: "hidden", listener: Function): this;
+    on(type: "removeListener", listener: (eventType: string) => void): this;
+    on(type: "newListener", listener: (eventType: string) => void): this;
+    on(type: "closed", listener: (eventType: CloseEventShape) => void): this;
 }

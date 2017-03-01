@@ -11,20 +11,21 @@ import { DownloadAssetRequestType } from "./download-asset";
 import { RVMInfo } from "./rvm";
 import { Entity } from "./entity";
 import { ExternalProcessRequestType , TerminateExternalRequestType } from "./external-process";
+import Transport from "../../transport/transport";
 
 export default class System extends Base {
 
-    constructor(wire) {
+    constructor(wire: Transport) {
         super(wire);
 
-        this.on("removeListener", eventType => {	        
+        this.on("removeListener", (eventType:  string) => {	        
             this.deregisterEventListener(Object.assign({}, this.identity, {
                 type: eventType,
                 topic : this.topic
             }));
         });
         
-        this.on("newListener", eventType => {
+        this.on("newListener", (eventType: string) => {
             this.registerEventListener(Object.assign({}, this.identity, {
                 type: eventType,
                 topic : this.topic
@@ -158,7 +159,7 @@ export default class System extends Base {
         }).then(({ payload }) => payload.data);
     }
 
-    executeOnRemote(payload, ack, nack): any {
+    executeOnRemote(payload: any, ack: any, nack: any): any {
         this.wire.ferryAction(payload)
             .then(ack)
             .catch(nack);

@@ -1,7 +1,7 @@
 export interface GetLogRequestType {
     name: string;
-    endFile: string;
-    sizeLimit: number;
+    endFile?: string;
+    sizeLimit?: number;
 }
 
 export interface LogInfo {

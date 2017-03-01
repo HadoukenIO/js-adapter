@@ -11,8 +11,8 @@ class ExternalApplication extends Base {
 }
 
 interface ExternalApplication {
-    addEventListener(type: "connected", listener: (data: Reply<"externalapplication", "connected">) => Promise<void>);
-    addEventListener(type: "disconnected", listener: (data: Reply<"externalapplication", "disconnected">) => Promise<void>);
+    addEventListener(type: "connected", listener: (data: Reply<"externalapplication", "connected">) => Promise<void>): this;
+    addEventListener(type: "disconnected", listener: (data: Reply<"externalapplication", "disconnected">) => Promise<void>): this;
 }
 
 export default ExternalApplication;
