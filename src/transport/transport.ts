@@ -17,12 +17,12 @@ export interface MessageHandler {
 
 class Transport extends EventEmitter {
     protected messageCounter = 0;
-    protected wireListeners: {resolve: Function, reject: Function}[] = [];
+    protected wireListeners: { resolve: Function, reject: Function }[] = [];
     protected uncorrelatedListener: Function;
     protected messageHandlers: MessageHandler[] = [];
     me: Identity;
     protected wire: Wire;
-    
+
     constructor(wireType: WireConstructor) {
         super();
         this.wire = new wireType(this.onmessage.bind(this));
@@ -34,7 +34,7 @@ class Transport extends EventEmitter {
 
     connect(config: ConnectConfig): Promise<string> {
         const {address, uuid, name} = config;
-        const reqAuthPaylaod = Object.assign({}, config, {type: "file-token"});
+        const reqAuthPaylaod = Object.assign({}, config, { type: "file-token" });
         let token;
 
         this.me = { uuid, name };
@@ -79,6 +79,33 @@ class Transport extends EventEmitter {
         });
     }
 
+    ferryAction(data: any): Promise<Message<any>> {
+        const {action, payload} = data;
+
+        return new Promise((resolve, reject) => {
+            const id = this.messageCounter++;
+            const msg = {
+                action,
+                payload,
+                messageId: id
+            };
+
+            this.addWireListener(id, (res) => {
+                const {payload} = res;
+
+                resolve(payload);
+
+            }, (rej) => {
+                const {payload} = rej;
+
+                reject(payload);
+            }, false);
+
+            this.wire.send(msg);
+
+        });
+    }
+
     registerMessageHandler(handler: MessageHandler): void {
         this.messageHandlers.unshift(handler);
     }
@@ -95,17 +122,19 @@ class Transport extends EventEmitter {
     }
 
     /** This method executes message handlers until the _one_ that handles the message (returns truthy) has run */
-    protected onmessage(data: Message<Payload>): void {
+    protected onmessage(data: Message<Payload>): void { 
+
         for (const h of this.messageHandlers) {
             h.call(null, data);
         }
     }
 
     protected handleMessage(data: Message<Payload>): boolean {
+
         const id: number = data.correlationId || NaN;
         if (!("correlationId" in data)) {
             this.uncorrelatedListener.call(null, data);
-            this.uncorrelatedListener = () => {};
+            this.uncorrelatedListener = () => { };
         } else if (!(id in this.wireListeners)) {
             throw new NoCorrelation(String(id));
             // Return false?

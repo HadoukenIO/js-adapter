@@ -6,5 +6,5 @@ export interface Wire extends EventEmitter {
     shutdown(): Promise<void>;
 }
 export interface WireConstructor {
-    new(onmessage: (data) => void);
+    new(onmessage: (data: any) => void);
 }

@@ -12,8 +12,10 @@ export interface RuntimeEvent extends Identity {
 }
 
 export class Bare extends EventEmitter {
-    constructor(protected wire: Transport) {
+    public wire: Transport;
+    constructor(wire: Transport) {
         super();
+        this.wire = wire;
     }
     
     protected get topic(): string {

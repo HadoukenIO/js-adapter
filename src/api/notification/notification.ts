@@ -69,7 +69,7 @@ export class _Notification extends Base implements Notification {
     }
 
     protected options: NotificationOptions;
-    protected generalListener: (msg) => void;
+    protected generalListener: (msg: any) => void;
     protected notificationId: number;
 
     protected onmessage(message: any): boolean {

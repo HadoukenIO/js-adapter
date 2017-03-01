@@ -137,7 +137,7 @@ export default class System extends Base {
         return this.wire.sendAction("terminate-external-process", options)
             .then(({ payload }) => payload.data);
     }
-
+    
     updateProxySettings(options: ProxyConfig): Promise<void> {
         return this.wire.sendAction("terminate-external-process", options);
     }
@@ -157,5 +157,10 @@ export default class System extends Base {
             entityKey: uuid
         }).then(({ payload }) => payload.data);
     }
-    
+
+    executeOnRemote(payload, ack, nack): any {
+        this.wire.ferryAction(payload)
+            .then(ack)
+            .catch(nack);
+    }
 }
