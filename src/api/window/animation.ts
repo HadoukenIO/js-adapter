@@ -20,6 +20,6 @@ export default class Animation {
     }
 
     animate(): Promise<void> {
-        return this.wire.sendAction("animate-window", Object.assign({}, this.identity, this.payload));
+        return this.wire.sendAction("animate-window", Object.assign({}, this.identity, this.payload)).then(() => undefined);
     }
 }

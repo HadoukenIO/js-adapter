@@ -40,11 +40,11 @@ export default class System extends Base {
     }
 
     clearCache(): Promise<void> {
-        return this.wire.sendAction("clear-cache");
+        return this.wire.sendAction("clear-cache").then(() => undefined);
     }
 
     deleteCacheOnExit(): Promise<void> {
-        return this.wire.sendAction("delete-cache-request");
+        return this.wire.sendAction("delete-cache-request").then(() => undefined);
     }
 
     getAllWindows(): Promise<Array<WindowInfo>> {
@@ -119,33 +119,33 @@ export default class System extends Base {
     }
 
     log(level: string, message: string): Promise<void> {
-        return this.wire.sendAction("write-to-log", { level, message });
+        return this.wire.sendAction("write-to-log", { level, message }).then(() => undefined);
     }
 
     openUrlWithBrowser(url: string): Promise<void> {
-        return this.wire.sendAction("open-url-with-browser", { url });
+        return this.wire.sendAction("open-url-with-browser", { url }).then(() => undefined);
     }
 
     releaseExternalProcess(uuid: string): Promise<void> {
-        return this.wire.sendAction("release-external-process", { uuid });
+        return this.wire.sendAction("release-external-process", { uuid }).then(() => undefined);
     }
 
     showDeveloperTools(identity: Identity): Promise<void> {
-        return this.wire.sendAction("show-developer-tools", identity);
+        return this.wire.sendAction("show-developer-tools", identity).then(() => undefined);
     }
 
     terminateExternalProcess(options: TerminateExternalRequestType): Promise<void> {
         return this.wire.sendAction("terminate-external-process", options)
-            .then(({ payload }) => payload.data);
+            .then(() => undefined);
     }
     
     updateProxySettings(options: ProxyConfig): Promise<void> {
-        return this.wire.sendAction("terminate-external-process", options);
+        return this.wire.sendAction("terminate-external-process", options).then(() => undefined);
     }
 
     // incompatible with standalone node process.
     downloadAsset(appAsset: DownloadAssetRequestType): Promise<void> {
-        return this.wire.sendAction("download-asset", appAsset);
+        return this.wire.sendAction("download-asset", appAsset).then(() => undefined);
     }
     
     getAllExternalApplications(): Promise<Array<Identity>> {

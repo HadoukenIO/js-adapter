@@ -69,7 +69,7 @@ export class Application extends Base {
     }
 
     close(force:boolean = false): Promise<void> {
-        return this.wire.sendAction("close-application", Object.assign({}, this.identity, {force}));
+        return this.wire.sendAction("close-application", Object.assign({}, this.identity, {force})).then(() => undefined);
     }
 
     getChildWindows(): Promise<Array<_Window>> {
@@ -107,37 +107,37 @@ export class Application extends Base {
     }
 
     registerCustomData(data: Object): Promise<void> {
-        return this.wire.sendAction("register-custom-data", Object.assign({}, this.identity, {data}));
+        return this.wire.sendAction("register-custom-data", Object.assign({}, this.identity, {data})).then(() => undefined);
     }
 
     removeTrayIcon(): Promise<void> {
-        return this.wire.sendAction("remove-tray-icon", this.identity);
+        return this.wire.sendAction("remove-tray-icon", this.identity).then(() => undefined);
     }
 
     restart(): Promise<void> {
-        return this.wire.sendAction("restart-application", this.identity);
+        return this.wire.sendAction("restart-application", this.identity).then(() => undefined);
     }
 
     run(): Promise<void> {
-        return this.wire.sendAction("run-application", this.identity);
+        return this.wire.sendAction("run-application", this.identity).then(() => undefined);
     }
 
     scheduleRestart(): Promise<void> {
-        return this.wire.sendAction("relaunch-on-close", this.identity);
+        return this.wire.sendAction("relaunch-on-close", this.identity).then(() => undefined);
     }
 
     setTrayIcon(iconUrl: string): Promise<void> {
         return this.wire.sendAction("set-tray-icon", Object.assign({}, this.identity, {
             enabledIcon: iconUrl
-        }));
+        })).then(() => undefined);
     }
 
     terminate(): Promise<void> {
-        return this.wire.sendAction("terminate-application", this.identity);
+        return this.wire.sendAction("terminate-application", this.identity).then(() => undefined);
     }
 
     wait(): Promise<void> {
-        return this.wire.sendAction("wait-for-hung-application", this.identity);
+        return this.wire.sendAction("wait-for-hung-application", this.identity).then(() => undefined);
     }
 
 };

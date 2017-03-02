@@ -4,7 +4,7 @@ import { WriteRequestType, WriteAnyRequestType } from "./write-request";
 export default class Clipboard extends Base {
 
     writeText(writeObj: WriteRequestType): Promise<void> {
-        return this.wire.sendAction("clipboard-write-text", writeObj);
+        return this.wire.sendAction("clipboard-write-text", writeObj).then(() => undefined);
     }
     
     readText(type?: string): Promise<string> {
@@ -13,7 +13,7 @@ export default class Clipboard extends Base {
     }
 
     writeHtml(writeObj: WriteRequestType): Promise<void> {
-        return this.wire.sendAction("clipboard-write-html", writeObj);
+        return this.wire.sendAction("clipboard-write-html", writeObj).then(() => undefined);
     }
 
     readHtml(type?: string): Promise<string> {
@@ -22,7 +22,7 @@ export default class Clipboard extends Base {
     }
 
     writeRtf(writeObj: WriteRequestType): Promise<void> {
-        return this.wire.sendAction("clipboard-write-rtf", writeObj);
+        return this.wire.sendAction("clipboard-write-rtf", writeObj).then(() => undefined);
     }
 
     readRtf(type?: string): Promise<string> {
@@ -31,7 +31,7 @@ export default class Clipboard extends Base {
     }
 
     write(writeObj: WriteAnyRequestType): Promise<void> {
-        return this.wire.sendAction("clipboard-write", writeObj);
+        return this.wire.sendAction("clipboard-write", writeObj).then(() => undefined);
     }
 
     getAvailableFormats(type?: string): Promise<Array<string>> {

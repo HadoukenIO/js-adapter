@@ -63,15 +63,15 @@ export class _Window extends Base {
     }
 
     focus(): Promise<void> {
-        return this.wire.sendAction("focus-window", this.identity);
+        return this.wire.sendAction("focus-window", this.identity).then(() => undefined);
     }
     
     blur(): Promise<void> {
-        return this.wire.sendAction("blur-window", this.identity);
+        return this.wire.sendAction("blur-window", this.identity).then(() => undefined);
     }
     
     bringToFront(): Promise<void> {
-        return this.wire.sendAction("bring-window-to-front", this.identity);
+        return this.wire.sendAction("bring-window-to-front", this.identity).then(() => undefined);
     }
 
     animationBuilder(interrupt = false): Animation {
@@ -79,12 +79,15 @@ export class _Window extends Base {
     }
 
     hide(): Promise<void> {
-        return this.wire.sendAction("hide-window", this.identity);
+        return this.wire.sendAction("hide-window", this.identity).then(() => undefined);
     }
     
     close(force = false): Promise<void> {
         return this.wire.sendAction("close-window", Object.assign({}, this.identity, { force }))
-            .then(() => Object.setPrototypeOf(this, null));
+            .then(() => {
+                Object.setPrototypeOf(this, null);
+                return undefined;
+            });
     }
 
     getNativeId(): Promise<string> {
@@ -93,26 +96,27 @@ export class _Window extends Base {
     }
 
     disableFrame(): Promise<void> {
-        return this.wire.sendAction("disable-window-frame", this.identity);
+        return this.wire.sendAction("disable-window-frame", this.identity).then(() => undefined);
     }
 
     enableFrame(): Promise<void> {
-        return this.wire.sendAction("enable-window-frame", this.identity);
+        return this.wire.sendAction("enable-window-frame", this.identity).then(() => undefined);
     }
 
     executeJavaScript(code: string): Promise<void> {
-        return this.wire.sendAction("execute-javascript-in-window", Object.assign({}, this.identity, { code }));
+        return this.wire.sendAction("execute-javascript-in-window", Object.assign({}, this.identity, { code }))
+            .then(() => undefined);
     }
 
     flash(): Promise<void> {
-        return this.wire.sendAction("flash-window", this.identity);
+        return this.wire.sendAction("flash-window", this.identity).then(() => undefined);
     }
 
     stopFlashing(): Promise<void> {
-        return this.wire.sendAction("stop-flash-window", this.identity);
+        return this.wire.sendAction("stop-flash-window", this.identity).then(() => undefined);
     }
 
-    getGroup(): Promise<Array<_Window>> {
+    getGroup(): Promise<Array<Array<_Window>>> {
         return this.wire.sendAction("get-window-group", this.identity).then(({ payload }) => {
             let winGroups:Array<Array<_Window>> = [] as Array<Array<_Window>>;
             for (let i = 0; i < payload.data.length; i++) {
@@ -151,34 +155,34 @@ export class _Window extends Base {
         return this.wire.sendAction("join-window-group", Object.assign({}, this.identity, {
             groupingUuid: target.identity.uuid,
             groupingWindowName: target.identity.name
-        })).then(({ payload }) => payload.data);
+        })).then(() => undefined);
     }
 
     leaveGroup(): Promise<void> {
-        return this.wire.sendAction("leave-window-group", this.identity);
+        return this.wire.sendAction("leave-window-group", this.identity).then(() => undefined);
     }
 
     maximize(): Promise<void> {
-        return this.wire.sendAction("maximize-window", this.identity);
+        return this.wire.sendAction("maximize-window", this.identity).then(() => undefined);
     }
 
     mergeGroups(target: _Window): Promise<void> {
         return this.wire.sendAction("join-window-group", Object.assign({}, this.identity, {
             groupingUuid: target.identity.uuid,
             groupingWindowName: target.identity.name
-        })).then(({ payload }) => payload.data);
+        })).then(() => undefined);
     }
 
     minimize(): Promise<void> {
-        return this.wire.sendAction("minimize-window", this.identity);
+        return this.wire.sendAction("minimize-window", this.identity).then(() => undefined);
     }
 
     moveBy(deltaLeft: number, deltaTop: number): Promise<void> {
-        return this.wire.sendAction("move-window-by", Object.assign({}, this.identity, { deltaLeft, deltaTop }));
+        return this.wire.sendAction("move-window-by", Object.assign({}, this.identity, { deltaLeft, deltaTop })).then(() => undefined);
     }
 
     moveTo(left: number, top: number): Promise<void> {
-        return this.wire.sendAction("move-window", Object.assign({}, this.identity, { left, top }));
+        return this.wire.sendAction("move-window", Object.assign({}, this.identity, { left, top })).then(() => undefined);
     }
 
     resizeBy(deltaWidth: number, deltaHeight: number, anchor: string): Promise<void> {
@@ -186,7 +190,7 @@ export class _Window extends Base {
             deltaWidth: Math.floor(deltaWidth),
             deltaHeight: Math.floor(deltaHeight),
             anchor
-        }));
+        })).then(() => undefined);
     }
 
     resizeTo(width: number, height: number, anchor: string): Promise<void> {
@@ -194,23 +198,23 @@ export class _Window extends Base {
             width: Math.floor(width),
             height: Math.floor(height),
             anchor
-        }));
+        })).then(() => undefined);
     }
 
     restore(): Promise<void> {
-        return this.wire.sendAction("restore-window", this.identity);
+        return this.wire.sendAction("restore-window", this.identity).then(() => undefined);
     }
 
     setAsForeground(): Promise<void> {
-        return this.wire.sendAction("set-foreground-window", this.identity);
+        return this.wire.sendAction("set-foreground-window", this.identity).then(() => undefined);
     }
 
     setBounds(bounds: Bounds): Promise<void> {
-        return this.wire.sendAction("set-window-bounds", Object.assign({}, this.identity, bounds));
+        return this.wire.sendAction("set-window-bounds", Object.assign({}, this.identity, bounds)).then(() => undefined);
     }
 
     show(force = false): Promise<void> {
-        return this.wire.sendAction("show-window", Object.assign({}, this.identity, { force }));
+        return this.wire.sendAction("show-window", Object.assign({}, this.identity, { force })).then(() => undefined);
     }
 
     showAt(left: number, top: number, force = false): Promise<void> {
@@ -218,15 +222,15 @@ export class _Window extends Base {
             force,
             left: Math.floor(left),
             top: Math.floor(top)
-        }));
+        })).then(() => undefined);
     }
 
     updateOptions(options: any): Promise<void> {
-        return this.wire.sendAction("show-window", Object.assign({}, this.identity, { options }));
+        return this.wire.sendAction("show-window", Object.assign({}, this.identity, { options })).then(() => undefined);
     }
 
     authenticate(userName: string, password: string): Promise<void> {
-        return this.wire.sendAction("window-authenticate", Object.assign({}, this.identity, { userName, password }));
+        return this.wire.sendAction("window-authenticate", Object.assign({}, this.identity, { userName, password })).then(() => undefined);
     }
 
     getZoomLevel(): Promise<number> {
@@ -234,7 +238,7 @@ export class _Window extends Base {
     }
 
     setZoomLevel(level: number): Promise<void> {
-        return this.wire.sendAction("set-zoom-level", Object.assign({}, this.identity, { level })).then(( { payload }) => payload.data);
+        return this.wire.sendAction("set-zoom-level", Object.assign({}, this.identity, { level })).then(() => undefined);
     }
     
 }

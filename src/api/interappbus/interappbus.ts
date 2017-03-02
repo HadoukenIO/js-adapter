@@ -21,7 +21,7 @@ export default class InterApplicationBus extends Bare {
             topic,
             message,
             sourceWindowName: this.me.name
-        });
+        }).then(() => undefined);
     }
 
     send(destination: Identity, topic: string, message: any): Promise<void> {
@@ -31,7 +31,7 @@ export default class InterApplicationBus extends Bare {
             topic,
             message,
             sourceWindowName: this.me.name
-        });
+        }).then(() => undefined);
     }
 
     subscribe(source: Identity, topic: string, listener: Function): Promise<void> {
@@ -45,7 +45,7 @@ export default class InterApplicationBus extends Bare {
             });
         };
         const alreadySubscribed = () => {
-            return new Promise(r => r);
+            return new Promise(r => r).then(() => undefined);
         };
 
         this.on(subKey, listener);
@@ -64,7 +64,7 @@ export default class InterApplicationBus extends Bare {
             });
         };
         const dontSendUnsubscription = () => {
-            return new Promise(r => r);
+            return new Promise(r => r).then(() => undefined);
         };
 
         this.removeListener(subKey, listener);

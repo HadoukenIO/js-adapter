@@ -5,7 +5,7 @@
         "noImplicitAny": true,
         "declaration": true,
         "outDir": "out",
-        "strictNullChecks": true,
+        "strictNullChecks": false,
         "sourceMap": true
     },
     "exclude": [ "node_modules", "out", "OpenFin"]
