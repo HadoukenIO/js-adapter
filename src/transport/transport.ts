@@ -180,4 +180,5 @@ export interface ConnectConfig {
     uuid: string;
     name?: string;
     nonPersistent?: boolean;
+    runtimeClient?: boolean;
 }
