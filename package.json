@@ -17,6 +17,7 @@
     "grunt-tslint": "~3.3.0",
     "mocha": "~3.1.2",
     "openfin-cli": "~1.1.4",
+    "rimraf": "^2.6.1",
     "sinon": "~1.17.6",
     "ts-node": "~1.7.0",
     "tslint": "~3.15.1"
@@ -24,6 +25,7 @@
   "dependencies": {
     "@types/mocha": "^2.2.38",
     "@types/node": "^6.0.52",
+    "@types/rimraf": "0.0.28",
     "@types/sinon": "^1.16.34",
     "@types/ws": "~0.0.36",
     "typescript": "~2.2.0",
