@@ -80,28 +80,17 @@ class Transport extends EventEmitter {
     }
 
     ferryAction(data: any): Promise<Message<any>> {
-        const {action, payload} = data;
-
         return new Promise((resolve, reject) => {
             const id = this.messageCounter++;
-            const msg = {
-                action,
-                payload,
-                messageId: id
-            };
+            data.messageId = id;
 
             this.addWireListener(id, (res: any) => {
-                const {payload} = res;
-
-                resolve(payload);
-
-            }, (rej: any) => {
-                const {payload} = rej;
-
-                reject(payload);
+                resolve(res.payload);
+            }, (err: any) => {
+                reject(err);
             }, false);
 
-            this.wire.send(msg);
+            this.wire.send(data);
 
         });
     }

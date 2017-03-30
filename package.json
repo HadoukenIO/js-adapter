@@ -4,7 +4,7 @@
   "main": "./out/src/main.js",
   "types": "./out/src/main.d.ts",
   "scripts": {
-    "postinstall": "node_modules/.bin/tsc",
+    "postinstall": "tsc",
     "test": "grunt test",
     "repl": "node_modules/.bin/openfin -l -c test/app.json & grunt && node out/repl",
     "build": "grunt"

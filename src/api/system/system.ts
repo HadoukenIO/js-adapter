@@ -159,9 +159,8 @@ export default class System extends Base {
         }).then(({ payload }) => payload.data);
     }
 
-    executeOnRemote(payload: any, ack: any, nack: any): any {
-        this.wire.ferryAction(payload)
-            .then(ack)
-            .catch(nack);
+    executeOnRemote(requestingIdentity: Identity, data: any): Promise<any> {
+        data.requestingIdentity = requestingIdentity;
+        return this.wire.ferryAction(data);
     }
 }
