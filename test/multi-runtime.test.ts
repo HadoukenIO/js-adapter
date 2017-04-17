@@ -5,9 +5,12 @@ import * as https from "https";
 import * as path from "path";
 import { connect as rawConnect } from "../src/main";
 
-describe(`multi runtime`, () => {
+const appConfig = JSON.parse(fs.readFileSync("test/app.json").toString());
 
-    it(`should fire listener on remote runtime`, (done) => {
+describe(`multi runtime`, function() {
+
+    it(`should fire listener on remote runtime`, function(done)  {
+        this.timeout(10000);
         Promise.all([launchAndConnect(), launchAndConnect()]).then((conns: any) => {
             const [{appConfig: {startup_app:{uuid}}},
                    {fin}] = conns;
@@ -41,11 +44,11 @@ function generateAppConfig() {
     };
 }
 
-function launchAndConnect(version = `6.49.18.31`, uuid = `my-uuid`, realm = false) {
-
+function launchAndConnect(version = appConfig.runtime.version, uuid = `my-uuid`, realm = false) {
+    
     return new Promise((resolve, reject) => {
 
-        // stagger the launches or this tends to cause copy data errors... 
+        // stagger the launches or this tends to cause copy data errors...
         spawnRealm(version).then((rt: any) => {
             rawConnect({
                 address: `ws://localhost:${rt.port}`,

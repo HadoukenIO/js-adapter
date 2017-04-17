@@ -7,7 +7,7 @@ describe("Application.", () => {
     let testApp: Application;
     let appConfigTemplate = {
         name: "adapter-test-app",
-        url: "http://acidtests.org",
+        url: "about:blank",
         uuid: "adapter-test-app",
         autoShow: true,
         accelerator: {
@@ -57,12 +57,12 @@ describe("Application.", () => {
 
     describe("getChildWindows()", () => {
 
-        it("Fulfilled", () => testApp.getChildWindows().then(data => assert(data === [])));
+        it("Fulfilled", () => testApp.getChildWindows().then(data => assert(data instanceof Array)));
     });
 
     describe("getGroups()", () => {
 
-        it("Fulfilled", () => testApp.getGroups().then(data => assert(data === [])));
+        it("Fulfilled", () => testApp.getGroups().then(data => assert(data instanceof Array)));
     });
 
     describe("getParentUuid()",  () => {
@@ -108,13 +108,14 @@ describe("Application.", () => {
         });
     });
 
-    describe("setTrayIcon()", () => {
+    //TODO: We need to host icons in order to test this.
+    // describe("setTrayIcon()", () => {
         
-        const iconUrl = "https://developer.openf.in/download/openfin.png";
-        after(() => testApp.removeTrayIcon());
+    //     const iconUrl = "https://developer.openf.in/download/openfin.png";
+    //     after(() => testApp.removeTrayIcon());
 
-        it("Fulfilled", () => testApp.setTrayIcon(iconUrl).then(data => assert(true)));
-    });
+    //     it("Fulfilled", () => testApp.setTrayIcon(iconUrl).then(data => assert(true)));
+    // });
 
     describe("terminate()", () => {
 

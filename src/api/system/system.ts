@@ -140,7 +140,7 @@ export default class System extends Base {
     }
     
     updateProxySettings(options: ProxyConfig): Promise<void> {
-        return this.wire.sendAction("terminate-external-process", options).then(() => undefined);
+        return this.wire.sendAction("update-proxy", options).then(() => undefined);
     }
 
     // incompatible with standalone node process.

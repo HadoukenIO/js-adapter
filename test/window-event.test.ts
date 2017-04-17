@@ -8,7 +8,7 @@ describe("Window.addEventListener()", () => {
     let fin: Fin,
         appConfigTemplate = {
             name: "adapter-test-app",
-            url: "http://acidtests.org",
+            url: "about:blank",
             uuid: "adapter-test-app",
             autoShow: true,
             accelerator: {

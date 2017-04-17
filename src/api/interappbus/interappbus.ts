@@ -97,11 +97,12 @@ export default class InterApplicationBus extends Bare {
     }
 
     protected createSubscriptionKey(uuid: string, name: string, topic: string): string {
-        if (!(uuid && name && topic)) {
+        const n = name || "*";
+        if (!(uuid && n && topic)) {
             throw new Error("Missing uuid, name, or topic string");
         }
 
-        return createKey(uuid, name, topic);
+        return createKey(uuid, n, topic);
     }
 
     protected onmessage(message: Message<InterAppPayload>): boolean {

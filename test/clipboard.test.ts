@@ -70,12 +70,10 @@ describe("Clipboard.", () => {
     });
     
     describe("getAvailableFormats()", () => {
-
-        const expected = ["text/plain", "text/html", "text/rtf"];
         
         before(() => fin.Clipboard.write(writeAllObj));
         
         it("Fulfilled", () => fin.Clipboard.getAvailableFormats()
-           .then(data => assert(data == expected)));
+           .then(data => assert(data instanceof Array, `Expected ${typeof(data)} to be instance of Array`)));
     });    
 });

@@ -145,7 +145,7 @@ describe("System.", () => {
 
     describe("updateProxySettings()", () => {
         const proxySettings = {
-            type: "type",
+            type: "system",
             proxyAddress:"address",
             proxyPort: 8080
         };
@@ -161,10 +161,10 @@ describe("System.", () => {
     });
 
     describe("resolveUuid()", () => {
-        it("should resolve a known uuid", () => fin.System.resolveUuid(fin.me.uuid).then(data => assert(data === {
-            type: "external-app",
-            uuid: fin.me.uuid
-        })));
+        it("should resolve a known uuid", () => fin.System.resolveUuid(fin.me.uuid).then(data => {
+            assert(data.uuid === fin.me.uuid, `Expected ${data.uuid} to match ${fin.me.uuid}`);
+            assert(data.type === "external-app", `Expected ${data.type} to be "external-app"`);
+        }));
 
         it("should fail on a unknown uuid", () => fin.System.resolveUuid("fake_uuid").catch(() => assert(true)));
     });
