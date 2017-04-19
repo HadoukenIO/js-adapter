@@ -2,12 +2,13 @@ import { Wire, WireConstructor } from "./wire";
 import writeToken from "./write-token";
 import { Identity } from "../identity";
 import { EventEmitter } from "events";
+import { READY_STATE } from "./websocket";
 
 import {
-    UnexpectedAction,
-    DuplicateCorrelation,
-    NoAck,
-    NoCorrelation,
+    UnexpectedActionError,
+    DuplicateCorrelationError,
+    NoAckError,
+    NoCorrelationError,
     RuntimeError
 } from "./transport-errors";
 
@@ -47,7 +48,7 @@ class Transport extends EventEmitter {
             }, true))
             .then(({ action, payload }) => {
                 if (action !== "external-authorization-response") {
-                    return Promise.reject(new UnexpectedAction(action));
+                    return Promise.reject(new UnexpectedActionError(action));
                 } else {
                     token = payload.token;
                     return writeToken(payload.file, payload.token);
@@ -56,7 +57,7 @@ class Transport extends EventEmitter {
             .then(() => this.sendAction("request-authorization", reqAuthPaylaod, true))
             .then(({ action, payload }) => {
                 if (action !== "authorization-response") {
-                    return Promise.reject(new UnexpectedAction(action));
+                    return Promise.reject(new UnexpectedActionError(action));
                 } else if (payload.success !== true) {
                     return Promise.reject(new RuntimeError(payload));
                 } else {
@@ -64,6 +65,21 @@ class Transport extends EventEmitter {
                 }
             });
     }
+
+    /* `READY_STATE` is an instance var set by `constructor` to reference the `WebTransportSocket.READY_STATE` enum.
+     * This is syntactic sugar that makes the enum accessible through the `wire` property of the various `fin` singletons.
+     * For example, `fin.system.wire.READY_STATE` is a shortcut to `fin.system.wire.wire.constructor.READY_STATE`.
+     * However it is accessed, the enum is useful for interrogating the state of the web socket on send failure.
+     * The `err.readyState` value is passed to the `reject` handler of the promise returned by either of
+     * `sendAction` or `ferryAction`, and hence all the API methods in the various `fin` singletons that call them.
+     * The enum can be used in two distinct ways by the `reject` handler (using `fin.System.getVersion` by way of example):
+     * 1. State name by state value:
+     * fin.system.getVersion().catch(err => { console.log('State:', fin.system.wire.READY_STATE[err.readyState]); });
+     * 2. State value by state name:
+     * fin.system.getVersion().catch(err => { console.log('Closed:', err.readyState === fin.system.wire.READY_STATE.CLOSED); });
+     * Note that `reject` is called when and only when `readyState` is not `OPEN`.
+     */
+    READY_STATE = READY_STATE;
 
     sendAction(action: string, payload = {}, uncorrelated = false): Promise<Message<any>> {
         return new Promise((resolve, reject) => {
@@ -74,8 +90,9 @@ class Transport extends EventEmitter {
                 messageId: id
             };
 
-            this.wire.send(msg);
-            this.addWireListener(id, resolve, reject, uncorrelated);
+            return this.wire.send(msg)
+                .then(() => this.addWireListener(id, resolve, reject, uncorrelated))
+                .catch(reject);
         });
     }
 
@@ -84,14 +101,11 @@ class Transport extends EventEmitter {
             const id = this.messageCounter++;
             data.messageId = id;
 
-            this.addWireListener(id, (res: any) => {
-                resolve(res.payload);
-            }, (err: any) => {
-                reject(err);
-            }, false);
+            let resolver = (data: any) => { resolve(data.payload); };
 
-            this.wire.send(data);
-
+            return this.wire.send(data)
+                .then(() => this.addWireListener(id, resolver, reject, false))
+                .catch(reject);
         });
     }
 
@@ -103,7 +117,7 @@ class Transport extends EventEmitter {
         if (uncorrelated) {
             this.uncorrelatedListener = resolve;
         } else if (id in this.wireListeners) {
-            reject(new DuplicateCorrelation(String(id)));
+            reject(new DuplicateCorrelationError(String(id)));
         } else {
             this.wireListeners[id] = { resolve, reject };
         }
@@ -125,12 +139,12 @@ class Transport extends EventEmitter {
             this.uncorrelatedListener.call(null, data);
             this.uncorrelatedListener = () => { };
         } else if (!(id in this.wireListeners)) {
-            throw new NoCorrelation(String(id));
+            throw new NoCorrelationError(String(id));
             // Return false?
         } else {
             const { resolve, reject } = this.wireListeners[id];
             if (data.action !== "ack") {
-                reject(new NoAck(data.action));
+                reject(new NoAckError(data.action));
             } else if (!("payload" in data) || !data.payload.success) {
                 reject(new RuntimeError(data.payload));
             } else {

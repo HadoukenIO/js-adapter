@@ -1,8 +1,9 @@
-node_modules
-npm-debug.log
-yarn-error.log
-out
-tmp
-.tscache
-src/.baseDir.ts
+.DS_Store
+/.idea
+/node_modules
+*.log
+/out
+/tmp
+/.tscache
+/src/.baseDir.ts
 TODO

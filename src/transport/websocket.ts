@@ -1,6 +1,14 @@
 import { EventEmitter } from "events";
 import * as WebSocket from "ws";
 import { Wire } from "./wire";
+import { DisconnectedError } from "./transport-errors";
+
+export enum READY_STATE { // https://github.com/websockets/ws/blob/master/doc/ws.md#ready-state-constants
+    CONNECTING, // The connection is not yet open.
+    OPEN,       // The connection is open and ready to communicate.
+    CLOSING,    // The connection is in the process of closing.
+    CLOSED      // The connection is closed.
+}
 
 export default class WebSocketTransport extends EventEmitter implements Wire {
     protected wire: WebSocket;
@@ -23,11 +31,15 @@ export default class WebSocketTransport extends EventEmitter implements Wire {
                 this.emit("disconnected");
             });
         });
-    }
+    };
 
     send(data: any, flags?: any): Promise<any> {
-        return new Promise(resolve => {
-            this.wire.send(JSON.stringify(data), flags, resolve);
+        return new Promise((resolve, reject) => {
+            if (this.wire.readyState !== READY_STATE.OPEN) {
+                reject(new DisconnectedError(this.wire.readyState));
+            } else {
+                this.wire.send(JSON.stringify(data), flags, resolve);
+            }
         });
     }
     
@@ -35,4 +47,6 @@ export default class WebSocketTransport extends EventEmitter implements Wire {
         this.wire.terminate();
         return Promise.resolve();
     }
+
+    static READY_STATE = READY_STATE;
 }
