@@ -6,7 +6,7 @@
   "scripts": {
     "postinstall": "tsc",
     "test": "grunt test",
-    "repl": "node_modules/.bin/openfin -l -c test/app.json & grunt && node out/repl",
+    "repl": "grunt repl",
     "build": "grunt"
   },
   "devDependencies": {

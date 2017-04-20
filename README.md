@@ -42,8 +42,8 @@ $ `npm run build`
 
 # Test
 
-$ `npm test`
+$ `npm test -- --ver=alpha`
 
 # Repl
 
-$ `npm run repl`
+$ `npm run repl -- --ver=alpha`

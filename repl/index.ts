@@ -1,7 +1,7 @@
 import * as f from "../src/main";
 import * as repl from "repl";
 
-function connect() {
+export function startRepl() {
     f.connect({
         address: "ws://localhost:9696",
         uuid: Math.random().toString(36).slice(2)
@@ -28,10 +28,7 @@ function connect() {
     }).catch(err => {
         if (err.code === "ECONNREFUSED") {
             //sleep and re-connect
-            setTimeout(connect, 2000);
+            setTimeout(startRepl, 2000);
         }
     });
 }
-
-//connect to the runtime.
-connect();

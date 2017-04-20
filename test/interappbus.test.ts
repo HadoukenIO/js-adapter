@@ -1,6 +1,5 @@
-import  * as sinon  from "sinon";
+//import  * as sinon  from "sinon";
 import { conn } from "./connect";
-import { delayPromise } from "./delay-promise";
 import * as assert from "assert";
 import { connect as rawConnect, Fin } from "../src/main";
 
@@ -8,6 +7,8 @@ const id = "adapter-test-window";
 const topic = "topic";
 const topic2 = "topic2";
 const m = Math.random().toString(36).slice(2);
+
+function noop() {}
 
 describe("InterApplicationBus.", () => {
     let fin: Fin;
@@ -22,7 +23,7 @@ describe("InterApplicationBus.", () => {
         }).then(() => fin.InterApplicationBus.publish(topic, m));
     });
 
-    it("subscriber added", (done) => {
+    it("subscriber added", done => {
         
         rawConnect({
             address: `ws://localhost:9696`,
@@ -31,14 +32,13 @@ describe("InterApplicationBus.", () => {
             const iab = otherFin.InterApplicationBus;
             const appid = { uuid: "SUBSCRIBER_ADDED" };
             const topic = "SUBSCRIBER_ADDED";
-            const listener = function() { };
 
             iab.on(iab.events.subscriberAdded, () => {
                 iab.removeAllListeners(iab.events.subscriberAdded);
                 done();
             });
-
-            fin.InterApplicationBus.subscribe(appid, topic, listener);
+            
+            fin.InterApplicationBus.subscribe(appid, topic, noop);
         });
     });
 
@@ -51,26 +51,26 @@ describe("InterApplicationBus.", () => {
             const iab = otherFin.InterApplicationBus;
             const appid = { uuid: "SUBSCRIBER_REMOVED" };
             const topic = "SUBSCRIBER_REMOVED";
-            const listener = function() { };
 
             iab.on(iab.events.subscriberRemoved, () => {
                 iab.removeAllListeners(iab.events.subscriberRemoved);
                 done();
             });
 
-            fin.InterApplicationBus.subscribe(appid, topic, listener)
+            fin.InterApplicationBus.subscribe(appid, topic, noop)
                 .then(() => {
-                    return fin.InterApplicationBus.unsubscribe(appid, topic, listener);
+                    return fin.InterApplicationBus.unsubscribe(appid, topic, noop);
                 });
         });
     });
 
-    it.skip("unsubscribe()", () => {
-        const spy = sinon.spy();
-        return fin.InterApplicationBus.subscribe({ uuid: id }, topic2, spy)
-            .then(() => fin.InterApplicationBus.unsubscribe({ uuid: id }, topic2, spy))
+    it("unsubscribe()", function () {
+        return fin.InterApplicationBus.subscribe({ uuid: id }, topic2, noop)
+            .then(() => fin.InterApplicationBus.unsubscribe({ uuid: id }, topic2, noop))
             .then(() => fin.InterApplicationBus.send({ uuid: id }, topic2, m))
-            .then(() => delayPromise())
-            .then(() => assert(!spy.called));
+            .catch(err => {  
+                assert.equal(err.message, "Error: No subscriptions match", "Expected to get a no subscriptions match error");
+            });
+        
     });
 });
