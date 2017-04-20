@@ -23,7 +23,7 @@ module.exports = function(grunt) {
         },
         mochaTest: {
             default: {
-                src: "out/test/**/multi-runtime.test.js"
+                src: "out/test/**/*.js"
             }
         },
         openfin: {
