@@ -44,6 +44,10 @@ $ `npm run build`
 
 $ `npm test -- --ver=alpha`
 
+# Test subset of tests
+
+$ `npm test -- --ver=alpha --grep="Application"`
+
 # Repl
 
 $ `npm run repl -- --ver=alpha`

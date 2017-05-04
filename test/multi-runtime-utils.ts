@@ -132,7 +132,8 @@ function generateAppConfig(): any {
             uuid,
             name: uuid,
             autoShow: true,
-            url: `about:blank`
+            url: appConfig.startup_app.url,
+            saveWindowState: false
         }
     };
 }

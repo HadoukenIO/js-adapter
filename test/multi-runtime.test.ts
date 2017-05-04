@@ -13,6 +13,7 @@ describe(`multi runtime`, function() {
             const [{appConfig: {startup_app:{uuid}}},
                    {fin}] = conns;
 
+            console.log(`on the promise all`);
             // give the initial runtime app a bit to complete spinup
             setTimeout(() => {
                 fin.Window.wrap({uuid, name: uuid}).once(`bounds-changed`, () => {
@@ -24,4 +25,24 @@ describe(`multi runtime`, function() {
 
         });
     });
+
+    it(`shoudl quickly launch and connect to multiple runtimes`, function(done)  {
+        this.timeout(120000);
+        Promise.all([launchAndConnect(), launchAndConnect(), launchAndConnect(),
+                     launchAndConnect(), launchAndConnect(), launchAndConnect()]).then((conns: any) => {
+
+                         // give the initial runtime app a bit to complete spinup
+                         setTimeout(() => {
+                             conns[2].fin.System.getAllExternalApplications().then((apps: any) => {
+                                 try {
+                                     assert(conns.length <= apps.length, `Expected connections to match external applications`);
+                                     done();
+                                 } catch (err) {
+                                     done(err);
+                                 }
+                             });
+                         }, 3000);
+        });
+    });
+    
 });

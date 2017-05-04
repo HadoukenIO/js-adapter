@@ -1,10 +1,17 @@
 const path = require("path");
 const testAppConfig = path.join("test","app.json");
+const liveServer = require('live-server');
+
+const serverParams = {
+    root: path.resolve('html'),
+    open: false,
+    logLevel: 2,
+    port: 8689
+};
 
 module.exports = function(grunt) {
     const version = grunt.option("ver");
     const uuid = "testapp";
-    const url = "about:blank";
     const args = "--v=1 --enable-logging --enable-multi-runtime";
     
     grunt.initConfig({
@@ -40,8 +47,8 @@ module.exports = function(grunt) {
                         },
                         startup_app: {
                             uuid,
-                            autoShow: false,
-                            url,
+                            autoShow: true,
+                            url: `http://localhost:${serverParams.port}/index.html`,
                             nonPersistent: true,
                             saveWindowState: false
                         }
@@ -59,8 +66,13 @@ module.exports = function(grunt) {
             grunt.fail.fatal("No version given, please provide a target version");
         }
     });
+
+    grunt.registerTask("start-server", function() {
+        const done = this.async();
+        liveServer.start(serverParams).on('listening', done);
+    });
     
-    grunt.registerTask('start-repl', function() {
+    grunt.registerTask("start-repl", function() {
         const finRepl = require(`./out/repl/index.js`);
         const done = this.async();
         finRepl.startRepl();
@@ -74,6 +86,6 @@ module.exports = function(grunt) {
     grunt.registerTask("lint", [ "tslint" ]);
     grunt.registerTask("build", [ "ts" ]);
     grunt.registerTask("default", [ "lint", "build" ]);
-    grunt.registerTask("test", [ "check-version", "default", "openfin", "mochaTest" ]);
-    grunt.registerTask("repl", [ "check-version", "default", "openfin", "start-repl" ]);
+    grunt.registerTask("test", [ "check-version", "default", "start-server", "openfin", "mochaTest" ]);
+    grunt.registerTask("repl", [ "check-version", "default", "start-server", "openfin", "start-repl" ]);
 };

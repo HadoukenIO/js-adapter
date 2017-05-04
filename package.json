@@ -15,6 +15,7 @@
     "grunt-openfin": "latest",
     "grunt-ts": "~5.5.1",
     "grunt-tslint": "~3.3.0",
+    "live-server": "^1.2.0",
     "mocha": "~3.1.2",
     "openfin-cli": "~1.1.4",
     "rimraf": "^2.6.1",
