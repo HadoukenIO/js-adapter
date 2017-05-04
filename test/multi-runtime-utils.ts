@@ -42,7 +42,8 @@ function spawnRealm (version: string): Promise<RuntimeProcess> {
                                        `--attach-console`,
                                        `--enable-multi-runtime`,
                                        `--v=1`,
-                                       `--security-realm=${realm}`
+                                       `--security-realm=${realm}`,
+                                       `--enable-mesh`
                                       ]);
                 runtime.on(`error`, reject);
 
