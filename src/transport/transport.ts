@@ -1,8 +1,8 @@
-import { Wire, WireConstructor } from "./wire";
-import writeToken from "./write-token";
-import { Identity } from "../identity";
-import { EventEmitter } from "events";
-import { READY_STATE } from "./websocket";
+import { Wire, WireConstructor } from './wire';
+import writeToken from './write-token';
+import { Identity } from '../identity';
+import { EventEmitter } from 'events';
+import { READY_STATE } from './websocket';
 
 import {
     UnexpectedActionError,
@@ -10,7 +10,7 @@ import {
     NoAckError,
     NoCorrelationError,
     RuntimeError
-} from "./transport-errors";
+} from './transport-errors';
 
 export interface MessageHandler {
     (data: Function): boolean;
@@ -21,42 +21,42 @@ class Transport extends EventEmitter {
     protected wireListeners: { resolve: Function, reject: Function }[] = [];
     protected uncorrelatedListener: Function;
     protected messageHandlers: MessageHandler[] = [];
-    me: Identity;
+    public me: Identity;
     protected wire: Wire;
 
     constructor(wireType: WireConstructor) {
         super();
         this.wire = new wireType(this.onmessage.bind(this));
         this.registerMessageHandler(this.handleMessage.bind(this));
-        this.wire.on("disconnected", () => {
-            this.emit("disconnected");
+        this.wire.on('disconnected', () => {
+            this.emit('disconnected');
         });
     }
 
-    connect(config: ConnectConfig): Promise<string> {
+    public connect(config: ConnectConfig): Promise<string> {
         const {address, uuid, name} = config;
-        const reqAuthPaylaod = Object.assign({}, config, { type: "file-token" });
+        const reqAuthPaylaod = Object.assign({}, config, { type: 'file-token' });
         let token: string;
 
         this.me = { uuid, name };
 
         return this.wire.connect(address)
-            .then(() => this.sendAction("request-external-authorization", {
+            .then(() => this.sendAction('request-external-authorization', {
                 uuid,
-                type: "file-token", // Other type for browser? Ask @xavier
+                type: 'file-token' // Other type for browser? Ask @xavier
                 //authorizationToken: null
             }, true))
             .then(({ action, payload }) => {
-                if (action !== "external-authorization-response") {
+                if (action !== 'external-authorization-response') {
                     return Promise.reject(new UnexpectedActionError(action));
                 } else {
                     token = payload.token;
                     return writeToken(payload.file, payload.token);
                 }
             })
-            .then(() => this.sendAction("request-authorization", reqAuthPaylaod, true))
+            .then(() => this.sendAction('request-authorization', reqAuthPaylaod, true))
             .then(({ action, payload }) => {
-                if (action !== "authorization-response") {
+                if (action !== 'authorization-response') {
                     return Promise.reject(new UnexpectedActionError(action));
                 } else if (payload.success !== true) {
                     return Promise.reject(new RuntimeError(payload));
@@ -79,10 +79,11 @@ class Transport extends EventEmitter {
      * fin.system.getVersion().catch(err => { console.log('Closed:', err.readyState === fin.system.wire.READY_STATE.CLOSED); });
      * Note that `reject` is called when and only when `readyState` is not `OPEN`.
      */
-    READY_STATE = READY_STATE;
+    public READY_STATE = READY_STATE;
 
-    sendAction(action: string, payload = {}, uncorrelated = false): Promise<Message<any>> {
+    public sendAction(action: string, payload: any = {}, uncorrelated: boolean = false): Promise<Message<any>> {
         return new Promise((resolve, reject) => {
+            // tslint:disable-next-line
             const id = this.messageCounter++;
             const msg = {
                 action,
@@ -96,12 +97,13 @@ class Transport extends EventEmitter {
         });
     }
 
-    ferryAction(data: any): Promise<Message<any>> {
+    public ferryAction(data: any): Promise<Message<any>> {
         return new Promise((resolve, reject) => {
+            // tslint:disable-next-line
             const id = this.messageCounter++;
             data.messageId = id;
 
-            let resolver = (data: any) => { resolve(data.payload); };
+            const resolver = (data: any) => { resolve(data.payload); };
 
             return this.wire.send(data)
                 .then(() => this.addWireListener(id, resolver, reject, false))
@@ -109,7 +111,7 @@ class Transport extends EventEmitter {
         });
     }
 
-    registerMessageHandler(handler: MessageHandler): void {
+    public registerMessageHandler(handler: MessageHandler): void {
         this.messageHandlers.unshift(handler);
     }
 
@@ -124,8 +126,8 @@ class Transport extends EventEmitter {
         // Timeout and reject()?
     }
 
-    /** This method executes message handlers until the _one_ that handles the message (returns truthy) has run */
-    protected onmessage(data: Message<Payload>): void { 
+    // This method executes message handlers until the _one_ that handles the message (returns truthy) has run
+    protected onmessage(data: Message<Payload>): void {
 
         for (const h of this.messageHandlers) {
             h.call(null, data);
@@ -133,19 +135,21 @@ class Transport extends EventEmitter {
     }
 
     protected handleMessage(data: Message<Payload>): boolean {
-
+        // tslint:disable-next-line
         const id: number = data.correlationId || NaN;
-        if (!("correlationId" in data)) {
+        
+        if (!('correlationId' in data)) {
             this.uncorrelatedListener.call(null, data);
+            // tslint:disable-next-line
             this.uncorrelatedListener = () => { };
         } else if (!(id in this.wireListeners)) {
             throw new NoCorrelationError(String(id));
             // Return false?
         } else {
             const { resolve, reject } = this.wireListeners[id];
-            if (data.action !== "ack") {
+            if (data.action !== 'ack') {
                 reject(new NoAckError(data.action));
-            } else if (!("payload" in data) || !data.payload.success) {
+            } else if (!('payload' in data) || !data.payload.success) {
                 reject(new RuntimeError(data.payload));
             } else {
                 resolve.call(null, data);
@@ -160,22 +164,22 @@ class Transport extends EventEmitter {
 export default Transport;
 
 interface Transport {
-    sendAction(action: "request-external-authorization", payload: {}, uncorrelated: true): Promise<Message<AuthorizationPayload>>;
+    sendAction(action: 'request-external-authorization', payload: {}, uncorrelated: true): Promise<Message<AuthorizationPayload>>;
     sendAction(action: string, payload: {}, uncorrelated: boolean): Promise<Message<Payload>>;
 }
 
 export class Message<T> {
-    action: string;
-    payload: T;
-    correlationId?: number;
+    public action: string;
+    public payload: T;
+    public correlationId?: number;
 }
 export class Payload {
-    success: boolean;
-    data: any;
+    public success: boolean;
+    public data: any;
 }
 export class AuthorizationPayload {
-    token: string;
-    file: string;
+    public token: string;
+    public file: string;
 }
 
 export interface ConnectConfig {

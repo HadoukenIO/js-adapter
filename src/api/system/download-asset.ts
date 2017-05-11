@@ -1,5 +1,5 @@
 export interface DownloadAssetRequestType {
-    src:string;
+    src: string;
     alias: string;
     version: string;
     target?: string;

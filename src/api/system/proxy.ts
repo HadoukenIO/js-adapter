@@ -2,7 +2,7 @@ export interface ProxyInfo {
     config: ProxyConfig;
     system: {
         autoConfigUrl: string;
-        bypass: "";
+        bypass: '';
         enabled: boolean;
         proxy: string;
     };

@@ -1,13 +1,13 @@
-import { Bare, Base } from "../base";
-import { Identity } from "../../identity";
-import Transport, { Message } from "../../transport/transport";
+import { Bare, Base } from '../base';
+import { Identity } from '../../identity';
+import Transport, { Message } from '../../transport/transport';
 
 const events = {
-    show: "show",
-    close: "close",
-    error: "error",
-    click: "click",
-    message: "message"
+    show: 'show',
+    close: 'close',
+    error: 'error',
+    click: 'click',
+    message: 'message'
 };
 
 export interface Notification {
@@ -16,15 +16,16 @@ export interface Notification {
 }
 
 export class NotificationOptions {
-    url: string;
-    message: string;
-    timeout: string | number;
-    notificationId: number;
-    uuidOfProxiedApp: string;
-    ignoreMouseOver: boolean;
+    public url: string;
+    public message: string;
+    public timeout: string | number;
+    public notificationId: number;
+    public uuidOfProxiedApp: string;
+    public ignoreMouseOver: boolean;
 
+    // tslint:disable-next-line
     constructor(options: any = {}, identity: Identity, notificationId: number) {
-        let { url, message, timeout, ignoreMouseOver } = options;
+        const { url, message, timeout, ignoreMouseOver } = options;
 
         this.url = url;
         this.message = message || null;
@@ -39,8 +40,9 @@ export interface NotificationCallback {
     message?: any;
 }
 
+// tslint:disable-next-line
 export class _Notification extends Base implements Notification {
-    private listenerList: Array<string> = ["newListener"];
+    private listenerList: Array<string> = ['newListener'];
 
     private unhookAllListeners = () => {
         this.listenerList.forEach(event => {
@@ -48,20 +50,20 @@ export class _Notification extends Base implements Notification {
         });
 
         this.listenerList.length = 0;
-    };
+    }
 
     private buildLocalPayload(rawPayload: any): NotificationCallback {
-        let {payload: { message}, type} = rawPayload;
+        const { payload: { message}, type} = rawPayload;
 
-        let payload: NotificationCallback = {};
+        const payload: NotificationCallback = {};
 
         switch (type) {
-            case "message": payload.message = message;
+            case 'message': payload.message = message;
                 break;
-            case "show":
-            case "error":
-            case "click":
-            case "close":
+            case 'show':
+            case 'error':
+            case 'click':
+            case 'close':
             default: break;
         }
 
@@ -73,16 +75,16 @@ export class _Notification extends Base implements Notification {
     protected notificationId: number;
 
     protected onmessage(message: any): boolean {
-        let {action, payload: messagePayload} = message;
+        const {action, payload: messagePayload} = message;
 
-        if (action === "process-notification-event") {
-            let {payload : {notificationId}, type} = messagePayload;
+        if (action === 'process-notification-event') {
+            const {payload : {notificationId}, type} = messagePayload;
 
             if (notificationId === this.notificationId) {
                 this.emit(type, this.buildLocalPayload(messagePayload));
             }
         }
-        
+
         return true;
     }
 
@@ -94,12 +96,12 @@ export class _Notification extends Base implements Notification {
         this.timeout = options.timeout;
         this.message = options.message;
         this.notificationId = options.notificationId;
-        this.on("newListener", (event: any) => {
+        this.on('newListener', (event: any) => {
             this.listenerList.push(event);
         });
 
         // give any user added listeners a chance to run then unhook
-        this.on("close", () => {
+        this.on('close', () => {
             setTimeout(this.unhookAllListeners, 1);
         });
     }
@@ -111,11 +113,11 @@ export class _Notification extends Base implements Notification {
     public show(): Promise<Message<any>> {
 
         if (!this.url) {
-            throw new Error("Notifications require a url");
+            throw new Error('Notifications require a url');
         }
 
-        return this.wire.sendAction("send-action-to-notifications-center", {
-            action: "create-notification",
+        return this.wire.sendAction('send-action-to-notifications-center', {
+            action: 'create-notification',
             payload: {
                 url: this.url,
                 notificationId: this.options.notificationId,
@@ -129,8 +131,8 @@ export class _Notification extends Base implements Notification {
 
     public sendMessage(message: any): Promise<Message<any>> {
 
-        return this.wire.sendAction("send-action-to-notifications-center", {
-            action: "send-notification-message",
+        return this.wire.sendAction('send-action-to-notifications-center', {
+            action: 'send-notification-message',
             payload: {
                 notificationId: this.options.notificationId,
                 message: {
@@ -142,8 +144,8 @@ export class _Notification extends Base implements Notification {
 
     public close(): Promise<Message<any>> {
 
-        return this.wire.sendAction("send-action-to-notifications-center", {
-            action: "close-notification",
+        return this.wire.sendAction('send-action-to-notifications-center', {
+            action: 'close-notification',
             payload: {
                 notificationId: this.options.notificationId
             }
@@ -151,10 +153,12 @@ export class _Notification extends Base implements Notification {
     }
 }
 
+// tslint:disable-next-line
 export default class _NotificationModule extends Bare {
 
     private nextNoteId = 0;
     private genNoteId() {
+        // tslint:disable-next-line
         return ++this.nextNoteId;
     };
 
@@ -162,7 +166,7 @@ export default class _NotificationModule extends Bare {
 
     public create(options: any): _Notification {
         const noteOptions = new NotificationOptions(options, this.me, this.genNoteId());
-        
+
         return new _Notification(this.wire,  noteOptions);
     };
 }

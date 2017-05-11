@@ -1,31 +1,31 @@
-import { Bare } from "../base";
-import { Identity } from "../../identity";
-import Transport, { Message } from "../../transport/transport";
-import RefCounter from "../../util/ref-counter";
+import { Bare } from '../base';
+import { Identity } from '../../identity';
+import Transport, { Message } from '../../transport/transport';
+import RefCounter from '../../util/ref-counter';
 
 export default class InterApplicationBus extends Bare {
-    events = {
-        subscriberAdded: "subscriber-added",
-        subscriberRemoved: "subscriber-removed"
+    public events = {
+        subscriberAdded: 'subscriber-added',
+        subscriberRemoved: 'subscriber-removed'
     };
 
-    refCounter = new RefCounter();
+    private refCounter = new RefCounter();
 
     constructor(wire: Transport) {
         super(wire);
         wire.registerMessageHandler(this.onmessage.bind(this));
     }
 
-    publish(topic: string, message: any): Promise<void> {
-        return this.wire.sendAction("publish-message", {
+    public publish(topic: string, message: any): Promise<void> {
+        return this.wire.sendAction('publish-message', {
             topic,
             message,
             sourceWindowName: this.me.name
         }).then(() => undefined);
     }
 
-    send(destination: Identity, topic: string, message: any): Promise<void> {
-        return this.wire.sendAction("send-message", {
+    public send(destination: Identity, topic: string, message: any): Promise<void> {
+        return this.wire.sendAction('send-message', {
             destinationUuid: destination.uuid,
             destinationWindowName: destination.name,
             topic,
@@ -34,17 +34,18 @@ export default class InterApplicationBus extends Bare {
         }).then(() => undefined);
     }
 
-    subscribe(source: Identity, topic: string, listener: Function): Promise<void> {
-        const subKey = this.createSubscriptionKey(source.uuid, source.name || "*", topic);
+    public subscribe(source: Identity, topic: string, listener: Function): Promise<void> {
+        const subKey = this.createSubscriptionKey(source.uuid, source.name || '*', topic);
         const sendSubscription = () => {
-            return this.wire.sendAction("subscribe", {
+            return this.wire.sendAction('subscribe', {
                 sourceUuid: source.uuid,
-                sourceWindowName: source.name || "*",
+                sourceWindowName: source.name || '*',
                 topic,
                 destinationWindowName: this.me.name
             });
         };
         const alreadySubscribed = () => {
+            // tslint:disable-next-line
             return new Promise(r => r).then(() => undefined);
         };
 
@@ -53,17 +54,18 @@ export default class InterApplicationBus extends Bare {
         return this.refCounter.actOnFirst(subKey, sendSubscription, alreadySubscribed);
     }
 
-    unsubscribe(source: Identity, topic: string, listener: Function): Promise<void> {
-        const subKey = this.createSubscriptionKey(source.uuid, source.name || "*", topic);
+    public unsubscribe(source: Identity, topic: string, listener: Function): Promise<void> {
+        const subKey = this.createSubscriptionKey(source.uuid, source.name || '*', topic);
         const sendUnsubscription = () => {
-            return this.wire.sendAction("unsubscribe", {
+            return this.wire.sendAction('unsubscribe', {
                 sourceUuid: source.uuid,
-                sourceWindowName: source.name || "*",
+                sourceWindowName: source.name || '*',
                 topic,
                 destinationWindowName: this.me.name
             });
         };
         const dontSendUnsubscription = () => {
+            // tslint:disable-next-line
             return new Promise(r => r).then(() => undefined);
         };
 
@@ -75,8 +77,8 @@ export default class InterApplicationBus extends Bare {
         const {payload: {message: payloadMessage, sourceWindowName, sourceUuid, topic}} = message;
         const keys = [
             this.createSubscriptionKey(sourceUuid, sourceWindowName, topic),
-            this.createSubscriptionKey(sourceUuid, "*", topic),
-            this.createSubscriptionKey("*", "*", topic)
+            this.createSubscriptionKey(sourceUuid, '*', topic),
+            this.createSubscriptionKey('*', '*', topic)
         ];
         const idOfSender = { uuid: sourceUuid, name: sourceWindowName };
 
@@ -97,9 +99,9 @@ export default class InterApplicationBus extends Bare {
     }
 
     protected createSubscriptionKey(uuid: string, name: string, topic: string): string {
-        const n = name || "*";
+        const n = name || '*';
         if (!(uuid && n && topic)) {
-            throw new Error("Missing uuid, name, or topic string");
+            throw new Error('Missing uuid, name, or topic string');
         }
 
         return createKey(uuid, n, topic);
@@ -109,7 +111,7 @@ export default class InterApplicationBus extends Bare {
         const {action} = message;
 
         switch (action) {
-            case "process-message": this.processMessage(message);
+            case 'process-message': this.processMessage(message);
                 break;
             case this.events.subscriberAdded: this.emitSubscriverEvent(this.events.subscriberAdded, message);
                 break;
@@ -123,16 +125,16 @@ export default class InterApplicationBus extends Bare {
 }
 
 export class InterAppPayload {
-    sourceUuid: string;
-    sourceWindowName: string;
-    topic: string;
-    destinationUuid?: string;
-    message?: any;
+    public sourceUuid: string;
+    public sourceWindowName: string;
+    public topic: string;
+    public destinationUuid?: string;
+    public message?: any;
 
 }
 
 function createKey(...toHash: string[]) {
     return toHash.map((item) => {
-        return (new Buffer("" + item)).toString("base64");
-    }).join("/");
+        return (new Buffer('' + item)).toString('base64');
+    }).join('/');
 }

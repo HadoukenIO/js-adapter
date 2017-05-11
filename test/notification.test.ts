@@ -1,8 +1,8 @@
-import { conn } from "./connect";
-import * as assert from "assert";
-import { Fin } from "../src/main";
+import { conn } from './connect';
+import * as assert from 'assert';
+import { Fin } from '../src/main';
 
-describe("Notification", () => {
+describe('Notification', () => {
     let fin: Fin;
     let notification: any;
 
@@ -13,13 +13,13 @@ describe("Notification", () => {
         });
     });
 
-    describe("shape - instance", () => {
-        it("should have a sendMessage method", () => {
-            assert(typeof(notification.sendMessage) === "function");
+    describe('shape - instance', () => {
+        it('should have a sendMessage method', () => {
+            assert(typeof(notification.sendMessage) === 'function');
         });
 
-        it("should have a close method", () => {
-            assert(typeof(notification.sendMessage) === "function");
+        it('should have a close method', () => {
+            assert(typeof(notification.sendMessage) === 'function');
         });
     });
 

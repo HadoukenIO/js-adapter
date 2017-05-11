@@ -1,172 +1,148 @@
-import { conn } from "./connect";
-import { Fin } from "../src/main";
-import * as assert from "assert";
+import { conn } from './connect';
+import { Fin } from '../src/main';
+import * as assert from 'assert';
 
-describe("System.", () => {
+describe('System.', () => {
     let fin: Fin;
-    
+
     before(() => {
         return conn().then((a: Fin) => fin = a);
     });
 
-    describe("getVersion()", () => {
-        
-        it("Fulfilled", () => fin.System.getVersion().then(() => assert(true)));
+    describe('getVersion()', () => {
+
+        it('Fulfilled', () => fin.System.getVersion().then(() => assert(true)));
     });
 
-    describe("clearCache()", () => {
-        
-        it("Fulfilled", () => fin.System.clearCache().then(() => assert(true)));
+    describe('clearCache()', () => {
+
+        it('Fulfilled', () => fin.System.clearCache().then(() => assert(true)));
     });
 
-    describe("deleteCacheOnExit()", () => {
+    describe('deleteCacheOnExit()', () => {
 
-        it("Fulfilled", () => fin.System.deleteCacheOnExit().then(() => assert(true)));
+        it('Fulfilled', () => fin.System.deleteCacheOnExit().then(() => assert(true)));
     });
 
-    describe("getAllWindows()", () => {
-        
-        it("Fulfilled", () => fin.System.getAllWindows().then(() => assert(true)));
+    describe('getAllWindows()', () => {
+
+        it('Fulfilled', () => fin.System.getAllWindows().then(() => assert(true)));
     });
 
-    describe("getAllApplications()", () => {
-        
-        it("Fulfilled", () => fin.System.getAllApplications().then(() => assert(true)));
+    describe('getAllApplications()', () => {
+
+        it('Fulfilled', () => fin.System.getAllApplications().then(() => assert(true)));
     });
 
-    describe("getCommandLineArguments()", () => {
-        
-        it("Fulfilled", () => fin.System.getCommandLineArguments().then(() => assert(true)));
+    describe('getCommandLineArguments()', () => {
+
+        it('Fulfilled', () => fin.System.getCommandLineArguments().then(() => assert(true)));
     });
 
-    describe("getDeviceId()", () => {
-        
-        it("Fulfilled", () => fin.System.getDeviceId().then(() => assert(true)));
+    describe('getDeviceId()', () => {
+
+        it('Fulfilled', () => fin.System.getDeviceId().then(() => assert(true)));
     });
 
-    describe("getEnvironmentVariable()", () => {
-        
-        it("Fulfilled", () => fin.System.getEnvironmentVariable().then(() => assert(true)));
+    describe('getEnvironmentVariable()', () => {
+
+        it('Fulfilled', () => fin.System.getEnvironmentVariable().then(() => assert(true)));
     });
 
-    describe("getLog()", () => {
-        let logOpts = {
-            name: "debug.log"
+    describe('getLog()', () => {
+        const logOpts = {
+            name: 'debug.log'
         };
-        
-        it("Fulfilled", () => fin.System.getLog(logOpts).then(() => assert(true)));
+
+        it('Fulfilled', () => fin.System.getLog(logOpts).then(() => assert(true)));
     });
 
-    describe("getLogList()", () => {
-        
-        it("Fulfilled", () => fin.System.getLogList().then(() => assert(true)));
+    describe('getLogList()', () => {
+
+        it('Fulfilled', () => fin.System.getLogList().then(() => assert(true)));
     });
 
-    describe("getMonitorInfo()", () => {
-        
-        it("Fulfilled", () => fin.System.getMonitorInfo().then(() => assert(true)));
+    describe('getMonitorInfo()', () => {
+
+        it('Fulfilled', () => fin.System.getMonitorInfo().then(() => assert(true)));
     });
 
-    describe("getMousePosition()", () => {
-        
-        it("Fulfilled", () => fin.System.getMousePosition().then(() => assert(true)));
+    describe('getMousePosition()', () => {
+
+        it('Fulfilled', () => fin.System.getMousePosition().then(() => assert(true)));
     });
 
-    describe("getProcessList()", () => {
-        
-        it("Fulfilled", () => fin.System.getProcessList().then(() => assert(true)));
+    describe('getProcessList()', () => {
+
+        it('Fulfilled', () => fin.System.getProcessList().then(() => assert(true)));
     });
 
-    describe("getProxySettings()", () => {
-        
-        it("Fulfilled", () => fin.System.getProxySettings().then(() => assert(true)));
+    describe('getProxySettings()', () => {
+
+        it('Fulfilled', () => fin.System.getProxySettings().then(() => assert(true)));
     });
-    
-    describe("launchExternalProcess()", () => {
+
+    describe('launchExternalProcess()', () => {
         const processOptions = {
-            path: "notepad",
-            arguments: "",
-            listener: (code: any) => {}
+            path: 'notepad',
+            arguments: '',
+            listener: (code: any) => { code = 'a'; }
         };
-                
-        it("Fulfilled", () => fin.System.launchExternalProcess(processOptions)
+
+        it('Fulfilled', () => fin.System.launchExternalProcess(processOptions)
            .then(() => assert(true)));
     });
 
-    // incompatible with standalone node process.
-    // describe("monitorExternalProcess()", () => {
-    //     const pid = process.pid;
-        
-    //     it("Promise", () =>  fin.System.monitorExternalProcess(pid)
-    //        .should.be.a.Promise());
-        
-    //     it("Fulfilled", () => fin.System.monitorExternalProcess(pid)
-    //        .should.be.fulfilled());
-    // });
+    describe('log()', () => {
+        const level = 'info';
+        const message = 'log this';
 
-    describe("log()", () => {
-        const level = "info";
-        const message = "log this";
-        
-        it("Fulfilled", () => fin.System.log(level, message)
+        it('Fulfilled', () => fin.System.log(level, message)
            .then(() => assert(true)));
     });
 
-    describe("openUrlWithBrowser()", () => {
-        const url = "http://www.openfin.co";
-        
-        it("Fulfilled", () => fin.System.openUrlWithBrowser(url)
+    describe('openUrlWithBrowser()', () => {
+        const url = 'http://www.openfin.co';
+
+        it('Fulfilled', () => fin.System.openUrlWithBrowser(url)
            .then(() => assert(true)));
     });
-
-    //TODO: Runtime bug prevents this from working on stand alone node.
-    // describe("releaseExternalProcess()", () => {
-    //     let uuid;
-
-    //     before(() => {
-    //         return fin.System.monitorExternalProcess(process.pid).then(ep => uuid = ep.uuid);
-    //     });
-        
-	//     it("Promise", () =>  fin.System.releaseExternalProcess(uuid).should.be.a.Promise());
-        
-	//     it("Fulfilled", () => fin.System.releaseExternalProcess(uuid).should.be.fulfilled());
-    // });
 
     //TODO: Need to start a test app as part of the test setup.
-    describe("showDeveloperTools()", () => {
+    describe('showDeveloperTools()', () => {
         const identity = {
-            uuid: "testerApp",
-            name: "testerApp"
+            uuid: 'testerApp',
+            name: 'testerApp'
         };
-        
-        it("Fulfilled", () => fin.System.showDeveloperTools(identity)
+
+        it('Fulfilled', () => fin.System.showDeveloperTools(identity)
            .then(() => assert(true)));
     });
 
-    describe("updateProxySettings()", () => {
+    describe('updateProxySettings()', () => {
         const proxySettings = {
-            type: "system",
-            proxyAddress:"address",
+            type: 'system',
+            proxyAddress: 'address',
             proxyPort: 8080
         };
-        
-        it("Fulfilled", () => fin.System.updateProxySettings(proxySettings)
+
+        it('Fulfilled', () => fin.System.updateProxySettings(proxySettings)
            .then(() => assert(true)));
     });
 
-    describe("getAllExternalApplications()", () => {
-        
-        it("Fulfilled", () => fin.System.getAllExternalApplications()
+    describe('getAllExternalApplications()', () => {
+
+        it('Fulfilled', () => fin.System.getAllExternalApplications()
            .then(() => assert(true)));
     });
 
-    describe("resolveUuid()", () => {
-        it("should resolve a known uuid", () => fin.System.resolveUuid(fin.me.uuid).then(data => {
+    describe('resolveUuid()', () => {
+        it('should resolve a known uuid', () => fin.System.resolveUuid(fin.me.uuid).then(data => {
             assert(data.uuid === fin.me.uuid, `Expected ${data.uuid} to match ${fin.me.uuid}`);
-            assert(data.type === "external-app", `Expected ${data.type} to be "external-app"`);
+            assert(data.type === 'external-app', `Expected ${data.type} to be 'external-app'`);
         }));
 
-        it("should fail on a unknown uuid", () => fin.System.resolveUuid("fake_uuid").catch(() => assert(true)));
+        it('should fail on a unknown uuid', () => fin.System.resolveUuid('fake_uuid').catch(() => assert(true)));
     });
-    
+
 });

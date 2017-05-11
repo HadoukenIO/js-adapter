@@ -1,37 +1,36 @@
-import { conn } from "./connect";
-import * as assert from "assert";
-import { connect as rawConnect, Fin, Application, Window } from "../src/main";
+import { conn } from './connect';
+import * as assert from 'assert';
+import { connect as rawConnect, Fin, Application, Window } from '../src/main';
 
-describe("Window.", () => {
+describe('Window.', () => {
     let fin: Fin;
     let testApp: Application;
     let testWindow: Window;
 
     const appConfigTemplate = {
-        name: "adapter-test-app-win-tests",
-        url: "about:blank",
-        uuid: "adapter-test-app-win-tests",
+        name: 'adapter-test-app-win-tests',
+        url: 'about:blank',
+        uuid: 'adapter-test-app-win-tests',
         autoShow: true,
         nonPersistent: true
-        
     };
 
     before(() => {
         return conn().then(a => fin = a);
     });
 
-    before(function() {
+    before(() => {
         return fin.Application.create(appConfigTemplate).then(a => {
             testApp = a;
             return testApp.run().then(() =>  testApp.getWindow().then(w =>  testWindow = w));
-        }).catch(err => console.log(err));
+        });
     });
 
-    after(function () {
+    after(() => {
         return testApp.close();
     });
 
-    describe("getBounds()", () => {
+    describe('getBounds()', () => {
 
         const bounds = {
             height: 400,
@@ -40,38 +39,38 @@ describe("Window.", () => {
             left: 10
         };
 
-        it("Fulfilled", () => testWindow.setBounds(bounds)
+        it('Fulfilled', () => testWindow.setBounds(bounds)
            .then(() => {
-               return testWindow.getBounds().then(data => assert(typeof(data.height) === "number"));
+               return testWindow.getBounds().then(data => assert(typeof(data.height) === 'number'));
            }));
     });
 
-    describe("focus()", () => {
+    describe('focus()', () => {
 
-        it("Fulfilled", () => testWindow.focus().then(() => assert(true)));
+        it('Fulfilled', () => testWindow.focus().then(() => assert(true)));
     });
 
-    describe("blur()", () => {
+    describe('blur()', () => {
 
-        it("Fulfilled", () => testWindow.blur().then(() => assert(true)));
+        it('Fulfilled', () => testWindow.blur().then(() => assert(true)));
     });
 
-    describe("bringToFront()", () => {
+    describe('bringToFront()', () => {
 
-        it("Fulfilled", () => testWindow.bringToFront().then(() => assert(true)));
+        it('Fulfilled', () => testWindow.bringToFront().then(() => assert(true)));
     });
 
-    describe("hide()", () => {
+    describe('hide()', () => {
 
-        it("Fulfilled", () => testWindow.hide().then(() => assert(true)));
+        it('Fulfilled', () => testWindow.hide().then(() => assert(true)));
     });
 
-    describe("close()", () => {
+    describe('close()', () => {
 
         const appToCloseConfig = {
-            name: "adapter-test-app-to-close",
-            url: "about:blank",
-            uuid: "adapter-test-app-to-close",
+            name: 'adapter-test-app-to-close',
+            url: 'about:blank',
+            uuid: 'adapter-test-app-to-close',
             autoShow: true,
             nonPersistent: true
         };
@@ -85,36 +84,36 @@ describe("Window.", () => {
             });
         });
 
-        it("Fulfilled", () => winToClose.close().then(() => appToClose.isRunning()
+        it('Fulfilled', () => winToClose.close().then(() => appToClose.isRunning()
                                                       .then(data => assert(data === false))));
     });
 
-    describe("getNativeId()", () => {
+    describe('getNativeId()', () => {
 
-        it("Fulfilled", () => testWindow.getNativeId().then(data => assert(typeof(data) === "string")));
+        it('Fulfilled', () => testWindow.getNativeId().then(data => assert(typeof(data) === 'string')));
     });
 
-    describe("disableFrame()", () => {
+    describe('disableFrame()', () => {
 
-        it("Fulfilled", () => testWindow.disableFrame().then(() => assert(true)));
+        it('Fulfilled', () => testWindow.disableFrame().then(() => assert(true)));
     });
 
-    describe("enableFrame()", () => {
+    describe('enableFrame()', () => {
 
-        it("Fulfilled", () => testWindow.enableFrame().then(() => assert(true)));
+        it('Fulfilled', () => testWindow.enableFrame().then(() => assert(true)));
     });
 
-    describe("executeJavaScript()", () => {
+    describe('executeJavaScript()', () => {
 
-        const scriptToExecute = "console.log('hello world')";
+        const scriptToExecute = 'console.log("hello world")';
 
-        it("Descendant Window", () => testWindow.executeJavaScript(scriptToExecute)
+        it('Descendant Window', () => testWindow.executeJavaScript(scriptToExecute)
            .then(() => assert(true)));
 
-        it("Non descendant Window", () => {
+        it('Non descendant Window', () => {
             return rawConnect({
-                address: `ws://localhost:9696`,
-                uuid: "SECOND_CONECTION"
+                address: 'ws://localhost:9696',
+                uuid: 'SECOND_CONECTION'
             }).then((otherFin) => {
                 return otherFin.Window.wrap({
                     uuid: testWindow.identity.uuid,
@@ -124,31 +123,31 @@ describe("Window.", () => {
         });
     });
 
-    describe("flash()", () => {
+    describe('flash()', () => {
 
-        it("Fulfilled", () => testWindow.flash().then(() => assert(true)));
+        it('Fulfilled', () => testWindow.flash().then(() => assert(true)));
     });
 
-    describe("getGroup()", () => {
+    describe('getGroup()', () => {
 
-        it("Fulfilled", () => testWindow.getGroup().then(data => assert(data instanceof Array,
+        it('Fulfilled', () => testWindow.getGroup().then(data => assert(data instanceof Array,
                                                                         `Expected ${typeof(data)} to be an instance of Array`)));
     });
 
-    describe("getOptions()", () => {
+    describe('getOptions()', () => {
 
-        it("Fulfilled", () => testWindow.getOptions().then(() => assert(true)));
+        it('Fulfilled', () => testWindow.getOptions().then(() => assert(true)));
     });
 
-    describe("getParentApplication()", () => {
+    describe('getParentApplication()', () => {
 
-        it("Fulfilled", () => testWindow.getParentApplication()
+        it('Fulfilled', () => testWindow.getParentApplication()
            .then(data => assert(data.identity.uuid === appConfigTemplate.uuid)));
     });
 
-    describe("getParentWindow()", () => {
+    describe('getParentWindow()', () => {
 
-        it("Fulfilled", () => testWindow.getParentWindow().then(data => assert(data.identity.name === appConfigTemplate.uuid)));
+        it('Fulfilled', () => testWindow.getParentWindow().then(data => assert(data.identity.name === appConfigTemplate.uuid)));
     });
 
     //We need some real tests around this.
@@ -156,48 +155,48 @@ describe("Window.", () => {
     //      it("Fulfilled", () => testWindow.getSnapshot().then(() => assert(true)));
     // });
 
-    describe("getState()", () => {
+    describe('getState()', () => {
 
-        it("Fulfilled", () => testWindow.getState().then(data => assert(typeof(data) === "string")));
+        it('Fulfilled', () => testWindow.getState().then(data => assert(typeof(data) === 'string')));
     });
 
-    describe("isShowing()", () => {
+    describe('isShowing()', () => {
 
-        it("Fulfilled", () => testWindow.isShowing().then(data => assert(typeof(data) === "boolean")));
-    });
-
-    //TODO: feature needs testing.
-    // describe("joinGroup()", () => {
-
-    //     it("Fulfilled", () => testWindow.joinGroup().should.eventually.be.Boolean());
-    // });
-
-    //TODO: feature needs testing.
-    // describe("leaveGroup()", () => {
-
-    //     it("Fulfilled", () => testWindow.leaveGroup().should.eventually.be.Boolean());
-    // });
-
-    describe("maximize()", () => {
-
-        it("Fulfilled", () => testWindow.maximize().then(() => assert(true)));
+        it('Fulfilled', () => testWindow.isShowing().then(data => assert(typeof(data) === 'boolean')));
     });
 
     //TODO: feature needs testing.
-    // describe("mergeGroups()", () => {
+    // describe('joinGroup()', () => {
 
-    //     it("Fulfilled", () => testWindow.mergeGroups().should.eventually.be.Boolean());
+    //     it('Fulfilled', () => testWindow.joinGroup().should.eventually.be.Boolean());
     // });
 
-    describe("minimize()", () => {
+    //TODO: feature needs testing.
+    // describe('leaveGroup()', () => {
 
-        it("Fulfilled", () => testWindow.minimize().then(() => testWindow.getState())
-           .then(data => assert(data === "minimized")));
+    //     it('Fulfilled', () => testWindow.leaveGroup().should.eventually.be.Boolean());
+    // });
+
+    describe('maximize()', () => {
+
+        it('Fulfilled', () => testWindow.maximize().then(() => assert(true)));
     });
 
-    describe("moveBy()", () => {
+    //TODO: feature needs testing.
+    // describe('mergeGroups()', () => {
 
-        it("Fulfilled", () => {
+    //     it('Fulfilled', () => testWindow.mergeGroups().should.eventually.be.Boolean());
+    // });
+
+    describe('minimize()', () => {
+
+        it('Fulfilled', () => testWindow.minimize().then(() => testWindow.getState())
+           .then(data => assert(data === 'minimized')));
+    });
+
+    describe('moveBy()', () => {
+
+        it('Fulfilled', () => {
 
             return testWindow.getBounds().then(bounds => {
 
@@ -212,27 +211,27 @@ describe("Window.", () => {
         });
     });
 
-    describe("moveTo()", () => {
+    describe('moveTo()', () => {
 
-        it("Fulfilled", () => {
+        it('Fulfilled', () => {
 
             return testWindow.moveTo(10, 10)
                 .then(() =>  testWindow.getBounds()
                       .then(data => {
                           return assert(data.top === 10, `Expected ${data.top} to be 10`) &&
-                              assert(data.left === 10, `Expected ${data.left} to be 10`); 
+                              assert(data.left === 10, `Expected ${data.left} to be 10`);
                       }));
         });
 
     });
 
-    describe("resizeBy()", () => {
+    describe('resizeBy()', () => {
 
-        it("Fulfilled", () => {
+        it('Fulfilled', () => {
 
             return testWindow.getBounds().then(bounds => {
 
-                return testWindow.resizeBy(10, 10, "top-left")
+                return testWindow.resizeBy(10, 10, 'top-left')
                     .then(() => testWindow.getBounds()
                           .then(data => {
                               return assert(data.top === bounds.top, `Expected ${data.top} to be ${bounds.top}`) &&
@@ -244,13 +243,13 @@ describe("Window.", () => {
         });
     });
 
-    describe("resizeTo()", () => {
+    describe('resizeTo()', () => {
 
-        it("Fulfilled", () => {
+        it('Fulfilled', () => {
 
             return testWindow.getBounds().then(bounds => {
 
-                return testWindow.resizeTo(10, 10, "top-left")
+                return testWindow.resizeTo(10, 10, 'top-left')
                     .then(() => testWindow.getBounds()
                           .then(data => {
                               return assert(data.top === bounds.top, `Expected ${data.top} to be ${bounds.top}`) &&
@@ -262,12 +261,12 @@ describe("Window.", () => {
         });
     });
 
-    describe("setAsForeground()", () => {
+    describe('setAsForeground()', () => {
 
-        it("Fulfilled", () => testWindow.setAsForeground().then(() => assert(true)));
+        it('Fulfilled', () => testWindow.setAsForeground().then(() => assert(true)));
     });
 
-    describe("setBounds()", () => {
+    describe('setBounds()', () => {
 
         const bounds = {
             height: 400,
@@ -278,7 +277,7 @@ describe("Window.", () => {
             right: 410
         };
 
-        it("Fulfilled", () => testWindow.setBounds(bounds)
+        it('Fulfilled', () => testWindow.setBounds(bounds)
            .then(() => testWindow.getBounds()
                  .then(data => {
                      return assert(data.top === bounds.top, `Expected ${data.top} to be ${bounds.top}`) &&
@@ -290,14 +289,14 @@ describe("Window.", () => {
                  })));
     });
 
-    describe("show()", () => {
+    describe('show()', () => {
 
-        it("Fulfilled", () => testWindow.show().then(() => assert(true)));
+        it('Fulfilled', () => testWindow.show().then(() => assert(true)));
     });
 
-    describe("showAt()", () => {
+    describe('showAt()', () => {
 
-        it("Fulfilled", () => {
+        it('Fulfilled', () => {
             return testWindow.showAt(10, 10)
                 .then(() =>  testWindow.getBounds()
                       .then(data => {
@@ -307,31 +306,31 @@ describe("Window.", () => {
         });
     });
 
-    describe("updateOptions()", () => {
+    describe('updateOptions()', () => {
 
         const updatedOptions = {
             height: 100
         };
 
-        it("Fulfilled", () => testWindow.updateOptions(updatedOptions).then(() => assert(true)));
+        it('Fulfilled', () => testWindow.updateOptions(updatedOptions).then(() => assert(true)));
     });
 
     //TODO: feature needs testing.
-    // describe("authenticate()", () => {
+    // describe('authenticate()', () => {
 
-    //     it("Fulfilled", () => testWindow.authenticate(10, 10).should.be.fulfilled());
+    //     it('Fulfilled', () => testWindow.authenticate(10, 10).should.be.fulfilled());
     // });
 
-    describe("getZoomLevel()", () => {
+    describe('getZoomLevel()', () => {
 
-        it("Fulfilled", () => testWindow.getZoomLevel().then(data => assert(data === 0)));
+        it('Fulfilled', () => testWindow.getZoomLevel().then(data => assert(data === 0)));
     });
 
-    describe("setZoomLevel()", () => {
+    describe('setZoomLevel()', () => {
 
         const zoomLevel = 1;
 
-        it("Fulfilled", () => testWindow.setZoomLevel(zoomLevel)
+        it('Fulfilled', () => testWindow.setZoomLevel(zoomLevel)
            .then(() => testWindow.getZoomLevel()).then(data => assert(data === zoomLevel)));
     });
 });

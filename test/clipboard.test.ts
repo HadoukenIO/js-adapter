@@ -1,79 +1,79 @@
-import { conn } from "./connect";
-import * as assert from "assert";
-import { Fin } from "../src/main";
+import { conn } from './connect';
+import * as assert from 'assert';
+import { Fin } from '../src/main';
 
-describe("Clipboard.", () => {
+describe('Clipboard.', () => {
     let fin: Fin;
 
     const writeObj = {
-        data: "some text goes here"
+        data: 'some text goes here'
     };
 
     const writeAllObj = {
         data: {
-            text: "a",
-            html: "b",
-            rtf: "c"
+            text: 'a',
+            html: 'b',
+            rtf: 'c'
         }
     };
-    
+
     before(() => {
-        return conn().then((a:Fin) => fin = a);
+        return conn().then((a: Fin) => fin = a);
     });
 
-    describe("writeText()", () => {
-        
-        it("Fulfilled", () => fin.Clipboard.writeText(writeObj)
+    describe('writeText()', () => {
+
+        it('Fulfilled', () => fin.Clipboard.writeText(writeObj)
            .then(() => assert(true)));
     });
 
-    describe("readText()", () => {
-        
+    describe('readText()', () => {
+
         before(() => fin.Clipboard.writeText(writeObj));
-        
-        it("Fulfilled", () => fin.Clipboard.readText()
+
+        it('Fulfilled', () => fin.Clipboard.readText()
            .then(data => assert(data === writeObj.data)));
     });
-    
-    describe("writeHtml()", () => {
-        
-        it("Fulfilled", () => fin.Clipboard.writeHtml(writeObj)
+
+    describe('writeHtml()', () => {
+
+        it('Fulfilled', () => fin.Clipboard.writeHtml(writeObj)
            .then(() => assert(true)));
     });
 
-    describe("readHtml()", () => {
+    describe('readHtml()', () => {
 
         before(() => fin.Clipboard.writeHtml(writeObj));
-        
-        it("Fulfilled", () => fin.Clipboard.readHtml()
+
+        it('Fulfilled', () => fin.Clipboard.readHtml()
            .then(data => assert(data === writeObj.data)));
     });
-    
-    describe("writeRtf()", () => {
-        
-        it("Fulfilled", () => fin.Clipboard.writeRtf(writeObj)
+
+    describe('writeRtf()', () => {
+
+        it('Fulfilled', () => fin.Clipboard.writeRtf(writeObj)
            .then(() => assert(true)));
     });
 
-    describe("readRtf()", () => {
+    describe('readRtf()', () => {
 
         before(() => fin.Clipboard.writeRtf(writeObj));
-        
-        it("Fulfilled", () => fin.Clipboard.readRtf()
+
+        it('Fulfilled', () => fin.Clipboard.readRtf()
            .then(data => assert(data === writeObj.data)));
     });
 
-    describe("write()", () => {
-        
-        it("Fulfilled", () => fin.Clipboard.write(writeAllObj)
+    describe('write()', () => {
+
+        it('Fulfilled', () => fin.Clipboard.write(writeAllObj)
            .then(() => assert(true)));
     });
-    
-    describe("getAvailableFormats()", () => {
-        
+
+    describe('getAvailableFormats()', () => {
+
         before(() => fin.Clipboard.write(writeAllObj));
-        
-        it("Fulfilled", () => fin.Clipboard.getAvailableFormats()
+
+        it('Fulfilled', () => fin.Clipboard.getAvailableFormats()
            .then(data => assert(data instanceof Array, `Expected ${typeof(data)} to be instance of Array`)));
-    });    
+    });
 });

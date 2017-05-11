@@ -1,5 +1,6 @@
 export interface ExternalProcessRequestType {
     path: string;
+    // tslint:disable-next-line
     arguments: string;
     listener: LaunchExternalProcessListener;
 }
@@ -15,7 +16,7 @@ export interface LaunchExternalProcessListener {
 }
 
 export interface TerminateExternalRequestType {
-    uuid:string;
+    uuid: string;
     timeout: number;
     killTree: boolean;
 }
