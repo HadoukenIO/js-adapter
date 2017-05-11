@@ -1,6 +1,7 @@
 {
   "name": "js-adapter",
-  "version": "0.0.2",
+  "version": "0.1.1",
+  "license": "Apache-2.0",
   "main": "./out/src/main.js",
   "types": "./out/src/main.d.ts",
   "scripts": {
