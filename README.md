@@ -12,7 +12,7 @@ $ `npm install -S HadoukenIO/node-adapter`
 
 # Usage
 ```javascript
-const { connect, Identity } = require("js-adapter");
+const { connect, Identity } = require("node-adapter");
 
 connect({
     address: "ws://localhost:9696",
