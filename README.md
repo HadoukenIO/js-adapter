@@ -1,6 +1,6 @@
 # Hadouken Node.js adapter
 
-Allows the use of the OpenFin API from Node.js
+Allows the use of the Hadouken API from Node.js
 
 # Requirements
 
