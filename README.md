@@ -1,11 +1,12 @@
 # OpenFin JavaScript adapter
 
-Works in
+# Requirements
+
 - Node.js LTS ^6.9 
 
 # Install as dependency
 
-$ `npm install -S openfin/js-adapter`
+$ `npm install -S HadoukenIO/js-adapter`
 
 # Usage
 ```javascript
