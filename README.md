@@ -45,8 +45,6 @@ $ `npm run build`
 
 $ `npm test -- --ver=alpha`
 
-#### Running selective tests
-
 Only executing tests that pattern match "Application"
 
 $ `npm test -- --ver=alpha --grep="Application"`
