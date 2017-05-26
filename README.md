@@ -1,5 +1,7 @@
 # OpenFin JavaScript adapter
 
+Allows the use of the OpenFin API from NodeJs
+
 # Requirements
 
 - Node.js LTS ^6.9 
