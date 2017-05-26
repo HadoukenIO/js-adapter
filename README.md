@@ -21,7 +21,7 @@ connect({
    
 function logic(fin) {
     
-    fin.System.getVersion().then(v => console.log("Connected to OpenFin version", v));
+    fin.System.getVersion().then(v => console.log("Connected to Hadouken version", v));
 
     const win = fin.Window.wrap({ 
         uuid: "remote-app-uuid",
