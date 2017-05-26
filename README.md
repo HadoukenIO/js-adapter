@@ -45,9 +45,15 @@ $ `npm run build`
 
 $ `npm test -- --ver=alpha`
 
-# Test subset of tests
+#### Running selective tests
+
+Only executing tests that pattern match "Application"
 
 $ `npm test -- --ver=alpha --grep="Application"`
+
+Executing tests that do not pattern match "System"
+
+$ `npm test -- --ver=alpha --invert --grep="System"`
 
 # Repl
 
