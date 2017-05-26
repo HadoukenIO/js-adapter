@@ -1,6 +1,6 @@
-# OpenFin JavaScript adapter
+# Hadouken Node.js adapter
 
-Allows the use of the OpenFin API from NodeJs
+Allows the use of the OpenFin API from Node.js
 
 # Requirements
 
@@ -8,7 +8,7 @@ Allows the use of the OpenFin API from NodeJs
 
 # Install as dependency
 
-$ `npm install -S HadoukenIO/js-adapter`
+$ `npm install -S HadoukenIO/node-adapter`
 
 # Usage
 ```javascript
