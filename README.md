@@ -1,3 +1,5 @@
+[![Build Status](https://build.openf.in:443/buildStatus/icon?job=node-adapter&style=plastic)]()
+
 # Hadouken Node.js adapter
 
 Allows the use of the Hadouken API from Node.js
