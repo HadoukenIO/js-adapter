@@ -6,7 +6,12 @@ export function conn() {
         c = connect({
             address: 'ws://localhost:9696',
             // tslint:disable-next-line
-            uuid: 'example_uuid' + Math.random()
+            uuid: 'example_uuid' + Math.random(),
+            licenseKey: 'whateverbrah',
+            client: {
+                type: 'node',
+                version: 'whatever'
+            }
         });
     }
 
