@@ -1,16 +1,20 @@
-# Hadouken Node.js adapter
+# Hadouken Node.js adapter [![Build Status](https://build.openf.in:443/buildStatus/icon?job=node-adapter&style=plastic)]()
 
 Allows the use of the Hadouken API from Node.js
 
-# Requirements
+## Requirements
 
 - Node.js LTS ^6.9 
 
-# Install as dependency
+## For the Openfin app developer
+
+For those wishing to use the node adapter to develop their Openfin app.
+
+### Install as dependency
 
 $ `npm install -S HadoukenIO/node-adapter`
 
-# Usage
+### Usage
 ```javascript
 const { connect, Identity } = require("node-adapter");
 
@@ -39,22 +43,46 @@ function connError(err) {
     console.log(err.stack);
 }
 ```
-# Local build
+## For the node adapter developer
 
-$ `npm run build`
+For those wishing to contribute to the node-adapter project.
 
-# Test
+### Clone/Install
 
-$ `npm test -- --ver=alpha`
+Clone the repo and install the dependencies:
+
+```bash
+git clone https://github.com/HadoukenIO/node-adapter.git
+cd node-adapter
+npm install
+```
+
+### Local build
+
+```bash
+npm run build
+```
+
+### Test
+
+```bash
+npm test -- --ver=alpha`
+```
 
 Only executing tests that pattern match "Application"
 
-$ `npm test -- --ver=alpha --grep="Application"`
+```bash
+npm test -- --ver=alpha --grep="Application"`
+```
 
 Executing tests that do not pattern match "System"
 
-$ `npm test -- --ver=alpha --invert --grep="System"`
+```bash
+npm test -- --ver=alpha --invert --grep="System"`
+```
 
-# Repl
+## Repl
+
+To start the read-eval-print loop:
 
 $ `npm run repl -- --ver=alpha`
