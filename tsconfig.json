@@ -6,7 +6,8 @@
         "declaration": true,
         "outDir": "out",
         "strictNullChecks": false,
-        "sourceMap": true
+        "sourceMap": true,
+        "removeComents": false
     },
     "exclude": [ "node_modules", "out", "OpenFin"]
 }

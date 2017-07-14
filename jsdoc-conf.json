@@ -1,0 +1,22 @@
+{
+    "plugins": ["plugins/markdown"],
+    "source": {
+        "include": ["out/src"]
+    },
+    "tags": {
+        "dictionaries": ["jsdoc","closure"],
+        "allowUnknownTags": true
+    },
+    "templates": {
+        "monospaceLinks": false,
+        "cleverLinks": false,
+        "default": {
+            "outputSourceFiles": false,
+            "showTutorials": false
+        }
+    },
+    "opts": {
+        "destination": "./docs/",
+        "private": false
+    }
+}
