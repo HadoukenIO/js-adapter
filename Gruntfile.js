@@ -80,12 +80,6 @@ module.exports = function(grunt) {
         finRepl.startRepl();
     });
 
-    grunt.registerTask('doc', function() {
-        let exec = require('child_process').exec;
-
-        exec('jsdoc -c jsdoc-conf.json --verbose')
-    })
-
     grunt.loadNpmTasks('grunt-ts');
     grunt.loadNpmTasks('grunt-tslint');
     grunt.loadNpmTasks('grunt-mocha-test');
@@ -93,7 +87,8 @@ module.exports = function(grunt) {
 
     grunt.registerTask('lint', [ 'tslint' ]);
     grunt.registerTask('build', [ 'ts' ]);
-    grunt.registerTask('default', [ 'lint', 'build', 'doc' ]);
+    grunt.registerTask('default', [ 'lint', 'build' ]);
     grunt.registerTask('test', [ 'check-version', 'default', 'start-server', 'openfin', 'mochaTest' ]);
     grunt.registerTask('repl', [ 'check-version', 'default', 'start-server', 'openfin', 'start-repl' ]);
+
 };

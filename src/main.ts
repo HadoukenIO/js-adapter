@@ -6,6 +6,10 @@ import System from './api/system/system';
 import {default as Transport, ConnectConfig} from './transport/transport';
 import WebSocketTransport from './transport/websocket';
 
+/**
+  PLEASE README AGAIN JSDOC !
+  @params { string }: config
+*/
 // Connect to an OpenFin Runtime
 export function connect(config: ConnectConfig): Promise<Fin> {
     const wire = new Transport(WebSocketTransport);
