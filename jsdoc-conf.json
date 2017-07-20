@@ -11,7 +11,12 @@
         "monospaceLinks": false,
         "cleverLinks": false,
         "default": {
-            "outputSourceFiles": false,
+            "staticFiles": {
+	    	"include": [
+			"./jsdoc-template/static"
+		]
+	    },
+	    "outputSourceFiles": false,
             "showTutorials": false
         }
     },
