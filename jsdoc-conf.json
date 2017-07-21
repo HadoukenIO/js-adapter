@@ -12,16 +12,16 @@
         "cleverLinks": false,
         "default": {
             "staticFiles": {
-	    	"include": [
-			"./jsdoc-template/static"
-		]
-	    },
-	    "outputSourceFiles": false,
-            "showTutorials": false
-        }
-    },
-    "opts": {
-        "destination": "./docs/",
-        "private": false
-    }
+                "include": [
+                    "./jsdoc-template/static"
+                ]
+	          },
+	          "outputSourceFiles": false,
+                "showTutorials": false
+            }
+      },
+      "opts": {
+          "destination": "./docs/",
+          "private": false
+      }
 }
