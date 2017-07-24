@@ -13,6 +13,9 @@ import { Entity } from './entity';
 import { ExternalProcessRequestType , TerminateExternalRequestType } from './external-process';
 import Transport from '../../transport/transport';
 
+/**
+  @class
+*/
 export default class System extends Base {
 
     constructor(wire: Transport) {

@@ -15,6 +15,9 @@ export interface Notification {
     close(): void;
 }
 
+/**
+  @class
+*/
 export class NotificationOptions {
     public url: string;
     public message: string;
@@ -40,6 +43,9 @@ export interface NotificationCallback {
     message?: any;
 }
 
+/**
+  @class
+*/
 // tslint:disable-next-line
 export class _Notification extends Base implements Notification {
     private listenerList: Array<string> = ['newListener'];
@@ -153,6 +159,9 @@ export class _Notification extends Base implements Notification {
     }
 }
 
+/**
+  @class
+*/
 // tslint:disable-next-line
 export default class _NotificationModule extends Bare {
 

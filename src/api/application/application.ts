@@ -10,11 +10,20 @@ export interface TrayIconClickReply extends Point, Reply<'application', 'tray-ic
     monitorInfo: MonitorInfo;
 }
 
+/**
+  This class inherits from the Reply which implements a interface of indentity
+  @class
+*/
 export class NavigationRejectedReply extends Reply<'window-navigation-rejected', void> {
     public sourceName: string;
     public url: string;
 }
 
+/**
+  This class inherit from the bare class, the bare class which
+  exposes the Transport interface and inherits from the EventEmitter
+  @class
+*/
 export default class ApplicationModule extends Bare {
     public wrap(identity: Identity): Application {
         return new Application(this.wire, identity);
@@ -26,6 +35,12 @@ export default class ApplicationModule extends Bare {
     }
 }
 
+/**
+  Application Inherits from the base class, the base class inherits
+  from the brae class and the constructor takes the identity interface
+  as its argument
+  @class
+*/
 export class Application extends Base {
 
     constructor(wire: Transport, public identity: Identity) {

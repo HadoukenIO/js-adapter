@@ -6,6 +6,9 @@ import Animation from './animation';
 import { Application } from '../application/application';
 import Transport from '../../transport/transport';
 
+/**
+  @class
+*/
 // tslint:disable-next-line
 export default class _WindowModule extends Bare {
     public wrap(identity: Identity): _Window {
@@ -20,6 +23,9 @@ export interface CloseEventShape {
     topic: string;
 }
 
+/**
+  @class
+*/
 // The window.Window name is taken
 // tslint:disable-next-line
 export class _Window extends Base {

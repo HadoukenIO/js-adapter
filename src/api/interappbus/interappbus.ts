@@ -3,6 +3,9 @@ import { Identity } from '../../identity';
 import Transport, { Message } from '../../transport/transport';
 import RefCounter from '../../util/ref-counter';
 
+/**
+  @class
+*/
 export default class InterApplicationBus extends Bare {
     public events = {
         subscriberAdded: 'subscriber-added',
@@ -124,6 +127,9 @@ export default class InterApplicationBus extends Bare {
     }
 }
 
+/**
+  @class
+*/
 export class InterAppPayload {
     public sourceUuid: string;
     public sourceWindowName: string;
@@ -133,6 +139,9 @@ export class InterAppPayload {
 
 }
 
+/**
+  @function
+*/
 function createKey(...toHash: string[]) {
     return toHash.map((item) => {
         return (new Buffer('' + item)).toString('base64');
