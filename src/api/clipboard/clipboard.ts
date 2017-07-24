@@ -2,8 +2,7 @@ import { Base } from '../base';
 import { WriteRequestType, WriteAnyRequestType } from './write-request';
 
 /**
-  The Clipboard class inherits from the base class which implements a
-  interface
+  The Clipboard class inherits from the base class which implements a interface
   @class
 */
 export default class Clipboard extends Base {
@@ -38,7 +37,7 @@ export default class Clipboard extends Base {
     public write(writeObj: WriteAnyRequestType): Promise<void> {
         return this.wire.sendAction('clipboard-write', writeObj).then(() => undefined);
     }
-    
+
     public getAvailableFormats(type?: string): Promise<Array<string>> {
         return this.wire.sendAction('clipboard-read-formats', type)
             .then(({ payload }) => payload.data);
