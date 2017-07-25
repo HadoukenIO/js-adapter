@@ -2,9 +2,6 @@ import { Identity } from '../../identity';
 import Transport from '../../transport/transport';
 const DEFAULT_DURATION = 1000;
 
-/**
-  @class
-*/
 export default class Animation {
     protected payload: any;
 

@@ -14,10 +14,14 @@ import { ExternalProcessRequestType , TerminateExternalRequestType } from './ext
 import Transport from '../../transport/transport';
 
 /**
-  @class
+  @namespace
 */
 export default class System extends Base {
 
+    /**
+      @param { object } wire
+      @constructor
+    */
     constructor(wire: Transport) {
         super(wire);
 
@@ -37,11 +41,19 @@ export default class System extends Base {
 
     }
 
+    /**
+      returns a promise of a string of the version
+      @static
+    */
     public getVersion(): Promise<string> {
         return this.wire.sendAction('get-version')
             .then(({ payload }) => payload.data);
     }
 
+    /**
+      clears the cache
+      @static
+    */
     public clearCache(): Promise<void> {
         return this.wire.sendAction('clear-cache').then(() => undefined);
     }

@@ -8,9 +8,6 @@ import _NotificationModule from './notification/notification';
 import Clipbpard from './clipboard/clipboard';
 import ExternalApplication from './external-application/external-application';
 
-/**
-  @class
-*/
 export default class Fin extends Bare {
     public System: System;
     public Window: _WindowModule;

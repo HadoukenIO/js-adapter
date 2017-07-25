@@ -11,9 +11,6 @@ export interface RuntimeEvent extends Identity {
     type: string;
 }
 
-/**
-  @class
-*/
 export class Bare extends EventEmitter {
     public wire: Transport;
     constructor(wire: Transport) {
@@ -30,9 +27,6 @@ export class Bare extends EventEmitter {
     }
 }
 
-/**
-  @class
-*/
 export class Base extends Bare {
     protected identity: Identity;
 
@@ -89,11 +83,6 @@ export class Base extends Bare {
 
 }
 
-/**
-  This class implements from the Reply class that implements the interface
-  of Identity
-  @class
-*/
 export class Reply<TOPIC extends string, TYPE extends string|void> implements Identity {
     public topic: TOPIC;
     public type: TYPE;
@@ -101,12 +90,6 @@ export class Reply<TOPIC extends string, TYPE extends string|void> implements Id
     public name?: string;
 }
 
-/**
-  This from creates a hash using the create hash module,
-  also taking in a object that reflects the RunTimeEvent interface
-  this function then returns a string.
-  @function
-*/
 function createKey(listener: RuntimeEvent): string {
     const key = createHash('md4')
         .update(<string>listener.name || '')

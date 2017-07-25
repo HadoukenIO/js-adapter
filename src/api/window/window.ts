@@ -6,9 +6,6 @@ import Animation from './animation';
 import { Application } from '../application/application';
 import Transport from '../../transport/transport';
 
-/**
-  @class
-*/
 // tslint:disable-next-line
 export default class _WindowModule extends Bare {
     public wrap(identity: Identity): _Window {
@@ -24,12 +21,18 @@ export interface CloseEventShape {
 }
 
 /**
+  @classdesc
   @class
 */
 // The window.Window name is taken
 // tslint:disable-next-line
 export class _Window extends Base {
 
+    /**
+      @param { object } wire
+      @param { object } identity
+      @constructor
+    */
     constructor(wire: Transport, public identity: Identity) {
         super(wire);
 
@@ -67,6 +70,10 @@ export class _Window extends Base {
         return windowList;
     }
 
+    /**
+      returns a promise of bounds
+      @static
+    */
     public getBounds(): Promise<Bounds> {
         return this.wire.sendAction('get-window-bounds', this.identity)
         // tslint:disable-next-line
@@ -93,6 +100,11 @@ export class _Window extends Base {
         return this.wire.sendAction('hide-window', this.identity).then(() => undefined);
     }
 
+    /**
+      closes the window application
+      @param { boolean } force assigned that value to false by default
+      @static
+    */
     public close(force: boolean = false): Promise<void> {
         return this.wire.sendAction('close-window', Object.assign({}, this.identity, { force }))
             .then(() => {
@@ -255,6 +267,7 @@ export class _Window extends Base {
     }
 
 }
+
 // tslint:disable-next-line
 export interface _Window {
     on(type: 'focused', listener: Function): this;

@@ -4,7 +4,7 @@ import Transport, { Message } from '../../transport/transport';
 import RefCounter from '../../util/ref-counter';
 
 /**
-  @class
+  @namespace
 */
 export default class InterApplicationBus extends Bare {
     public events = {
@@ -14,11 +14,20 @@ export default class InterApplicationBus extends Bare {
 
     private refCounter = new RefCounter();
 
+    /**
+      @param { object } wire
+      @constructor
+    */
     constructor(wire: Transport) {
         super(wire);
         wire.registerMessageHandler(this.onmessage.bind(this));
     }
 
+    /**
+      @param { string } topic
+      @param { any } message
+      @static
+    */
     public publish(topic: string, message: any): Promise<void> {
         return this.wire.sendAction('publish-message', {
             topic,
@@ -27,6 +36,12 @@ export default class InterApplicationBus extends Bare {
         }).then(() => undefined);
     }
 
+    /**
+      @param { object } destination
+      @param { string } topic
+      @param { any } message
+      @static
+    */
     public send(destination: Identity, topic: string, message: any): Promise<void> {
         return this.wire.sendAction('send-message', {
             destinationUuid: destination.uuid,
@@ -127,9 +142,6 @@ export default class InterApplicationBus extends Bare {
     }
 }
 
-/**
-  @class
-*/
 export class InterAppPayload {
     public sourceUuid: string;
     public sourceWindowName: string;
@@ -139,9 +151,6 @@ export class InterAppPayload {
 
 }
 
-/**
-  @function
-*/
 function createKey(...toHash: string[]) {
     return toHash.map((item) => {
         return (new Buffer('' + item)).toString('base64');

@@ -2,7 +2,7 @@ import { Base, Reply } from '../base';
 import { Identity } from '../../identity';
 
 /**
-  Inherits from the base class which implements a interface
+  @classdes Inherits from the base class which implements a interface
   @class
 */
 class ExternalApplication extends Base {
