@@ -1,6 +1,10 @@
 import { Base, Reply } from '../base';
 import { Identity } from '../../identity';
 
+/**
+  @classdes Inherits from the base class which implements a interface
+  @class
+*/
 class ExternalApplication extends Base {
     public identity: Identity;
     public wrap(uuid: string): ExternalApplication {

@@ -13,7 +13,7 @@ module.exports = function(grunt) {
     const version = grunt.option('ver');
     const uuid = 'testapp';
     const args = '--v=1 --enable-logging --enable-multi-runtime';
-    
+
     grunt.initConfig({
         ts: {
             default: {
@@ -73,21 +73,22 @@ module.exports = function(grunt) {
         const done = this.async();
         liveServer.start(serverParams).on('listening', done);
     });
-    
+
     grunt.registerTask('start-repl', function() {
         const finRepl = require(`./out/repl/index.js`);
         const done = this.async();
         finRepl.startRepl();
     });
-    
+
     grunt.loadNpmTasks('grunt-ts');
     grunt.loadNpmTasks('grunt-tslint');
     grunt.loadNpmTasks('grunt-mocha-test');
     grunt.loadNpmTasks('grunt-openfin');
-    
+
     grunt.registerTask('lint', [ 'tslint' ]);
     grunt.registerTask('build', [ 'ts' ]);
     grunt.registerTask('default', [ 'lint', 'build' ]);
     grunt.registerTask('test', [ 'check-version', 'default', 'start-server', 'openfin', 'mochaTest' ]);
     grunt.registerTask('repl', [ 'check-version', 'default', 'start-server', 'openfin', 'start-repl' ]);
+
 };

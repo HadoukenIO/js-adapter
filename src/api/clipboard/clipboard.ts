@@ -1,17 +1,31 @@
 import { Base } from '../base';
 import { WriteRequestType, WriteAnyRequestType } from './write-request';
 
+/**
+  The Clipboard class inherits from the base class which
+  implements a interface
+  @namespace
+*/
 export default class Clipboard extends Base {
 
+    /**
+      @params { object } writeObj
+    */
     public writeText(writeObj: WriteRequestType): Promise<void> {
         return this.wire.sendAction('clipboard-write-text', writeObj).then(() => undefined);
     }
 
+    /**
+      @param { string } type
+    */
     public readText(type?: string): Promise<string> {
         return this.wire.sendAction('clipboard-read-text', type)
             .then(({ payload }) => payload.data);
     }
 
+    /**
+      @param { object } writeObj
+    */
     public writeHtml(writeObj: WriteRequestType): Promise<void> {
         return this.wire.sendAction('clipboard-write-html', writeObj).then(() => undefined);
     }

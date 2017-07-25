@@ -40,6 +40,10 @@ export interface NotificationCallback {
     message?: any;
 }
 
+/**
+  @classdesc
+  @class
+*/
 // tslint:disable-next-line
 export class _Notification extends Base implements Notification {
     private listenerList: Array<string> = ['newListener'];
@@ -88,6 +92,11 @@ export class _Notification extends Base implements Notification {
         return true;
     }
 
+    /**
+      @param { object } options
+      @param { object } wire
+      @constructor
+    */
     constructor(wire: Transport, options: NotificationOptions) {
         super(wire);
 
@@ -110,6 +119,10 @@ export class _Notification extends Base implements Notification {
     public timeout: number | string;
     public message: any;
 
+    /**
+      this returns a promise of a message
+      @static
+    */
     public show(): Promise<Message<any>> {
 
         if (!this.url) {
@@ -142,6 +155,10 @@ export class _Notification extends Base implements Notification {
         });
     }
 
+    /**
+      returns a promise of message
+      @static
+    */
     public close(): Promise<Message<any>> {
 
         return this.wire.sendAction('send-action-to-notifications-center', {

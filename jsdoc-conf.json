@@ -1,0 +1,38 @@
+{
+    "plugins": ["plugins/markdown"],
+    "source": {
+        "include": [
+            "out/src",
+            "out/src/api",
+            "out/src/api/window",
+            "out/src/api/system",
+            "out/src/api/clipboard",
+            "out/src/api/interappbus",
+            "out/src/api/application",
+            "out/src/api/notification",
+            "out/src/api/external-application"
+        ]
+    },
+    "tags": {
+        "dictionaries": ["jsdoc","closure"],
+        "allowUnknownTags": true
+    },
+    "templates": {
+        "monospaceLinks": false,
+        "cleverLinks": false,
+        "default": {
+            "staticFiles": {
+                "include": [
+                    "./jsdoc-template/static",
+                    "./jsdoc-template/tmpl"
+                ]
+	          },
+	          "outputSourceFiles": false,
+                "showTutorials": false
+            }
+      },
+      "opts": {
+          "destination": "./docs/",
+          "private": false
+      }
+}

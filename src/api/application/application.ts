@@ -26,8 +26,19 @@ export default class ApplicationModule extends Bare {
     }
 }
 
+/**
+  @class
+  @classdesc Application Inherits from the base class, the base class inherits
+  from the brae class and the constructor takes the identity interface
+  as its argument
+*/
 export class Application extends Base {
 
+    /**
+        @param { object } wire
+        @param { object } identity
+        @constructor
+    */
     constructor(wire: Transport, public identity: Identity) {
         super(wire);
 
@@ -62,11 +73,20 @@ export class Application extends Base {
         return windowList;
     }
 
+    /**
+      * returns a Boolean value if the application is running
+      * @static
+    */
     public isRunning(): Promise<boolean> {
         return this.wire.sendAction('is-application-running', this.identity)
             .then(({ payload }) => payload.data);
     }
 
+    /**
+      closes the application
+      @param { boolean } force sets the value force to false
+      @static
+    */
     public close(force: boolean = false): Promise<void> {
         return this.wire.sendAction('close-application', Object.assign({}, this.identity, {force})).then(() => undefined);
     }
