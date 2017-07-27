@@ -1,6 +1,7 @@
 const path = require('path');
 const testAppConfig = path.join('test','app.json');
 const liveServer = require('live-server');
+const ps = require('ps-node');
 
 const serverParams = {
     root: path.resolve('html'),
@@ -79,6 +80,33 @@ module.exports = function(grunt) {
         const done = this.async();
         finRepl.startRepl();
     });
+
+    grunt.registerTask('kill-processes', function() {
+
+          // looks up the process by the program name
+          ps.lookup({
+              command: 'openfin.exe'
+          }, function(err, processList) {
+              if (err) {
+
+                  // if error occurs then thow error
+                  throw new Error( err );
+              }
+
+              if ( processList.length !== 0 ) {
+
+                  // return the process ids of each process found
+                  processList = processList.map( i => {
+
+                        return pid: i.pid
+                  }).forEach( process => {
+
+                      // kill each process
+                      ps.kill(process.pid)
+                  })
+              }
+          })
+    })
 
     grunt.loadNpmTasks('grunt-ts');
     grunt.loadNpmTasks('grunt-tslint');
