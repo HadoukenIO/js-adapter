@@ -66,23 +66,25 @@ npm run build
 ### Test
 
 ```bash
-npm test -- --ver=alpha`
+npm test -- --ver=alpha
 ```
 
 Only executing tests that pattern match "Application"
 
 ```bash
-npm test -- --ver=alpha --grep="Application"`
+npm test -- --ver=alpha --grep="Application"
 ```
 
 Executing tests that do not pattern match "System"
 
 ```bash
-npm test -- --ver=alpha --invert --grep="System"`
+npm test -- --ver=alpha --invert --grep="System"
 ```
 
 ## Repl
 
 To start the read-eval-print loop:
 
-$ `npm run repl -- --ver=alpha`
+```bash
+npm run repl -- --ver=alpha
+```
