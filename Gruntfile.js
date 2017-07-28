@@ -96,7 +96,7 @@ module.exports = function(grunt) {
               // return the process ids of each process found
               processList = processList.map( i => {
 		 
-		 `return i.pid
+		 return i.pid
 	      }).forEach( pid => ps.kill(pid))
           })
     })
