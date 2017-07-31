@@ -62,7 +62,8 @@ module.exports = function(grunt) {
             launch: {
                 open: true
             }
-        }
+        },
+	'publish-docs': {}
     });
 
     grunt.registerTask('check-version', function() {
@@ -83,25 +84,18 @@ module.exports = function(grunt) {
     });
 
     grunt.registerTask('kill-processes', function() {
-
-          // looks up the process by the program name
           ps.lookup({
               command: 'openfin.exe'
-          }, function(err, processList) {
-              // if error occurs then thow error
+          }, (err, processList) => {
               if (err) throw new Error( err );
-
-              // iterates over each process and kills each process found
-              processList.forEach( process => ps.kill(process.pid))
+              processList.forEach( i => ps.kill(i.pid))
           })
     })
 
     grunt.registerTask('publish-docs', function() {
         const exec = require('child_process').exec;
-
-        exec("cd docs && git push origin master", function(err, stdout, stderr) {
-        	   if ( err ) return console.log( err )
-
+        exec('cd docs && git commit -am "committed new update for node-adapter docuemtation github pages" && git push origin master', function(err, stdout, stderr) {
+             if ( err ) return console.log( err )
              console.log("published new documentationfor node-adapter.")
         })
     })
