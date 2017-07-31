@@ -88,7 +88,7 @@ module.exports = function(grunt) {
               command: 'openfin.exe'
           }, (err, processList) => {
               if (err) throw new Error( err );
-              processList.forEach( i => ps.kill(i.pid))
+              processList.forEach( i => ps.kill(i.pid));
           })
     })
 
@@ -96,7 +96,7 @@ module.exports = function(grunt) {
         const exec = require('child_process').exec;
         exec('cd docs && git commit -am "committed new update for node-adapter docuemtation github pages" && git push origin master', function(err, stdout, stderr) {
              if ( err ) return console.log( err )
-             console.log("published new documentationfor node-adapter.")
+             console.log("published new documentationfor node-adapter.");
         })
     })
 
