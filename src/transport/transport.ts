@@ -188,4 +188,6 @@ export interface ConnectConfig {
     name?: string;
     nonPersistent?: boolean;
     runtimeClient?: boolean;
+    licenseKey?: string;
+    client?: any;
 }

@@ -19,7 +19,7 @@ export interface RuntimeProcess {
     fin?: any;
 }
 
-function spawnRealm (version: string): Promise<RuntimeProcess> {
+function spawnRealm (version: string, args?: Array<string>): Promise<RuntimeProcess> {
 
     return new Promise((resolve, reject) => {
 
@@ -31,6 +31,13 @@ function spawnRealm (version: string): Promise<RuntimeProcess> {
             const appConfig = generateAppConfig();
             const configLocation = path.resolve(cacheDir, `${appConfig.startup_app.uuid}.json`);
 
+            args = args || [
+                '--enable-multi-runtime',
+                '--enable-mesh',
+                `--security-realm=${realm}`
+            ];
+
+            args.push(`--startup-url=${configLocation}`);
             fs.mkdirSync(cacheDir);
 
             fs.writeFileSync(configLocation, JSON.stringify(appConfig));
@@ -39,14 +46,8 @@ function spawnRealm (version: string): Promise<RuntimeProcess> {
 
             try {
 
-                const runtime = spawn(ofEXElocation,
-                                      [`--startup-url=${configLocation}`,
-                                       '--attach-console',
-                                       '--enable-multi-runtime',
-                                       '--v=1',
-                                       `--security-realm=${realm}`,
-                                       '--enable-mesh'
-                                      ]);
+                const runtime = spawn(ofEXElocation, args);
+
                 runtime.on('error', reject);
 
                 // tslint:disable-next-line no-function-expression
@@ -163,11 +164,11 @@ function closeAndClean(runtimeProcess: RuntimeProcess): Promise<RuntimeProcess> 
 }
 
 export function launchAndConnect(version: string  = appConfig.runtime.version,
-                                 uuid: string = 'my-uuid', realm: boolean = false): Promise<RuntimeProcess> {
+                                 uuid: string = 'my-uuid', realm: boolean = false, args?: Array<string>): Promise<RuntimeProcess> {
 
     return new Promise((resolve, reject) => {
 
-        spawnRealm(version).then((runtimeProcess: RuntimeProcess) => {
+        spawnRealm(version, args).then((runtimeProcess: RuntimeProcess) => {
             rawConnect({
                 address: `ws://localhost:${runtimeProcess.port}`,
                 uuid
