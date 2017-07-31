@@ -2,6 +2,7 @@ const path = require('path');
 const testAppConfig = path.join('test','app.json');
 const liveServer = require('live-server');
 const ps = require('ps-node');
+const exec = require("child_process").exec;
 
 const serverParams = {
     root: path.resolve('html'),
@@ -87,18 +88,22 @@ module.exports = function(grunt) {
           ps.lookup({
               command: 'openfin.exe'
           }, function(err, processList) {
-              if (err) {
+              // if error occurs then thow error
+              if (err) throw new Error( err );
 
-                  // if error occurs then thow error
-                  throw new Error( err );
-              }
-
-              // return the process ids of each process found
-              processList = processList.map( i => {
-		 
-		 `return i.pid
-	      }).forEach( pid => ps.kill(pid))
+              // iterates over each process and kills each process found
+              processList.forEach( process => ps.kill(process.pid))
           })
+    })
+
+    grunt.registerTask('publish-docs', function() {
+        const exec = require('child_process').exec;
+
+        exec("cd docs && git push origin master", function(err, stdout, stderr) {
+        	   if ( err ) return console.log( err )
+
+             console.log("published new documentationfor node-adapter.")
+        })
     })
 
     grunt.loadNpmTasks('grunt-ts');
