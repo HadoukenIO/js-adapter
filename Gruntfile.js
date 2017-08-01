@@ -62,8 +62,7 @@ module.exports = function(grunt) {
             launch: {
                 open: true
             }
-        },
-	'publish-docs': {}
+        }
     });
 
     grunt.registerTask('check-version', function() {
@@ -94,7 +93,7 @@ module.exports = function(grunt) {
 
     grunt.registerTask('publish-docs', () => {
         exec('cd docs && git commit -am "committed new update for node-adapter docuemtation github pages" && git push origin master', function(err, stdout, stderr) {
-             if (err) return console.log(err)
+             if (err) return console.log(err);
              console.log('published new documentationfor node-adapter.');
         });
     });
