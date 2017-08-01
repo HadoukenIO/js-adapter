@@ -2,7 +2,9 @@ import { Base, Reply } from '../base';
 import { Identity } from '../../identity';
 
 /**
-  @classdes Inherits from the base class which implements a interface
+  @classdes An ExternalApplication object representing an application. Allows
+  the developer to create, execute, show and close an external application as
+  well as listen to application events.
   @class
 */
 class ExternalApplication extends Base {
