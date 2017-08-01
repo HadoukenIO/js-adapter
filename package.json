@@ -5,11 +5,11 @@
   "main": "./out/src/main.js",
   "types": "./out/src/main.d.ts",
   "scripts": {
-    "postinstall": "git submodule init && git submodule update --remote && npm run build",
     "test": "grunt test",
     "repl": "grunt repl",
     "build": "grunt",
-    "doc": "npm run build && jsdoc -c jsdoc-conf.json -t jsdoc-template --verbose"
+    "submodules-init": "git submodule init && git submodule update --remote && npm run build",
+    "doc": "npm run submodules-init && npm run build && jsdoc -c jsdoc-conf.json -t jsdoc-template --verbose"
   },
   "devDependencies": {
     "grunt": "~1.0.1",
