@@ -86,14 +86,18 @@ module.exports = function(grunt) {
           ps.lookup({
               command: 'openfin.exe'
           }, (err, processList) => {
-              if (err) throw new Error(err);
+              if (err) {
+                  throw new Error(err);
+              }
               processList.forEach(i=> ps.kill(i.pid));
           });
     });
 
     grunt.registerTask('publish-docs', () => {
-        exec('cd docs && git commit -am "committed new update for node-adapter docuemtation github pages" && git push origin master', function(err, stdout, stderr) {
-             if (err) return console.log(err);
+        exec(`cd docs && git commit -am "committed new update veriosn ${ verison } for node-adapter documentation." && git push origin master`, function(err, stdout, stderr) {
+             if (err) {
+                return console.log(err);
+             }
              console.log('published new documentationfor node-adapter.');
         });
     });
