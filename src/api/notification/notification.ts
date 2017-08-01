@@ -97,6 +97,7 @@ export class _Notification extends Base implements Notification {
     }
 
     /**
+      Creates a new Notification
       @param { object } options
       @param { object } wire
       @constructor
@@ -124,7 +125,6 @@ export class _Notification extends Base implements Notification {
     public message: any;
 
     /**
-
       @return {Promise.<Message>}
     */
     public show(): Promise<Message<any>> {

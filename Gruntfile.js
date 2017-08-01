@@ -92,7 +92,7 @@ module.exports = function(grunt) {
     });
 
     grunt.registerTask('publish-docs', () => {
-        exec('cd docs && git commit -am "committed new update for node-adapter docuemtation github pages" && git push origin master', function(err, stdout, stderr) {
+        exec('cd docs && git commit -am "committed new update for node-adapter documentation github pages" && git push origin master', function(err, stdout, stderr) {
              if (err) return console.log(err);
              console.log('published new documentationfor node-adapter.');
         });

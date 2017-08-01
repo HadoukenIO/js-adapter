@@ -35,6 +35,7 @@ export default class ApplicationModule extends Bare {
 export class Application extends Base {
 
     /**
+        Creates a new Application.
         @param { object } wire
         @param { object } identity
         @constructor
