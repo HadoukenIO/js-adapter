@@ -13,6 +13,7 @@ const serverParams = {
 
 module.exports = function(grunt) {
     const version = grunt.option('ver');
+    const remote = grunt.option('remote');
     const uuid = 'testapp';
     const args = '--v=1 --enable-logging --enable-multi-runtime';
 
@@ -94,7 +95,7 @@ module.exports = function(grunt) {
     });
 
     grunt.registerTask('publish-docs', () => {
-        exec(`cd docs && git commit -am "committed new update veriosn ${ verison } for node-adapter documentation." && git push origin master`, function(err, stdout, stderr) {
+        exec(`cd docs && git commit -am "committed new update for node-adapter documentation." && git push ${ remote } master`, function(err, stdout, stderr) {
              if (err) {
                 return console.log(err);
              }
