@@ -27,10 +27,10 @@ export default class ApplicationModule extends Bare {
 }
 
 /**
-  @class
-  @classdesc Application Inherits from the base class, the base class inherits
-  from the brae class and the constructor takes the identity interface
+  @classdesc An object representing an application. Allows the developer to create,
+  execute, show/close an application as well as listen to application events.
   as its argument
+  @class
 */
 export class Application extends Base {
 
@@ -74,8 +74,8 @@ export class Application extends Base {
     }
 
     /**
-      * returns a Boolean value if the application is running
-      * @static
+      Determines if the application is currently running.
+      @return {Promise.<boolean>}
     */
     public isRunning(): Promise<boolean> {
         return this.wire.sendAction('is-application-running', this.identity)
@@ -83,9 +83,9 @@ export class Application extends Base {
     }
 
     /**
-      closes the application
+      Closes the application and any child windows created by the application.
       @param { boolean } force sets the value force to false
-      @static
+      @return {Promise.<boolean>}
     */
     public close(force: boolean = false): Promise<void> {
         return this.wire.sendAction('close-application', Object.assign({}, this.identity, {force})).then(() => undefined);
