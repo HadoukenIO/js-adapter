@@ -90,7 +90,7 @@ export class Application extends Base {
     public close(force: boolean = false): Promise<void> {
         return this.wire.sendAction('close-application', Object.assign({}, this.identity, {force})).then(() => undefined);
     }
-
+    
     public getChildWindows(): Promise<Array<_Window>> {
         return this.wire.sendAction('get-child-windows', this.identity)
             .then(({ payload }) =>  this.windowListFromNameList(payload.data));
