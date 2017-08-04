@@ -34,7 +34,10 @@ function spawnRealm (version: string, args?: Array<string>): Promise<RuntimeProc
             args = args || [
                 '--enable-multi-runtime',
                 '--enable-mesh',
-                `--security-realm=${realm}`
+                `--security-realm=${realm}`,
+                '--v=1',
+                '--enable-logging',
+                '--debug'
             ];
 
             args.push(`--startup-url=${configLocation}`);
@@ -164,7 +167,9 @@ function closeAndClean(runtimeProcess: RuntimeProcess): Promise<RuntimeProcess> 
 }
 
 export function launchAndConnect(version: string  = appConfig.runtime.version,
-                                 uuid: string = 'my-uuid', realm: boolean = false, args?: Array<string>): Promise<RuntimeProcess> {
+                                 // tslint:disable-next-line
+                                 uuid: string = `my-uuid ${ appConfig.startup_app.uuid } ${ Math.floor(Math.random() * 1000)}`,
+                                 realm: boolean = false, args?: Array<string>): Promise<RuntimeProcess> {
 
     return new Promise((resolve, reject) => {
 

@@ -106,13 +106,12 @@ export default class InterApplicationBus extends Bare {
     }
 
     private emitSubscriverEvent(type: string, message: any) {
-        const {payload: {senderName, senderUuid, topic}} = message;
+        const {payload: {name, uuid, topic}} = message;
         const payload = {
-            name: senderName,
-            uuid: senderUuid,
+            name: name,
+            uuid: uuid,
             topic
         };
-
         this.emit(type, payload);
     }
 
