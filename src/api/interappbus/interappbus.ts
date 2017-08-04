@@ -4,6 +4,7 @@ import Transport, { Message } from '../../transport/transport';
 import RefCounter from '../../util/ref-counter';
 
 /**
+  A messaging bus that allows for pub/sub messaging between different applications.
   @namespace
 */
 export default class InterApplicationBus extends Bare {
@@ -24,9 +25,11 @@ export default class InterApplicationBus extends Bare {
     }
 
     /**
+      Publishes a message to all applications running on OpenFin Runtime that
+      are subscribed to the specified topic.
       @param { string } topic
       @param { any } message
-      @static
+      @return {Promise.<void>}
     */
     public publish(topic: string, message: any): Promise<void> {
         return this.wire.sendAction('publish-message', {
@@ -37,10 +40,11 @@ export default class InterApplicationBus extends Bare {
     }
 
     /**
+      Sends a message to a specific application on a specific topic.
       @param { object } destination
       @param { string } topic
       @param { any } message
-      @static
+      @return {Promise<void>}
     */
     public send(destination: Identity, topic: string, message: any): Promise<void> {
         return this.wire.sendAction('send-message', {

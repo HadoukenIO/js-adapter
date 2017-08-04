@@ -2,21 +2,24 @@ import { Base } from '../base';
 import { WriteRequestType, WriteAnyRequestType } from './write-request';
 
 /**
-  The Clipboard class inherits from the base class which
-  implements a interface
+  The Clipboard API allows reading and writing to the clipboard in multiple formats.
   @namespace
 */
 export default class Clipboard extends Base {
 
     /**
+      Writes data into the clipboard as plain text
       @params { object } writeObj
+      @retrun {Promise.<void>}
     */
     public writeText(writeObj: WriteRequestType): Promise<void> {
         return this.wire.sendAction('clipboard-write-text', writeObj).then(() => undefined);
     }
 
     /**
+      Read the content of the clipboard as plain text
       @param { string } type
+      @return {Promise.<string>}
     */
     public readText(type?: string): Promise<string> {
         return this.wire.sendAction('clipboard-read-text', type)
@@ -24,7 +27,9 @@ export default class Clipboard extends Base {
     }
 
     /**
+      Writes data into the clipboard as Html
       @param { object } writeObj
+      @return {Promise.<void>}
     */
     public writeHtml(writeObj: WriteRequestType): Promise<void> {
         return this.wire.sendAction('clipboard-write-html', writeObj).then(() => undefined);
