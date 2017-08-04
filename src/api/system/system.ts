@@ -47,7 +47,7 @@ export default class System extends Base {
     /**
       Returns the version of the runtime. The version contains the major, minor,
       build and revision numbers.
-      @return {Promise:<string>}
+      @return {Promise.<string>}
     */
     public getVersion(): Promise<string> {
         return this.wire.sendAction('get-version')
@@ -58,7 +58,7 @@ export default class System extends Base {
       Clears cached data containing window state/positions, application resource
       files (images, HTML, JavaScript files), cookies, and items stored in the
       Local Storage.
-      @return {Promise:<void>}
+      @return {Promise.<void>}
     */
     public clearCache(): Promise<void> {
         return this.wire.sendAction('clear-cache').then(() => undefined);
@@ -66,7 +66,7 @@ export default class System extends Base {
 
     /**
       Clears all cached data when OpenFin Runtime exits.
-      @return {Promise:<void>}
+      @return {Promise.<void>}
     */
     public deleteCacheOnExit(): Promise<void> {
         return this.wire.sendAction('delete-cache-request').then(() => undefined);
@@ -74,7 +74,7 @@ export default class System extends Base {
 
     /**
       Retrieves an array of data (name, ids, bounds) for all application windows.
-      @return {Promise:<array<WindowInfo>>}
+      @return {Promise.<array>}
     */
     public getAllWindows(): Promise<Array<WindowInfo>> {
         return this.wire.sendAction('get-all-windows')
@@ -83,7 +83,7 @@ export default class System extends Base {
 
     /**
       Retrieves an array of data for all applications.
-      @return {Promise:<array<<ApplicationInfo>>>}
+      @return {Promise.<array>}
     */
     public getAllApplications(): Promise<Array<ApplicationInfo>> {
         return this.wire.sendAction('get-all-applications')
@@ -92,7 +92,7 @@ export default class System extends Base {
 
     /**
       Retrieves the command line argument string that started OpenFin Runtime.
-      @return {Promise:<string>}
+      @return {Promise.<string>}
     */
     public getCommandLineArguments(): Promise<string> {
         return this.wire.sendAction('get-command-line-arguments')
@@ -102,7 +102,7 @@ export default class System extends Base {
     /**
       Returns a hex encoded hash of the mac address and the currently logged in
       user name
-      @return {Promise:<string>}
+      @return {Promise.<string>}
     */
     public getDeviceId(): Promise<string> {
         return this.wire.sendAction('get-device-id')
@@ -111,7 +111,7 @@ export default class System extends Base {
 
     /**
       Retrieves system information.
-      @return {Promise:<string>}
+      @return {Promise.<string>}
     */
     public getEnvironmentVariable(): Promise<string> {
         return this.wire.sendAction('get-environment-variable')
@@ -120,7 +120,7 @@ export default class System extends Base {
 
     /**
       Retrieves the contents of the log with the specified filename.
-      @return {Promise:<string>}
+      @return {Promise.<string>}
     */
     public getLog(options: GetLogRequestType): Promise<string> {
         return this.wire.sendAction('view-log', options)
@@ -129,7 +129,7 @@ export default class System extends Base {
 
     /**
       Retrieves an array containing information for each log file.
-      @return {Promise:<array<LogInfo>>}
+      @return {Promise.<array>}
     */
     public getLogList(): Promise<Array<LogInfo>> {
         return this.wire.sendAction('list-logs')
@@ -139,7 +139,7 @@ export default class System extends Base {
     /**
       Retrieves an object that contains data about the monitor setup of the
       computer that the runtime is running on.
-      @return {Promise:<MonitorInfo>}
+      @return {Promise.<MonitorInfo>}
     */
     public getMonitorInfo(): Promise<MonitorInfo> {
         return this.wire.sendAction('get-monitor-info')
@@ -148,7 +148,7 @@ export default class System extends Base {
 
     /**
       Returns the mouse in virtual screen coordinates (left, top).
-      @return {Promise:<PointTopLeft>}
+      @return {Promise.<PointTopLeft>}
     */
     public getMousePosition(): Promise<PointTopLeft> {
         return this.wire.sendAction('get-mouse-position')
@@ -159,7 +159,7 @@ export default class System extends Base {
       Retrieves an array of all of the runtime processes that are currently
       running. Each element in the array is an object containing the uuid
       and the name of the application to which the process belongs.
-      @return {Promise<array<ProcessInfo>>}
+      @return {Promise<array>}
     */
     public getProcessList(): Promise<Array<ProcessInfo>> {
         return this.wire.sendAction('process-snapshot')
@@ -168,7 +168,7 @@ export default class System extends Base {
 
     /**
       Retrieves the Proxy settings.
-      @return {Promise:<ProxyInfo>}
+      @return {Promise.<ProxyInfo>}
     */
     public getProxySettings(): Promise<ProxyInfo> {
         return this.wire.sendAction('get-proxy-settings')
@@ -177,7 +177,7 @@ export default class System extends Base {
 
     /**
       Returns information about the running RVM in an object.
-      @return {Promise:<RVMInfo>}
+      @return {Promise.<RVMInfo>}
     */
     // incompatible with standalone node process.
     public getRvmInfo(): Promise<RVMInfo> {
@@ -187,7 +187,7 @@ export default class System extends Base {
 
     /**
       Runs an executable or batch file.
-      @return {Promise:<RVMInfo>}
+      @return {Promise.<RVMInfo>}
     */
     public launchExternalProcess(options: ExternalProcessRequestType): Promise<RVMInfo> {
         return this.wire.sendAction('launch-external-process', options)
@@ -196,7 +196,7 @@ export default class System extends Base {
 
     /**
       Monitors a running process.
-      @return {Promise:<Identity>}
+      @return {Promise.<Identity>}
     */
     public monitorExternalProcess(pid: number): Promise<Identity> {
         return this.wire.sendAction('monitor-external-process', { pid })
@@ -205,7 +205,7 @@ export default class System extends Base {
 
     /**
       Writes the passed message into both the log file and the console.
-      @return {Promise:<void>}
+      @return {Promise.<void>}
     */
     public log(level: string, message: string): Promise<void> {
         return this.wire.sendAction('write-to-log', { level, message }).then(() => undefined);
@@ -213,7 +213,7 @@ export default class System extends Base {
 
     /**
       Opens the passed URL in the default web browser.
-      @return {Promise:<void>}
+      @return {Promise.<void>}
     */
     public openUrlWithBrowser(url: string): Promise<void> {
         return this.wire.sendAction('open-url-with-browser', { url }).then(() => undefined);
@@ -221,7 +221,7 @@ export default class System extends Base {
     /**
       Removes the process entry for the passed UUID obtained from a prior call
       of fin.desktop.System.launchExternalProcess().
-      @return {Promise:<void>}
+      @return {Promise.<void>}
     */
     public releaseExternalProcess(uuid: string): Promise<void> {
         return this.wire.sendAction('release-external-process', { uuid }).then(() => undefined);
@@ -229,7 +229,7 @@ export default class System extends Base {
 
     /**
       Shows the Chromium Developer Tools for the specified window.
-      @return {Promise:<void>}
+      @return {Promise.<void>}
     */
     public showDeveloperTools(identity: Identity): Promise<void> {
         return this.wire.sendAction('show-developer-tools', identity).then(() => undefined);
@@ -238,7 +238,7 @@ export default class System extends Base {
     /**
       Attempt to close an external process. The process will be terminated if it
       has not closed after the elapsed timeout in milliseconds.
-      @return {Promise:<void>}
+      @return {Promise.<void>}
     */
     public terminateExternalProcess(options: TerminateExternalRequestType): Promise<void> {
         return this.wire.sendAction('terminate-external-process', options)
@@ -247,7 +247,7 @@ export default class System extends Base {
 
     /**
       Update the OpenFin Runtime Proxy settings.
-      @return {Promise:<void>}
+      @return {Promise.<void>}
     */
     public updateProxySettings(options: ProxyConfig): Promise<void> {
         return this.wire.sendAction('update-proxy', options).then(() => undefined);
@@ -255,7 +255,7 @@ export default class System extends Base {
 
     /**
       Downloads the given application asset
-      @return {Promise:<void>}
+      @return {Promise.<void>}
     */
     // incompatible with standalone node process.
     public downloadAsset(appAsset: DownloadAssetRequestType): Promise<void> {
@@ -264,7 +264,7 @@ export default class System extends Base {
 
     /**
       Retrieves an array of data (name, ids, bounds) for all application windows.
-      @return {Promise:<array<Identity>>}
+      @return {Promise.<array>}
     */
     public getAllExternalApplications(): Promise<Array<Identity>> {
         return this.wire.sendAction('get-all-external-applications')
@@ -274,7 +274,7 @@ export default class System extends Base {
     /**
       Resloves the user id string
       @param { string } uuid
-      @return {Promise:<Entity>}
+      @return {Promise.<Entity>}
     */
     public resolveUuid(uuid: string): Promise<Entity> {
         return this.wire.sendAction('resolve-uuid', {

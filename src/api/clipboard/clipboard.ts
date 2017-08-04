@@ -38,7 +38,7 @@ export default class Clipboard extends Base {
     /**
       Read the content of the clipboard as Html
       @param { string } type
-      @return {Promise:<string>}
+      @return {Promise.<string>}
     */
     public readHtml(type?: string): Promise<string> {
         return this.wire.sendAction('clipboard-read-html', type)
@@ -48,7 +48,7 @@ export default class Clipboard extends Base {
     /**
       Writes data into the clipboard as Rtf
       @param { object } writeObj
-      @return {Promise:<void>}
+      @return {Promise.<void>}
     */
     public writeRtf(writeObj: WriteRequestType): Promise<void> {
         return this.wire.sendAction('clipboard-write-rtf', writeObj).then(() => undefined);
@@ -57,7 +57,7 @@ export default class Clipboard extends Base {
     /**
       Read the content of the clipboard as Rtf
       @param { string } type
-      @return {Promise:<string>}
+      @return {Promise.<string>}
     */
     public readRtf(type?: string): Promise<string> {
         return this.wire.sendAction('clipboard-read-rtf', type)
@@ -67,7 +67,7 @@ export default class Clipboard extends Base {
     /**
       Writes data into the clipboard
       @param { object } writeObj
-      @return {Promise:<void>}
+      @return {Promise.<void>}
     */
     public write(writeObj: WriteAnyRequestType): Promise<void> {
         return this.wire.sendAction('clipboard-write', writeObj).then(() => undefined);
@@ -76,7 +76,7 @@ export default class Clipboard extends Base {
     /**
       Reads available formats for the clipboard type
       @param { string } type
-      @return {Promise:<array<string>>}
+      @return {Promise.<array>}
     */
     public getAvailableFormats(type?: string): Promise<Array<string>> {
         return this.wire.sendAction('clipboard-read-formats', type)
