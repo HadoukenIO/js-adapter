@@ -21,17 +21,20 @@ export interface CloseEventShape {
 }
 
 /**
-  @classdesc
-  @class
+ * @classdesc A basic window that wraps a native HTML window. Provides more fine-grained
+ * control over the window state such as the ability to minimize, maximize, restore, etc.
+ * By default a window does not show upon instantiation; instead the window's show() method
+ * must be invoked manually. The new window appears in the same process as the parent window.
+ * @class
 */
 // The window.Window name is taken
 // tslint:disable-next-line
 export class _Window extends Base {
 
     /**
-      @param { object } wire
-      @param { object } identity
-      @constructor
+     * @param { object } wire
+     * @param { object } identity
+     * @constructor
     */
     constructor(wire: Transport, public identity: Identity) {
         super(wire);
@@ -71,8 +74,8 @@ export class _Window extends Base {
     }
 
     /**
-      returns a promise of bounds
-      @static
+     * Gets the current bounds (top, left, width, height) of the window.
+     * @return {Promise.<Bounds>}
     */
     public getBounds(): Promise<Bounds> {
         return this.wire.sendAction('get-window-bounds', this.identity)
@@ -80,30 +83,49 @@ export class _Window extends Base {
             .then(({ payload }) => payload.data as Bounds);
     }
 
+    /**
+     * Gives focus to the window.
+     * @return {Promise.<void>}
+     */
     public focus(): Promise<void> {
         return this.wire.sendAction('focus-window', this.identity).then(() => undefined);
     }
 
+    /**
+     * Removes focus from the window.
+     * @return {Promise.<void>}
+     */
     public blur(): Promise<void> {
         return this.wire.sendAction('blur-window', this.identity).then(() => undefined);
     }
 
+    /**
+     * Brings the window to the front of the window stack.
+     * @return {Promise.<void>}
+     */
     public bringToFront(): Promise<void> {
         return this.wire.sendAction('bring-window-to-front', this.identity).then(() => undefined);
     }
 
+    /**
+     * @param { boolean } interrupt 
+     * @return {Animation}
+     */
     public animationBuilder(interrupt: boolean = false): Animation {
         return new Animation(this.wire, this.identity, interrupt);
     }
 
+    /**
+     * @return {Promise.<void>}
+     */
     public hide(): Promise<void> {
         return this.wire.sendAction('hide-window', this.identity).then(() => undefined);
     }
 
     /**
-      closes the window application
-      @param { boolean } force assigned that value to false by default
-      @static
+     * closes the window application
+     * @param { boolean } force assigned that value to false by default
+     * @return {Promise.<void>}
     */
     public close(force: boolean = false): Promise<void> {
         return this.wire.sendAction('close-window', Object.assign({}, this.identity, { force }))
@@ -113,32 +135,63 @@ export class _Window extends Base {
             });
     }
 
+    /**
+     * @return {Promise.<string>}
+     */
     public getNativeId(): Promise<string> {
         return this.wire.sendAction('get-window-native-id', this.identity)
             .then(({ payload }) => payload.data);
     }
-
+    
+    /**
+     * Prevents a user from changing a window's size/position when using the window's frame.
+     * @return {Promise.<void>}
+     */
     public disableFrame(): Promise<void> {
         return this.wire.sendAction('disable-window-frame', this.identity).then(() => undefined);
     }
 
+    /**
+     * Re-enables user changes to a window's size/position when using the window's frame.
+     * @return {Promise.<void>}
+     */
     public enableFrame(): Promise<void> {
         return this.wire.sendAction('enable-window-frame', this.identity).then(() => undefined);
     }
 
+    /**
+     * Executes Javascript on the window, restricted to windows you own or windows owned by
+     * applications you have created.
+     * @param { string } code 
+     * 
+     */
     public executeJavaScript(code: string): Promise<void> {
         return this.wire.sendAction('execute-javascript-in-window', Object.assign({}, this.identity, { code }))
             .then(() => undefined);
     }
 
+    /**
+     * Flashes the window’s frame and taskbar icon until stopFlashing is called.
+     * @return {Promise.<void>}
+     */
     public flash(): Promise<void> {
         return this.wire.sendAction('flash-window', this.identity).then(() => undefined);
     }
 
+    /**
+     * Stops the taskbar icon from flashing.
+     * @return {Promise.<void>}
+     */
     public stopFlashing(): Promise<void> {
         return this.wire.sendAction('stop-flash-window', this.identity).then(() => undefined);
     }
 
+    /**
+     * Retrieves an array containing wrapped fin.desktop.Windows that are grouped with this
+     * window. If a window is not in a group an empty array is returned. Please note that
+     * calling window is included in the result array.
+     * @return {Promise.<array>}
+     */
     public getGroup(): Promise<Array<Array<_Window>>> {
         return this.wire.sendAction('get-window-group', this.identity).then(({ payload }) => {
             // tslint:disable-next-line
@@ -152,30 +205,59 @@ export class _Window extends Base {
         });
     }
 
+    /**
+     * Gets the current settings of the window.
+     * @return {Promise.<any>}
+     */
     public getOptions(): Promise<any> {
         return this.wire.sendAction('get-window-options', this.identity).then(({ payload }) => payload.data);
     }
 
+    /**
+     * Gets the parent application.
+     * @return {Promise.<void>}
+     */
     public getParentApplication(): Promise<Application> {
         return Promise.resolve(new Application(this.wire, this.identity));
     }
 
+    /**
+     * Gets the parent window.
+     * @return {Promise.<_Window>}
+     */
     public getParentWindow(): Promise<_Window> {
         return Promise.resolve(new Application(this.wire, this.identity)).then(app => app.getWindow());
     }
 
+    /**
+     * Gets a base64 encoded PNG snapshot of the window.
+     * @return {Promise.<string>}
+     */
     public getSnapshot(): Promise<string> {
         return this.wire.sendAction('get-window-snapshot', this.identity).then(({ payload }) => payload.data);
     }
 
+    /**
+     * Gets the current state ("minimized", "maximized", or "restored") of the window.
+     * @return {Promise.<string>}
+     */
     public getState(): Promise<string> {
         return this.wire.sendAction('get-window-state', this.identity).then(({ payload }) => payload.data);
     }
 
+    /**
+     * Determines if the window is currently showing.
+     * @return {Promise.<boolean>}
+     */
     public isShowing(): Promise<boolean> {
         return this.wire.sendAction('is-window-showing', this.identity).then(({ payload }) => payload.data);
     }
 
+    /**
+     * Joins the same window group as the specified window.
+     * @param { class } target 
+     * @return {Promise.<void>}
+     */
     public joinGroup(target: _Window): Promise<void> {
         return this.wire.sendAction('join-window-group', Object.assign({}, this.identity, {
             groupingUuid: target.identity.uuid,
@@ -183,14 +265,27 @@ export class _Window extends Base {
         })).then(() => undefined);
     }
 
+    /**
+     * Leaves the current window group so that the window can be move independently of those in the group.
+     * @return {Promise.<void>}
+     */
     public leaveGroup(): Promise<void> {
         return this.wire.sendAction('leave-window-group', this.identity).then(() => undefined);
     }
 
+    /**
+     * Maximizes the window
+     * @return {Promise.<void>}
+     */
     public maximize(): Promise<void> {
         return this.wire.sendAction('maximize-window', this.identity).then(() => undefined);
     }
 
+    /**
+     * Merges the instance's window group with the same window group as the specified window
+     * @param { class } target 
+     * @return {Promise.<void>}
+     */
     public mergeGroups(target: _Window): Promise<void> {
         return this.wire.sendAction('join-window-group', Object.assign({}, this.identity, {
             groupingUuid: target.identity.uuid,
@@ -198,18 +293,41 @@ export class _Window extends Base {
         })).then(() => undefined);
     }
 
+    /**
+     * Minimizes the window.
+     * @return {Promise.<void>}
+     */
     public minimize(): Promise<void> {
         return this.wire.sendAction('minimize-window', this.identity).then(() => undefined);
     }
 
+    /**
+     * Moves the window by a specified amount.
+     * @param { interger } deltaLeft 
+     * @param { interger } deltaTop 
+     * @return {Promise.<void>}
+     */
     public moveBy(deltaLeft: number, deltaTop: number): Promise<void> {
         return this.wire.sendAction('move-window-by', Object.assign({}, this.identity, { deltaLeft, deltaTop })).then(() => undefined);
     }
 
+    /**
+     * Moves the window to a specified location.
+     * @param { interger } left 
+     * @param { interger } top 
+     * @return {Promise.<void>}
+     */
     public moveTo(left: number, top: number): Promise<void> {
         return this.wire.sendAction('move-window', Object.assign({}, this.identity, { left, top })).then(() => undefined);
     }
 
+    /**
+     * Resizes the window by a specified amount.
+     * @param { interger } deltaWidth 
+     * @param { interger } deltaHeight 
+     * @param { string } anchor
+     * @return {Promise.<void>} 
+     */
     public resizeBy(deltaWidth: number, deltaHeight: number, anchor: string): Promise<void> {
         return this.wire.sendAction('resize-window-by', Object.assign({}, this.identity, {
             deltaWidth: Math.floor(deltaWidth),
@@ -218,6 +336,13 @@ export class _Window extends Base {
         })).then(() => undefined);
     }
 
+    /**
+     * Resizes the window to the specified dimensions.
+     * @param { interger } width 
+     * @param { interger } height 
+     * @param { string } anchor
+     * @return {Promise.<void>} 
+     */
     public resizeTo(width: number, height: number, anchor: string): Promise<void> {
         return this.wire.sendAction('resize-window', Object.assign({}, this.identity, {
             width: Math.floor(width),
@@ -226,22 +351,48 @@ export class _Window extends Base {
         })).then(() => undefined);
     }
 
+    /**
+     * Restores the window to its normal state (i.e., unminimized, unmaximized).
+     * @return {Promise.<void>}
+     */
     public restore(): Promise<void> {
         return this.wire.sendAction('restore-window', this.identity).then(() => undefined);
     }
 
+    /**
+     * Will bring the window to the front of the entire stack and give it focus.
+     * @return {Promise.<void>}
+     */
     public setAsForeground(): Promise<void> {
         return this.wire.sendAction('set-foreground-window', this.identity).then(() => undefined);
     }
 
+    /**
+     * Sets the window's size and position.
+     * @param { object } bounds 
+     * @return {Promise.<void>}
+     */
     public setBounds(bounds: Bounds): Promise<void> {
         return this.wire.sendAction('set-window-bounds', Object.assign({}, this.identity, bounds)).then(() => undefined);
     }
 
+    /**
+     * Shows the window if it is hidden.
+     * @param { boolean } force 
+     * @return {Promise.<void>}
+     */
     public show(force: boolean = false): Promise<void> {
         return this.wire.sendAction('show-window', Object.assign({}, this.identity, { force })).then(() => undefined);
     }
 
+    /**
+     * Shows the window if it is hidden at the specified location. If the toggle parameter is set to true,
+     * the window will alternate between showing and hiding.
+     * @param { interger } left 
+     * @param { interger } top 
+     * @param { boolean } force 
+     * @return {Promise.<void>}
+     */
     public showAt(left: number, top: number, force: boolean = false): Promise<void> {
         return this.wire.sendAction('show-at-window', Object.assign({}, this.identity, {
             force,
@@ -250,18 +401,38 @@ export class _Window extends Base {
         })).then(() => undefined);
     }
 
+    /**
+     * Updates the window using the passed options
+     * @param {*} options 
+     * @return {Promise.<void>}
+     */
     public updateOptions(options: any): Promise<void> {
         return this.wire.sendAction('show-window', Object.assign({}, this.identity, { options })).then(() => undefined);
     }
 
+    /**
+     * Provides credentials to authentication requests
+     * @param { string } userName 
+     * @param { string } password 
+     * @return {Promise.<void>}
+     */
     public authenticate(userName: string, password: string): Promise<void> {
         return this.wire.sendAction('window-authenticate', Object.assign({}, this.identity, { userName, password })).then(() => undefined);
     }
 
+    /**
+     * Returns the zoom level of the window.
+     * @return {Promise.<number>}
+     */
     public getZoomLevel(): Promise<number> {
         return this.wire.sendAction('get-zoom-level', this.identity).then(({ payload }) => payload.data);
     }
 
+    /**
+     * Sets the zoom level of the window.
+     * @param { interger } level 
+     * @return {Promise.<void>}
+     */
     public setZoomLevel(level: number): Promise<void> {
         return this.wire.sendAction('set-zoom-level', Object.assign({}, this.identity, { level })).then(() => undefined);
     }

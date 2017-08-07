@@ -4,8 +4,8 @@ import Transport, { Message } from '../../transport/transport';
 import RefCounter from '../../util/ref-counter';
 
 /**
-  A messaging bus that allows for pub/sub messaging between different applications.
-  @namespace
+ * A messaging bus that allows for pub/sub messaging between different applications.
+ * @namespace
 */
 export default class InterApplicationBus extends Bare {
     public events = {
@@ -16,8 +16,8 @@ export default class InterApplicationBus extends Bare {
     private refCounter = new RefCounter();
 
     /**
-      @param { object } wire
-      @constructor
+     * @param { object } wire
+     * @constructor
     */
     constructor(wire: Transport) {
         super(wire);
@@ -25,11 +25,11 @@ export default class InterApplicationBus extends Bare {
     }
 
     /**
-      Publishes a message to all applications running on OpenFin Runtime that
-      are subscribed to the specified topic.
-      @param { string } topic
-      @param { any } message
-      @return {Promise.<void>}
+     * Publishes a message to all applications running on OpenFin Runtime that
+     * are subscribed to the specified topic.
+     * @param { string } topic
+     * @param { any } message
+     * @return {Promise.<void>}
     */
     public publish(topic: string, message: any): Promise<void> {
         return this.wire.sendAction('publish-message', {
@@ -40,11 +40,11 @@ export default class InterApplicationBus extends Bare {
     }
 
     /**
-      Sends a message to a specific application on a specific topic.
-      @param { object } destination
-      @param { string } topic
-      @param { any } message
-      @return {Promise<void>}
+     * Sends a message to a specific application on a specific topic.
+     * @param { object } destination
+     * @param { string } topic
+     * @param { any } message
+     * @return {Promise.<void>}
     */
     public send(destination: Identity, topic: string, message: any): Promise<void> {
         return this.wire.sendAction('send-message', {
@@ -56,6 +56,16 @@ export default class InterApplicationBus extends Bare {
         }).then(() => undefined);
     }
 
+    /**
+     * Subscribes to messages from the specified application on the specified topic.
+     * If the subscription is for a uuid, [name], topic combination that has already
+     * been published to upon subscription you will receive the last 20 missed messages
+     * in the order they were published.
+     * @param source 
+     * @param topic 
+     * @param listener 
+     * @return {Promise.<void>}
+     */
     public subscribe(source: Identity, topic: string, listener: Function): Promise<void> {
         const subKey = this.createSubscriptionKey(source.uuid, source.name || '*', topic);
         const sendSubscription = () => {
@@ -76,6 +86,13 @@ export default class InterApplicationBus extends Bare {
         return this.refCounter.actOnFirst(subKey, sendSubscription, alreadySubscribed);
     }
 
+    /**
+     * Unsubscribes to messages from the specified application on the specified topic.
+     * @param source 
+     * @param topic 
+     * @param listener 
+     * @return {Promise.<void>}
+     */
     public unsubscribe(source: Identity, topic: string, listener: Function): Promise<void> {
         const subKey = this.createSubscriptionKey(source.uuid, source.name || '*', topic);
         const sendUnsubscription = () => {
@@ -95,6 +112,9 @@ export default class InterApplicationBus extends Bare {
         return this.refCounter.actOnLast(subKey, sendUnsubscription, dontSendUnsubscription);
     }
 
+    /**
+     * @param message 
+     */
     private processMessage(message: Message<InterAppPayload>) {
         const {payload: {message: payloadMessage, sourceWindowName, sourceUuid, topic}} = message;
         const keys = [
@@ -120,6 +140,12 @@ export default class InterApplicationBus extends Bare {
         this.emit(type, payload);
     }
 
+    /**
+     * @param uuid 
+     * @param name 
+     * @param topic
+     * @return {string}
+     */
     protected createSubscriptionKey(uuid: string, name: string, topic: string): string {
         const n = name || '*';
         if (!(uuid && n && topic)) {
@@ -129,6 +155,10 @@ export default class InterApplicationBus extends Bare {
         return createKey(uuid, n, topic);
     }
 
+    /**
+     * @param message 
+     * @return {boolean}
+     */
     protected onmessage(message: Message<InterAppPayload>): boolean {
         const {action} = message;
 

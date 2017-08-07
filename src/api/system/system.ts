@@ -14,16 +14,16 @@ import { ExternalProcessRequestType , TerminateExternalRequestType } from './ext
 import Transport from '../../transport/transport';
 
 /**
-  An object representing the core of OpenFin Runtime. Allows the developer
-  to perform system-level actions, such as accessing logs, viewing processes,
-  clearing the cache and exiting the runtime.
-  @namespace
+ * An object representing the core of OpenFin Runtime. Allows the developer
+ * to perform system-level actions, such as accessing logs, viewing processes,
+ * clearing the cache and exiting the runtime.
+ * @namespace
 */
 export default class System extends Base {
 
     /**
-      @param { object } wire
-      @constructor
+     * @param { object } wire
+     * @constructor
     */
     constructor(wire: Transport) {
         super(wire);
@@ -45,9 +45,9 @@ export default class System extends Base {
     }
 
     /**
-      Returns the version of the runtime. The version contains the major, minor,
-      build and revision numbers.
-      @return {Promise.<string>}
+     * Returns the version of the runtime. The version contains the major, minor,
+     * build and revision numbers.
+     * @return {Promise.<string>}
     */
     public getVersion(): Promise<string> {
         return this.wire.sendAction('get-version')
@@ -55,26 +55,26 @@ export default class System extends Base {
     }
 
     /**
-      Clears cached data containing window state/positions, application resource
-      files (images, HTML, JavaScript files), cookies, and items stored in the
-      Local Storage.
-      @return {Promise.<void>}
+     * Clears cached data containing window state/positions, application resource
+     * files (images, HTML, JavaScript files), cookies, and items stored in the
+     * Local Storage.
+     * @return {Promise.<void>}
     */
     public clearCache(): Promise<void> {
         return this.wire.sendAction('clear-cache').then(() => undefined);
     }
 
     /**
-      Clears all cached data when OpenFin Runtime exits.
-      @return {Promise.<void>}
+     * Clears all cached data when OpenFin Runtime exits.
+     * @return {Promise.<void>}
     */
     public deleteCacheOnExit(): Promise<void> {
         return this.wire.sendAction('delete-cache-request').then(() => undefined);
     }
 
     /**
-      Retrieves an array of data (name, ids, bounds) for all application windows.
-      @return {Promise.<array>}
+     * Retrieves an array of data (name, ids, bounds) for all application windows.
+     * @return {Promise.<array>}
     */
     public getAllWindows(): Promise<Array<WindowInfo>> {
         return this.wire.sendAction('get-all-windows')
@@ -82,8 +82,8 @@ export default class System extends Base {
     }
 
     /**
-      Retrieves an array of data for all applications.
-      @return {Promise.<array>}
+     * Retrieves an array of data for all applications.
+     * @return {Promise.<array>}
     */
     public getAllApplications(): Promise<Array<ApplicationInfo>> {
         return this.wire.sendAction('get-all-applications')
@@ -91,8 +91,8 @@ export default class System extends Base {
     }
 
     /**
-      Retrieves the command line argument string that started OpenFin Runtime.
-      @return {Promise.<string>}
+     * Retrieves the command line argument string that started OpenFin Runtime.
+     * @return {Promise.<string>}
     */
     public getCommandLineArguments(): Promise<string> {
         return this.wire.sendAction('get-command-line-arguments')
@@ -100,9 +100,8 @@ export default class System extends Base {
     }
 
     /**
-      Returns a hex encoded hash of the mac address and the currently logged in
-      user name
-      @return {Promise.<string>}
+     * Returns a hex encoded hash of the mac address and the currently logged in user name
+     * @return {Promise.<string>}
     */
     public getDeviceId(): Promise<string> {
         return this.wire.sendAction('get-device-id')
@@ -110,8 +109,8 @@ export default class System extends Base {
     }
 
     /**
-      Retrieves system information.
-      @return {Promise.<string>}
+     * Retrieves system information.
+     * @return {Promise.<string>}
     */
     public getEnvironmentVariable(): Promise<string> {
         return this.wire.sendAction('get-environment-variable')
@@ -119,8 +118,9 @@ export default class System extends Base {
     }
 
     /**
-      Retrieves the contents of the log with the specified filename.
-      @return {Promise.<string>}
+     * Retrieves the contents of the log with the specified filename.
+     * @param { object } options
+     * @return {Promise.<string>}
     */
     public getLog(options: GetLogRequestType): Promise<string> {
         return this.wire.sendAction('view-log', options)
@@ -156,10 +156,10 @@ export default class System extends Base {
     }
 
     /**
-      Retrieves an array of all of the runtime processes that are currently
-      running. Each element in the array is an object containing the uuid
-      and the name of the application to which the process belongs.
-      @return {Promise<array>}
+     * Retrieves an array of all of the runtime processes that are currently
+     * running. Each element in the array is an object containing the uuid
+     * and the name of the application to which the process belongs.
+     * @return {Promise<array>}
     */
     public getProcessList(): Promise<Array<ProcessInfo>> {
         return this.wire.sendAction('process-snapshot')
@@ -167,8 +167,8 @@ export default class System extends Base {
     }
 
     /**
-      Retrieves the Proxy settings.
-      @return {Promise.<ProxyInfo>}
+     * Retrieves the Proxy settings.
+     * @return {Promise.<ProxyInfo>}
     */
     public getProxySettings(): Promise<ProxyInfo> {
         return this.wire.sendAction('get-proxy-settings')
@@ -176,8 +176,8 @@ export default class System extends Base {
     }
 
     /**
-      Returns information about the running RVM in an object.
-      @return {Promise.<RVMInfo>}
+     * Returns information about the running RVM in an object.
+     * @return {Promise.<RVMInfo>}
     */
     // incompatible with standalone node process.
     public getRvmInfo(): Promise<RVMInfo> {
@@ -186,8 +186,9 @@ export default class System extends Base {
     }
 
     /**
-      Runs an executable or batch file.
-      @return {Promise.<RVMInfo>}
+     * Runs an executable or batch file.
+     * @param { object } ExternalProcessRequestType
+     * @return {Promise.<RVMInfo>}
     */
     public launchExternalProcess(options: ExternalProcessRequestType): Promise<RVMInfo> {
         return this.wire.sendAction('launch-external-process', options)
@@ -195,8 +196,9 @@ export default class System extends Base {
     }
 
     /**
-      Monitors a running process.
-      @return {Promise.<Identity>}
+     * Monitors a running process.
+     * @param { interger } pid
+     * @return {Promise.<Identity>}
     */
     public monitorExternalProcess(pid: number): Promise<Identity> {
         return this.wire.sendAction('monitor-external-process', { pid })
@@ -204,41 +206,47 @@ export default class System extends Base {
     }
 
     /**
-      Writes the passed message into both the log file and the console.
-      @return {Promise.<void>}
+     * Writes the passed message into both the log file and the console.
+     * @param { string } level
+     * @param { string } message
+     * @return {Promise.<void>}
     */
     public log(level: string, message: string): Promise<void> {
         return this.wire.sendAction('write-to-log', { level, message }).then(() => undefined);
     }
 
     /**
-      Opens the passed URL in the default web browser.
-      @return {Promise.<void>}
+     * Opens the passed URL in the default web browser.
+     * @param { string } url
+     * @return {Promise.<void>}
     */
     public openUrlWithBrowser(url: string): Promise<void> {
         return this.wire.sendAction('open-url-with-browser', { url }).then(() => undefined);
     }
     /**
-      Removes the process entry for the passed UUID obtained from a prior call
-      of fin.desktop.System.launchExternalProcess().
-      @return {Promise.<void>}
+     * Removes the process entry for the passed UUID obtained from a prior call
+     * of fin.desktop.System.launchExternalProcess().
+     * @param { string } uuid
+     * @return {Promise.<void>}
     */
     public releaseExternalProcess(uuid: string): Promise<void> {
         return this.wire.sendAction('release-external-process', { uuid }).then(() => undefined);
     }
 
     /**
-      Shows the Chromium Developer Tools for the specified window.
-      @return {Promise.<void>}
+     * Shows the Chromium Developer Tools for the specified window
+     * @param { string } identity
+     * @return {Promise.<void>}
     */
     public showDeveloperTools(identity: Identity): Promise<void> {
         return this.wire.sendAction('show-developer-tools', identity).then(() => undefined);
     }
 
     /**
-      Attempt to close an external process. The process will be terminated if it
-      has not closed after the elapsed timeout in milliseconds.
-      @return {Promise.<void>}
+     * Attempt to close an external process. The process will be terminated if it
+     * has not closed after the elapsed timeout in milliseconds.
+     * @param { object } options
+     * @return {Promise.<void>}
     */
     public terminateExternalProcess(options: TerminateExternalRequestType): Promise<void> {
         return this.wire.sendAction('terminate-external-process', options)
@@ -246,16 +254,18 @@ export default class System extends Base {
     }
 
     /**
-      Update the OpenFin Runtime Proxy settings.
-      @return {Promise.<void>}
+     * Update the OpenFin Runtime Proxy settings.
+     * @param { object } options
+     * @return {Promise.<void>}
     */
     public updateProxySettings(options: ProxyConfig): Promise<void> {
         return this.wire.sendAction('update-proxy', options).then(() => undefined);
     }
 
     /**
-      Downloads the given application asset
-      @return {Promise.<void>}
+     * Downloads the given application asset
+     * @param { object } appAsset
+     * @return {Promise.<void>}
     */
     // incompatible with standalone node process.
     public downloadAsset(appAsset: DownloadAssetRequestType): Promise<void> {
@@ -263,8 +273,8 @@ export default class System extends Base {
     }
 
     /**
-      Retrieves an array of data (name, ids, bounds) for all application windows.
-      @return {Promise.<array>}
+     * Retrieves an array of data (name, ids, bounds) for all application windows.
+     * @return {Promise.<array>}
     */
     public getAllExternalApplications(): Promise<Array<Identity>> {
         return this.wire.sendAction('get-all-external-applications')
@@ -272,9 +282,9 @@ export default class System extends Base {
     }
 
     /**
-      Resloves the user id string
-      @param { string } uuid
-      @return {Promise.<Entity>}
+     * Resloves the user id string
+     * @param { string } uuid
+     * @return {Promise.<Entity>}
     */
     public resolveUuid(uuid: string): Promise<Entity> {
         return this.wire.sendAction('resolve-uuid', {
@@ -283,8 +293,9 @@ export default class System extends Base {
     }
 
     /**
-      @param { object } requestingIdentity
-      @param { any } data
+     * @param { object } requestingIdentity
+     * @param { any } data
+     * @return {Promise.<any>}
     */
     public executeOnRemote(requestingIdentity: Identity, data: any): Promise<any> {
         data.requestingIdentity = requestingIdentity;

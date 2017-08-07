@@ -41,12 +41,12 @@ export interface NotificationCallback {
 }
 
 /**
-  @classdesc A Notification object represents a window on OpenFin Runtime which
-  is shown briefly to the user on the bottom-right corner of the primary monitor.
-  A notification is typically used to alert the user of some important event which
-  requires his or her attention. Notifications are a child or your application that
-  are controlled by the runtime.
-  @class
+ * @classdesc A Notification object represents a window on OpenFin Runtime which
+ * is shown briefly to the user on the bottom-right corner of the primary monitor.
+ * A notification is typically used to alert the user of some important event which
+ * requires his or her attention. Notifications are a child or your application that
+ * are controlled by the runtime.
+ * @class
 */
 // tslint:disable-next-line
 export class _Notification extends Base implements Notification {
@@ -97,9 +97,9 @@ export class _Notification extends Base implements Notification {
     }
 
     /**
-      @param { object } options
-      @param { object } wire
-      @constructor
+     * @param { object } options
+     * @param { object } wire
+     * @constructor
     */
     constructor(wire: Transport, options: NotificationOptions) {
         super(wire);
@@ -124,8 +124,7 @@ export class _Notification extends Base implements Notification {
     public message: any;
 
     /**
-
-      @return {Promise.<Message>}
+     * @return {Promise.<Message>}
     */
     public show(): Promise<Message<any>> {
 
@@ -147,9 +146,9 @@ export class _Notification extends Base implements Notification {
     }
 
     /**
-      Sends a message to the notification.
-      @params {*} message
-      @return {Promise.<void>}
+     * Sends a message to the notification.
+     * @param {*} message
+     * @return {Promise.<void>}
     */
     public sendMessage(message: any): Promise<Message<any>> {
 
