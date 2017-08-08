@@ -19,7 +19,7 @@ export default class InterApplicationBus extends Bare {
     };
 
     private refCounter = new RefCounter();
-    
+
     constructor(wire: Transport) {
         super(wire);
         wire.registerMessageHandler(this.onmessage.bind(this));
@@ -113,9 +113,6 @@ export default class InterApplicationBus extends Bare {
         return this.refCounter.actOnLast(subKey, sendUnsubscription, dontSendUnsubscription);
     }
 
-    /**
-     * @param { Message } message
-     */
     private processMessage(message: Message<InterAppPayload>) {
         const {payload: {message: payloadMessage, sourceWindowName, sourceUuid, topic}} = message;
         const keys = [
@@ -141,12 +138,6 @@ export default class InterApplicationBus extends Bare {
         this.emit(type, payload);
     }
 
-    /**
-     * @param uuid 
-     * @param name
-     * @param topic
-     * @return {string}
-     */
     protected createSubscriptionKey(uuid: string, name: string, topic: string): string {
         const n = name || '*';
         if (!(uuid && n && topic)) {
@@ -156,10 +147,6 @@ export default class InterApplicationBus extends Bare {
         return createKey(uuid, n, topic);
     }
 
-    /**
-     * @param message
-     * @return {boolean}
-     */
     protected onmessage(message: Message<InterAppPayload>): boolean {
         const {action} = message;
 

@@ -95,8 +95,7 @@ export class _Notification extends Base implements Notification {
 
         return true;
     }
-    
-    
+
     constructor(wire: Transport, options: NotificationOptions) {
         super(wire);
 

@@ -158,7 +158,6 @@ export class _Window extends Base {
      * Executes Javascript on the window, restricted to windows you own or windows owned by
      * applications you have created.
      * @param { string } code
-     * 
      */
     public executeJavaScript(code: string): Promise<void> {
         return this.wire.sendAction('execute-javascript-in-window', Object.assign({}, this.identity, { code }))
@@ -321,7 +320,7 @@ export class _Window extends Base {
      * @param { number } deltaWidth
      * @param { number } deltaHeight
      * @param { string } anchor
-     * @return {Promise.<void>} 
+     * @return {Promise.<void>}
      */
     public resizeBy(deltaWidth: number, deltaHeight: number, anchor: string): Promise<void> {
         return this.wire.sendAction('resize-window-by', Object.assign({}, this.identity, {

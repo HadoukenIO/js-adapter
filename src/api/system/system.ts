@@ -20,8 +20,7 @@ import Transport from '../../transport/transport';
  * @namespace
 */
 export default class System extends Base {
-    
-    
+
     constructor(wire: Transport) {
         super(wire);
 
