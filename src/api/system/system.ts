@@ -20,11 +20,8 @@ import Transport from '../../transport/transport';
  * @namespace
 */
 export default class System extends Base {
-
-    /**
-     * @param { object } wire
-     * @constructor
-    */
+    
+    
     constructor(wire: Transport) {
         super(wire);
 
@@ -197,7 +194,7 @@ export default class System extends Base {
 
     /**
      * Monitors a running process.
-     * @param { interger } pid
+     * @param { number } pid
      * @return {Promise.<Identity>}
     */
     public monitorExternalProcess(pid: number): Promise<Identity> {

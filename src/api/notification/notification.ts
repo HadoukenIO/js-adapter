@@ -95,12 +95,8 @@ export class _Notification extends Base implements Notification {
 
         return true;
     }
-
-    /**
-     * @param { object } options
-     * @param { object } wire
-     * @constructor
-    */
+    
+    
     constructor(wire: Transport, options: NotificationOptions) {
         super(wire);
 
@@ -147,7 +143,7 @@ export class _Notification extends Base implements Notification {
 
     /**
      * Sends a message to the notification.
-     * @param {*} message
+     * @param { any } message
      * @return {Promise.<void>}
     */
     public sendMessage(message: any): Promise<Message<any>> {

@@ -4,6 +4,11 @@ import Transport, { Message } from '../../transport/transport';
 import RefCounter from '../../util/ref-counter';
 
 /**
+ * A interface that contains a propeties uuid and name which are both strings
+ * @typedef { Object } Identity
+*/
+
+/**
  * A messaging bus that allows for pub/sub messaging between different applications.
  * @namespace
 */
@@ -14,11 +19,7 @@ export default class InterApplicationBus extends Bare {
     };
 
     private refCounter = new RefCounter();
-
-    /**
-     * @param { object } wire
-     * @constructor
-    */
+    
     constructor(wire: Transport) {
         super(wire);
         wire.registerMessageHandler(this.onmessage.bind(this));
@@ -61,9 +62,9 @@ export default class InterApplicationBus extends Bare {
      * If the subscription is for a uuid, [name], topic combination that has already
      * been published to upon subscription you will receive the last 20 missed messages
      * in the order they were published.
-     * @param source 
-     * @param topic 
-     * @param listener 
+     * @param { Identity } source
+     * @param { string } topic
+     * @param { function } listener
      * @return {Promise.<void>}
      */
     public subscribe(source: Identity, topic: string, listener: Function): Promise<void> {
@@ -88,9 +89,9 @@ export default class InterApplicationBus extends Bare {
 
     /**
      * Unsubscribes to messages from the specified application on the specified topic.
-     * @param source 
-     * @param topic 
-     * @param listener 
+     * @param { Identity } source
+     * @param { string } topic
+     * @param { function } listener
      * @return {Promise.<void>}
      */
     public unsubscribe(source: Identity, topic: string, listener: Function): Promise<void> {
@@ -113,7 +114,7 @@ export default class InterApplicationBus extends Bare {
     }
 
     /**
-     * @param message 
+     * @param { Message } message
      */
     private processMessage(message: Message<InterAppPayload>) {
         const {payload: {message: payloadMessage, sourceWindowName, sourceUuid, topic}} = message;
@@ -142,7 +143,7 @@ export default class InterApplicationBus extends Bare {
 
     /**
      * @param uuid 
-     * @param name 
+     * @param name
      * @param topic
      * @return {string}
      */
@@ -156,7 +157,7 @@ export default class InterApplicationBus extends Bare {
     }
 
     /**
-     * @param message 
+     * @param message
      * @return {boolean}
      */
     protected onmessage(message: Message<InterAppPayload>): boolean {

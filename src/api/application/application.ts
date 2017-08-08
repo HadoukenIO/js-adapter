@@ -15,11 +15,15 @@ export class NavigationRejectedReply extends Reply<'window-navigation-rejected',
     public url: string;
 }
 
+/**
+ * A interface that contains a propeties uuid and name which are both strings
+ * @typedef { Object } Identity
+*/
 
 export default class ApplicationModule extends Bare {
     /**
      * Returns an Application object that represents an existing application.
-     * @param { object } indentity
+     * @param { Identity } indentity
      * @return {Application}
     */
     public wrap(identity: Identity): Application {
@@ -27,7 +31,7 @@ export default class ApplicationModule extends Bare {
     }
 
     /**
-     * @param appOptions 
+     *  @param appOptions
      * @return {Application}
      */
     public create(appOptions: any): Promise<Application> {
@@ -44,11 +48,6 @@ export default class ApplicationModule extends Bare {
 */
 export class Application extends Base {
 
-    /**
-     * @param { object } wire
-     * @param { object } identity
-     * @constructor
-    */
     constructor(wire: Transport, public identity: Identity) {
         super(wire);
 
@@ -103,7 +102,7 @@ export class Application extends Base {
 
     /**
      * Retrieves an array of wrapped fin.desktop.Windows for each of the application’s child windows.
-     * @return {Promise.<array>}
+     * @return {Promise.<_Window>}
     */
     public getChildWindows(): Promise<Array<_Window>> {
         return this.wire.sendAction('get-child-windows', this.identity)
@@ -161,9 +160,9 @@ export class Application extends Base {
 
     /**
      * Passes in custom data that will be relayed to the RVM
-     * @param { object } data 
+     * @param { object } data
      * @return {Promise.<void>}
-     */
+    */
     public registerCustomData(data: Object): Promise<void> {
         return this.wire.sendAction('register-custom-data', Object.assign({}, this.identity, {data})).then(() => undefined);
     }
@@ -202,7 +201,7 @@ export class Application extends Base {
 
     /**
      * Adds a customizable icon in the system tray and notifies the application when clicked.
-     * @param { string } iconUrl 
+     * @param { string } iconUrl
      * @return {Promise.<void>}
      */
     public setTrayIcon(iconUrl: string): Promise<void> {

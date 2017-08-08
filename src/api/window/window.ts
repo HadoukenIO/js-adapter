@@ -30,12 +30,7 @@ export interface CloseEventShape {
 // The window.Window name is taken
 // tslint:disable-next-line
 export class _Window extends Base {
-
-    /**
-     * @param { object } wire
-     * @param { object } identity
-     * @constructor
-    */
+    
     constructor(wire: Transport, public identity: Identity) {
         super(wire);
 
@@ -108,7 +103,7 @@ export class _Window extends Base {
     }
 
     /**
-     * @param { boolean } interrupt 
+     * @param { boolean } interrupt
      * @return {Animation}
      */
     public animationBuilder(interrupt: boolean = false): Animation {
@@ -142,7 +137,7 @@ export class _Window extends Base {
         return this.wire.sendAction('get-window-native-id', this.identity)
             .then(({ payload }) => payload.data);
     }
-    
+
     /**
      * Prevents a user from changing a window's size/position when using the window's frame.
      * @return {Promise.<void>}
@@ -162,7 +157,7 @@ export class _Window extends Base {
     /**
      * Executes Javascript on the window, restricted to windows you own or windows owned by
      * applications you have created.
-     * @param { string } code 
+     * @param { string } code
      * 
      */
     public executeJavaScript(code: string): Promise<void> {
@@ -255,7 +250,7 @@ export class _Window extends Base {
 
     /**
      * Joins the same window group as the specified window.
-     * @param { class } target 
+     * @param { class } target
      * @return {Promise.<void>}
      */
     public joinGroup(target: _Window): Promise<void> {
@@ -283,7 +278,7 @@ export class _Window extends Base {
 
     /**
      * Merges the instance's window group with the same window group as the specified window
-     * @param { class } target 
+     * @param { class } target
      * @return {Promise.<void>}
      */
     public mergeGroups(target: _Window): Promise<void> {
@@ -303,8 +298,8 @@ export class _Window extends Base {
 
     /**
      * Moves the window by a specified amount.
-     * @param { interger } deltaLeft 
-     * @param { interger } deltaTop 
+     * @param { number } deltaLeft
+     * @param { number } deltaTop
      * @return {Promise.<void>}
      */
     public moveBy(deltaLeft: number, deltaTop: number): Promise<void> {
@@ -313,8 +308,8 @@ export class _Window extends Base {
 
     /**
      * Moves the window to a specified location.
-     * @param { interger } left 
-     * @param { interger } top 
+     * @param { number } left
+     * @param { number } top
      * @return {Promise.<void>}
      */
     public moveTo(left: number, top: number): Promise<void> {
@@ -323,8 +318,8 @@ export class _Window extends Base {
 
     /**
      * Resizes the window by a specified amount.
-     * @param { interger } deltaWidth 
-     * @param { interger } deltaHeight 
+     * @param { number } deltaWidth
+     * @param { number } deltaHeight
      * @param { string } anchor
      * @return {Promise.<void>} 
      */
@@ -338,10 +333,10 @@ export class _Window extends Base {
 
     /**
      * Resizes the window to the specified dimensions.
-     * @param { interger } width 
-     * @param { interger } height 
+     * @param { number } width
+     * @param { number } height
      * @param { string } anchor
-     * @return {Promise.<void>} 
+     * @return {Promise.<void>}
      */
     public resizeTo(width: number, height: number, anchor: string): Promise<void> {
         return this.wire.sendAction('resize-window', Object.assign({}, this.identity, {
@@ -369,7 +364,7 @@ export class _Window extends Base {
 
     /**
      * Sets the window's size and position.
-     * @param { object } bounds 
+     * @param { object } bounds
      * @return {Promise.<void>}
      */
     public setBounds(bounds: Bounds): Promise<void> {
@@ -378,7 +373,7 @@ export class _Window extends Base {
 
     /**
      * Shows the window if it is hidden.
-     * @param { boolean } force 
+     * @param { boolean } force
      * @return {Promise.<void>}
      */
     public show(force: boolean = false): Promise<void> {
@@ -388,9 +383,9 @@ export class _Window extends Base {
     /**
      * Shows the window if it is hidden at the specified location. If the toggle parameter is set to true,
      * the window will alternate between showing and hiding.
-     * @param { interger } left 
-     * @param { interger } top 
-     * @param { boolean } force 
+     * @param { number } left
+     * @param { number } top
+     * @param { boolean } force
      * @return {Promise.<void>}
      */
     public showAt(left: number, top: number, force: boolean = false): Promise<void> {
@@ -403,7 +398,7 @@ export class _Window extends Base {
 
     /**
      * Updates the window using the passed options
-     * @param {*} options 
+     * @param {*} options
      * @return {Promise.<void>}
      */
     public updateOptions(options: any): Promise<void> {
@@ -412,8 +407,8 @@ export class _Window extends Base {
 
     /**
      * Provides credentials to authentication requests
-     * @param { string } userName 
-     * @param { string } password 
+     * @param { string } userName
+     * @param { string } password
      * @return {Promise.<void>}
      */
     public authenticate(userName: string, password: string): Promise<void> {
@@ -430,7 +425,7 @@ export class _Window extends Base {
 
     /**
      * Sets the zoom level of the window.
-     * @param { interger } level 
+     * @param { number } level
      * @return {Promise.<void>}
      */
     public setZoomLevel(level: number): Promise<void> {
