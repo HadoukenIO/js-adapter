@@ -14,9 +14,43 @@ import { ExternalProcessRequestType , TerminateExternalRequestType } from './ext
 import Transport from '../../transport/transport';
 
 /**
- * A interface that contains a properties uuid and name which are both strings
+ * A interface
  * @typedef { Object } Identity
+ * @property { string } name
+ * @property { string } uuid
 */
+
+/**
+ * A interface
+ * @typedef { Object } ProxyConfig
+ * @property { numder } proxyPort
+ * @property { string } proxyAddress
+ * @property { string } type
+ */
+
+/**
+ * A interface
+ * @typedef { Object } TerminateExternalRequestType
+ * @property { string } uuid
+ * @property { number } timeout
+ * @property { boolean } kiltree
+ */
+
+/**
+ * A interface
+ * @typedef { Object } GetLogRequestType
+ * @property { string } name
+ * @property { number } endFile
+ * @property { number } sizeLimit
+ */
+
+/**
+ * A interface
+ * @typedef { Object } ExternalProcessRequestType
+ * @property { string } path
+ * @property { string } arguement
+ * @property { Object } LaunchExternalProcessListner
+ */
 
 /**
  * An object representing the core of OpenFin Runtime. Allows the developer
@@ -120,7 +154,7 @@ export default class System extends Base {
 
     /**
      * Retrieves the contents of the log with the specified filename.
-     * @param { object } options
+     * @param { GetLogRequestType } options A object that id defined by the GetLogRequestType interface
      * @return {Promise.<string>}
     */
     public getLog(options: GetLogRequestType): Promise<string> {
@@ -188,7 +222,7 @@ export default class System extends Base {
 
     /**
      * Runs an executable or batch file.
-     * @param { object } ExternalProcessRequestType
+     * @param { ExternalProcessRequestType } options A object that is defined in the ExternalProcessRequestType interface
      * @return {Promise.<RVMInfo>}
     */
     public launchExternalProcess(options: ExternalProcessRequestType): Promise<RVMInfo> {
@@ -198,7 +232,7 @@ export default class System extends Base {
 
     /**
      * Monitors a running process.
-     * @param { number } pid
+     * @param { number } pid See tutorial for more details
      * @return {Promise.<Identity>}
     */
     public monitorExternalProcess(pid: number): Promise<Identity> {
@@ -208,8 +242,8 @@ export default class System extends Base {
 
     /**
      * Writes the passed message into both the log file and the console.
-     * @param { string } level
-     * @param { string } message
+     * @param { string } level The log level for the entry. Can be either "info", "warning" or "error"
+     * @param { string } message The log message text
      * @return {Promise.<void>}
     */
     public log(level: string, message: string): Promise<void> {
@@ -218,7 +252,7 @@ export default class System extends Base {
 
     /**
      * Opens the passed URL in the default web browser.
-     * @param { string } url
+     * @param { string } url The URL to open
      * @return {Promise.<void>}
     */
     public openUrlWithBrowser(url: string): Promise<void> {
@@ -227,7 +261,7 @@ export default class System extends Base {
     /**
      * Removes the process entry for the passed UUID obtained from a prior call
      * of fin.desktop.System.launchExternalProcess().
-     * @param { string } uuid
+     * @param { string } uuid The UUID for a process obtained from a prior call to fin.desktop.System.launchExternalProcess()
      * @return {Promise.<void>}
     */
     public releaseExternalProcess(uuid: string): Promise<void> {
@@ -236,7 +270,7 @@ export default class System extends Base {
 
     /**
      * Shows the Chromium Developer Tools for the specified window
-     * @param { string } identity
+     * @param { Identity } identity This is a object that is defined by the Identity interface
      * @return {Promise.<void>}
     */
     public showDeveloperTools(identity: Identity): Promise<void> {
@@ -246,7 +280,7 @@ export default class System extends Base {
     /**
      * Attempt to close an external process. The process will be terminated if it
      * has not closed after the elapsed timeout in milliseconds.
-     * @param { object } options
+     * @param { TerminateExternalRequestType } options A object defined in the TerminateExternalRequestType interface
      * @return {Promise.<void>}
     */
     public terminateExternalProcess(options: TerminateExternalRequestType): Promise<void> {
@@ -256,7 +290,7 @@ export default class System extends Base {
 
     /**
      * Update the OpenFin Runtime Proxy settings.
-     * @param { object } options
+     * @param { ProxyConfig } options A config object defined in the ProxyConfig interface
      * @return {Promise.<void>}
     */
     public updateProxySettings(options: ProxyConfig): Promise<void> {
@@ -265,7 +299,7 @@ export default class System extends Base {
 
     /**
      * Downloads the given application asset
-     * @param { object } appAsset
+     * @param { Object } appAsset App asset object
      * @return {Promise.<void>}
     */
     // incompatible with standalone node process.

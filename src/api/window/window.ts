@@ -21,6 +21,18 @@ export interface CloseEventShape {
 }
 
 /**
+ * Bounds is a interface that has the properties of height,
+ * width, left, top which are all numbers
+ * @typedef { Object } Bounds
+ * @property { number } height
+ * @property { number } width
+ * @property { number } top
+ * @property { number } left
+ * @property { number } right
+ * @property { number } bottom
+ */
+
+/**
  * @classdesc A basic window that wraps a native HTML window. Provides more fine-grained
  * control over the window state such as the ability to minimize, maximize, restore, etc.
  * By default a window does not show upon instantiation; instead the window's show() method
@@ -103,7 +115,7 @@ export class _Window extends Base {
     }
 
     /**
-     * @param { boolean } interrupt
+     * @param { boolean } interrupt assigns the value to flase
      * @return {Animation}
      */
     public animationBuilder(interrupt: boolean = false): Animation {
@@ -111,6 +123,7 @@ export class _Window extends Base {
     }
 
     /**
+     * Hides the window.
      * @return {Promise.<void>}
      */
     public hide(): Promise<void> {
@@ -119,7 +132,7 @@ export class _Window extends Base {
 
     /**
      * closes the window application
-     * @param { boolean } force assigned that value to false by default
+     * @param { boolean } force A boolean that is assign to flase
      * @return {Promise.<void>}
     */
     public close(force: boolean = false): Promise<void> {
@@ -157,7 +170,8 @@ export class _Window extends Base {
     /**
      * Executes Javascript on the window, restricted to windows you own or windows owned by
      * applications you have created.
-     * @param { string } code
+     * @param { string } code JavaScript code to be executed on the window.
+     * @return {Promise.<void>}
      */
     public executeJavaScript(code: string): Promise<void> {
         return this.wire.sendAction('execute-javascript-in-window', Object.assign({}, this.identity, { code }))
@@ -249,7 +263,7 @@ export class _Window extends Base {
 
     /**
      * Joins the same window group as the specified window.
-     * @param { class } target
+     * @param { class } target The window whose group is to be joined
      * @return {Promise.<void>}
      */
     public joinGroup(target: _Window): Promise<void> {
@@ -277,7 +291,7 @@ export class _Window extends Base {
 
     /**
      * Merges the instance's window group with the same window group as the specified window
-     * @param { class } target
+     * @param { class } target The window whose group is to be merged with
      * @return {Promise.<void>}
      */
     public mergeGroups(target: _Window): Promise<void> {
@@ -297,8 +311,8 @@ export class _Window extends Base {
 
     /**
      * Moves the window by a specified amount.
-     * @param { number } deltaLeft
-     * @param { number } deltaTop
+     * @param { number } deltaLeft The change in the left position of the window
+     * @param { number } deltaTop The change in the top position of the window
      * @return {Promise.<void>}
      */
     public moveBy(deltaLeft: number, deltaTop: number): Promise<void> {
@@ -307,8 +321,8 @@ export class _Window extends Base {
 
     /**
      * Moves the window to a specified location.
-     * @param { number } left
-     * @param { number } top
+     * @param { number } left The left position of the window
+     * @param { number } top The top position of the window
      * @return {Promise.<void>}
      */
     public moveTo(left: number, top: number): Promise<void> {
@@ -317,9 +331,11 @@ export class _Window extends Base {
 
     /**
      * Resizes the window by a specified amount.
-     * @param { number } deltaWidth
-     * @param { number } deltaHeight
-     * @param { string } anchor
+     * @param { number } deltaWidth The change in the width of the window
+     * @param { number } deltaHeight The change in the height of the window
+     * @param { string } anchor Specifies a corner to remain fixed during the resize.
+     * Can take the values: "top-left", "top-right", "bottom-left", or "bottom-right."
+     * If undefined, the default is "top-left"
      * @return {Promise.<void>}
      */
     public resizeBy(deltaWidth: number, deltaHeight: number, anchor: string): Promise<void> {
@@ -332,9 +348,11 @@ export class _Window extends Base {
 
     /**
      * Resizes the window to the specified dimensions.
-     * @param { number } width
-     * @param { number } height
-     * @param { string } anchor
+     * @param { number } width The change in the width of the window
+     * @param { number } height The change in the height of the window
+     * @param { string } anchor Specifies a corner to remain fixed during the resize.
+     * Can take the values: "top-left", "top-right", "bottom-left", or "bottom-right."
+     * If undefined, the default is "top-left"
      * @return {Promise.<void>}
      */
     public resizeTo(width: number, height: number, anchor: string): Promise<void> {
@@ -363,7 +381,7 @@ export class _Window extends Base {
 
     /**
      * Sets the window's size and position.
-     * @param { object } bounds
+     * @param { Bounds } bounds This is a object that holds the properties of
      * @return {Promise.<void>}
      */
     public setBounds(bounds: Bounds): Promise<void> {
@@ -372,7 +390,7 @@ export class _Window extends Base {
 
     /**
      * Shows the window if it is hidden.
-     * @param { boolean } force
+     * @param { boolean } force assign the value to flase
      * @return {Promise.<void>}
      */
     public show(force: boolean = false): Promise<void> {
@@ -380,11 +398,13 @@ export class _Window extends Base {
     }
 
     /**
-     * Shows the window if it is hidden at the specified location. If the toggle parameter is set to true,
-     * the window will alternate between showing and hiding.
-     * @param { number } left
-     * @param { number } top
-     * @param { boolean } force
+     * Shows the window if it is hidden at the specified location.
+     * If the toggle parameter is set to true, the window will
+     * alternate between showing and hiding.
+     * @param { number } left The left position of the window
+     * @param { number } top The right position of the window
+     * @param { boolean } force Show will be prevented from closing when force is false and
+     * ‘show-requested’ has been subscribed to for application’s main window
      * @return {Promise.<void>}
      */
     public showAt(left: number, top: number, force: boolean = false): Promise<void> {
@@ -397,7 +417,7 @@ export class _Window extends Base {
 
     /**
      * Updates the window using the passed options
-     * @param {*} options
+     * @param {*} options Changes a window's options that were defined upon creation. See tutorial
      * @return {Promise.<void>}
      */
     public updateOptions(options: any): Promise<void> {
@@ -406,8 +426,8 @@ export class _Window extends Base {
 
     /**
      * Provides credentials to authentication requests
-     * @param { string } userName
-     * @param { string } password
+     * @param { string } userName userName to provide to the authentication challange
+     * @param { string } password password to provide to the authentication challange
      * @return {Promise.<void>}
      */
     public authenticate(userName: string, password: string): Promise<void> {
@@ -424,7 +444,7 @@ export class _Window extends Base {
 
     /**
      * Sets the zoom level of the window.
-     * @param { number } level
+     * @param { number } level The zoom level
      * @return {Promise.<void>}
      */
     public setZoomLevel(level: number): Promise<void> {

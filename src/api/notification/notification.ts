@@ -119,6 +119,7 @@ export class _Notification extends Base implements Notification {
     public message: any;
 
     /**
+     * Invoked when the notification is shown
      * @return {Promise.<Message>}
     */
     public show(): Promise<Message<any>> {
@@ -142,7 +143,10 @@ export class _Notification extends Base implements Notification {
 
     /**
      * Sends a message to the notification.
-     * @param { any } message
+     * @param { any } message The message to be sent to the notification.
+     * Can be either a primitive data type (string, number, or boolean)
+     * or composite data type (object, array) that is composed of other
+     * primitive or composite data types
      * @return {Promise.<void>}
     */
     public sendMessage(message: any): Promise<Message<any>> {
@@ -159,8 +163,8 @@ export class _Notification extends Base implements Notification {
     }
 
     /**
-      Sends a message to the notification.
-      @return {Promise.<Messge>}
+     * Sends a message to the notification.
+     * @return {Promise.<Messge>}
     */
     public close(): Promise<Message<any>> {
 

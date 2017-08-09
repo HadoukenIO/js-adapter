@@ -4,8 +4,10 @@ import Transport, { Message } from '../../transport/transport';
 import RefCounter from '../../util/ref-counter';
 
 /**
- * A interface that contains a propeties uuid and name which are both strings
+ * A interface
  * @typedef { Object } Identity
+ * @property { string } name
+ * @property { string } uuid
 */
 
 /**
@@ -28,8 +30,10 @@ export default class InterApplicationBus extends Bare {
     /**
      * Publishes a message to all applications running on OpenFin Runtime that
      * are subscribed to the specified topic.
-     * @param { string } topic
-     * @param { any } message
+     * @param { string } topic The topic on which the message is sent
+     * @param { any } message The message to be published. Can be either a primitive
+     * data type (string, number, or boolean) or composite data type (object, array)
+     * that is composed of other primitive or composite data types
      * @return {Promise.<void>}
     */
     public publish(topic: string, message: any): Promise<void> {
@@ -42,9 +46,11 @@ export default class InterApplicationBus extends Bare {
 
     /**
      * Sends a message to a specific application on a specific topic.
-     * @param { object } destination
-     * @param { string } topic
-     * @param { any } message
+     * @param { object } destination The uuid of the application to which the message is sent
+     * @param { string } topic The topic on which the message is sent
+     * @param { any } message The message to be sent. Can be either a primitive data
+     * type (string, number, or boolean) or composite data type (object, array) that
+     * is composed of other primitive or composite data types
      * @return {Promise.<void>}
     */
     public send(destination: Identity, topic: string, message: any): Promise<void> {
@@ -63,8 +69,12 @@ export default class InterApplicationBus extends Bare {
      * been published to upon subscription you will receive the last 20 missed messages
      * in the order they were published.
      * @param { Identity } source
-     * @param { string } topic
-     * @param { function } listener
+     * @param { string } topic The topic on which the message is sent
+     * @param { function } listener A function that is called when a message has
+     * been received. It is passed the message, uuid and name of the sending application.
+     * The message can be either a primitive data type (string, number, or boolean) or
+     * composite data type (object, array) that is composed of other primitive or composite
+     * data types
      * @return {Promise.<void>}
      */
     public subscribe(source: Identity, topic: string, listener: Function): Promise<void> {
@@ -90,8 +100,8 @@ export default class InterApplicationBus extends Bare {
     /**
      * Unsubscribes to messages from the specified application on the specified topic.
      * @param { Identity } source
-     * @param { string } topic
-     * @param { function } listener
+     * @param { string } topic The topic on which the message is sent
+     * @param { function } listener A callback previously registered with subscribe()
      * @return {Promise.<void>}
      */
     public unsubscribe(source: Identity, topic: string, listener: Function): Promise<void> {

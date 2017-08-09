@@ -9,6 +9,12 @@ import { Identity } from '../../identity';
 */
 class ExternalApplication extends Base {
     public identity: Identity;
+
+    /**
+     * Returns an External Application object that represents an existing external application.
+     * @param uuid The UUID of the external application to be wrapped
+     * @return {ExternalApplication}
+     */
     public wrap(uuid: string): ExternalApplication {
         const wrapped = new ExternalApplication(this.wire);
         wrapped.identity = { uuid };

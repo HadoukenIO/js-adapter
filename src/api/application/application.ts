@@ -16,8 +16,10 @@ export class NavigationRejectedReply extends Reply<'window-navigation-rejected',
 }
 
 /**
- * A interface that contains a properties uuid and name which are both strings
+ * A interface
  * @typedef { Object } Identity
+ * @property { string } name
+ * @property { string } uuid
 */
 
 export default class ApplicationModule extends Bare {
@@ -32,7 +34,7 @@ export default class ApplicationModule extends Bare {
     }
 
     /**
-     *  @param appOptions
+     * @param {*} appOptions
      * @return {Application}
      */
     public create(appOptions: any): Promise<Application> {
@@ -94,7 +96,7 @@ export class Application extends Base {
 
     /**
       * Closes the application and any child windows created by the application.
-      * @param { boolean } force sets the value force to false
+      * @param { boolean } force assigns the value to false
       * @return {Promise.<boolean>}
     */
     public close(force: boolean = false): Promise<void> {
@@ -161,7 +163,7 @@ export class Application extends Base {
 
     /**
      * Passes in custom data that will be relayed to the RVM
-     * @param { object } data
+     * @param { object } data Data to be passed to the RVM
      * @return {Promise.<void>}
     */
     public registerCustomData(data: Object): Promise<void> {
@@ -202,7 +204,7 @@ export class Application extends Base {
 
     /**
      * Adds a customizable icon in the system tray and notifies the application when clicked.
-     * @param { string } iconUrl
+     * @param { string } iconUrl Image URL to be used as the icon
      * @return {Promise.<void>}
      */
     public setTrayIcon(iconUrl: string): Promise<void> {
