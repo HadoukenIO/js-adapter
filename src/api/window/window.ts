@@ -184,7 +184,7 @@ export class _Window extends Base {
      * Retrieves an array containing wrapped fin.desktop.Windows that are grouped with this
      * window. If a window is not in a group an empty array is returned. Please note that
      * calling window is included in the result array.
-     * @return {Promise.<array>}
+     * @return {Promise.Array.Array.<_Window>}
      */
     public getGroup(): Promise<Array<Array<_Window>>> {
         return this.wire.sendAction('get-window-group', this.identity).then(({ payload }) => {

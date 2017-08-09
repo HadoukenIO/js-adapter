@@ -102,7 +102,7 @@ export class Application extends Base {
 
     /**
      * Retrieves an array of wrapped fin.desktop.Windows for each of the application’s child windows.
-     * @return {Promise.<_Window>}
+     * @return {Promise.Array.<_Window>}
     */
     public getChildWindows(): Promise<Array<_Window>> {
         return this.wire.sendAction('get-child-windows', this.identity)
