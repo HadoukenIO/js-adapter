@@ -19,6 +19,10 @@ import Transport from '../../transport/transport';
 */
 
 /**
+ * 
+ */
+
+/**
  * An object representing the core of OpenFin Runtime. Allows the developer
  * to perform system-level actions, such as accessing logs, viewing processes,
  * clearing the cache and exiting the runtime.
@@ -294,7 +298,7 @@ export default class System extends Base {
     }
 
     /**
-     * @param { object } requestingIdentity
+     * @param { Identity } requestingIdentity
      * @param { any } data
      * @return {Promise.<any>}
     */

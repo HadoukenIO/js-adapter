@@ -20,6 +20,10 @@ export class NavigationRejectedReply extends Reply<'window-navigation-rejected',
  * @typedef { Object } Identity
 */
 
+/**
+ * _Window is a interface that has the propperties of 
+ */
+
 export default class ApplicationModule extends Bare {
     /**
      * Returns an Application object that represents an existing application.

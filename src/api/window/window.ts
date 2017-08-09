@@ -209,7 +209,7 @@ export class _Window extends Base {
 
     /**
      * Gets the parent application.
-     * @return {Promise.<void>}
+     * @return {Promise.<Application>}
      */
     public getParentApplication(): Promise<Application> {
         return Promise.resolve(new Application(this.wire, this.identity));
