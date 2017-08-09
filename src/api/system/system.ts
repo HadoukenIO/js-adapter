@@ -14,6 +14,11 @@ import { ExternalProcessRequestType , TerminateExternalRequestType } from './ext
 import Transport from '../../transport/transport';
 
 /**
+ * A interface that contains a properties uuid and name which are both strings
+ * @typedef { Object } Identity
+*/
+
+/**
  * An object representing the core of OpenFin Runtime. Allows the developer
  * to perform system-level actions, such as accessing logs, viewing processes,
  * clearing the cache and exiting the runtime.
@@ -70,7 +75,7 @@ export default class System extends Base {
 
     /**
      * Retrieves an array of data (name, ids, bounds) for all application windows.
-     * @return {Promise.<array>}
+     * @return {Promise.Array.<WindowInfo>}
     */
     public getAllWindows(): Promise<Array<WindowInfo>> {
         return this.wire.sendAction('get-all-windows')
@@ -79,7 +84,7 @@ export default class System extends Base {
 
     /**
      * Retrieves an array of data for all applications.
-     * @return {Promise.<array>}
+     * @return {Promise.Array.<ApplicationInfo>}
     */
     public getAllApplications(): Promise<Array<ApplicationInfo>> {
         return this.wire.sendAction('get-all-applications')
@@ -125,7 +130,7 @@ export default class System extends Base {
 
     /**
       Retrieves an array containing information for each log file.
-      @return {Promise.<array>}
+      @return {Promise.Array<LogInfo>}
     */
     public getLogList(): Promise<Array<LogInfo>> {
         return this.wire.sendAction('list-logs')
@@ -155,7 +160,7 @@ export default class System extends Base {
      * Retrieves an array of all of the runtime processes that are currently
      * running. Each element in the array is an object containing the uuid
      * and the name of the application to which the process belongs.
-     * @return {Promise<array>}
+     * @return {Promise.Array.<ProcessInfo>}
     */
     public getProcessList(): Promise<Array<ProcessInfo>> {
         return this.wire.sendAction('process-snapshot')
@@ -270,7 +275,7 @@ export default class System extends Base {
 
     /**
      * Retrieves an array of data (name, ids, bounds) for all application windows.
-     * @return {Promise.<array>}
+     * @return {Promise.Array.<Identity>}
     */
     public getAllExternalApplications(): Promise<Array<Identity>> {
         return this.wire.sendAction('get-all-external-applications')

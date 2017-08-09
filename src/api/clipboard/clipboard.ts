@@ -76,7 +76,7 @@ export default class Clipboard extends Base {
     /**
      * Reads available formats for the clipboard type
      * @param { string } type
-     * @return {Promise.<array>}
+     * @return {Promise.Array.<string>}
     */
     public getAvailableFormats(type?: string): Promise<Array<string>> {
         return this.wire.sendAction('clipboard-read-formats', type)

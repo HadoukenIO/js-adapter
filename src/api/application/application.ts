@@ -16,7 +16,7 @@ export class NavigationRejectedReply extends Reply<'window-navigation-rejected',
 }
 
 /**
- * A interface that contains a propeties uuid and name which are both strings
+ * A interface that contains a properties uuid and name which are both strings
  * @typedef { Object } Identity
 */
 
@@ -112,7 +112,7 @@ export class Application extends Base {
     /**
      * Retrieves an array of active window groups for all of the application's windows. Each group is
      * represented as an array of wrapped fin.desktop.Windows.
-     * @return {Promise.<array>}
+     * @return {Promise.Array.Array.<_Window>}
     */
     public getGroups(): Promise<Array<Array<_Window>>> {
         const winGroups: Array<Array<_Window>> = <Array<Array<_Window>>>[];
