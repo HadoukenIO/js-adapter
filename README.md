@@ -1,14 +1,10 @@
 # Hadouken Node.js adapter [![Build Status](https://build.openf.in:443/buildStatus/icon?job=node-adapter&style=plastic)]()
 
-Allows the use of the Hadouken API from Node.js
+Allows the use of the Hadouken API from node.js. View the [documentation](https://hadoukenio.github.io/node-adapter/)
 
 ## Requirements
 
 - Node.js LTS ^6.9 
-
-## For the Openfin app developer
-
-For those wishing to use the node adapter to develop their Openfin app.
 
 ### Install as dependency
 
@@ -42,19 +38,6 @@ function connError(err) {
 
     console.log(err.stack);
 }
-```
-## For the node adapter developer
-
-For those wishing to contribute to the node-adapter project.
-
-### Clone/Install
-
-Clone the repo and install the dependencies:
-
-```bash
-git clone https://github.com/HadoukenIO/node-adapter.git
-cd node-adapter
-npm install
 ```
 
 ### Local build
