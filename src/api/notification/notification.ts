@@ -47,6 +47,7 @@ export interface NotificationCallback {
  * requires his or her attention. Notifications are a child or your application that
  * are controlled by the runtime.
  * @class
+ * @alias Notification
 */
 // tslint:disable-next-line
 export class _Notification extends Base implements Notification {

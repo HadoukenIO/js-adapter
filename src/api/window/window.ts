@@ -38,6 +38,7 @@ export interface CloseEventShape {
  * By default a window does not show upon instantiation; instead the window's show() method
  * must be invoked manually. The new window appears in the same process as the parent window.
  * @class
+ * @alias Window
 */
 // The window.Window name is taken
 // tslint:disable-next-line
