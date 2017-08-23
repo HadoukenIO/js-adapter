@@ -42,7 +42,7 @@ export interface CloseEventShape {
 // The window.Window name is taken
 // tslint:disable-next-line
 export class _Window extends Base {
-    
+
     constructor(wire: Transport, public identity: Identity) {
         super(wire);
 
@@ -417,7 +417,7 @@ export class _Window extends Base {
 
     /**
      * Updates the window using the passed options
-     * @param {*} options Changes a window's options that were defined upon creation. See tutorial
+     * @param {any} options Changes a window's options that were defined upon creation. See tutorial
      * @return {Promise.<void>}
      */
     public updateOptions(options: any): Promise<void> {
