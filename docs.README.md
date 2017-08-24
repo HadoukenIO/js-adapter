@@ -1,6 +1,4 @@
-# Hadouken Node.js adapter [![Build Status](https://build.openf.in:443/buildStatus/icon?job=node-adapter&style=plastic)]()
-
-Allows the use of the Hadouken API from node.js. View the [documentation](https://hadoukenio.github.io/node-adapter/)
+The HadoukenIO node-adapter allows the use of the Hadouken API from Node.js applications.
 
 ## Requirements
 
@@ -11,6 +9,7 @@ Allows the use of the Hadouken API from node.js. View the [documentation](https:
 $ `npm install -S HadoukenIO/node-adapter`
 
 ### Usage
+
 ```javascript
 const { connect, Identity } = require("node-adapter");
 
@@ -38,36 +37,4 @@ function connError(err) {
 
     console.log(err.stack);
 }
-```
-
-### Local build
-
-```bash
-npm run build
-```
-
-### Test
-
-```bash
-npm test -- --ver=alpha
-```
-
-Only executing tests that pattern match "Application"
-
-```bash
-npm test -- --ver=alpha --grep="Application"
-```
-
-Executing tests that do not pattern match "System"
-
-```bash
-npm test -- --ver=alpha --invert --grep="System"
-```
-
-## Repl
-
-To start the read-eval-print loop:
-
-```bash
-npm run repl -- --ver=alpha
 ```

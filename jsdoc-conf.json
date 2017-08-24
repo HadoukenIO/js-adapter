@@ -33,6 +33,7 @@
       },
       "opts": {
           "destination": "./docs/",
-          "private": false
+          "private": false,
+          "readme" : "docs.README.md"
       }
 }

@@ -2,10 +2,10 @@ import { Base } from '../base';
 import { WriteRequestType, WriteAnyRequestType } from './write-request';
 
 /**
- * This is a interface
+ * WriteRequestType interface
  * @typedef { Object } WriteRequestType
- * @property { string } name
- * @property { string } uuid
+ * @property { string } name The name of the running application
+ * @property { string } uuid The uuid of the running application
  */
 
 /**
@@ -16,7 +16,7 @@ export default class Clipboard extends Base {
 
     /**
      * Writes data into the clipboard as plain text
-     * @param { WriteRequestType } writeObj This object is defined in the WriteRequestType interface
+     * @param { WriteRequestType } writeObj This object is described in the WriteRequestType typeof
      * @return {Promise.<void>}
     */
     public writeText(writeObj: WriteRequestType): Promise<void> {
@@ -35,7 +35,7 @@ export default class Clipboard extends Base {
 
     /**
      * Writes data into the clipboard as Html
-     * @param { WriteRequestType } writeObj This object is defined in the WriteRequestType interface
+     * @param { WriteRequestType } writeObj This object is described in the WriteRequestType typedef
      * @return {Promise.<void>}
     */
     public writeHtml(writeObj: WriteRequestType): Promise<void> {
@@ -54,7 +54,7 @@ export default class Clipboard extends Base {
 
     /**
      * Writes data into the clipboard as Rtf
-     * @param { WriteRequestType } writeObj This object is defined in the WriteRequestType interface
+     * @param { WriteRequestType } writeObj This object is described in the WriteRequestType typedef
      * @return {Promise.<void>}
     */
     public writeRtf(writeObj: WriteRequestType): Promise<void> {
@@ -73,7 +73,7 @@ export default class Clipboard extends Base {
 
     /**
      * Writes data into the clipboard
-     * @param { WriteRequestType } writeObj This object is defined in the WriteRequestType interface
+     * @param { WriteRequestType } writeObj This object is described in the WriteRequestType typedef
      * @return {Promise.<void>}
     */
     public write(writeObj: WriteAnyRequestType): Promise<void> {

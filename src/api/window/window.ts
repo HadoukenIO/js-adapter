@@ -24,12 +24,12 @@ export interface CloseEventShape {
  * Bounds is a interface that has the properties of height,
  * width, left, top which are all numbers
  * @typedef { Object } Bounds
- * @property { number } height
- * @property { number } width
- * @property { number } top
- * @property { number } left
- * @property { number } right
- * @property { number } bottom
+ * @property { number } height Get the application height bound
+ * @property { number } width Get the application width bound
+ * @property { number } top Get the application top bound
+ * @property { number } left Get the application left bound
+ * @property { number } right Get the application right bound
+ * @property { number } bottom Get the application bottom bound
  */
 
 /**
@@ -38,6 +38,7 @@ export interface CloseEventShape {
  * By default a window does not show upon instantiation; instead the window's show() method
  * must be invoked manually. The new window appears in the same process as the parent window.
  * @class
+ * @alias Window
 */
 // The window.Window name is taken
 // tslint:disable-next-line
@@ -115,6 +116,7 @@ export class _Window extends Base {
     }
 
     /**
+     * Closes the window
      * @param { boolean } interrupt assigns the value to flase
      * @return {Animation}
      */
@@ -144,6 +146,7 @@ export class _Window extends Base {
     }
 
     /**
+     * Returns then running applications uuid
      * @return {Promise.<string>}
      */
     public getNativeId(): Promise<string> {
@@ -417,7 +420,7 @@ export class _Window extends Base {
 
     /**
      * Updates the window using the passed options
-     * @param {any} options Changes a window's options that were defined upon creation. See tutorial
+     * @param {*} options Changes a window's options that were defined upon creation. See tutorial
      * @return {Promise.<void>}
      */
     public updateOptions(options: any): Promise<void> {
