@@ -144,6 +144,7 @@ export class Application extends Base {
 
     /**
      * Returns an instance of the main Window of the application
+     * @tutorial Application.getWindow
      * @return {Promise.<_Window>}
     */
     public getWindow(): Promise<_Window> {
