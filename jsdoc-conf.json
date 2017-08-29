@@ -34,7 +34,6 @@
       "opts": {
           "destination": "./docs/",
           "private": false,
-          "tutorials": "tutorials",
           "readme" : "docs.README.md"
       }
 }
