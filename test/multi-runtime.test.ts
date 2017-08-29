@@ -1,7 +1,7 @@
 import * as assert from 'assert';
 import { launchAndConnect, cleanOpenRuntimes } from './multi-runtime-utils';
 
-describe('multi runtime', function() {
+describe('Multi Runtime', function() {
 
     // tslint:disable-next-line no-function-expression
     afterEach(function(done: Function) {
