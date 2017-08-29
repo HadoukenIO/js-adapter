@@ -5,28 +5,16 @@ const { connect, Identity } = require('node-adapter')
 
 const uuid = Math.random().toString(36).slice(2);
 connect({
-    address: "ws://localhost:9696",
-    name: "myApp",
-    uuid: uuid
+		address: "ws://localhost:9696",
+		name: "myApp",
+		uuid: uuid
 })
-.then(App)
+.then(AppWindow).then(win => console.log(win))
 .catch(err => console.log(err.message))
 
-function App(fin) {
-
-    async function createApp() {
-        const app = await fin.Application.create({ uuid, name: "myApp" })
-        await app.run()
-        return app
-    }
-
-    async function getWindow() {
-        const app = await createApp()
-        return await app.getWindow()
-    }
-
-    getWindow()
-    .then(win => console.log(win))
-    .catch(err => console.log(err))
+async function AppWindow(fin) {
+		const app = await fin.Application.create({ uuid, name: "myApp" })
+		await app.run()
+		return await app.getWindow()
 }
 ```
