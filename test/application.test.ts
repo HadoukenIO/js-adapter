@@ -130,4 +130,15 @@ describe('Application.', () => {
             return appToClose.terminate().then(() => appToClose.isRunning().then(data => assert(data === false)));
         });
     });
+
+    describe('getInfo()', () => {
+
+        it('Shold contain some information', () => {
+            return testApp.getInfo().then(info => {
+                const expectedLaunchMode = 'adapter';
+
+                return assert.equal(info.launchMode, expectedLaunchMode, `Expected launchMode to be "${ expectedLaunchMode }"`);
+            });
+        });
+    });
 });

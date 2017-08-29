@@ -7,7 +7,7 @@ const exec = require('child_process').exec;
 const serverParams = {
     root: path.resolve('html'),
     open: false,
-    logLevel: 2,
+    logLevel: 0,
     port: 8689
 };
 
@@ -111,7 +111,7 @@ module.exports = function(grunt) {
     grunt.registerTask('lint', [ 'tslint' ]);
     grunt.registerTask('build', [ 'ts' ]);
     grunt.registerTask('default', [ 'lint', 'build' ]);
-    grunt.registerTask('test', [ 'check-version', 'default', 'start-server', 'openfin', 'mochaTest' ]);
+    grunt.registerTask('test', [ 'check-version', 'default', 'start-server', 'kill-processes', 'openfin', 'mochaTest', 'kill-processes']);
     grunt.registerTask('repl', [ 'check-version', 'default', 'start-server', 'openfin', 'start-repl' ]);
 
 };
