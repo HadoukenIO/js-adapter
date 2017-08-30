@@ -14,42 +14,42 @@ import { ExternalProcessRequestType , TerminateExternalRequestType } from './ext
 import Transport from '../../transport/transport';
 
 /**
- * A interface
+ * Identity interface
  * @typedef { Object } Identity
- * @property { string } name
- * @property { string } uuid
+ * @property { string } name The name of the application
+ * @property { string } uuid The uuid of the application
 */
 
 /**
- * A interface
+ * ProxyConfig interface
  * @typedef { Object } ProxyConfig
- * @property { numder } proxyPort
- * @property { string } proxyAddress
+ * @property { numder } proxyPort The port number of the running application
+ * @property { string } proxyAddress The address of the running application
  * @property { string } type
  */
 
 /**
- * A interface
+ * TerminateExternalRequestType interface
  * @typedef { Object } TerminateExternalRequestType
- * @property { string } uuid
- * @property { number } timeout
- * @property { boolean } kiltree
+ * @property { string } uuid The uuid of the running application
+ * @property { number } timeout Time out period before the running application terminates
+ * @property { boolean } kiltree Value to terminate the running application
  */
 
 /**
- * A interface
+ * GetLogRequestType interface
  * @typedef { Object } GetLogRequestType
- * @property { string } name
- * @property { number } endFile
- * @property { number } sizeLimit
+ * @property { string } name The name of the running application
+ * @property { number } endFile The file length of the log file
+ * @property { number } sizeLimit The set size limit of the log file
  */
 
 /**
- * A interface
+ * ExternalProcessRequestType interface
  * @typedef { Object } ExternalProcessRequestType
- * @property { string } path
- * @property { string } arguement
- * @property { Object } LaunchExternalProcessListner
+ * @property { string } path The file path to where the running application resides
+ * @property { string } argument The argument passed to the running application
+ * @property { Object } LaunchExternalProcessListner This is described in the {LaunchExternalProcessListner} type definition
  */
 
 /**
@@ -144,7 +144,7 @@ export default class System extends Base {
     }
 
     /**
-     * Retrieves system information.
+     * Gets the value of a given environment variable on the computer on which the runtime is installed
      * @return {Promise.<string>}
     */
     public getEnvironmentVariable(): Promise<string> {
@@ -317,8 +317,8 @@ export default class System extends Base {
     }
 
     /**
-     * Resloves the user id string
-     * @param { string } uuid
+     * Retrieves the UUID of the computer on which the runtime is installed
+     * @param { string } uuid The uuid of the running application
      * @return {Promise.<Entity>}
     */
     public resolveUuid(uuid: string): Promise<Entity> {
@@ -328,8 +328,9 @@ export default class System extends Base {
     }
 
     /**
-     * @param { Identity } requestingIdentity
-     * @param { any } data
+     * Retrieves an array of data for all external applications
+     * @param { Identity } requestingIdentity This object is described in the Identity typedef
+     * @param { any } data Any data type to pass to the method
      * @return {Promise.<any>}
     */
     public executeOnRemote(requestingIdentity: Identity, data: any): Promise<any> {

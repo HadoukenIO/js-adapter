@@ -15,13 +15,6 @@ export class NavigationRejectedReply extends Reply<'window-navigation-rejected',
     public url: string;
 }
 
-/**
- * A interface
- * @typedef { Object } Identity
- * @property { string } name
- * @property { string } uuid
-*/
-
 export default class ApplicationModule extends Bare {
 
     /**
@@ -46,7 +39,6 @@ export default class ApplicationModule extends Bare {
 /**
  * @classdesc An object representing an application. Allows the developer to create,
  * execute, show/close an application as well as listen to application events.
- * as its argument
  * @class
 */
 export class Application extends Base {
@@ -152,6 +144,7 @@ export class Application extends Base {
 
     /**
      * Returns an instance of the main Window of the application
+     * @tutorial Application.getWindow
      * @return {Promise.<_Window>}
     */
     public getWindow(): Promise<_Window> {

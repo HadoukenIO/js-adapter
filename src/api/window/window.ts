@@ -24,12 +24,12 @@ export interface CloseEventShape {
  * Bounds is a interface that has the properties of height,
  * width, left, top which are all numbers
  * @typedef { Object } Bounds
- * @property { number } height
- * @property { number } width
- * @property { number } top
- * @property { number } left
- * @property { number } right
- * @property { number } bottom
+ * @property { number } height Get the application height bound
+ * @property { number } width Get the application width bound
+ * @property { number } top Get the application top bound
+ * @property { number } left Get the application left bound
+ * @property { number } right Get the application right bound
+ * @property { number } bottom Get the application bottom bound
  */
 
 /**
@@ -43,7 +43,7 @@ export interface CloseEventShape {
 // The window.Window name is taken
 // tslint:disable-next-line
 export class _Window extends Base {
-    
+
     constructor(wire: Transport, public identity: Identity) {
         super(wire);
 
@@ -116,6 +116,7 @@ export class _Window extends Base {
     }
 
     /**
+     * Closes the window
      * @param { boolean } interrupt assigns the value to flase
      * @return {Animation}
      */
@@ -145,6 +146,7 @@ export class _Window extends Base {
     }
 
     /**
+     * Returns then running applications uuid
      * @return {Promise.<string>}
      */
     public getNativeId(): Promise<string> {

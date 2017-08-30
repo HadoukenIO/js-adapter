@@ -4,13 +4,6 @@ import Transport, { Message } from '../../transport/transport';
 import RefCounter from '../../util/ref-counter';
 
 /**
- * A interface
- * @typedef { Object } Identity
- * @property { string } name
- * @property { string } uuid
-*/
-
-/**
  * A messaging bus that allows for pub/sub messaging between different applications.
  * @namespace
 */
@@ -99,7 +92,7 @@ export default class InterApplicationBus extends Bare {
 
     /**
      * Unsubscribes to messages from the specified application on the specified topic.
-     * @param { Identity } source
+     * @param { Identity } source This object is described in the Identity in the typedef
      * @param { string } topic The topic on which the message is sent
      * @param { function } listener A callback previously registered with subscribe()
      * @return {Promise.<void>}

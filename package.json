@@ -9,7 +9,7 @@
     "test": "grunt test",
     "repl": "grunt repl",
     "build": "grunt",
-    "doc": "npm run build && jsdoc -c jsdoc-conf.json -t jsdoc-template --verbose"
+    "doc": "npm run build && jsdoc -c jsdoc-conf.json -t jsdoc-template -u tutorials out/src --verbose"
   },
   "devDependencies": {
     "grunt": "~1.0.1",

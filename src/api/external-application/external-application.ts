@@ -6,7 +6,7 @@ import { Identity } from '../../identity';
  * the developer to create, execute, show and close an external application as
  * well as listen to application events.
  * @class
-*/
+ */
 class ExternalApplication extends Base {
     public identity: Identity;
 
