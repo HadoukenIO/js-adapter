@@ -18,6 +18,7 @@ export default class Clipboard extends Base {
      * Writes data into the clipboard as plain text
      * @param { WriteRequestType } writeObj This object is described in the WriteRequestType typeof
      * @return {Promise.<void>}
+     * @tutorial Clipboard.writeText
     */
     public writeText(writeObj: WriteRequestType): Promise<void> {
         return this.wire.sendAction('clipboard-write-text', writeObj).then(() => undefined);
