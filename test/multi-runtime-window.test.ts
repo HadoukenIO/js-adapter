@@ -25,12 +25,12 @@ describe('Multi Runtime', () =>  {
                 this.timeout(12000);
 
                 const conns = await Promise.all([launchAndConnect(), launchAndConnect()]);
-                const r1 = conns[0];
-                const r2 = conns[1];
+                const runtimeA = conns[0];
+                const runtimeB = conns[1];
                 await delayPromise(3000);
-                const app = await r2.fin.Application.create(appConfigTemplate);
+                const app = await runtimeB.fin.Application.create(appConfigTemplate);
                 await app.run();
-                const win = await r1.fin.Application.wrap({ uuid: appConfigTemplate.uuid }).getWindow();
+                const win = await runtimeA.fin.Application.wrap({ uuid: appConfigTemplate.uuid }).getWindow();
                 const bounds = await win.getBounds();
                 await win.moveBy(1, 1);
                 const postMoveBounds = await win.getBounds();
@@ -48,12 +48,12 @@ describe('Multi Runtime', () =>  {
 
                 const resizeToVal = 200;
                 const conns = await Promise.all([launchAndConnect(), launchAndConnect()]);
-                const r1 = conns[0];
-                const r2 = conns[1];
+                const runtimeA = conns[0];
+                const runtimeB = conns[1];
                 await delayPromise(3000);
-                const app = await r2.fin.Application.create(appConfigTemplate);
+                const app = await runtimeB.fin.Application.create(appConfigTemplate);
                 await app.run();
-                const win = await r1.fin.Application.wrap({ uuid: appConfigTemplate.uuid }).getWindow();
+                const win = await runtimeA.fin.Application.wrap({ uuid: appConfigTemplate.uuid }).getWindow();
                 const bounds = await win.getBounds();
                 await win.resizeTo(resizeToVal, resizeToVal, 'top-left');
                 const postResizeBounds = await win.getBounds();
@@ -75,12 +75,12 @@ describe('Multi Runtime', () =>  {
             this.timeout(12000);
 
             const conns = await Promise.all([launchAndConnect(), launchAndConnect()]);
-            const r1 = conns[0];
-            const r2 = conns[1];
+            const runtimeA = conns[0];
+            const runtimeB = conns[1];
             await delayPromise(3000);
-            const app = await r2.fin.Application.create(appConfigTemplate);
+            const app = await runtimeB.fin.Application.create(appConfigTemplate);
             await app.run();
-            const win = await r1.fin.Application.wrap({ uuid: appConfigTemplate.uuid }).getWindow();
+            const win = await runtimeA.fin.Application.wrap({ uuid: appConfigTemplate.uuid }).getWindow();
             const state = await win.getState();
             const expectedState = 'normal';
 
@@ -95,12 +95,12 @@ describe('Multi Runtime', () =>  {
             this.timeout(12000);
 
             const conns = await Promise.all([launchAndConnect(), launchAndConnect()]);
-            const r1 = conns[0];
-            const r2 = conns[1];
+            const runtimeA = conns[0];
+            const runtimeB = conns[1];
             await delayPromise(3000);
-            const app = await r2.fin.Application.create(appConfigTemplate);
+            const app = await runtimeB.fin.Application.create(appConfigTemplate);
             await app.run();
-            const win = await r1.fin.Application.wrap({ uuid: appConfigTemplate.uuid }).getWindow();
+            const win = await runtimeA.fin.Application.wrap({ uuid: appConfigTemplate.uuid }).getWindow();
             await win.minimize();
             const state = await win.getState();
             const expectedState = 'minimized';

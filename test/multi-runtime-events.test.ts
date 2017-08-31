@@ -12,9 +12,9 @@ describe('Multi Runtime', () =>  {
             devtools: true
         }
     };
-    // tslint:disable-next-line no-function-expression
-    afterEach(function(done: Function) {
-        cleanOpenRuntimes().then(() => done());
+
+    afterEach(async () => {
+        return await cleanOpenRuntimes();
     });
 
     describe('Events', () => {
@@ -71,7 +71,9 @@ describe('Multi Runtime', () =>  {
                     test();
                 });
             });
+        });
 
+        describe('Launch then subscribe', () => {
             describe('Window', () => {
 
                 it('should raise bounds-changed', function(done: Function) {
@@ -128,8 +130,9 @@ describe('Multi Runtime', () =>  {
             });
         });
 
-        describe('Subscribe then launch', () => {
-            describe.skip('Application', () => {
+        describe.skip('Subscribe then launch', () => {
+
+            describe('Application', () => {
 
                 it('should raise closed events', function(done: Function) {
                     // tslint:disable-next-line no-invalid-this
@@ -177,60 +180,64 @@ describe('Multi Runtime', () =>  {
                     test();
                 });
             });
+
         });
 
-        describe.skip('Window', () => {
+        describe.skip('Subscribe then launch', () => {
+            describe('Window', () => {
 
-            it('should raise bounds-changed', function(done: Function) {
-                // tslint:disable-next-line no-invalid-this
-                this.timeout(12000);
+                it('should raise bounds-changed', function(done: Function) {
+                    // tslint:disable-next-line no-invalid-this
+                    this.timeout(12000);
 
-                async function test() {
-                    const runtimeA = await launchAndConnect();
-                    await delayPromise(3000);
-                    const app = runtimeA.fin.Application.wrap({ uuid: appConfigTemplate.uuid });
-                    const win = await app.getWindow();
+                    async function test() {
+                        const runtimeA = await launchAndConnect();
+                        await delayPromise(3000);
+                        const app = runtimeA.fin.Application.wrap({ uuid: appConfigTemplate.uuid });
+                        const win = await app.getWindow();
 
-                    win.on('bounds-changed', (e: any) => {
-                        assert.equal(e.type, 'bounds-changed', 'Expected event type to match event');
-                        win.close().then(done);
-                    });
+                        win.on('bounds-changed', (e: any) => {
+                            assert.equal(e.type, 'bounds-changed', 'Expected event type to match event');
+                            win.close().then(done);
+                        });
 
-                    const runtimeB = await launchAndConnect();
-                    await delayPromise(3000);
-                    const realApp = await runtimeB.fin.Application.create(appConfigTemplate);
-                    await realApp.run();
-                    const realWindow = await realApp.getWindow();
-                    await realWindow.moveTo(100, 100);
-                }
+                        const runtimeB = await launchAndConnect();
+                        await delayPromise(3000);
+                        const realApp = await runtimeB.fin.Application.create(appConfigTemplate);
+                        await realApp.run();
+                        const realWindow = await realApp.getWindow();
+                        await realWindow.moveTo(100, 100);
+                    }
 
-                test();
-            });
+                    test();
+                });
 
-            it('should raise hidden', function(done: Function) {
-                // tslint:disable-next-line no-invalid-this
-                this.timeout(12000);
+                it('should raise hidden', function(done: Function) {
+                    // tslint:disable-next-line no-invalid-this
+                    this.timeout(12000);
 
-                async function test() {
-                    const runtimeA = await launchAndConnect();
-                    await delayPromise(3000);
-                    const app = runtimeA.fin.Application.wrap({ uuid: appConfigTemplate.uuid });
-                    const win = await app.getWindow();
+                    async function test() {
+                        const runtimeA = await launchAndConnect();
+                        await delayPromise(3000);
+                        const app = runtimeA.fin.Application.wrap({ uuid: appConfigTemplate.uuid });
+                        const win = await app.getWindow();
 
-                    win.on('hidden', (e: any) => {
-                        assert.equal(e.type, 'hidden', 'Expected event type to match event');
-                        win.close().then(done);
-                    });
+                        win.on('hidden', (e: any) => {
+                            assert.equal(e.type, 'hidden', 'Expected event type to match event');
+                            win.close().then(done);
+                        });
 
-                    const runtimeB = await launchAndConnect();
-                    await delayPromise(3000);
-                    const realApp = await runtimeB.fin.Application.create(appConfigTemplate);
-                    await realApp.run();
-                    const realWindow = await realApp.getWindow();
-                    await realWindow.hide();
-                }
+                        const runtimeB = await launchAndConnect();
+                        await delayPromise(3000);
+                        const realApp = await runtimeB.fin.Application.create(appConfigTemplate);
+                        await realApp.run();
+                        const realWindow = await realApp.getWindow();
+                        await realWindow.hide();
+                    }
 
-                test();
+                    test();
+                });
+
             });
         });
     });

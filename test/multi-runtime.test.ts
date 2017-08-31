@@ -4,8 +4,7 @@ import { launchAndConnect, cleanOpenRuntimes } from './multi-runtime-utils';
 
 describe('Multi Runtime', function() {
 
-    // tslint:disable-next-line no-function-expression
-    afterEach(async function() {
+    afterEach(async () => {
         return await cleanOpenRuntimes();
     });
 

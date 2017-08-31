@@ -12,9 +12,9 @@ describe('Multi Runtime', () =>  {
             devtools: true
         }
     };
-    // tslint:disable-next-line no-function-expression
-    afterEach(function(done: Function) {
-        cleanOpenRuntimes().then(() => done());
+
+    afterEach(async () => {
+        return await cleanOpenRuntimes();
     });
 
     describe('Application', () => {
