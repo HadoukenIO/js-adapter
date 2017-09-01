@@ -135,6 +135,7 @@ export class Application extends Base {
     /**
      * Retrieves UUID of the application that launches this application. Invokes the error callback
      * if the application was created from a manifest.
+     * @tutorial Application.getParentUuid
      * @return {Promise.<string>}
     */
     public getParentUuid(): Promise<string> {

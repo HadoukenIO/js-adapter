@@ -27,6 +27,7 @@ export default class InterApplicationBus extends Bare {
      * @param { any } message The message to be published. Can be either a primitive
      * data type (string, number, or boolean) or composite data type (object, array)
      * that is composed of other primitive or composite data types
+     * @tutorial InterApplicationBus.publish
      * @return {Promise.<void>}
     */
     public publish(topic: string, message: any): Promise<void> {
@@ -68,6 +69,7 @@ export default class InterApplicationBus extends Bare {
      * The message can be either a primitive data type (string, number, or boolean) or
      * composite data type (object, array) that is composed of other primitive or composite
      * data types
+     * @tutorial InterApplicationBus.subcribe
      * @return {Promise.<void>}
      */
     public subscribe(source: Identity, topic: string, listener: Function): Promise<void> {
