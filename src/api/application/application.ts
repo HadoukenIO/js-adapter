@@ -10,6 +10,10 @@ export interface TrayIconClickReply extends Point, Reply<'application', 'tray-ic
     monitorInfo: MonitorInfo;
 }
 
+export interface ApplicationInfo {
+    launchMode: string;
+}
+
 export class NavigationRejectedReply extends Reply<'window-navigation-rejected', void> {
     public sourceName: string;
     public url: string;
@@ -223,6 +227,15 @@ export class Application extends Base {
      */
     public wait(): Promise<void> {
         return this.wire.sendAction('wait-for-hung-application', this.identity).then(() => undefined);
+    }
+
+    /**
+     * Retrieves information about the application.
+     * message after a certain period of time.
+     * @return {Promise.<ApplicationInfo>}
+     */
+    public getInfo(): Promise<ApplicationInfo> {
+        return this.wire.sendAction('get-info', this.identity).then(({ payload }) => payload.data);
     }
 
 }
