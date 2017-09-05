@@ -83,6 +83,7 @@ export default class System extends Base {
      * Returns the version of the runtime. The version contains the major, minor,
      * build and revision numbers.
      * @return {Promise.<string>}
+     * @tutorial System.getVerison
     */
     public getVersion(): Promise<string> {
         return this.wire.sendAction('get-version')
@@ -93,6 +94,7 @@ export default class System extends Base {
      * Clears cached data containing window state/positions, application resource
      * files (images, HTML, JavaScript files), cookies, and items stored in the
      * Local Storage.
+     * @tutorial System.clearCache
      * @return {Promise.<void>}
     */
     public clearCache(): Promise<void> {
@@ -101,6 +103,7 @@ export default class System extends Base {
 
     /**
      * Clears all cached data when OpenFin Runtime exits.
+     * @tutorial System.deleteCacheOnExit
      * @return {Promise.<void>}
     */
     public deleteCacheOnExit(): Promise<void> {
@@ -109,6 +112,7 @@ export default class System extends Base {
 
     /**
      * Retrieves an array of data (name, ids, bounds) for all application windows.
+     * @tutorial System.getAllWindows
      * @return {Promise.Array.<WindowInfo>}
     */
     public getAllWindows(): Promise<Array<WindowInfo>> {
@@ -128,6 +132,7 @@ export default class System extends Base {
 
     /**
      * Retrieves the command line argument string that started OpenFin Runtime.
+     * @tutorial System.getCommandLineArguments
      * @return {Promise.<string>}
     */
     public getCommandLineArguments(): Promise<string> {
@@ -137,6 +142,7 @@ export default class System extends Base {
 
     /**
      * Returns a hex encoded hash of the mac address and the currently logged in user name
+     * @tutorial System.getDeviceId
      * @return {Promise.<string>}
     */
     public getDeviceId(): Promise<string> {
@@ -146,16 +152,20 @@ export default class System extends Base {
 
     /**
      * Gets the value of a given environment variable on the computer on which the runtime is installed
+     * @tutorial System.getEnvironmentVariable
      * @return {Promise.<string>}
     */
-    public getEnvironmentVariable(): Promise<string> {
-        return this.wire.sendAction('get-environment-variable')
+    public getEnvironmentVariable(envName: string): Promise<string> {
+        return this.wire.sendAction('get-environment-variable', {
+            environmentVariables: envName
+        })
             .then(({ payload }) => payload.data);
     }
 
     /**
      * Retrieves the contents of the log with the specified filename.
      * @param { GetLogRequestType } options A object that id defined by the GetLogRequestType interface
+     * @tutorial System.getLog
      * @return {Promise.<string>}
     */
     public getLog(options: GetLogRequestType): Promise<string> {
@@ -164,8 +174,9 @@ export default class System extends Base {
     }
 
     /**
-      Retrieves an array containing information for each log file.
-      @return {Promise.Array<LogInfo>}
+      * Retrieves an array containing information for each log file.
+      * @tutorail System.getLogList
+      * @return {Promise.Array<LogInfo>}
     */
     public getLogList(): Promise<Array<LogInfo>> {
         return this.wire.sendAction('list-logs')
@@ -173,9 +184,10 @@ export default class System extends Base {
     }
 
     /**
-      Retrieves an object that contains data about the monitor setup of the
-      computer that the runtime is running on.
-      @return {Promise.<MonitorInfo>}
+      * Retrieves an object that contains data about the monitor setup of the
+      * computer that the runtime is running on.
+      * @tutorial System.getMonitorInfo
+      * @return {Promise.<MonitorInfo>}
     */
     public getMonitorInfo(): Promise<MonitorInfo> {
         return this.wire.sendAction('get-monitor-info')
@@ -183,8 +195,9 @@ export default class System extends Base {
     }
 
     /**
-      Returns the mouse in virtual screen coordinates (left, top).
-      @return {Promise.<PointTopLeft>}
+      * Returns the mouse in virtual screen coordinates (left, top).
+      * @tutorial System.getMousePosition
+      * @return {Promise.<PointTopLeft>}
     */
     public getMousePosition(): Promise<PointTopLeft> {
         return this.wire.sendAction('get-mouse-position')
@@ -195,6 +208,7 @@ export default class System extends Base {
      * Retrieves an array of all of the runtime processes that are currently
      * running. Each element in the array is an object containing the uuid
      * and the name of the application to which the process belongs.
+     * @tutorial System.getProcessList
      * @return {Promise.Array.<ProcessInfo>}
     */
     public getProcessList(): Promise<Array<ProcessInfo>> {
@@ -204,6 +218,7 @@ export default class System extends Base {
 
     /**
      * Retrieves the Proxy settings.
+     * @tutorial System.getProxySettings
      * @return {Promise.<ProxyInfo>}
     */
     public getProxySettings(): Promise<ProxyInfo> {
@@ -213,6 +228,7 @@ export default class System extends Base {
 
     /**
      * Returns information about the running RVM in an object.
+     * @tutorail System.getRvmInfo
      * @return {Promise.<RVMInfo>}
     */
     // incompatible with standalone node process.
