@@ -118,6 +118,7 @@ export default class System extends Base {
 
     /**
      * Retrieves an array of data for all applications.
+     * @tutorial System.getAllApplications
      * @return {Promise.Array.<ApplicationInfo>}
     */
     public getAllApplications(): Promise<Array<ApplicationInfo>> {
@@ -253,6 +254,7 @@ export default class System extends Base {
     /**
      * Opens the passed URL in the default web browser.
      * @param { string } url The URL to open
+     * @tutorial System.openUrlWidthBrowser
      * @return {Promise.<void>}
     */
     public openUrlWithBrowser(url: string): Promise<void> {
