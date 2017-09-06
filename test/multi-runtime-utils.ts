@@ -67,7 +67,8 @@ function spawnRealm (version: string, args?: Array<string>): Promise<RuntimeProc
                             appConfig,
                             port,
                             runtime,
-                            realm
+                            realm,
+                            version: returnedVersion
                         });
                     }
                 };

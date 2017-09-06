@@ -1,225 +1,49 @@
 import * as assert from 'assert';
+import { delayPromise } from './delay-promise';
 import { launchAndConnect, cleanOpenRuntimes } from './multi-runtime-utils';
 
-describe('multi runtime', function() {
+describe('Multi Runtime', () => {
 
-    // tslint:disable-next-line no-function-expression
-    afterEach(function(done: Function) {
-        cleanOpenRuntimes().then(() => done());
+    let realmCount = 0;
+
+    afterEach(async () => {
+        return await cleanOpenRuntimes();
     });
 
-    // tslint:disable-next-line no-function-expression
-    it('should fire listener on remote runtime', function(done: Function)  {
-        // tslint:disable-next-line no-invalid-this
-        this.timeout(60000);
-        Promise.all([launchAndConnect(), launchAndConnect()]).then((conns: any) => {
-            const [{appConfig: {startup_app: {uuid}}},
-                   {fin}] = conns;
+    function uuidFromConnection(conn: any) {
+        return `${conn.version}:${conn.port}`;
+    }
 
-            // give the initial runtime app a bit to complete spinup
-            setTimeout(() => {
-                fin.Window.wrap({uuid, name: uuid}).once('bounds-changed', () => {
-                    assert(true);
-                    done();
-                });
-                fin.Window.wrap({uuid, name: uuid}).moveBy(500, 500);
-            }, 3000);
+    function getRealm() {
+        // tslint:disable-next-line
+        return `supersecret_${ Math.floor(Math.random() * 10000)}_${++realmCount}`;
+    }
 
-        });
-    });
+    describe('Connections', () => {
+        it('should respect the enable-mesh flag for security realms', async function() {
+            const argsNoConnect = [`--security-realm=${ getRealm() }`];
+            const argsConnect = [
+                `--security-realm=${ getRealm() }`,
+                '--enable-mesh',
+                '--enable-multi-runtime'
+            ];
 
-    // tslint:disable-next-line no-function-expression
-    it('should quickly launch and connect to multiple runtimes', function(done: Function)  {
-        // tslint:disable-next-line no-invalid-this
-        this.timeout(120000);
-        Promise.all([launchAndConnect(), launchAndConnect(), launchAndConnect(), launchAndConnect()]).then((conns: any) => {
-            // give the initial runtime app a bit to complete spinup
-            setTimeout(() => {
-                conns[0].fin.System.getAllExternalApplications().then((apps: any) => {
-                    try {
-                        //We need to +1 because node-adapter is connected.
-                        const expected = conns.length + 1;
-                        assert.equal(apps.length, expected , 'Expected connections to match external applications');
-                        done();
-                    } catch (err) {
-                        done(err);
-                    }
-                });
-            }, 5000);
-        });
-    });
+            // tslint:disable-next-line no-invalid-this
+            this.timeout(120000);
+            const conns = await Promise.all([launchAndConnect(),
+                                             launchAndConnect(undefined, undefined, true, argsNoConnect),
+                                             launchAndConnect(undefined, undefined, true, argsConnect)]);
+            const runtimeA = conns[0];
+            const runtimeB = conns[1];
+            const runtimeC = conns[2];
+            await delayPromise(3000);
 
-    it('should not connect to non --enable-mesh realms', function(done: Function) {
-        const args = ['--security-realm=supersecret'];
+            const apps = await runtimeA.fin.System.getAllExternalApplications();
+            const uuidList = apps.map((a: any) => { return a.uuid; });
 
-        // tslint:disable-next-line no-invalid-this
-        this.timeout(120000);
-        Promise.all([launchAndConnect(undefined, undefined, true, args), launchAndConnect()]).then((conns: any) => {
-
-            setTimeout(() => {
-                conns[0].fin.System.getAllExternalApplications().then((apps: any) => {
-                    try {
-                        //Expect only the node adapter to be connected.
-                        const expected = conns.length - 1;
-                        assert.equal(apps.length, expected , 'Expected connections to match external applications');
-                        done();
-                    } catch (err) {
-                        done(err);
-                    }
-                }).catch((err: Error) => {
-                    // tslint:disable-next-line
-                    console.log(err);
-                });
-            }, 5000);
-
-        });
-    });
-
-    it('should connect to --enable-mesh realms', function(done: Function) {
-        const args = [
-            '--security-realm=supersecret2',
-            '--enable-mesh',
-            '--enable-multi-runtime'
-        ];
-
-        // tslint:disable-next-line no-invalid-this
-        this.timeout(120000);
-        Promise.all([launchAndConnect(undefined, undefined, true, args), launchAndConnect()]).then((conns: any) => {
-
-            setTimeout(() => {
-                conns[0].fin.System.getAllExternalApplications().then((apps: any) => {
-                    try {
-                        //Expect only the node adapter to be connected.
-                        const expected = conns.length + 1;
-                        assert.equal(apps.length, expected , 'Expected connections to match external applications');
-                        done();
-                    } catch (err) {
-                        done(err);
-                    }
-                }).catch((err: Error) => {
-                    // tslint:disable-next-line
-                    console.log(err);
-                });
-            }, 5000);
-
-        });
-    });
-
-    it('should subscribe to * and publish', function(done: Function) {
-        // tslint:disable-next-line no-invalid-this
-        this.timeout(120000);
-
-        Promise.all([launchAndConnect(), launchAndConnect()]).then((conns: any) => {
-            setTimeout(() => {
-                const r1 = conns[0];
-                const r2 = conns[1];
-
-                r1.fin.InterApplicationBus.subscribe({ uuid: '*' }, 'my-topic', () => done()).then(() => {
-                    r2.fin.InterApplicationBus.publish('my-topic', 'hello');
-                });
-            }, 5000);
-        });
-    });
-
-    //TODO: better names
-    it('should subscribe to a uuid and publish', function(done: Function) {
-        // tslint:disable-next-line no-invalid-this
-        this.timeout(120000);
-
-        Promise.all([launchAndConnect(), launchAndConnect()]).then((conns: any) => {
-            setTimeout(() => {
-                const r1 = conns[0];
-                const r2 = conns[1];
-
-                r1.fin.InterApplicationBus.subscribe({ uuid: r2.fin.wire.me.uuid }, 'my-topic', () => done()).then(() => {
-                    r2.fin.InterApplicationBus.publish('my-topic', 'hello');
-                });
-            }, 5000);
-        });
-    });
-
-    it('should subscribe to * and send', function(done: Function) {
-        // tslint:disable-next-line no-invalid-this
-        this.timeout(120000);
-
-        Promise.all([launchAndConnect(), launchAndConnect()]).then((conns: any) => {
-            setTimeout(() => {
-                const r1 = conns[0];
-                const r2 = conns[1];
-
-                r1.fin.InterApplicationBus.subscribe({ uuid: '*' }, 'my-topic', () => done()).then(() => {
-                    r2.fin.InterApplicationBus.send({ uuid: r1.fin.wire.me.uuid }, 'my-topic', 'hello');
-                });
-            }, 5000);
-        });
-    });
-
-    it('should subscribe to uuid and send', function(done: Function) {
-        // tslint:disable-next-line no-invalid-this
-        this.timeout(120000);
-
-        Promise.all([launchAndConnect(), launchAndConnect()]).then((conns: any) => {
-            setTimeout(() => {
-                const r1 = conns[0];
-                const r2 = conns[1];
-
-                r1.fin.InterApplicationBus.subscribe({ uuid: r2.fin.wire.me.uuid }, 'my-topic', () => done()).then(() => {
-                    r2.fin.InterApplicationBus.send({ uuid: r1.fin.wire.me.uuid }, 'my-topic', 'hello');
-                });
-            }, 5000);
-        });
-    });
-
-    it('should get subscriberAdded Events', function(done: Function) {
-        // tslint:disable-next-line no-invalid-this
-        this.timeout(120000);
-
-        Promise.all([launchAndConnect(), launchAndConnect()]).then((conns: any) => {
-            setTimeout(() => {
-                const r1 = conns[0];
-                const r2 = conns[1];
-                const expectedUuid = r2.fin.wire.me.uuid;
-                const topic = 'my-topic';
-
-                r1.fin.InterApplicationBus.on('subscriber-added', (sub: any, b: any) => {
-                    assert.equal(expectedUuid, sub.uuid, 'Expected UUIDs to match');
-                    assert.equal(sub.topic, topic, 'Expected topics to match');
-                    done();
-                });
-
-                setTimeout(() => {
-                    // tslint:disable-next-line
-                    r2.fin.InterApplicationBus.subscribe({ uuid: r1.fin.wire.me.uuid }, 'my-topic', () => {});
-                }, 300);
-            }, 5000);
-        });
-    });
-
-    it('should get subscriberRemoved Events', function(done: Function) {
-        // tslint:disable-next-line no-invalid-this
-        this.timeout(120000);
-
-        Promise.all([launchAndConnect(), launchAndConnect()]).then((conns: any) => {
-            setTimeout(() => {
-                const r1 = conns[0];
-                const r2 = conns[1];
-                const expectedUuid = r2.fin.wire.me.uuid;
-                const topic = 'my-topic';
-
-                r1.fin.InterApplicationBus.on('subscriber-removed', (sub: any, b: any) => {
-                    assert.equal(expectedUuid, sub.uuid, 'Expected UUIDs to match');
-                    assert.equal(sub.topic, topic, 'Expected topics to match');
-                    done();
-                });
-
-                setTimeout(() => {
-                    // tslint:disable-next-line
-                    function listener() {};
-                    r2.fin.InterApplicationBus.subscribe({ uuid: r1.fin.wire.me.uuid }, 'my-topic', listener).then(() => {
-                        r2.fin.InterApplicationBus.unsubscribe({ uuid: r1.fin.wire.me.uuid }, 'my-topic', listener);
-                    });
-                }, 300);
-            }, 5000);
+            assert.ok(!uuidList.includes(uuidFromConnection(runtimeB)), 'Expected runtimeB to be missing from the uuid list');
+            assert.ok(uuidList.includes(uuidFromConnection(runtimeC)), 'Expected runtimeC to be found');
+            return apps;
         });
     });
 

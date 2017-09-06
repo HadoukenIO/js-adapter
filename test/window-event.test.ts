@@ -4,10 +4,11 @@ import { delayPromise } from './delay-promise';
 import * as assert from 'assert';
 import { Fin } from '../src/main';
 
-describe('Window.addEventListener()', () => {
-    let fin: Fin;
+describe('Window.', () => {
+    describe('addEventListener()', () => {
+        let fin: Fin;
 
-    const appConfigTemplate = {
+        const appConfigTemplate = {
             name: 'adapter-test-app',
             url: 'about:blank',
             uuid: 'adapter-test-app',
@@ -17,26 +18,27 @@ describe('Window.addEventListener()', () => {
             }
         };
 
-    before(() => {
-        return conn().then(a => fin = a);
-    });
+        before(() => {
+            return conn().then(a => fin = a);
+        });
 
-    describe('"closed"', () => {
+        describe('"closed"', () => {
 
-        before(() => fin.Application.create(appConfigTemplate).then(app => app.run()));
+            before(() => fin.Application.create(appConfigTemplate).then(app => app.run()));
 
-        it('called', () => {
-            const spy = sinon.spy();
+            it('called', () => {
+                const spy = sinon.spy();
 
-            return fin.Application.wrap({ uuid: 'adapter-test-app' }).getWindow().then(win => {
+                return fin.Application.wrap({ uuid: 'adapter-test-app' }).getWindow().then(win => {
 
-                win.on('closed', spy);
+                    win.on('closed', spy);
 
-                return win.close()
-                    .then(() => delayPromise())
-                    .then(() => assert(spy.calledOnce));
+                    return win.close()
+                        .then(() => delayPromise())
+                        .then(() => assert(spy.calledOnce));
+                });
             });
         });
-    });
 
+    });
 });
