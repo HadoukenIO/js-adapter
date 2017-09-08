@@ -1,10 +1,9 @@
 Writes data into the clipboard as Html
 # Example
 ```js
-async function writeHtml(stdin) {
+async function writeHtml(input) {
     return await fin.Clipboard.writeHtml({
-        data: stdin,
-        type: 'html'
+        data: input
     });
 }
 

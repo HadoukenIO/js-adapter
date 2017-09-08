@@ -1,4 +1,4 @@
-Returns then running applications uuid
+This returns the native OS level Id, in Windows it will return the Windows hwnd
 # Example
 ```js
 async function getWindowNativeId() {

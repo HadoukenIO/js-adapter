@@ -5,5 +5,5 @@ async function readText() {
     return await fin.Clipboard.readText();
 }
 
-readText().then(stdout => console.log(stdout)).catch(err => console.log(err));
+readText().then(output => console.log(output)).catch(err => console.log(err));
 ```

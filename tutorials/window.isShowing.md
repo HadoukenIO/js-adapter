@@ -1,17 +1,17 @@
-Closes the window
+
 # Example
 ```js
-async function animationBuilder() {
+async function getBounds() {
     const app = await fin.Application.create({
         name: 'myApp',
-        uuid: 'app-3',
+        uuid: 'app-1',
         url: 'https://www.openfin.co',
         autoShow: true
     });
     await app.run();
     const win = await app.getWindow();
-    return await win.animationBuilder();
+    return await win.getBounds();
 }
 
-animationBuilder().then(() => true).catch(err => console.log(err));
+isWindowShowing().then(bool => console.log(bool)).catch(err => console.log(err));
 ```

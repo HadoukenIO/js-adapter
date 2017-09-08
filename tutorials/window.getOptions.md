@@ -1,17 +1,17 @@
-Closes the window application
+Gets the current settings of the window
 # Example
 ```js
-async function closeWindow() {
+async function getWindowOptions() {
     const app = await fin.Application.create({
         name: 'myApp',
-        uuid: 'app-3',
+        uuid: 'app-1',
         url: 'https://www.openfin.co',
         autoShow: true
     });
     await app.run();
     const win = await app.getWindow();
-    return await win.close();
+    return await win.getOptions();
 }
 
-closeWindow().then(() => console.log('Application closed')).catch(err => console.log(err));
+getWindowOptions().then(opts => console.log(opts)).catch(err => console.log(err));
 ```

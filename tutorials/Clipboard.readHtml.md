@@ -5,5 +5,5 @@ async function readHtml() {
     return await fin.Clipboard.readHtml();
 }
 
-readHtml().then(stdout => console.log(stdout)).catch(err => console.log(err));
+readHtml().then(output => console.log(output)).catch(err => console.log(err));
 ```

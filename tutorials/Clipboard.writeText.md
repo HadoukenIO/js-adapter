@@ -1,11 +1,11 @@
 Writes data into the clipboard as plain text
 #Example
 ```js
-async function writeToClipborad(stdin) {
+async function writeToClipborad(input) {
     return await fin.Clipboard.writeText({
-        data: stdin
+        data: input
     });
 }
 
-writeToClipborad('hello, world');
+writeToClipborad('hello, world').then('On clipboard').catch(err => console.log(err));
 ```
