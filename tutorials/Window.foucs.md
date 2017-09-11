@@ -13,5 +13,5 @@ async function focusWindow() {
     return await win.focus();
 }
 
-focusWindow().then(() => true).catch(err => console.log(err));
+focusWindow().then(() => console.log('Window focused')).catch(err => console.log(err));
 ```
