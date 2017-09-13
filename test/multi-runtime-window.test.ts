@@ -1,6 +1,6 @@
 import * as assert from 'assert';
 import { delayPromise } from './delay-promise';
-import { launchAndConnect, cleanOpenRuntimes } from './multi-runtime-utils';
+import { launchAndConnect, cleanOpenRuntimes, DELAY_MS, TEST_TIMEOUT } from './multi-runtime-utils';
 
 describe('Multi Runtime', () =>  {
     const appConfigTemplate = {
@@ -22,12 +22,12 @@ describe('Multi Runtime', () =>  {
         describe('moveBy', () => {
             it('should move the Window by the given values', async function () {
                 // tslint:disable-next-line no-invalid-this
-                this.timeout(12000);
+                this.timeout(TEST_TIMEOUT);
 
                 const conns = await Promise.all([launchAndConnect(), launchAndConnect()]);
                 const runtimeA = conns[0];
                 const runtimeB = conns[1];
-                await delayPromise(3000);
+                await delayPromise(DELAY_MS);
                 const app = await runtimeB.fin.Application.create(appConfigTemplate);
                 await app.run();
                 const win = await runtimeA.fin.Application.wrap({ uuid: appConfigTemplate.uuid }).getWindow();
@@ -44,13 +44,13 @@ describe('Multi Runtime', () =>  {
         describe('resizeTo', () => {
             it('should resize the Window by the given values', async function () {
                 // tslint:disable-next-line no-invalid-this
-                this.timeout(12000);
+                this.timeout(TEST_TIMEOUT);
 
                 const resizeToVal = 200;
                 const conns = await Promise.all([launchAndConnect(), launchAndConnect()]);
                 const runtimeA = conns[0];
                 const runtimeB = conns[1];
-                await delayPromise(3000);
+                await delayPromise(DELAY_MS);
                 const app = await runtimeB.fin.Application.create(appConfigTemplate);
                 await app.run();
                 const win = await runtimeA.fin.Application.wrap({ uuid: appConfigTemplate.uuid }).getWindow();
@@ -72,12 +72,12 @@ describe('Multi Runtime', () =>  {
     describe('getState', () => {
         it('should return the state of the Window', async function () {
             // tslint:disable-next-line no-invalid-this
-            this.timeout(12000);
+            this.timeout(TEST_TIMEOUT);
 
             const conns = await Promise.all([launchAndConnect(), launchAndConnect()]);
             const runtimeA = conns[0];
             const runtimeB = conns[1];
-            await delayPromise(3000);
+            await delayPromise(DELAY_MS);
             const app = await runtimeB.fin.Application.create(appConfigTemplate);
             await app.run();
             const win = await runtimeA.fin.Application.wrap({ uuid: appConfigTemplate.uuid }).getWindow();
@@ -92,12 +92,12 @@ describe('Multi Runtime', () =>  {
 
         it('should return the state of the Window post a minimize action', async function () {
             // tslint:disable-next-line no-invalid-this
-            this.timeout(12000);
+            this.timeout(TEST_TIMEOUT);
 
             const conns = await Promise.all([launchAndConnect(), launchAndConnect()]);
             const runtimeA = conns[0];
             const runtimeB = conns[1];
-            await delayPromise(3000);
+            await delayPromise(DELAY_MS);
             const app = await runtimeB.fin.Application.create(appConfigTemplate);
             await app.run();
             const win = await runtimeA.fin.Application.wrap({ uuid: appConfigTemplate.uuid }).getWindow();

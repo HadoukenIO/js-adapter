@@ -1,6 +1,6 @@
 import * as assert from 'assert';
 import { delayPromise } from './delay-promise';
-import { launchAndConnect, cleanOpenRuntimes } from './multi-runtime-utils';
+import { launchAndConnect, cleanOpenRuntimes, DELAY_MS, TEST_TIMEOUT } from './multi-runtime-utils';
 
 describe('Multi Runtime', () =>  {
     const appConfigTemplate = {
@@ -23,12 +23,12 @@ describe('Multi Runtime', () =>  {
             describe('application', () => {
                 it('should raise closed events', function(done: Function) {
                     // tslint:disable-next-line no-invalid-this
-                    this.timeout(12000);
+                    this.timeout(TEST_TIMEOUT);
 
                     async function test() {
                         const runtimeA = await launchAndConnect();
                         const runtimeB = await launchAndConnect();
-                        await delayPromise(3000);
+                        await delayPromise(DELAY_MS);
 
                         const realApp = await runtimeB.fin.Application.create(appConfigTemplate);
                         await realApp.run();
@@ -48,12 +48,12 @@ describe('Multi Runtime', () =>  {
 
                 it('should raise started events', function(done: Function) {
                     // tslint:disable-next-line no-invalid-this
-                    this.timeout(12000);
+                    this.timeout(TEST_TIMEOUT);
 
                     async function test() {
                         const runtimeA = await launchAndConnect();
                         const runtimeB = await launchAndConnect();
-                        await delayPromise(3000);
+                        await delayPromise(DELAY_MS);
 
                         const realApp = await runtimeB.fin.Application.create(appConfigTemplate);
                         const app = runtimeA.fin.Application.wrap({ uuid: appConfigTemplate.uuid });
@@ -78,12 +78,12 @@ describe('Multi Runtime', () =>  {
 
                 it('should raise bounds-changed', function(done: Function) {
                     // tslint:disable-next-line no-invalid-this
-                    this.timeout(12000);
+                    this.timeout(TEST_TIMEOUT);
 
                     async function test() {
                         const runtimeA = await launchAndConnect();
                         const runtimeB = await launchAndConnect();
-                        await delayPromise(3000);
+                        await delayPromise(DELAY_MS);
                         const app = runtimeA.fin.Application.wrap({ uuid: appConfigTemplate.uuid });
                         const win = await app.getWindow();
                         const realApp = await runtimeB.fin.Application.create(appConfigTemplate);
@@ -104,12 +104,12 @@ describe('Multi Runtime', () =>  {
 
                 it('should raise hidden', function(done: Function) {
                     // tslint:disable-next-line no-invalid-this
-                    this.timeout(12000);
+                    this.timeout(TEST_TIMEOUT);
 
                     async function test() {
                         const runtimeA = await launchAndConnect();
                         const runtimeB = await launchAndConnect();
-                        await delayPromise(3000);
+                        await delayPromise(DELAY_MS);
                         const app = runtimeA.fin.Application.wrap({ uuid: appConfigTemplate.uuid });
                         const win = await app.getWindow();
                         const realApp = await runtimeB.fin.Application.create(appConfigTemplate);
@@ -136,11 +136,11 @@ describe('Multi Runtime', () =>  {
 
                 it('should raise closed events', function(done: Function) {
                     // tslint:disable-next-line no-invalid-this
-                    this.timeout(12000);
+                    this.timeout(TEST_TIMEOUT);
 
                     async function test() {
                         const runtimeA = await launchAndConnect();
-                        await delayPromise(3000);
+                        await delayPromise(DELAY_MS);
                         const app = runtimeA.fin.Application.wrap({ uuid: appConfigTemplate.uuid });
 
                         app.on('closed', (e: any) => {
@@ -149,7 +149,7 @@ describe('Multi Runtime', () =>  {
                         });
 
                         const runtimeB = await launchAndConnect();
-                        await delayPromise(3000);
+                        await delayPromise(DELAY_MS);
                         const realApp = await runtimeB.fin.Application.create(appConfigTemplate);
                         await realApp.run();
                         await realApp.close();
@@ -160,11 +160,11 @@ describe('Multi Runtime', () =>  {
 
                 it('should raise started events', function(done: Function) {
                     // tslint:disable-next-line no-invalid-this
-                    this.timeout(12000);
+                    this.timeout(TEST_TIMEOUT);
 
                     async function test() {
                         const runtimeA = await launchAndConnect();
-                        await delayPromise(3000);
+                        await delayPromise(DELAY_MS);
                         const app = runtimeA.fin.Application.wrap({ uuid: appConfigTemplate.uuid });
 
                         app.on('started', (e: any) => {
@@ -188,11 +188,11 @@ describe('Multi Runtime', () =>  {
 
                 it('should raise bounds-changed', function(done: Function) {
                     // tslint:disable-next-line no-invalid-this
-                    this.timeout(12000);
+                    this.timeout(TEST_TIMEOUT);
 
                     async function test() {
                         const runtimeA = await launchAndConnect();
-                        await delayPromise(3000);
+                        await delayPromise(DELAY_MS);
                         const app = runtimeA.fin.Application.wrap({ uuid: appConfigTemplate.uuid });
                         const win = await app.getWindow();
 
@@ -202,7 +202,7 @@ describe('Multi Runtime', () =>  {
                         });
 
                         const runtimeB = await launchAndConnect();
-                        await delayPromise(3000);
+                        await delayPromise(DELAY_MS);
                         const realApp = await runtimeB.fin.Application.create(appConfigTemplate);
                         await realApp.run();
                         const realWindow = await realApp.getWindow();
@@ -214,11 +214,11 @@ describe('Multi Runtime', () =>  {
 
                 it('should raise hidden', function(done: Function) {
                     // tslint:disable-next-line no-invalid-this
-                    this.timeout(12000);
+                    this.timeout(TEST_TIMEOUT);
 
                     async function test() {
                         const runtimeA = await launchAndConnect();
-                        await delayPromise(3000);
+                        await delayPromise(DELAY_MS);
                         const app = runtimeA.fin.Application.wrap({ uuid: appConfigTemplate.uuid });
                         const win = await app.getWindow();
 
@@ -228,7 +228,7 @@ describe('Multi Runtime', () =>  {
                         });
 
                         const runtimeB = await launchAndConnect();
-                        await delayPromise(3000);
+                        await delayPromise(DELAY_MS);
                         const realApp = await runtimeB.fin.Application.create(appConfigTemplate);
                         await realApp.run();
                         const realWindow = await realApp.getWindow();
