@@ -1,7 +1,7 @@
 Closes the window
 # Example
 ```js
-async function getWindow() {
+async function closeWindow() {
     const app = await fin.Application.create({
         name: 'myApp',
         uuid: 'app-3',
@@ -9,8 +9,9 @@ async function getWindow() {
         autoShow: true
     });
     await app.run();
-    return await app.getWindow();
+    const win = await app.getWindow();
+    return await win.close();
 }
 
-getWindow().close().then(() => console.log('window closed')).catch(err => console.log(err));
+closeWindow().then(() => console.log('window closed')).catch(err => console.log(err));
 ```
