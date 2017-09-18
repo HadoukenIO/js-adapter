@@ -17,8 +17,9 @@ export default class Clipboard extends Base {
     /**
      * Writes data into the clipboard as plain text
      * @param { WriteRequestType } writeObj This object is described in the WriteRequestType typeof
-     * @return {Promise.<void>}
      * @tutorial Clipboard.writeText
+     * @tutorial Clipboard.writeText
+     * @return {Promise.<void>}
     */
     public writeText(writeObj: WriteRequestType): Promise<void> {
         return this.wire.sendAction('clipboard-write-text', writeObj).then(() => undefined);
@@ -27,6 +28,7 @@ export default class Clipboard extends Base {
     /**
      * Read the content of the clipboard as plain text
      * @param { string } type Clipboard Type
+     * @tutorial Clipboard.readText
      * @return {Promise.<string>}
     */
     public readText(type?: string): Promise<string> {
@@ -37,6 +39,7 @@ export default class Clipboard extends Base {
     /**
      * Writes data into the clipboard as Html
      * @param { WriteRequestType } writeObj This object is described in the WriteRequestType typedef
+     * @tutorial Clipboard.writeHtml
      * @return {Promise.<void>}
     */
     public writeHtml(writeObj: WriteRequestType): Promise<void> {
@@ -46,6 +49,7 @@ export default class Clipboard extends Base {
     /**
      * Read the content of the clipboard as Html
      * @param { string } type Clipboard Type
+     * @tutorial Clipboard.readHtml
      * @return {Promise.<string>}
     */
     public readHtml(type?: string): Promise<string> {

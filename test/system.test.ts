@@ -46,7 +46,7 @@ describe('System.', () => {
 
     describe('getEnvironmentVariable()', () => {
 
-        it('Fulfilled', () => fin.System.getEnvironmentVariable().then(() => assert(true)));
+        it('Fulfilled', () => fin.System.getEnvironmentVariable('HOME').then(env => assert(true)));
     });
 
     describe('getLog()', () => {

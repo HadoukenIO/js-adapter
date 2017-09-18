@@ -1,11 +1,6 @@
 Retrieves an array of data for all applications.
-### Example
+# Example
 ```js
-async function getAllApplications(message) {
-    return await fin.System.getAllApplications();
-}
-
-getAllApplications()
-.then(resp => console.log(resp));
+fin.System.getAllApplications().then(apps => console.log(apps));
 .catch(err => console.log(err));
 ```
