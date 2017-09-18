@@ -13,5 +13,6 @@ async function BringWindowToFront() {
     return await win.bringToFront();
 }
 
-BringWindowToFront().then(() => console.log('Application is in the front')).catch(err => console.log(err));
+BringWindowToFront().then(() => console.log('Application is in the front'))
+    .catch(err => console.log(err));
 ```
