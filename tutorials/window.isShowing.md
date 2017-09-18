@@ -1,4 +1,4 @@
-
+Determines if the window is currently showing.
 # Example
 ```js
 async function getBounds() {
