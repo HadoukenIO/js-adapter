@@ -1,5 +1,6 @@
 Subscribes to messages from the specified application on the specified topic.
-#Example
+
+# Example
 ```js
 async function subcribe(topic, listener) {
     return await fin.InterApplicationBus.subscribe({

@@ -1,3 +1,6 @@
+Unsubscribes to messages from the specified application on the specified topic
+
+# Example
 ```js
 async function unsubscribe(topic, listener) {
     return await fin.InterApplicationBus.unsubscribe(fin.me, topic, listener)
