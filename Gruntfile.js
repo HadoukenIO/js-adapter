@@ -15,7 +15,7 @@ module.exports = function(grunt) {
     const version = grunt.option('ver');
     const remote = grunt.option('remote');
     const uuid = 'testapp';
-    const args = '--v=1 --enable-logging --enable-multi-runtime';
+    const args = '--enable-multi-runtime';
 
     grunt.initConfig({
         ts: {

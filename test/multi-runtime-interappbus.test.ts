@@ -1,6 +1,6 @@
 import * as assert from 'assert';
 import { delayPromise } from './delay-promise';
-import { launchAndConnect, cleanOpenRuntimes } from './multi-runtime-utils';
+import { launchAndConnect, cleanOpenRuntimes, DELAY_MS, TEST_TIMEOUT } from './multi-runtime-utils';
 
 describe('Multi Runtime', function() {
 
@@ -11,7 +11,7 @@ describe('Multi Runtime', function() {
     describe('InterApplicationBus', () => {
         it('should subscribe to * and publish', function(done: Function) {
             // tslint:disable-next-line no-invalid-this
-            this.timeout(120000);
+            this.timeout(TEST_TIMEOUT);
 
             async function test() {
                 const conns = await Promise.all([launchAndConnect(), launchAndConnect()]);
@@ -20,7 +20,7 @@ describe('Multi Runtime', function() {
                 const topic = 'my-topic';
                 const data = 'hello';
 
-                await delayPromise(3000);
+                await delayPromise(DELAY_MS);
 
                 await runtimeA.fin.InterApplicationBus.subscribe({ uuid: '*' }, topic, (message: any, source: any) => {
                     assert.equal(runtimeB.fin.wire.me.uuid, source.uuid, 'Expected source to be runtimeB');
@@ -35,7 +35,7 @@ describe('Multi Runtime', function() {
 
         it('should subscribe to a uuid and publish', function(done: Function) {
             // tslint:disable-next-line no-invalid-this
-            this.timeout(120000);
+            this.timeout(TEST_TIMEOUT);
 
             async function test() {
                 const conns = await Promise.all([launchAndConnect(), launchAndConnect()]);
@@ -44,7 +44,7 @@ describe('Multi Runtime', function() {
                 const topic = 'my-topic';
                 const data = 'hello';
 
-                await delayPromise(3000);
+                await delayPromise(DELAY_MS);
 
                 await runtimeA.fin.InterApplicationBus
                     .subscribe({ uuid: runtimeB.fin.wire.me.uuid }, topic, (message: any, source: any) => {
@@ -61,7 +61,7 @@ describe('Multi Runtime', function() {
 
         it('should subscribe to * and send', function(done: Function) {
             // tslint:disable-next-line no-invalid-this
-            this.timeout(120000);
+            this.timeout(TEST_TIMEOUT);
 
             async function test() {
                 const conns = await Promise.all([launchAndConnect(), launchAndConnect()]);
@@ -70,7 +70,7 @@ describe('Multi Runtime', function() {
                 const topic = 'my-topic';
                 const data = 'hello';
 
-                await delayPromise(3000);
+                await delayPromise(DELAY_MS);
 
                 await runtimeA.fin.InterApplicationBus.subscribe({ uuid: '*' }, topic, (message: any, source: any) => {
                     assert.equal(runtimeB.fin.wire.me.uuid, source.uuid, 'Expected source to be runtimeB');
@@ -86,7 +86,7 @@ describe('Multi Runtime', function() {
 
         it('should subscribe to uuid and send', function(done: Function) {
             // tslint:disable-next-line no-invalid-this
-            this.timeout(120000);
+            this.timeout(TEST_TIMEOUT);
 
             async function test() {
                 const conns = await Promise.all([launchAndConnect(), launchAndConnect()]);
@@ -95,7 +95,7 @@ describe('Multi Runtime', function() {
                 const topic = 'my-topic';
                 const data = 'hello';
 
-                await delayPromise(3000);
+                await delayPromise(DELAY_MS);
 
                 await runtimeA.fin.InterApplicationBus.subscribe({ uuid: runtimeB.fin.wire.me.uuid },
                                                                  topic, (message: any, source: any) => {
@@ -112,7 +112,7 @@ describe('Multi Runtime', function() {
 
         it('should get subscriberAdded Events', function(done: Function) {
             // tslint:disable-next-line no-invalid-this
-            this.timeout(120000);
+            this.timeout(TEST_TIMEOUT);
 
             async function test() {
                 const conns = await Promise.all([launchAndConnect(), launchAndConnect()]);
@@ -121,7 +121,7 @@ describe('Multi Runtime', function() {
                 const topic = 'my-topic';
                 const expectedUuid = runtimeB.fin.wire.me.uuid;
 
-                await delayPromise(3000);
+                await delayPromise(DELAY_MS);
 
                 await runtimeA.fin.InterApplicationBus.on('subscriber-added', (sub: any, b: any) => {
                     assert.equal(expectedUuid, sub.uuid, 'Expected UUIDs to match');
@@ -138,7 +138,7 @@ describe('Multi Runtime', function() {
 
         it('should get subscriberRemoved Events', function(done: Function) {
             // tslint:disable-next-line no-invalid-this
-            this.timeout(120000);
+            this.timeout(TEST_TIMEOUT);
 
             async function test() {
                 const conns = await Promise.all([launchAndConnect(), launchAndConnect()]);
@@ -147,7 +147,7 @@ describe('Multi Runtime', function() {
                 const topic = 'my-topic';
                 const expectedUuid = runtimeB.fin.wire.me.uuid;
 
-                await delayPromise(3000);
+                await delayPromise(DELAY_MS);
 
                 await runtimeA.fin.InterApplicationBus.on('subscriber-removed', (sub: any, b: any) => {
                     assert.equal(expectedUuid, sub.uuid, 'Expected UUIDs to match');

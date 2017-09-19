@@ -11,6 +11,9 @@ let ws_port = 9697;
 
 let runtimes: Array<RuntimeProcess> = [];
 
+export const DELAY_MS = 5000;
+export const TEST_TIMEOUT = 12000;
+
 export interface RuntimeProcess {
     appConfig: any;
     port: string;
@@ -34,10 +37,10 @@ function spawnRealm (version: string, args?: Array<string>): Promise<RuntimeProc
             args = args || [
                 '--enable-multi-runtime',
                 '--enable-mesh',
-                `--security-realm=${realm}`,
-                '--v=1',
-                '--enable-logging',
-                '--debug'
+                `--security-realm=${realm}`
+                // '--v=1',
+                // '--enable-logging',
+                // '--debug'
             ];
 
             args.push(`--startup-url=${configLocation}`);

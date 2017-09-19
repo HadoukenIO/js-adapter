@@ -1,6 +1,6 @@
 import * as assert from 'assert';
 import { delayPromise } from './delay-promise';
-import { launchAndConnect, cleanOpenRuntimes } from './multi-runtime-utils';
+import { launchAndConnect, cleanOpenRuntimes, DELAY_MS, TEST_TIMEOUT } from './multi-runtime-utils';
 
 describe('Multi Runtime', () => {
 
@@ -29,14 +29,14 @@ describe('Multi Runtime', () => {
             ];
 
             // tslint:disable-next-line no-invalid-this
-            this.timeout(120000);
+            this.timeout(TEST_TIMEOUT);
             const conns = await Promise.all([launchAndConnect(),
                                              launchAndConnect(undefined, undefined, true, argsNoConnect),
                                              launchAndConnect(undefined, undefined, true, argsConnect)]);
             const runtimeA = conns[0];
             const runtimeB = conns[1];
             const runtimeC = conns[2];
-            await delayPromise(3000);
+            await delayPromise(DELAY_MS);
 
             const apps = await runtimeA.fin.System.getAllExternalApplications();
             const uuidList = apps.map((a: any) => { return a.uuid; });
