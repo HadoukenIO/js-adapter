@@ -29,6 +29,7 @@ export default class InterApplicationBus extends Bare {
      * that is composed of other primitive or composite data types
      * @tutorial InterApplicationBus.publish
      * @return {Promise.<void>}
+     * @tutorial InterApplicationBus.publish
     */
     public publish(topic: string, message: any): Promise<void> {
         return this.wire.sendAction('publish-message', {
@@ -46,6 +47,7 @@ export default class InterApplicationBus extends Bare {
      * type (string, number, or boolean) or composite data type (object, array) that
      * is composed of other primitive or composite data types
      * @return {Promise.<void>}
+     * @tutorial InterApplicationBus.send
     */
     public send(destination: Identity, topic: string, message: any): Promise<void> {
         return this.wire.sendAction('send-message', {
@@ -71,6 +73,7 @@ export default class InterApplicationBus extends Bare {
      * data types
      * @tutorial InterApplicationBus.subcribe
      * @return {Promise.<void>}
+     * @tutorial InterApplicationBus.subcribe
      */
     public subscribe(source: Identity, topic: string, listener: Function): Promise<void> {
         const subKey = this.createSubscriptionKey(source.uuid, source.name || '*', topic);
@@ -98,6 +101,7 @@ export default class InterApplicationBus extends Bare {
      * @param { string } topic The topic on which the message is sent
      * @param { function } listener A callback previously registered with subscribe()
      * @return {Promise.<void>}
+     * @tutorial InterApplicationBus.unsubscribe
      */
     public unsubscribe(source: Identity, topic: string, listener: Function): Promise<void> {
         const subKey = this.createSubscriptionKey(source.uuid, source.name || '*', topic);
