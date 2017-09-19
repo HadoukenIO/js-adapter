@@ -1,5 +1,4 @@
 Subscribes to messages from the specified application on the specified topic.
-
 # Example
 ```js
 async function subcribe(topic, listener) {
@@ -10,5 +9,5 @@ async function subcribe(topic, listener) {
 
 subcribe('topic', sub_msg => {
     console.log(sub_msg);
-}).then(resp => console.log('Subscribed')).catch(err => console.log(err))
+}).then(resp => console.log('Subscribed')).catch(err => console.log(err));
 ```
