@@ -10,5 +10,5 @@ async function subcribe(topic, listener) {
 
 subcribe('topic', sub_msg => {
     console.log(sub_msg);
-}).then(resp => console.log('Subscribed')).catch(err => console.log(err))
+}).then(resp => console.log('Subscribed')).catch(err => console.log(err)).catch(err => console.log(err))
 ```
