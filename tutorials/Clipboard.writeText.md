@@ -1,5 +1,5 @@
 Writes data into the clipboard as plain text
-#Example
+# Example
 ```js
 fin.Clipboard.writeText({
     data: 'hello, world'

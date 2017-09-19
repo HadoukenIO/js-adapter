@@ -1,4 +1,4 @@
-Flashes the window’s frame and taskbar icon until stopFlashing is called
+Flashes the window’s frame and taskbar icon until the window is activated.
 # Example
 ```js
 async function windowFlash() {
