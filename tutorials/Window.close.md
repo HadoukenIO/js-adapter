@@ -1,4 +1,4 @@
-Closes the window application
+Closes the window
 # Example
 ```js
 async function closeWindow() {
