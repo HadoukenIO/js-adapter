@@ -316,6 +316,7 @@ export class _Window extends Base {
      * Moves the window by a specified amount.
      * @param { number } deltaLeft The change in the left position of the window
      * @param { number } deltaTop The change in the top position of the window
+     * @tutorial Window.moveBy
      * @return {Promise.<void>}
      */
     public moveBy(deltaLeft: number, deltaTop: number): Promise<void> {
@@ -326,6 +327,7 @@ export class _Window extends Base {
      * Moves the window to a specified location.
      * @param { number } left The left position of the window
      * @param { number } top The top position of the window
+     * @tutorial Window.moveTo
      * @return {Promise.<void>}
      */
     public moveTo(left: number, top: number): Promise<void> {
@@ -339,6 +341,7 @@ export class _Window extends Base {
      * @param { string } anchor Specifies a corner to remain fixed during the resize.
      * Can take the values: "top-left", "top-right", "bottom-left", or "bottom-right."
      * If undefined, the default is "top-left"
+     * @tutorial Window.resizeBy
      * @return {Promise.<void>}
      */
     public resizeBy(deltaWidth: number, deltaHeight: number, anchor: string): Promise<void> {
@@ -356,6 +359,7 @@ export class _Window extends Base {
      * @param { string } anchor Specifies a corner to remain fixed during the resize.
      * Can take the values: "top-left", "top-right", "bottom-left", or "bottom-right."
      * If undefined, the default is "top-left"
+     * @tutorial Window.resizeTo
      * @return {Promise.<void>}
      */
     public resizeTo(width: number, height: number, anchor: string): Promise<void> {
@@ -368,6 +372,7 @@ export class _Window extends Base {
 
     /**
      * Restores the window to its normal state (i.e., unminimized, unmaximized).
+     * @tutorial Window.restore
      * @return {Promise.<void>}
      */
     public restore(): Promise<void> {
@@ -376,6 +381,7 @@ export class _Window extends Base {
 
     /**
      * Will bring the window to the front of the entire stack and give it focus.
+     * @tutorial Window.setAsForeground
      * @return {Promise.<void>}
      */
     public setAsForeground(): Promise<void> {
@@ -385,6 +391,7 @@ export class _Window extends Base {
     /**
      * Sets the window's size and position.
      * @param { Bounds } bounds This is a object that holds the properties of
+     * @tutorial Window.setBounds
      * @return {Promise.<void>}
      */
     public setBounds(bounds: Bounds): Promise<void> {
@@ -394,6 +401,7 @@ export class _Window extends Base {
     /**
      * Shows the window if it is hidden.
      * @param { boolean } force assign the value to flase
+     * @tutorial Window.show
      * @return {Promise.<void>}
      */
     public show(force: boolean = false): Promise<void> {
@@ -408,6 +416,7 @@ export class _Window extends Base {
      * @param { number } top The right position of the window
      * @param { boolean } force Show will be prevented from closing when force is false and
      * ‘show-requested’ has been subscribed to for application’s main window
+     * @tutorial Window.showAt
      * @return {Promise.<void>}
      */
     public showAt(left: number, top: number, force: boolean = false): Promise<void> {
@@ -439,6 +448,7 @@ export class _Window extends Base {
 
     /**
      * Returns the zoom level of the window.
+     * @tutorial Window.getZoomLevel
      * @return {Promise.<number>}
      */
     public getZoomLevel(): Promise<number> {
@@ -448,6 +458,7 @@ export class _Window extends Base {
     /**
      * Sets the zoom level of the window.
      * @param { number } level The zoom level
+     * @tutorial Window.setZoomLevel
      * @return {Promise.<void>}
      */
     public setZoomLevel(level: number): Promise<void> {

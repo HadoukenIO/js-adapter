@@ -1,7 +1,7 @@
 Leaves the current window group so that the window can be move independently of those in the group
 # Example
 ```js
-async function mainWin() {
+async function createWin() {
     const app = await fin.Application.create({
         name: 'myApp',
         uuid: 'app',
@@ -13,16 +13,10 @@ async function mainWin() {
 }
 
 async function joinGroups() {
-    const mainAppwin = await mainWin();
-    const app = await fin.Application.create({
-        name: 'myApp-1',
-        uuid: 'app-1',
-        url: 'https://www.openfin.co',
-        autoShow: true
-    });
-    await app.run();
-    const win = await app.getWindow();
-    return await mainAppwin.leaveGroup(win);
+    const mainAppwin = await createWin('app-1');
+    const app = await createWin('app-2');
+    
+    return await mainAppwin.leaveGroup(app);
 }
 
 joinGroups().then(() => console.log('Windows disconnected')).catch(err => console.log(err));

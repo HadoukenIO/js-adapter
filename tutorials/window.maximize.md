@@ -1,4 +1,5 @@
 Maximizes the window
+
 # Example
 ```js
 async function maxWindow() {

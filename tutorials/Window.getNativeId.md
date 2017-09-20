@@ -1,4 +1,5 @@
-This returns the native OS level Id, in Windows it will return the Windows hwnd
+This returns the native OS level Id, in Windows it will return the Windows
+
 # Example
 ```js
 async function getWindowNativeId() {
