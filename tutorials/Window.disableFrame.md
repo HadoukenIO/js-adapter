@@ -13,5 +13,5 @@ async function disableFrame() {
     return await win.disableFrame();
 }
 
-disableFrame().then(() => console.log('Application window is disabled')).catch(err => console.log(err));
+disableFrame().then(() => console.log('Window is disabled')).catch(err => console.log(err));
 ```

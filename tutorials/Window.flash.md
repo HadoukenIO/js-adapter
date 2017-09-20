@@ -13,5 +13,5 @@ async function windowFlash() {
     return await win.flash();
 }
 
-windowFlash().then(() => console.log('Application window flashing')).catch(err => console.log(err));
+windowFlash().then(() => console.log('Window flashing')).catch(err => console.log(err));
 ```

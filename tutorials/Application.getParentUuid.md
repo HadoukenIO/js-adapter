@@ -3,7 +3,7 @@ Retrieves UUID of the application that launches this application.
 ```js
 async function getParentUuid() {
 		const app = await fin.Application.create({
-			uuid: 'app#1',
+			uuid: 'app-1',
 			name: 'myApp',
 			url: 'https://openfin.co',
 			autoShow: true

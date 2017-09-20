@@ -13,5 +13,5 @@ async function blurWindow() {
     return await win.blur();
 }
 
-blurWindow().then(() => true).catch(err => console.log(err));
+blurWindow().then(() => console.log('Blured Window')).catch(err => console.log(err));
 ```
