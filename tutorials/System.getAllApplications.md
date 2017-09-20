@@ -1,5 +1,5 @@
 Retrieves an array of data for all applications.
 # Example
 ```js
-fin.System.getAllApplications().then(resp => console.log(resp)).catch(err => console.log(err));
+fin.System.getAllApplications().then(apps => console.log(apps)).catch(err => console.log(err));
 ```
