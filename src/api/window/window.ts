@@ -62,7 +62,7 @@ export class _Window extends Base {
         });
     }
 
-    protected runtimeEventComparator(listener: RuntimeEvent): boolean {
+    protected runtimeEventComparator = (listener: RuntimeEvent): boolean => {
         return listener.topic === this.topic && listener.uuid === this.identity.uuid &&
             listener.name === this.identity.name;
     }

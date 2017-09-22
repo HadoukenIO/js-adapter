@@ -83,7 +83,7 @@ export class _Notification extends Base implements Notification {
     protected generalListener: (msg: any) => void;
     protected notificationId: number;
 
-    protected onmessage(message: any): boolean {
+    protected onmessage = (message: any): boolean => {
         const {action, payload: messagePayload} = message;
 
         if (action === 'process-notification-event') {
