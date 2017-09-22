@@ -8,7 +8,7 @@ describe('Multi Runtime', () =>  {
         const appConfigTemplate = {
             name: 'adapter-test-app',
             url: 'about:blank',
-            uuid: 'adapter-test-app', ///FIX THIS BULLSHIT!!!!!!!
+            uuid: 'adapter-test-app',
             autoShow: true,
             saveWindowState: false,
             accelerator: {
