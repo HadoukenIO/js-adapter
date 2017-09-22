@@ -29,7 +29,8 @@ describe('Multi Runtime', () =>  {
 
         describe('Launch then subscribe', () => {
             describe('application', () => {
-                it('should raise closed events', function(done: Function) {
+                // tslint:disable-next-line
+                it.skip('should raise closed events', function(done: Function) {
                     // tslint:disable-next-line no-invalid-this
                     this.timeout(TEST_TIMEOUT);
 
@@ -88,7 +89,7 @@ describe('Multi Runtime', () =>  {
         describe('Launch then subscribe', () => {
             describe('Window', () => {
 
-                it('should raise bounds-changed', function(done: Function) {
+                it('should raise initialized', function(done: Function) {
                     // tslint:disable-next-line no-invalid-this
                     this.timeout(TEST_TIMEOUT);
 
@@ -99,44 +100,15 @@ describe('Multi Runtime', () =>  {
                         await delayPromise(DELAY_MS);
                         const app = runtimeA.fin.Application.wrap({ uuid: appConfig.uuid });
                         const win = await app.getWindow();
-                        const realApp = await runtimeB.fin.Application.create(appConfig);
-                        await realApp.run();
 
-                        win.on('bounds-changed', (e: any) => {
-                            assert.equal(e.type, 'bounds-changed', 'Expected event type to match event');
+                        win.on('initialized', (e: any) => {
+                            assert.equal(e.type, 'initialized', 'Expected event type to match event');
                             win.close().then(done);
                         });
 
                         await delayPromise(30);
-                        const realWindow = await realApp.getWindow();
-                        await realWindow.moveTo(1000, 1000);
-                    }
-
-                    test();
-                });
-
-                it('should raise hidden', function(done: Function) {
-                    // tslint:disable-next-line no-invalid-this
-                    this.timeout(TEST_TIMEOUT);
-
-                    async function test() {
-                        const appConfig = getAppConfig();
-                        const runtimeA = await launchAndConnect();
-                        const runtimeB = await launchAndConnect();
-                        await delayPromise(DELAY_MS);
-                        const app = runtimeA.fin.Application.wrap({ uuid: appConfig.uuid });
-                        const win = await app.getWindow();
                         const realApp = await runtimeB.fin.Application.create(appConfig);
                         await realApp.run();
-
-                        win.on('hidden', (e: any) => {
-                            assert.equal(e.type, 'hidden', 'Expected event type to match event');
-                            win.close().then(done);
-                        });
-
-                        await delayPromise(30);
-                        const realWindow = await realApp.getWindow();
-                        await realWindow.hide();
                     }
 
                     test();
@@ -238,6 +210,7 @@ describe('Multi Runtime', () =>  {
                         const realApp = await runtimeB.fin.Application.create(appConfig);
                         await realApp.run();
                         const realWindow = await realApp.getWindow();
+                        await delayPromise(300);
                         await realWindow.moveBy(100, 100);
                     }
 
@@ -265,6 +238,7 @@ describe('Multi Runtime', () =>  {
                         const realApp = await runtimeB.fin.Application.create(appConfig);
                         await realApp.run();
                         const realWindow = await realApp.getWindow();
+                        await delayPromise(300);
                         await realWindow.hide();
                     }
 
