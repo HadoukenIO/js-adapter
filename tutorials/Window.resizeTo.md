@@ -18,5 +18,5 @@ async function resizeTo(left, top, anchor) {
     return await app.resizeTo(left, top, );
 }
 
-resizeTo(580, 300, "top-left").then(() => console.log('Resized')).catch(err => console.log(err));
+resizeTo(580, 300, 'top-left').then(() => console.log('Resized')).catch(err => console.log(err));
 ```
