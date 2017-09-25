@@ -3,7 +3,7 @@ Returns an instance of the main Window of the application
 ```js
 async function getWindow() {
 		const app = await fin.Application.create({
-			uuid: Math.random.toString(16).slice(2),
+			uuid: 'app-1',
 			name: 'myApp',
 			url: 'https://openfin.co',
 			autoShow: true

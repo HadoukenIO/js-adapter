@@ -277,6 +277,16 @@ export class _Window extends Base {
     }
 
     /**
+     * Reloads the window current page
+     * @return {Promise.<void>}
+     */
+    public reload(ignoreCache: boolean = false ): Promise<void> {
+        return this.wire.sendAction('reload-window', Object.assign({}, this.identity, {
+            ignoreCache
+        })).then(() => undefined);
+    }
+
+    /**
      * Leaves the current window group so that the window can be move independently of those in the group.
      * @return {Promise.<void>}
      */
