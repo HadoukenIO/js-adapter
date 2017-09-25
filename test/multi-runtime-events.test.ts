@@ -71,8 +71,6 @@ describe('Multi Runtime', () =>  {
 
                         app.on('initialized', (e: any) => {
                             assert.equal(e.type, 'initialized', 'Expected event type to match event');
-                            // tslint:disable-next-line
-                            console.log(appConfig.uuid);
                             app.close().then(done);
                         });
 
@@ -166,8 +164,6 @@ describe('Multi Runtime', () =>  {
 
                         app.on('initialized', (e: any) => {
                             assert.equal(e.type, 'initialized', 'Expected event type to match event');
-                            // tslint:disable-next-line
-                            console.log(appConfig.uuid);
                             app.close().then(done);
                         });
 
