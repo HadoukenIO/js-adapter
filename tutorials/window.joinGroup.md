@@ -18,5 +18,5 @@ async function joinGroups() {
     return await mainWin.joinGroup(appWin);
 }
 
-joinGroups().then(() => console.log('Windows connected')).catch(err => console.log(err));
+joinGroups().then(() => console.log('Windows are connected')).catch(err => console.log(err));
 ```

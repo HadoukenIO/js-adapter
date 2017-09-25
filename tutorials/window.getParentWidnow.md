@@ -1,4 +1,5 @@
 Gets the parent window
+
 # Example
 ```js
 async function getParentWindow() {

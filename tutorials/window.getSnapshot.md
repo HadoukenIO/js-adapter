@@ -1,4 +1,5 @@
 Gets a base64 encoded PNG snapshot of the window
+
 # Example
 ```js
 async function takeWindowSnapShot() {

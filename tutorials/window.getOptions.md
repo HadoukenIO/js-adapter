@@ -1,4 +1,5 @@
 Gets the current settings of the window
+
 # Example
 ```js
 async function getWindowOptions() {

@@ -13,5 +13,5 @@ async function closeWindow() {
     return await win.close();
 }
 
-closeWindow().then(() => console.log('window closed')).catch(err => console.log(err));
+closeWindow().then(() => console.log('Window closed')).catch(err => console.log(err));
 ```

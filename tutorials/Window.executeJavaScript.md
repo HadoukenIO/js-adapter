@@ -13,6 +13,5 @@ async function executeJavaScript(code) {
     return await win.executeJavaScript(code);
 }
 
-executeJavaScript(`console.log('Hello, Openfin')`).then(() => console.log('Javascript excuted'))
-    .catch(err => console.log(err));
+executeJavaScript(`console.log('Hello, Openfin')`).then(() => console.log('Javascript excuted')).catch(err => console.log(err));
 ```

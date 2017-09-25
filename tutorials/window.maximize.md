@@ -1,7 +1,8 @@
-Removes focus from the window
+Maximizes the window
+
 # Example
 ```js
-async function blurWindow() {
+async function maxWindow() {
     const app = await fin.Application.create({
         name: 'myApp',
         uuid: 'app-1',
@@ -10,8 +11,8 @@ async function blurWindow() {
     });
     await app.run();
     const win = await app.getWindow();
-    return await win.blur();
+    return await win.maximize();
 }
 
-blurWindow().then(() => console.log('Blured Window')).catch(err => console.log(err));
+maxWindow().then(() => console.log('Maximized window')).catch(err => console.log(err));
 ```

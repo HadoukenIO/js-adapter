@@ -13,5 +13,5 @@ async function enableFrame() {
     return await win.enableFrame();
 }
 
-enableFrame().then(() => console.log('Application window is enabled')).catch(err => console.log(err));
+enableFrame().then(() => console.log('Window is enabled')).catch(err => console.log(err));
 ```
