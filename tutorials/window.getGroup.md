@@ -1,4 +1,5 @@
 Retrieves an array containing wrapped fin.Windows that are grouped with this window
+
 # Example
 ```js
 async function getGroup() {

@@ -1,4 +1,5 @@
 Gets the current state ("minimized", "maximized", or "restored") of the window
+
 # Example
 ```js
 async function getWindowState() {

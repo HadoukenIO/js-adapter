@@ -1,4 +1,5 @@
 Stops the taskbar icon from flashing
+
 # Example
 ```js
 async function stopWindowFlashing() {

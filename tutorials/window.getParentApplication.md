@@ -1,4 +1,5 @@
 Gets the parent application
+
 # Example
 ```js
 async function getParentApplication() {

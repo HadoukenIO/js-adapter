@@ -1,4 +1,5 @@
 Gives focus to the window
+
 # Example
 ```js
 async function focusWindow() {

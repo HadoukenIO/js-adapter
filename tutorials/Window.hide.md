@@ -1,10 +1,11 @@
 Hides the window
+
 # Example
 ```js
 async function hideWindow() {
     const app = await fin.Application.create({
         name: 'myApp',
-        uuid: 'app-3',
+        uuid: 'app-1',
         url: 'https://www.openfin.co',
         autoShow: true
     });
@@ -13,5 +14,5 @@ async function hideWindow() {
     return await win.hide();
 }
 
-hideWindow().then(() => console.log('Application is hidden')).catch(err => console.log(err));
+hideWindow().then(() => console.log('Window is hidden')).catch(err => console.log(err));
 ```
