@@ -467,11 +467,13 @@ export class _Window extends Base {
 
     /**
      * Stops any current navigation the window is performing.
+     * @return {Promise.<void>}
+     * @tutorial Window.stopNavigation
      */
      public stopNavigation(): Promise<void> {
-        return this.wire.sendAction('stop-window-navigation', Object.assign({}, this.Identity)).then(() => undefined);
+         return this.wire.sendAction('stop-window-navigation', Object.assign({}, this.identity)).then(() => undefined);
      }
-     
+
 }
 
 // tslint:disable-next-line
