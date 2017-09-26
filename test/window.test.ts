@@ -333,4 +333,10 @@ describe('Window.', () => {
         it('Fulfilled', () => testWindow.setZoomLevel(zoomLevel)
            .then(() => testWindow.getZoomLevel()).then(data => assert(data === zoomLevel)));
     });
+
+    describe('navigate()', () => {
+        const url = 'https://www.google.com';
+
+        it('Fulfilled', () => testWindow.navigate(url).then(() => assert(true)));
+    });
 });

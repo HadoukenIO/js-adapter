@@ -465,6 +465,15 @@ export class _Window extends Base {
         return this.wire.sendAction('set-zoom-level', Object.assign({}, this.identity, { level })).then(() => undefined);
     }
 
+    /**
+     * Navigates the window to a specified URL.
+     * @param {string} url - The URL to navigate the window to.
+     * @return {Promise.<void>}
+     * @tutorial Window.navigate
+     */
+    public navigate(url: string): Promise<void> {
+        return this.wire.sendAction('navigate-window', Object.assign({}, this.identity, { url })).then(() => undefined);
+    }
 }
 
 // tslint:disable-next-line
