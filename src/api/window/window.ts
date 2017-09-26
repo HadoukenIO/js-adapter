@@ -465,6 +465,13 @@ export class _Window extends Base {
         return this.wire.sendAction('set-zoom-level', Object.assign({}, this.identity, { level })).then(() => undefined);
     }
 
+    /**
+     * Stops any current navigation the window is performing.
+     */
+     public stopNavigation(): Promise<void> {
+        return this.wire.sendAction('stop-window-navigation', Object.assign({}, this.Identity)).then(() => undefined);
+     }
+     
 }
 
 // tslint:disable-next-line
