@@ -465,6 +465,14 @@ export class _Window extends Base {
         return this.wire.sendAction('set-zoom-level', Object.assign({}, this.identity, { level })).then(() => undefined);
     }
 
+    /**
+     * Navigates the window back one page.
+     * @return {Promise.<void>}
+     * @tutorial Window.navigateBack
+     */
+    public navigateBack(): Promise<void> {
+        return this.wire.sendAction('navigate-window-back', Object.assign({}, this.identity)).then(() => undefined);
+    }
 }
 
 // tslint:disable-next-line
