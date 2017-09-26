@@ -13,12 +13,12 @@ async function createWin() {
 		return await app.getWindow();
 }
 
-async function navigateTo(url) {
+async function navigate(url) {
 		const app = await createWin();
 		return await app.navigate(url);
 }
 
-navigateTo('https://www.google.com').then(() => {
+navigate('https://www.google.com').then(() => {
 		console.log('Navigated window')
 }).catch(err => console.log(err));
 ```
