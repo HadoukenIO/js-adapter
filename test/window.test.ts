@@ -338,4 +338,9 @@ describe('Window.', () => {
         it('Fulfilled', () => testWindow.setZoomLevel(zoomLevel)
            .then(() => testWindow.getZoomLevel()).then(data => assert(data === zoomLevel)));
     });
+
+    describe('stopNavigation()', () => {
+
+        it('Fulfilled', () => testWindow.stopNavigation().then(() => assert(true)));
+    });
 });
