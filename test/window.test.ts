@@ -45,6 +45,11 @@ describe('Window.', () => {
            }));
     });
 
+    describe('reload()', () => {
+
+        it('Fulfilled', () => testWindow.reload().then(() => assert(true)));
+    });
+
     describe('focus()', () => {
 
         it('Fulfilled', () => testWindow.focus().then(() => assert(true)));
