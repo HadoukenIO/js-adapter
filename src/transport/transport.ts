@@ -1,8 +1,7 @@
-import { Wire, WireConstructor } from './wire';
+import { Wire, WireConstructor, READY_STATE } from './wire';
 import writeToken from './write-token';
 import { Identity } from '../identity';
 import { EventEmitter } from 'events';
-import { READY_STATE } from './websocket';
 
 import {
     UnexpectedActionError,

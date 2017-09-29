@@ -1,4 +1,4 @@
-import { READY_STATE } from './websocket';
+import { READY_STATE } from './wire';
 
 export class DisconnectedError extends Error {
     constructor(readyState: number) {
