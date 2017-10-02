@@ -18,5 +18,5 @@ async function resizeBy(left, top, anchor) {
     return await app.resizeBy(left, top, anchor)
 }
 
-resizeBy(580, 300, "top-right").then(() => console.log('Resized')).catch(err => console.log(err));
+resizeBy(580, 300, 'top-right').then(() => console.log('Resized')).catch(err => console.log(err));
 ```

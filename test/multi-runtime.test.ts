@@ -10,8 +10,9 @@ describe('Multi Runtime', () => {
         return await cleanOpenRuntimes();
     });
 
-    function uuidFromConnection(conn: any) {
-        return `${conn.version}:${conn.port}`;
+    function uuidFromConnection(conn: any, realm: string) {
+        const { version, port } = conn;
+        return `${version}/${port}/${realm ? realm : ''}`;
     }
 
     function getRealm() {
@@ -21,9 +22,10 @@ describe('Multi Runtime', () => {
 
     describe('Connections', () => {
         it('should respect the enable-mesh flag for security realms', async function() {
+            const realm = getRealm();
             const argsNoConnect = [`--security-realm=${ getRealm() }`];
             const argsConnect = [
-                `--security-realm=${ getRealm() }`,
+                `--security-realm=${ realm }`,
                 '--enable-mesh',
                 '--enable-multi-runtime'
             ];
@@ -40,9 +42,9 @@ describe('Multi Runtime', () => {
 
             const apps = await runtimeA.fin.System.getAllExternalApplications();
             const uuidList = apps.map((a: any) => { return a.uuid; });
-
-            assert.ok(!uuidList.includes(uuidFromConnection(runtimeB)), 'Expected runtimeB to be missing from the uuid list');
-            assert.ok(uuidList.includes(uuidFromConnection(runtimeC)), 'Expected runtimeC to be found');
+            assert.ok(!uuidList.includes(uuidFromConnection(runtimeB, runtimeB.realm)),
+                      'Expected runtimeB to be missing from the uuid list');
+            assert.ok(uuidList.includes(uuidFromConnection(runtimeC, realm)), 'Expected runtimeC to be found');
             return apps;
         });
     });

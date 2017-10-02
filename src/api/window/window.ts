@@ -62,7 +62,7 @@ export class _Window extends Base {
         });
     }
 
-    protected runtimeEventComparator(listener: RuntimeEvent): boolean {
+    protected runtimeEventComparator = (listener: RuntimeEvent): boolean => {
         return listener.topic === this.topic && listener.uuid === this.identity.uuid &&
             listener.name === this.identity.name;
     }
@@ -273,6 +273,16 @@ export class _Window extends Base {
         return this.wire.sendAction('join-window-group', Object.assign({}, this.identity, {
             groupingUuid: target.identity.uuid,
             groupingWindowName: target.identity.name
+        })).then(() => undefined);
+    }
+
+    /**
+     * Reloads the window current page
+     * @return {Promise.<void>}
+     */
+    public reload(ignoreCache: boolean = false ): Promise<void> {
+        return this.wire.sendAction('reload-window', Object.assign({}, this.identity, {
+            ignoreCache
         })).then(() => undefined);
     }
 

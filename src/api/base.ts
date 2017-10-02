@@ -3,9 +3,6 @@ import { Identity } from '../identity';
 import { EventEmitter } from 'events';
 import { createHash } from 'crypto';
 
-//This needs to be a singleton.
-const topicRefMap = new Map();
-
 export interface RuntimeEvent extends Identity {
     topic: string;
     type: string;
@@ -35,11 +32,11 @@ export class Base extends Bare {
         wire.registerMessageHandler(this.onmessage.bind(this));
     }
 
-    protected runtimeEventComparator(listener: RuntimeEvent): boolean {
+    protected runtimeEventComparator = (listener: RuntimeEvent): boolean => {
         return listener.topic === this.topic;
     }
 
-    protected onmessage(message: Message<any>): boolean {
+    protected onmessage = (message: Message<any>): boolean => {
 
         if (message.action === 'process-desktop-event') {
             const payload = message.payload;
@@ -53,26 +50,26 @@ export class Base extends Bare {
         }
     }
 
-    protected registerEventListener(listener: RuntimeEvent): void {
+    protected registerEventListener = (listener: RuntimeEvent): void => {
         const key = createKey(listener);
-        const refCount = topicRefMap.get(key);
+        const refCount = this.wire.topicRefMap.get(key);
 
         if (!refCount) {
-            topicRefMap.set(key, 1);
+            this.wire.topicRefMap.set(key, 1);
             this.wire.sendAction('subscribe-to-desktop-event', listener);
         } else {
-            topicRefMap.set(key, refCount + 1);
+            this.wire.topicRefMap.set(key, refCount + 1);
         }
     }
 
-    protected deregisterEventListener(listener: RuntimeEvent): void {
+    protected deregisterEventListener = (listener: RuntimeEvent): void => {
         const key = createKey(listener);
-        const refCount = topicRefMap.get(key);
+        const refCount = this.wire.topicRefMap.get(key);
 
         if (refCount) {
 
             const newRefCount = refCount - 1;
-            topicRefMap.set(key, newRefCount);
+            this.wire.topicRefMap.set(key, newRefCount);
 
             if (newRefCount === 0) {
                 this.wire.sendAction('unsubscribe-to-desktop-event', listener);
