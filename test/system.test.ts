@@ -11,7 +11,7 @@ describe('System.', () => {
 
     describe('getVersion()', () => {
 
-        it('Fulfilled', () => fin.System.getVersion().then(() => assert(true)));
+        it('Fulfilled', () => fin.System.getVersion().then(v => assert(type v === 'string')));
     });
 
     describe('clearCache()', () => {

@@ -2,6 +2,19 @@ import { conn } from './connect';
 import * as assert from 'assert';
 import { connect as rawConnect, Fin, Application, Window } from '../src/main';
 
+function diffObject(Obj: Object, Obj2: Object) {
+
+    const objArr = Object.keys(Obj);
+    for (let i = 0; i < objArr.length; i += 1) {
+        if (!Object.keys(Obj2).includes( objArr[i] )) {
+            return true;
+        } else if (!Object.values(Obj2).includes( Obj[objArr[i]] )) {
+            return true;
+        }
+    }
+    return false;
+}
+
 describe('Window.', () => {
     let fin: Fin;
     let testApp: Application;
@@ -41,13 +54,8 @@ describe('Window.', () => {
 
         it('Fulfilled', () => testWindow.setBounds(bounds)
            .then(() => {
-               return testWindow.getBounds().then(data => assert(typeof(data.height) === 'number'));
+               return testWindow.getBounds().then(data => assert(diffObject(bounds, data)));
            }));
-    });
-
-    describe('reload()', () => {
-
-        it('Fulfilled', () => testWindow.reload().then(() => assert(true)));
     });
 
     describe('focus()', () => {
@@ -67,7 +75,7 @@ describe('Window.', () => {
 
     describe('hide()', () => {
 
-        it('Fulfilled', () => testWindow.hide().then(() => assert(true)));
+        it('Fulfilled', () => testWindow.hide().then(() => testWindow.isShowing().then(bool => assert(bool === false))));
     });
 
     describe('close()', () => {
@@ -284,19 +292,14 @@ describe('Window.', () => {
 
         it('Fulfilled', () => testWindow.setBounds(bounds)
            .then(() => testWindow.getBounds()
-                 .then(data => {
-                     return assert(data.top === bounds.top, `Expected ${data.top} to be ${bounds.top}`) &&
-                         assert(data.width === bounds.width, `Expected ${data.width} to be ${bounds.width}`) &&
-                         assert(data.height === bounds.height, `Expected ${data.height} to be ${bounds.height}`) &&
-                         assert(data.left === bounds.left, `Expected ${data.left} to be ${bounds.left}`) &&
-                         assert(data.bottom === bounds.bottom, `Expected ${data.bottom} to be ${bounds.bottom}`) &&
-                         assert(data.right === bounds.right, `Expected ${data.right} to be ${bounds.right}`);
-                 })));
+                 .then(data => assert(diffObject(bounds, data)))));
     });
 
     describe('show()', () => {
 
-        it('Fulfilled', () => testWindow.show().then(() => assert(true)));
+        it('Fulfilled', () => testWindow.show().then(() => {
+            testWindow.isShowing().then(bool => assert(bool));
+        }));
     });
 
     describe('showAt()', () => {
@@ -317,7 +320,9 @@ describe('Window.', () => {
             height: 100
         };
 
-        it('Fulfilled', () => testWindow.updateOptions(updatedOptions).then(() => assert(true)));
+        it('Fulfilled', () => testWindow.updateOptions(updatedOptions).then(() => {
+            test.Window.getOptions().then(opts => assert(diffObject(updatedOptions, opts)));
+        }));
     });
 
     //TODO: feature needs testing.
@@ -337,10 +342,5 @@ describe('Window.', () => {
 
         it('Fulfilled', () => testWindow.setZoomLevel(zoomLevel)
            .then(() => testWindow.getZoomLevel()).then(data => assert(data === zoomLevel)));
-    });
-
-    describe('stopNavigation()', () => {
-
-        it('Fulfilled', () => testWindow.stopNavigation().then(() => assert(true)));
     });
 });
