@@ -337,5 +337,5 @@ describe('Window.', () => {
     describe('navigateForward()', () => {
 
         it('Fulfilled', () => testWindow.navigateForward().then(() => assert(true)));
-    })
+    });
 });
