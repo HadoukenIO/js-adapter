@@ -238,6 +238,15 @@ export default class System extends Base {
     }
 
     /**
+     * Retrieves system information.
+     * @tutorial system.getHostSpecs
+     * @return {Promise.<Object>}
+     */
+    public getHostSpecs(): Promise<Object> {
+        return this.wire.sendAction('get-host-specs').then(({ payload }) => payload.data);
+    }
+
+    /**
      * Runs an executable or batch file.
      * @param { ExternalProcessRequestType } options A object that is defined in the ExternalProcessRequestType interface
      * @return {Promise.<RVMInfo>}
