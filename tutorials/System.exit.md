@@ -2,5 +2,5 @@ Exits the Runtime
 
 # Example
 ```js
-fin.System.exit().then(() => console.log('Exiting.')).catch(err => console.log(err));
+fin.System.exit().then(() => console.log('Exiting from runtime.')).catch(err => console.log);
 ```
