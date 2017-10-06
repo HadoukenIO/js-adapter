@@ -45,6 +45,11 @@ describe('Window.', () => {
            }));
     });
 
+    describe('reload()', () => {
+
+        it('Fulfilled', () => testWindow.reload().then(() => assert(true)));
+    });
+
     describe('focus()', () => {
 
         it('Fulfilled', () => testWindow.focus().then(() => assert(true)));
@@ -337,5 +342,9 @@ describe('Window.', () => {
     describe('navigateBack()', () => {
 
         it('Fulfilled', () => testWindow.navigateBack().then(() => assert(true)));
+
+    describe('stopNavigation()', () => {
+
+        it('Fulfilled', () => testWindow.stopNavigation().then(() => assert(true)));
     });
 });

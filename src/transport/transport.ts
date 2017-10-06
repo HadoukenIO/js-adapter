@@ -23,6 +23,7 @@ class Transport extends EventEmitter {
     protected messageHandlers: MessageHandler[] = [];
     public me: Identity;
     protected wire: Wire;
+    public topicRefMap: Map<string, number> = new Map();
 
     constructor(wireType: WireConstructor) {
         super();
@@ -137,7 +138,7 @@ class Transport extends EventEmitter {
     protected handleMessage(data: Message<Payload>): boolean {
         // tslint:disable-next-line
         const id: number = data.correlationId || NaN;
-        
+
         if (!('correlationId' in data)) {
             this.uncorrelatedListener.call(null, data);
             // tslint:disable-next-line
@@ -166,6 +167,7 @@ export default Transport;
 interface Transport {
     sendAction(action: 'request-external-authorization', payload: {}, uncorrelated: true): Promise<Message<AuthorizationPayload>>;
     sendAction(action: string, payload: {}, uncorrelated: boolean): Promise<Message<Payload>>;
+    topicRefMap: Map<string, number>;
 }
 
 export class Message<T> {
