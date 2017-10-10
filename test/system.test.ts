@@ -84,7 +84,7 @@ describe('System.', () => {
 
     describe('getHostSpecs()', () => {
 
-        it('Fulfilled', () => fin.System.getHostSpecs().then(specs => assert(true)));
+        it('Fulfilled', () => fin.System.getHostSpecs().then(specs => assert(specs.name === 'Home')));
     });
 
     describe('launchExternalProcess()', () => {

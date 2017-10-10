@@ -10,6 +10,7 @@ import { ProcessInfo } from './process';
 import { DownloadAssetRequestType } from './download-asset';
 import { RVMInfo } from './rvm';
 import { Entity } from './entity';
+import { HostSpecs } from './host-specs';
 import { ExternalProcessRequestType , TerminateExternalRequestType } from './external-process';
 import Transport from '../../transport/transport';
 
@@ -240,9 +241,9 @@ export default class System extends Base {
     /**
      * Retrieves system information.
      * @tutorial system.getHostSpecs
-     * @return {Promise.<Object>}
+     * @return {Promise.<Hostspecs>}
      */
-    public getHostSpecs(): Promise<Object> {
+    public getHostSpecs(): Promise<HostSpecs> {
         return this.wire.sendAction('get-host-specs').then(({ payload }) => payload.data);
     }
 
