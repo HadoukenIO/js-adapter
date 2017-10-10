@@ -85,7 +85,7 @@ export default class System extends Base {
      * @tutorial System.exit
      */
     public exit(): Promise<void> {
-        return this.wire.sendAction('exit-desktop', Object.assign({})).then(() => undefined);
+        return this.wire.sendAction('exit-desktop', {}).then(() => undefined);
     }
 
     /**
