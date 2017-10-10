@@ -2,17 +2,36 @@ import { conn } from './connect';
 import * as assert from 'assert';
 import { connect as rawConnect, Fin, Application, Window } from '../src/main';
 
-function diffObject(Obj: Object, Obj2: Object) {
+function diffObject(Obj: any, Obj2: any) {
+    function includes(arr: string[], item: string): boolean {
+        for (let i = 0; i < arr.length; i += 1) {
+            if (arr[i] === item) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    function objectvalues(obj: any): string[] {
+        const values = [];
+        const objArr = Object.keys(obj);
+        for (let i = 0; i < objArr.length; i += 1) {
+            values.push(obj[objArr[i]]);
+        }
+        return values;
+    }
+
+    let diff = false;
 
     const objArr = Object.keys(Obj);
     for (let i = 0; i < objArr.length; i += 1) {
-        if (!Object.keys(Obj2).includes( objArr[i] )) {
-            return true;
-        } else if (!Object.values(Obj2).includes( Obj[objArr[i]] )) {
-            return true;
+        if (!includes( Object.keys(Obj2), objArr[i] )) {
+            diff = true;
+        } else if (!includes( objectvalues(Obj2), Obj[objArr[i]] )) {
+            diff = true;
         }
     }
-    return false;
+    return diff;
 }
 
 describe('Window.', () => {
@@ -321,7 +340,7 @@ describe('Window.', () => {
         };
 
         it('Fulfilled', () => testWindow.updateOptions(updatedOptions).then(() => {
-            test.Window.getOptions().then(opts => assert(diffObject(updatedOptions, opts)));
+            testWindow.getOptions().then(opts => assert(diffObject(updatedOptions, opts)));
         }));
     });
 
