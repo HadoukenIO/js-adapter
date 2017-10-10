@@ -224,7 +224,9 @@ export class Application extends Base {
      * @tutorial Application.setShortcuts
      */
     public setShortcuts(config: ConfigInterface): Promise<void> {
-        return this.wire.sendAction('set-shortcuts', Object.assign({}, this.identity, config)).then(() => undefined);
+        return this.wire.sendAction('set-shortcuts',
+                   Object.assign({}, this.identity, config)
+               ).then(() => undefined);
     }
 
     /**
