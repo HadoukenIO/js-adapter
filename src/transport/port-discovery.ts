@@ -5,12 +5,11 @@ import * as http from 'http';
 import * as net from 'net';
 import * as path from 'path';
 import {ConnectConfig} from './transport';
-const { spawn } = require('child_process');
+import { spawn } from 'child_process';
+import * as os from 'os';
+
 const OpenFin_Installer: string = 'OpenFinInstaller.exe';
 const Installer_Work_Dir = path.join(process.env.TEMP, 'openfinode');
-let namedPipeName: string;
-let manifestLocation: string;
-let savedConfig: ConnectConfig;
 const Security_Realm_Config_Key: string = '--security-realm=';
 
 // header for messages from Runtime
@@ -29,10 +28,10 @@ interface ChromiumHelloMessage {
     payload: number;        // uint32, pid of Browser process or node process
 }
 
-// second message from Runtime
+// second message from Runtime that has port discovery message
 interface ChromiumStringMessage {
     header: ChromiumMessageHeader;
-    string_length: number;  // uint32
+    string_length: number;  // uint32, length of data
     data: string;           // port discover message
 }
 
@@ -57,26 +56,6 @@ interface PortDiscoveryMessage {
 interface PortDiscoveryMessageEnvolope {
     action: string;
     payload: PortDiscoveryMessage;
-}
-let discoverState: DiscoverState;
-
-export function discoverPort(config: ConnectConfig): Promise<number> {
-    savedConfig = Object.assign({}, config);
-    return new Promise((resolve, reject) => {
-            copyInstaller(savedConfig).then(() => createManifest(savedConfig))
-            .then(() => createDiscoveryNamedPipe(savedConfig))
-            .then((namedPipeServer) => {
-                const mPromise: Promise<PortDiscoveryMessage> = listenDiscoveryMessage(namedPipeServer);
-                launchInstaller();
-                mPromise.then((msg: PortDiscoveryMessage) => {
-                    if (matchRuntimeInstance(savedConfig, msg)) {
-                        console.log(`Port discovery returns ${msg.port}`);
-                        resolve(msg.port);
-                    }
-                });
-            })
-            .catch(reject);
-    });
 }
 
 function matchRuntimeInstance(config: ConnectConfig, message: PortDiscoveryMessage): Boolean {
@@ -113,67 +92,6 @@ function copyInstaller(config: ConnectConfig): Promise<string> {
     });
 }
 
-function createManifest(config: ConnectConfig): Promise<string> {
-    return new Promise((resolve, reject) => {
-        if (config.manifestUrl) {
-            console.log(`Retrieving ${config.manifestUrl}`);
-            http.get(config.manifestUrl, res => {
-                if (res.statusCode !== 200) {
-                    reject(new Error(`Error getting ${config.manifestUrl} status ${res.statusCode}`));
-                } else {
-                    res.setEncoding('utf8');
-                    let rawData = '';
-                    res.on('data', (chunk) => { rawData += chunk; });
-                    res.on('end', () => {
-                        try {
-                            const parsed = JSON.parse(rawData);
-                            // Installer needs assetsUrl if set
-                            Object.assign(config, {assetsUrl: parsed.assetsUrl});
-                            if (parsed.runtime) {
-                                config.runtime = Object.assign({}, {version: parsed.runtime.version});
-                                if (parsed.runtime.arguments) {
-                                    const index: number = parsed.runtime.arguments.indexOf(Security_Realm_Config_Key);
-                                    if (index > 0) {
-                                        parsed.runtime.arguments.split(' ').forEach((value: string) => {
-                                            if (value.startsWith(Security_Realm_Config_Key)) {
-                                                const realm = value.substring(Security_Realm_Config_Key.length);
-                                                config.runtime.securityRealm = realm;
-                                                console.log(`Parsed security realm ${realm} from ${config.manifestUrl}`);
-                                            }
-                                        });
-                                    }
-                                }
-                            }
-                            manifestLocation = config.manifestUrl;
-                            resolve();
-                        } catch (e) {
-                            reject(new Error(`Error parsing remote manifest ${e.message}`));
-                        }
-                    });
-                    res.on('error', e => {
-                        reject(new Error(`Error getting ${config.manifestUrl} error ${e.message}`));
-                    });
-                }
-            });
-        } else {
-            const manifestFileName = 'NodeAdapter-' + config.uuid.replace(/ /g, '-') + '.json';
-            manifestLocation = path.join(Installer_Work_Dir, manifestFileName);
-            console.log(`Creating manifest ${manifestLocation}`);
-            const wr = fs.createWriteStream(manifestLocation);
-            const manifest = generateManifest(config);
-            wr.on('error', (err: Error) => reject(err));
-            wr.on('finish', () => {
-                console.log(`created ${manifestLocation}`);
-                resolve();
-            });
-            console.log(`creating ${manifestLocation}`);
-            wr.write(JSON.stringify(manifest), () => {
-                wr.end();
-            });
-        }
-    });
-}
-
 function generateManifest(config: ConnectConfig): any {
     const manifest = Object.assign({},
         {devtools_port: config.devToolsPort},
@@ -204,62 +122,12 @@ function generateManifest(config: ConnectConfig): any {
     return manifest;
 }
 
-function createDiscoveryNamedPipe(config: ConnectConfig): Promise<net.Server> {
-    return new Promise((resolve, reject) => {
-        discoverState = DiscoverState.INIT;
-        const randomNum: string = crypto.randomBytes(16).toString('hex');
-        namedPipeName = 'NodeAdapter.' + randomNum;
-        const namedPipe: net.Server = net.createServer();
-        const pipePath: string = path.join('\\\\.\\pipe\\', 'chrome.' + namedPipeName);
-        console.log(`listening to ${pipePath}`);
-        namedPipe.listen(pipePath);
-        resolve(namedPipe);
-    });
-}
-
-function listenDiscoveryMessage(namedPipeServer: net.Server): Promise<PortDiscoveryMessage> {
-    return new Promise((resolve, reject) => {
-        namedPipeServer.on('connection', (conn: net.Socket) => {
-            console.log(`named pipe connected ${JSON.stringify(conn.address())}`);
-            conn.on('data', (data: Buffer) => {
-                console.log(`onData from named pipe ${data.length}`);
-                if (discoverState === DiscoverState.INIT) {
-                    onRuntimeHello(data, conn);
-                    discoverState = DiscoverState.HELLO;
-                } else if (discoverState === DiscoverState.HELLO) {
-                    const msg = onDiscoverMessage(data);
-                    if (msg) {
-                        resolve(msg);
-                    }
-                }
-            });
-            conn.on('error', err => reject(err));
-        });
-        namedPipeServer.on('error', err => reject(err));
-    });
-}
-
-function launchInstaller() {
-    const installer: string = path.join(Installer_Work_Dir, OpenFin_Installer);
-    const runtimeArgs = `--runtime-arguments=--v=1 --runtime-information-channel-v6=${namedPipeName}`;
-    console.log(`launching ${installer} --config=${manifestLocation} ${runtimeArgs}`);
-    const exe = spawn(installer, [`--config=${manifestLocation}`, runtimeArgs]);
-    exe.stdout.on('data', (data: string) => {
-        console.log(`stdout: ${data}`);
-    });
-    exe.stderr.on('data', (data: string) => {
-        console.log(`stderr: ${data}`);
-    });
-    exe.on('error', (err: Error) => console.error(err));
-}
-
 function onRuntimeHello(data: Buffer, conn: net.Socket): void {
     const header: ChromiumMessageHeader = readHeader(data);
     if (header.message_type === ChromiumMessageType.RUNTIME_HELLO_MESSAGE) {
         const helloPayload: number = readUint32(data, MessageHeaderSize);
         console.log(`Hello payload ${helloPayload}`);  // supposed to be pid of Runtime
         writeHelloMessage(header, conn);
-        discoverState = DiscoverState.HELLO;
     } else {
         console.error(`Invalid port discovery hello message type ${header.message_type}`);
     }
@@ -313,4 +181,156 @@ function readUint32(data: Buffer, offset: number): number {
 
 function writeUint32(data: Buffer, value: number, offset: number): void {
     data.writeInt32LE(value, offset);
+}
+
+export class PortDiscovery {
+    private savedConfig: ConnectConfig;
+    private namedPipeName: string;
+    private manifestLocation: string;
+    private discoverState: DiscoverState;
+
+    constructor(config: ConnectConfig) {
+        if (os.platform() === 'win32') {
+            this.savedConfig = Object.assign({}, config);
+        } else {
+            throw new Error(`Port Discovery not supported on ${os.platform()}`);
+        }
+    }
+
+    public retrievePort(): Promise<number> {
+        return new Promise((resolve, reject) => {
+            copyInstaller(this.savedConfig).then(() => this.createManifest())
+                .then(() => this.createDiscoveryNamedPipe())
+                .then((namedPipeServer) => {
+                    const mPromise: Promise<PortDiscoveryMessage> = this.listenDiscoveryMessage(namedPipeServer);
+                    this.launchInstaller();
+                    mPromise.then((msg: PortDiscoveryMessage) => {
+                        if (matchRuntimeInstance(this.savedConfig, msg)) {
+                            console.log(`Port discovery returns ${msg.port}`);
+                            resolve(msg.port);
+                        }
+                    });
+                })
+                .catch(reject);
+        });
+    }
+
+    private createDiscoveryNamedPipe(): Promise<net.Server> {
+        return new Promise((resolve, reject) => {
+            this.discoverState = DiscoverState.INIT;
+            const randomNum: string = crypto.randomBytes(16).toString('hex');
+            this.namedPipeName = 'NodeAdapter.' + randomNum;
+            const namedPipe: net.Server = net.createServer();
+            const pipePath: string = path.join('\\\\.\\pipe\\', 'chrome.' + this.namedPipeName);
+            console.log(`listening to ${pipePath}`);
+            namedPipe.listen(pipePath);
+            resolve(namedPipe);
+        });
+    }
+
+    private listenDiscoveryMessage(namedPipeServer: net.Server): Promise<PortDiscoveryMessage> {
+        return new Promise((resolve, reject) => {
+            namedPipeServer.on('connection', (conn: net.Socket) => {
+                console.log(`named pipe connected ${JSON.stringify(conn.address())}`);
+                conn.on('data', (data: Buffer) => {
+                    console.log(`onData from named pipe ${data.length}`);
+                    if (this.discoverState === DiscoverState.INIT) {
+                        onRuntimeHello(data, conn);
+                        this.discoverState = DiscoverState.HELLO;
+                    } else if (this.discoverState === DiscoverState.HELLO) {
+                        const msg = onDiscoverMessage(data);
+                        if (msg) {
+                            resolve(msg);
+                        }
+                    }
+                });
+                conn.on('error', err => reject(err));
+            });
+            namedPipeServer.on('error', err => reject(err));
+        });
+    }
+
+    private createManifest(): Promise<string> {
+        return new Promise((resolve, reject) => {
+            if (this.savedConfig.manifestUrl) {
+                console.log(`Retrieving ${this.savedConfig.manifestUrl}`);
+                http.get(this.savedConfig.manifestUrl, res => {
+                    if (res.statusCode !== 200) {
+                        reject(new Error(`Error getting ${this.savedConfig.manifestUrl} status ${res.statusCode}`));
+                    } else {
+                        res.setEncoding('utf8');
+                        let rawData = '';
+                        res.on('data', (chunk) => { rawData += chunk; });
+                        res.on('end', () => {
+                            try {
+                                const parsed = JSON.parse(rawData);
+                                // Installer needs assetsUrl if set
+                                Object.assign(this.savedConfig, {assetsUrl: parsed.assetsUrl});
+                                if (parsed.runtime) {
+                                    this.savedConfig.runtime = Object.assign({}, {version: parsed.runtime.version});
+                                    if (parsed.runtime.arguments) {
+                                        const index: number = parsed.runtime.arguments.indexOf(Security_Realm_Config_Key);
+                                        if (index > 0) {
+                                            parsed.runtime.arguments.split(' ').forEach((value: string) => {
+                                                if (value.startsWith(Security_Realm_Config_Key)) {
+                                                    const realm = value.substring(Security_Realm_Config_Key.length);
+                                                    this.savedConfig.runtime.securityRealm = realm;
+                                                    console.log(`Parsed security realm ${realm} from ${this.savedConfig.manifestUrl}`);
+                                                }
+                                            });
+                                        }
+                                    }
+                                }
+                                this.manifestLocation = this.savedConfig.manifestUrl;
+                                resolve();
+                            } catch (e) {
+                                reject(new Error(`Error parsing remote manifest ${e.message}`));
+                            }
+                        });
+                        res.on('error', e => {
+                            reject(new Error(`Error getting ${this.savedConfig.manifestUrl} error ${e.message}`));
+                        });
+                    }
+                });
+            } else {
+                const manifestFileName = 'NodeAdapter-' + this.savedConfig.uuid.replace(/ /g, '-') + '.json';
+                this.manifestLocation = path.join(Installer_Work_Dir, manifestFileName);
+                console.log(`Creating manifest ${this.manifestLocation}`);
+                const wr = fs.createWriteStream(this.manifestLocation);
+                const manifest = generateManifest(this.savedConfig);
+                wr.on('error', (err: Error) => reject(err));
+                wr.on('finish', () => {
+                    console.log(`created ${this.manifestLocation}`);
+                    resolve();
+                });
+                console.log(`creating ${this.manifestLocation}`);
+                wr.write(JSON.stringify(manifest), () => {
+                    wr.end();
+                });
+            }
+        });
+    }
+
+    private launchInstaller(): void {
+        const installer: string = path.join(Installer_Work_Dir, OpenFin_Installer);
+        const runtimeArgs = `--runtime-arguments=--runtime-information-channel-v6=${this.namedPipeName}`;
+        const installerArgs: Array<string> = [];
+        if (this.savedConfig.installerUI !== true) {
+            installerArgs.push('--no-installer-ui');
+        }
+        installerArgs.push(`--config=${this.manifestLocation}`);
+        installerArgs.push(`${runtimeArgs}`);
+        if (this.savedConfig.assetsUrl) {
+            installerArgs.push(`--assetsUrl=${this.savedConfig.assetsUrl}`);
+        }
+        console.log(`launching ${installer} ${installerArgs}`);
+        const exe = spawn(installer, installerArgs);
+        exe.stdout.on('data', (data: string) => {
+            console.log(`stdout: ${data}`);
+        });
+        exe.stderr.on('data', (data: string) => {
+            console.log(`stderr: ${data}`);
+        });
+        exe.on('error', (err: Error) => console.error(err));
+    }
 }

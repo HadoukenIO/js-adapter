@@ -12,7 +12,7 @@ import {
     RuntimeError
 } from './transport-errors';
 
-import {discoverPort} from './port-discovery';
+import {PortDiscovery} from './port-discovery';
 
 export interface MessageHandler {
     (data: Function): boolean;
@@ -37,12 +37,13 @@ class Transport extends EventEmitter {
     }
 
     public connect(config: ConnectConfig): Promise<string> {
-        if (config.runtime) {
-            return discoverPort(config).then( (port: number) => {
+        if (config.address) {
+            return this.connectByPort(config);
+        } else {
+            const portDiscovery = new PortDiscovery(config);
+            return portDiscovery.retrievePort().then( (port: number) => {
                 return this.connectByPort(Object.assign({}, config, {address: `ws://localhost:${port}`}));
             });
-        } else {
-            return this.connectByPort(config);
         }
     }
 
@@ -208,6 +209,7 @@ export interface ConnectConfig {
     lrsUrl?: string;
     assetsUrl?: string;
     devToolsPort?: number;
+    installerUI?: boolean;
     runtime?: {
         version: string;
         fallbackVersion?: string;
