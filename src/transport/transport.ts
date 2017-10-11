@@ -16,7 +16,8 @@ export interface MessageHandler {
 }
 
 class Transport extends EventEmitter {
-    protected messageCounter = 0;
+    //TODO: find a better way for the adapters to live side by side... perhaps this could be shared.
+    protected messageCounter = 1000;
     protected wireListeners: { resolve: Function, reject: Function }[] = [];
     protected uncorrelatedListener: Function;
     protected messageHandlers: MessageHandler[] = [];
@@ -39,30 +40,38 @@ class Transport extends EventEmitter {
 
         this.me = { uuid, name };
 
-        return this.wire.connect(address)
-            .then(() => this.sendAction('request-external-authorization', {
-                uuid,
-                type: 'file-token' // Other type for browser? Ask @xavier
-                //authorizationToken: null
-            }, true))
-            .then(({ action, payload }) => {
-                if (action !== 'external-authorization-response') {
-                    return Promise.reject(new UnexpectedActionError(action));
-                } else {
-                    token = payload.token;
-                    return writeToken(payload.file, payload.token);
-                }
-            })
-            .then(() => this.sendAction('request-authorization', reqAuthPaylaod, true))
-            .then(({ action, payload }) => {
-                if (action !== 'authorization-response') {
-                    return Promise.reject(new UnexpectedActionError(action));
-                } else if (payload.success !== true) {
-                    return Promise.reject(new RuntimeError(payload));
-                } else {
-                    return Promise.resolve(token);
-                }
+        //TODO: Figure this out better;
+        if (this.wire.constructor.name === 'WebSocketTransport') {
+            return this.wire.connect(address)
+                .then(() => this.sendAction('request-external-authorization', {
+                    uuid,
+                    type: 'file-token' // Other type for browser? Ask @xavier
+                    //authorizationToken: null
+                }, true))
+                .then(({ action, payload }) => {
+                    if (action !== 'external-authorization-response') {
+                        return Promise.reject(new UnexpectedActionError(action));
+                    } else {
+                        token = payload.token;
+                        return writeToken(payload.file, payload.token);
+                    }
+                })
+                .then(() => this.sendAction('request-authorization', reqAuthPaylaod, true))
+                .then(({ action, payload }) => {
+                    if (action !== 'authorization-response') {
+                        return Promise.reject(new UnexpectedActionError(action));
+                    } else if (payload.success !== true) {
+                        return Promise.reject(new RuntimeError(payload));
+                    } else {
+                        return Promise.resolve(token);
+                    }
+                });
+        } else {
+            return this.wire.connect('').then(() => {
+                return Promise.resolve(token);
             });
+        }
+        
     }
 
     /* `READY_STATE` is an instance var set by `constructor` to reference the `WebTransportSocket.READY_STATE` enum.
