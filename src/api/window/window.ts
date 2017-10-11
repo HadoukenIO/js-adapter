@@ -476,6 +476,14 @@ export class _Window extends Base {
     }
 
     /**
+     * Navigates the window back one page.
+     * @return {Promise.<void>}
+     * @tutorial Window.navigateBack
+     */
+    public navigateBack(): Promise<void> {
+        return this.wire.sendAction('navigate-window-back', Object.assign({}, this.identity)).then(() => undefined);
+    }
+
      * Stops any current navigation the window is performing.
      * @return {Promise.<void>}
      * @tutorial Window.stopNavigation
@@ -483,7 +491,6 @@ export class _Window extends Base {
      public stopNavigation(): Promise<void> {
          return this.wire.sendAction('stop-window-navigation', Object.assign({}, this.identity)).then(() => undefined);
      }
-
 }
 
 // tslint:disable-next-line
