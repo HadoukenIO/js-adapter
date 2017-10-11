@@ -63,6 +63,13 @@ module.exports = function(grunt) {
             launch: {
                 open: true
             }
+        },
+        copy: {
+            resources: {
+                files: [
+                    { src: 'resources/**', dest: 'out/' }
+                ]
+            }
         }
     });
 
@@ -107,9 +114,10 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-tslint');
     grunt.loadNpmTasks('grunt-mocha-test');
     grunt.loadNpmTasks('grunt-openfin');
+    grunt.loadNpmTasks('grunt-contrib-copy');
 
     grunt.registerTask('lint', [ 'tslint' ]);
-    grunt.registerTask('build', [ 'ts' ]);
+    grunt.registerTask('build', [ 'ts', 'copy:resources' ]);
     grunt.registerTask('default', [ 'lint', 'build' ]);
     grunt.registerTask('test', [ 'check-version', 'default', 'start-server', 'kill-processes', 'openfin', 'mochaTest', 'kill-processes']);
     grunt.registerTask('repl', [ 'check-version', 'default', 'start-server', 'openfin', 'start-repl' ]);
