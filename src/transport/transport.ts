@@ -206,6 +206,7 @@ export interface ConnectConfig {
     licenseKey?: string;
     client?: any;
     manifestUrl?: string;
+    startupApp?: any;
     lrsUrl?: string;
     assetsUrl?: string;
     devToolsPort?: number;

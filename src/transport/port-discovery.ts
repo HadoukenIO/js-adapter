@@ -95,6 +95,7 @@ function copyInstaller(config: ConnectConfig): Promise<string> {
 function generateManifest(config: ConnectConfig): any {
     const manifest = Object.assign({},
         {devtools_port: config.devToolsPort},
+                {startup_app: config.startupApp},
                 {lrsUrl: config.lrsUrl},
                 {assetsUrl: config.assetsUrl},
                 {licenseKey: config.licenseKey},
