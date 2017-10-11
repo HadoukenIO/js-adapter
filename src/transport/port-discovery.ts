@@ -6,7 +6,9 @@ import * as path from 'path';
 import {ConnectConfig} from './transport';
 const { spawn } = require('child_process');
 const OpenFin_Installer: string = 'OpenFinInstaller.exe';
+const Installer_Work_Dir = path.join(process.env.TEMP, 'openfinode');
 let namedPipeName: string;
+let manifestFileName: string;
 
 // header for messages from Runtime
 interface ChromiumMessageHeader {
@@ -86,8 +88,9 @@ function matchRuntimeInstance(config: ConnectConfig, message: PortDiscoveryMessa
 
 function copyInstaller(config: ConnectConfig): Promise<string> {
     return new Promise((resolve, reject) => {
+        fs.mkdirSync(Installer_Work_Dir);
         const rd = fs.createReadStream(path.join(__dirname, '..', '..', 'resources', 'win', OpenFin_Installer));
-        const outf: string = path.join(process.env.TEMP, OpenFin_Installer);
+        const outf: string = path.join(Installer_Work_Dir, OpenFin_Installer);
         const wr = fs.createWriteStream(outf);
         wr.on('error', (err: Error) => reject(err));
         wr.on('finish', () => {
@@ -101,7 +104,9 @@ function copyInstaller(config: ConnectConfig): Promise<string> {
 
 function createManifest(config: ConnectConfig): Promise<string> {
     return new Promise((resolve, reject) => {
-        const outf: string = path.join(process.env.TEMP, 'OpenFinNodeAdapterManifest.json');
+        manifestFileName = 'NodeAdapter-' + config.uuid.replace(/ /g, '-') + '.json';
+        const outf: string = path.join(Installer_Work_Dir, manifestFileName);
+        console.log(`Creating manifest ${outf}`);
         const wr = fs.createWriteStream(outf);
         const manifest = generateManifest(config);
         wr.on('error', (err: Error) => reject(err));
@@ -182,8 +187,8 @@ function listenDiscoveryMessage(namedPipeServer: net.Server): Promise<PortDiscov
 }
 
 function launchInstaller(config: ConnectConfig) {
-    const installer: string = path.join(process.env.TEMP, OpenFin_Installer);
-    const manifest: string = path.join(process.env.TEMP, 'OpenFinNodeAdapterManifest.json');
+    const installer: string = path.join(Installer_Work_Dir, OpenFin_Installer);
+    const manifest: string = path.join(Installer_Work_Dir, manifestFileName);
     const runtimeArgs = `--runtime-arguments=--v=1 --runtime-information-channel-v6=${namedPipeName}`;
     console.log(`launching ${installer} --config=${manifest} ${runtimeArgs}`);
     const exe = spawn(installer, [`--config=${manifest}`, runtimeArgs]);
