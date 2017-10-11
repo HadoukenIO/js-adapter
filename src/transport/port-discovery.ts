@@ -1,6 +1,7 @@
-
+// tslint:disable:no-console
 import * as crypto from'crypto';
 import * as fs from 'fs';
+import * as http from 'http';
 import * as net from 'net';
 import * as path from 'path';
 import {ConnectConfig} from './transport';
@@ -8,7 +9,9 @@ const { spawn } = require('child_process');
 const OpenFin_Installer: string = 'OpenFinInstaller.exe';
 const Installer_Work_Dir = path.join(process.env.TEMP, 'openfinode');
 let namedPipeName: string;
-let manifestFileName: string;
+let manifestLocation: string;
+let savedConfig: ConnectConfig;
+const Security_Realm_Config_Key: string = '--security-realm=';
 
 // header for messages from Runtime
 interface ChromiumMessageHeader {
@@ -58,14 +61,15 @@ interface PortDiscoveryMessageEnvolope {
 let discoverState: DiscoverState;
 
 export function discoverPort(config: ConnectConfig): Promise<number> {
+    savedConfig = Object.assign({}, config);
     return new Promise((resolve, reject) => {
-            copyInstaller(config).then(() => createManifest(config))
-            .then(() => createDiscoveryNamedPipe(config))
+            copyInstaller(savedConfig).then(() => createManifest(savedConfig))
+            .then(() => createDiscoveryNamedPipe(savedConfig))
             .then((namedPipeServer) => {
                 const mPromise: Promise<PortDiscoveryMessage> = listenDiscoveryMessage(namedPipeServer);
-                launchInstaller(config);
+                launchInstaller();
                 mPromise.then((msg: PortDiscoveryMessage) => {
-                    if (matchRuntimeInstance(config, msg)) {
+                    if (matchRuntimeInstance(savedConfig, msg)) {
                         console.log(`Port discovery returns ${msg.port}`);
                         resolve(msg.port);
                     }
@@ -88,7 +92,14 @@ function matchRuntimeInstance(config: ConnectConfig, message: PortDiscoveryMessa
 
 function copyInstaller(config: ConnectConfig): Promise<string> {
     return new Promise((resolve, reject) => {
-        fs.mkdirSync(Installer_Work_Dir);
+        try {
+            fs.mkdirSync(Installer_Work_Dir);
+        } catch (e) {
+            if (!e.message.includes('file already exists')) {
+                reject(`Error creating work directory ${e.message}`);
+                return;
+            }
+        }
         const rd = fs.createReadStream(path.join(__dirname, '..', '..', 'resources', 'win', OpenFin_Installer));
         const outf: string = path.join(Installer_Work_Dir, OpenFin_Installer);
         const wr = fs.createWriteStream(outf);
@@ -104,20 +115,62 @@ function copyInstaller(config: ConnectConfig): Promise<string> {
 
 function createManifest(config: ConnectConfig): Promise<string> {
     return new Promise((resolve, reject) => {
-        manifestFileName = 'NodeAdapter-' + config.uuid.replace(/ /g, '-') + '.json';
-        const outf: string = path.join(Installer_Work_Dir, manifestFileName);
-        console.log(`Creating manifest ${outf}`);
-        const wr = fs.createWriteStream(outf);
-        const manifest = generateManifest(config);
-        wr.on('error', (err: Error) => reject(err));
-        wr.on('finish', () => {
-            console.log(`created ${outf}`);
-            resolve();
-        });
-        console.log(`creating ${outf}`);
-        wr.write(JSON.stringify(manifest), () => {
-            wr.end();
-        });
+        if (config.manifestUrl) {
+            console.log(`Retrieving ${config.manifestUrl}`);
+            http.get(config.manifestUrl, res => {
+                if (res.statusCode !== 200) {
+                    reject(new Error(`Error getting ${config.manifestUrl} status ${res.statusCode}`));
+                } else {
+                    res.setEncoding('utf8');
+                    let rawData = '';
+                    res.on('data', (chunk) => { rawData += chunk; });
+                    res.on('end', () => {
+                        try {
+                            const parsed = JSON.parse(rawData);
+                            // Installer needs assetsUrl if set
+                            Object.assign(config, {assetsUrl: parsed.assetsUrl});
+                            if (parsed.runtime) {
+                                config.runtime = Object.assign({}, {version: parsed.runtime.version});
+                                if (parsed.runtime.arguments) {
+                                    const index: number = parsed.runtime.arguments.indexOf(Security_Realm_Config_Key);
+                                    if (index > 0) {
+                                        parsed.runtime.arguments.split(' ').forEach((value: string) => {
+                                            if (value.startsWith(Security_Realm_Config_Key)) {
+                                                const realm = value.substring(Security_Realm_Config_Key.length);
+                                                config.runtime.securityRealm = realm;
+                                                console.log(`Parsed security realm ${realm} from ${config.manifestUrl}`);
+                                            }
+                                        });
+                                    }
+                                }
+                            }
+                            manifestLocation = config.manifestUrl;
+                            resolve();
+                        } catch (e) {
+                            reject(new Error(`Error parsing remote manifest ${e.message}`));
+                        }
+                    });
+                    res.on('error', e => {
+                        reject(new Error(`Error getting ${config.manifestUrl} error ${e.message}`));
+                    });
+                }
+            });
+        } else {
+            const manifestFileName = 'NodeAdapter-' + config.uuid.replace(/ /g, '-') + '.json';
+            manifestLocation = path.join(Installer_Work_Dir, manifestFileName);
+            console.log(`Creating manifest ${manifestLocation}`);
+            const wr = fs.createWriteStream(manifestLocation);
+            const manifest = generateManifest(config);
+            wr.on('error', (err: Error) => reject(err));
+            wr.on('finish', () => {
+                console.log(`created ${manifestLocation}`);
+                resolve();
+            });
+            console.log(`creating ${manifestLocation}`);
+            wr.write(JSON.stringify(manifest), () => {
+                wr.end();
+            });
+        }
     });
 }
 
@@ -133,7 +186,7 @@ function generateManifest(config: ConnectConfig): any {
         manifest.runtime = Object.assign({}, {version: config.runtime.version,
                                             fallbackVersion: config.runtime.fallbackVersion});
         if (config.runtime.securityRealm) {
-            runtimeArgs = runtimeArgs.concat(` --security-realm=${config.runtime.securityRealm} `);
+            runtimeArgs = runtimeArgs.concat(` ${Security_Realm_Config_Key}${config.runtime.securityRealm} `);
         }
         if (config.runtime.verboseLogging === true) {
             runtimeArgs = runtimeArgs.concat(' --v=1 ');
@@ -186,12 +239,11 @@ function listenDiscoveryMessage(namedPipeServer: net.Server): Promise<PortDiscov
     });
 }
 
-function launchInstaller(config: ConnectConfig) {
+function launchInstaller() {
     const installer: string = path.join(Installer_Work_Dir, OpenFin_Installer);
-    const manifest: string = path.join(Installer_Work_Dir, manifestFileName);
     const runtimeArgs = `--runtime-arguments=--v=1 --runtime-information-channel-v6=${namedPipeName}`;
-    console.log(`launching ${installer} --config=${manifest} ${runtimeArgs}`);
-    const exe = spawn(installer, [`--config=${manifest}`, runtimeArgs]);
+    console.log(`launching ${installer} --config=${manifestLocation} ${runtimeArgs}`);
+    const exe = spawn(installer, [`--config=${manifestLocation}`, runtimeArgs]);
     exe.stdout.on('data', (data: string) => {
         console.log(`stdout: ${data}`);
     });
@@ -256,12 +308,9 @@ function writeHelloMessage(header: ChromiumMessageHeader, conn: net.Socket): voi
 }
 
 function readUint32(data: Buffer, offset: number): number {
-    const value: number = data.readInt32LE(offset);
-    console.log(`Reading ${value} at ${offset}`);
-    return value;
+    return data.readInt32LE(offset);
 }
 
 function writeUint32(data: Buffer, value: number, offset: number): void {
-    console.log(`Writing ${value} at ${offset}`);
     data.writeInt32LE(value, offset);
 }

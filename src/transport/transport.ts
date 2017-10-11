@@ -204,6 +204,7 @@ export interface ConnectConfig {
     runtimeClient?: boolean;
     licenseKey?: string;
     client?: any;
+    manifestUrl?: string;
     lrsUrl?: string;
     assetsUrl?: string;
     devToolsPort?: number;
