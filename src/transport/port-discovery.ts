@@ -7,6 +7,7 @@ import * as path from 'path';
 import {ConnectConfig} from './transport';
 import { spawn } from 'child_process';
 import * as os from 'os';
+import Timer = NodeJS.Timer;
 
 const OpenFin_Installer: string = 'OpenFinInstaller.exe';
 const Installer_Work_Dir = path.join(process.env.TEMP, 'openfinode');
@@ -189,6 +190,9 @@ export class PortDiscovery {
     private namedPipeName: string;
     private manifestLocation: string;
     private discoverState: DiscoverState;
+    private namedPipeServer: net.Server;
+    private pipeConnection: net.Socket; // created by Runtime. only one allowed
+    private timeoutTimer: Timer;
 
     constructor(config: ConnectConfig) {
         if (os.platform() === 'win32') {
@@ -200,54 +204,70 @@ export class PortDiscovery {
 
     public retrievePort(): Promise<number> {
         return new Promise((resolve, reject) => {
+            if (this.savedConfig.timeout) {
+                this.timeoutTimer = setTimeout(() => {
+                    reject(new Error('Port discovery timed out'));
+                    this.cleanup();
+                }, this.savedConfig.timeout * 1000);
+            }
             copyInstaller(this.savedConfig).then(() => this.createManifest())
                 .then(() => this.createDiscoveryNamedPipe())
-                .then((namedPipeServer) => {
-                    const mPromise: Promise<PortDiscoveryMessage> = this.listenDiscoveryMessage(namedPipeServer);
+                .then(() => {
+                    const mPromise: Promise<PortDiscoveryMessage> = this.listenDiscoveryMessage();
                     this.launchInstaller();
                     mPromise.then((msg: PortDiscoveryMessage) => {
                         if (matchRuntimeInstance(this.savedConfig, msg)) {
                             console.log(`Port discovery returns ${msg.port}`);
                             resolve(msg.port);
+                            this.cleanup();
                         }
                     });
                 })
-                .catch(reject);
+                .catch(reason => {
+                    reject(reason);
+                    this.cleanup();
+                });
         });
     }
 
-    private createDiscoveryNamedPipe(): Promise<net.Server> {
+    private createDiscoveryNamedPipe(): Promise<any> {
         return new Promise((resolve, reject) => {
             this.discoverState = DiscoverState.INIT;
             const randomNum: string = crypto.randomBytes(16).toString('hex');
             this.namedPipeName = 'NodeAdapter.' + randomNum;
-            const namedPipe: net.Server = net.createServer();
+            this.namedPipeServer = net.createServer();
             const pipePath: string = path.join('\\\\.\\pipe\\', 'chrome.' + this.namedPipeName);
             console.log(`listening to ${pipePath}`);
-            namedPipe.listen(pipePath);
-            resolve(namedPipe);
+            this.namedPipeServer.listen(pipePath);
+            resolve();
         });
     }
 
-    private listenDiscoveryMessage(namedPipeServer: net.Server): Promise<PortDiscoveryMessage> {
+    private listenDiscoveryMessage(): Promise<PortDiscoveryMessage> {
         return new Promise((resolve, reject) => {
-            namedPipeServer.on('connection', (conn: net.Socket) => {
+            this.namedPipeServer.on('connection', (conn: net.Socket) => {
                 console.log(`named pipe connected ${JSON.stringify(conn.address())}`);
-                conn.on('data', (data: Buffer) => {
-                    console.log(`onData from named pipe ${data.length}`);
-                    if (this.discoverState === DiscoverState.INIT) {
-                        onRuntimeHello(data, conn);
-                        this.discoverState = DiscoverState.HELLO;
-                    } else if (this.discoverState === DiscoverState.HELLO) {
-                        const msg = onDiscoverMessage(data);
-                        if (msg) {
-                            resolve(msg);
+                if (!this.pipeConnection) {
+                    this.pipeConnection = conn;
+                    conn.on('data', (data: Buffer) => {
+                        console.log(`onData from named pipe ${data.length}`);
+                        if (this.discoverState === DiscoverState.INIT) {
+                            onRuntimeHello(data, conn);
+                            this.discoverState = DiscoverState.HELLO;
+                        } else if (this.discoverState === DiscoverState.HELLO) {
+                            const msg = onDiscoverMessage(data);
+                            if (msg) {
+                                resolve(msg);
+                            }
                         }
-                    }
-                });
-                conn.on('error', err => reject(err));
+                    });
+                    conn.on('error', err => reject(err));
+                } else {
+                    console.error('Duplicate pipe connection');
+                    conn.end();
+                }
             });
-            namedPipeServer.on('error', err => reject(err));
+            this.namedPipeServer.on('error', err => reject(err));
         });
     }
 
@@ -333,5 +353,18 @@ export class PortDiscovery {
             console.log(`stderr: ${data}`);
         });
         exe.on('error', (err: Error) => console.error(err));
+    }
+
+    private cleanup(): void {
+        if (this.namedPipeServer) {
+            console.log('shutting down named pipe');
+            if (this.pipeConnection) {
+                this.pipeConnection.end();
+            }
+            this.namedPipeServer.close();
+        }
+        if (this.timeoutTimer) {
+            clearTimeout(this.timeoutTimer);
+        }
     }
 }

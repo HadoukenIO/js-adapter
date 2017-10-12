@@ -227,4 +227,5 @@ export interface ConnectConfig {
       }
     ];
     customItems?: [any];
+    timeout?: number; // in seconds
 }
