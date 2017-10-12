@@ -2,6 +2,7 @@ import { EventEmitter } from 'events';
 
 export interface Wire extends EventEmitter {
     connect(address: string): Promise<any>;
+    connectSync(): any;
     send(data: any): Promise<any>;
     shutdown(): Promise<void>;
 }

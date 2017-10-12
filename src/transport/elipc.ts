@@ -1,5 +1,6 @@
 import { EventEmitter } from 'events';
 import { Wire, READY_STATE } from './wire';
+import { NotImplementedError } from './transport-errors';
 
 declare var fin: any;
 //TODO: ipc2 should not be a thing.
@@ -20,8 +21,7 @@ export default class ElIPCTransport extends EventEmitter implements Wire {
         this.onmessage = onmessage;
     }
 
-    public connect = (address: string): Promise<any> =>  {
-        debugger;
+    public connectSync = (): any => {
         ipc.on(topic, (sender: any, data: any) => {
             try {
                 this.onmessage(JSON.parse(data));
@@ -31,8 +31,10 @@ export default class ElIPCTransport extends EventEmitter implements Wire {
                 throw err;
             }
         });
+    }
 
-        return Promise.resolve();
+    public connect = (address: string): Promise<any> =>  {
+        throw new NotImplementedError('Not Implemented');
     }
 
     public send(data: any, flags?: any): Promise<any> {

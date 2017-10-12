@@ -11,13 +11,14 @@ import {
     RuntimeError
 } from './transport-errors';
 
+declare var fin: any;
+
 export interface MessageHandler {
     (data: Function): boolean;
 }
 
 class Transport extends EventEmitter {
-    //TODO: find a better way for the adapters to live side by side... perhaps this could be shared.
-    protected messageCounter = 1000;
+    protected messageCounter = 0;
     protected wireListeners: { resolve: Function, reject: Function }[] = [];
     protected uncorrelatedListener: Function;
     protected messageHandlers: MessageHandler[] = [];
@@ -33,6 +34,10 @@ class Transport extends EventEmitter {
         });
     }
 
+    public connectSync = (): any => {
+        this.wire.connectSync();
+    }
+    
     public connect(config: ConnectConfig): Promise<string> {
         const {address, uuid, name} = config;
         const reqAuthPaylaod = Object.assign({}, config, { type: 'file-token' });
@@ -40,38 +45,30 @@ class Transport extends EventEmitter {
 
         this.me = { uuid, name };
 
-        //TODO: Figure this out better;
-        if (this.wire.constructor.name === 'WebSocketTransport') {
-            return this.wire.connect(address)
-                .then(() => this.sendAction('request-external-authorization', {
-                    uuid,
-                    type: 'file-token' // Other type for browser? Ask @xavier
-                    //authorizationToken: null
-                }, true))
-                .then(({ action, payload }) => {
-                    if (action !== 'external-authorization-response') {
-                        return Promise.reject(new UnexpectedActionError(action));
-                    } else {
-                        token = payload.token;
-                        return writeToken(payload.file, payload.token);
-                    }
-                })
-                .then(() => this.sendAction('request-authorization', reqAuthPaylaod, true))
-                .then(({ action, payload }) => {
-                    if (action !== 'authorization-response') {
-                        return Promise.reject(new UnexpectedActionError(action));
-                    } else if (payload.success !== true) {
-                        return Promise.reject(new RuntimeError(payload));
-                    } else {
-                        return Promise.resolve(token);
-                    }
-                });
-        } else {
-            return this.wire.connect('').then(() => {
-                return Promise.resolve(token);
+        return this.wire.connect(address)
+            .then(() => this.sendAction('request-external-authorization', {
+                uuid,
+                type: 'file-token' // Other type for browser? Ask @xavier
+                //authorizationToken: null
+            }, true))
+            .then(({ action, payload }) => {
+                if (action !== 'external-authorization-response') {
+                    return Promise.reject(new UnexpectedActionError(action));
+                } else {
+                    token = payload.token;
+                    return writeToken(payload.file, payload.token);
+                }
+            })
+            .then(() => this.sendAction('request-authorization', reqAuthPaylaod, true))
+            .then(({ action, payload }) => {
+                if (action !== 'authorization-response') {
+                    return Promise.reject(new UnexpectedActionError(action));
+                } else if (payload.success !== true) {
+                    return Promise.reject(new RuntimeError(payload));
+                } else {
+                    return Promise.resolve(token);
+                }
             });
-        }
-        
     }
 
     /* `READY_STATE` is an instance var set by `constructor` to reference the `WebTransportSocket.READY_STATE` enum.
@@ -92,7 +89,7 @@ class Transport extends EventEmitter {
     public sendAction(action: string, payload: any = {}, uncorrelated: boolean = false): Promise<Message<any>> {
         return new Promise((resolve, reject) => {
             // tslint:disable-next-line
-            const id = this.messageCounter++;
+            const id = this.getNextId();
             const msg = {
                 action,
                 payload,
@@ -108,7 +105,7 @@ class Transport extends EventEmitter {
     public ferryAction(data: any): Promise<Message<any>> {
         return new Promise((resolve, reject) => {
             // tslint:disable-next-line
-            const id = this.messageCounter++;
+            const id = this.getNextId();
             data.messageId = id;
 
             const resolver = (data: any) => { resolve(data.payload); };
@@ -166,6 +163,14 @@ class Transport extends EventEmitter {
             delete this.wireListeners[id];
         }
         return true;
+    }
+
+    protected getNextId = (): any => {
+        if (!fin) {
+            return this.messageCounter++;
+        } else {
+            return fin.desktop.getUuid();
+        }
     }
 }
 

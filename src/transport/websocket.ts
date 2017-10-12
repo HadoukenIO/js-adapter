@@ -1,7 +1,7 @@
 import { EventEmitter } from 'events';
 import * as WebSocket from 'ws';
 import { Wire, READY_STATE } from './wire';
-import { DisconnectedError } from './transport-errors';
+import { DisconnectedError, NotImplementedError } from './transport-errors';
 
 export default class WebSocketTransport extends EventEmitter implements Wire {
     protected wire: WebSocket;
@@ -24,6 +24,10 @@ export default class WebSocketTransport extends EventEmitter implements Wire {
                 this.emit('disconnected');
             });
         });
+    }
+
+    public connectSync = (): any => {
+        throw new NotImplementedError('Not Implemented');
     }
 
     public send(data: any, flags?: any): Promise<any> {
