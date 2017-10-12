@@ -483,7 +483,7 @@ export class _Window extends Base {
     public navigateBack(): Promise<void> {
         return this.wire.sendAction('navigate-window-back', Object.assign({}, this.identity)).then(() => undefined);
     }
-
+    /**
      * Stops any current navigation the window is performing.
      * @return {Promise.<void>}
      * @tutorial Window.stopNavigation
