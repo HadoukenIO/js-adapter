@@ -1,6 +1,6 @@
 {
   "name": "node-adapter",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "license": "Apache-2.0",
   "main": "./out/src/main.js",
   "types": "./out/src/main.d.ts",
@@ -13,6 +13,7 @@
   },
   "devDependencies": {
     "grunt": "~1.0.1",
+    "grunt-contrib-copy": "^1.0.0",
     "grunt-mocha-test": "~0.13.2",
     "grunt-openfin": "latest",
     "grunt-ts": "^5.5.1",
