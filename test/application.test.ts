@@ -108,7 +108,7 @@ describe('Application.', () => {
             });
         });
     });
-    
+
     describe('setShortcuts()', () => {
 
         it('Fulfilled', () => testApp.setShortcuts({

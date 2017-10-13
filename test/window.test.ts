@@ -343,7 +343,7 @@ describe('Window.', () => {
 
         it('Fulfilled', () => testWindow.navigateBack().then(() => assert(true)));
     });
-    
+
     describe('stopNavigation()', () => {
 
         it('Fulfilled', () => testWindow.stopNavigation().then(() => assert(true)));
