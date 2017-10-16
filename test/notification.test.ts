@@ -7,7 +7,7 @@ describe('Notification', () => {
     let notification: any;
 
     before(() => {
-        return conn().then(_fin => {
+        return conn().then((_fin: Fin) => {
             fin = _fin;
             notification = fin.Notification.create({});
         });
