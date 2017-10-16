@@ -5,6 +5,7 @@
   "main": "./out/src/main.js",
   "types": "./out/src/main.d.ts",
   "scripts": {
+    "test:lint": "grunt",
     "test": "grunt test",
     "repl": "grunt repl",
     "build": "grunt",
