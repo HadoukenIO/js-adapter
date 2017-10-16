@@ -4,4 +4,4 @@ node_js:
 install: npm i
 scripts:
     - npm run test:build
-    - npm test -- --ver=alpha --invert
+    - npm test -- --ver="alpha" --invert
