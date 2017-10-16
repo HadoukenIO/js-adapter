@@ -17,6 +17,7 @@ module.exports = function(grunt) {
     const uuid = 'testapp';
     const args = '--enable-multi-runtime';
 
+    console.log(version)
     grunt.initConfig({
         ts: {
             default: {

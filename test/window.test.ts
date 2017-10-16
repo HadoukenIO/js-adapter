@@ -41,13 +41,8 @@ describe('Window.', () => {
 
         it('Fulfilled', () => testWindow.setBounds(bounds)
            .then(() => {
-               return testWindow.getBounds().then(data => assert(typeof(data.height) === 'number'));
+               return testWindow.getBounds().then(data => assert.deepEqual(bounds, data));
            }));
-    });
-
-    describe('reload()', () => {
-
-        it('Fulfilled', () => testWindow.reload().then(() => assert(true)));
     });
 
     describe('focus()', () => {
@@ -67,7 +62,7 @@ describe('Window.', () => {
 
     describe('hide()', () => {
 
-        it('Fulfilled', () => testWindow.hide().then(() => assert(true)));
+        it('Fulfilled', () => testWindow.hide().then(() => testWindow.isShowing().then(bool => assert(bool === false))));
     });
 
     describe('close()', () => {
@@ -284,19 +279,14 @@ describe('Window.', () => {
 
         it('Fulfilled', () => testWindow.setBounds(bounds)
            .then(() => testWindow.getBounds()
-                 .then(data => {
-                     return assert(data.top === bounds.top, `Expected ${data.top} to be ${bounds.top}`) &&
-                         assert(data.width === bounds.width, `Expected ${data.width} to be ${bounds.width}`) &&
-                         assert(data.height === bounds.height, `Expected ${data.height} to be ${bounds.height}`) &&
-                         assert(data.left === bounds.left, `Expected ${data.left} to be ${bounds.left}`) &&
-                         assert(data.bottom === bounds.bottom, `Expected ${data.bottom} to be ${bounds.bottom}`) &&
-                         assert(data.right === bounds.right, `Expected ${data.right} to be ${bounds.right}`);
-                 })));
+                 .then(data => assert.deepEqual(bounds, data))));
     });
 
     describe('show()', () => {
 
-        it('Fulfilled', () => testWindow.show().then(() => assert(true)));
+        it('Fulfilled', () => testWindow.show().then(() => {
+            testWindow.isShowing().then(bool => assert(bool));
+        }));
     });
 
     describe('showAt()', () => {
@@ -317,7 +307,9 @@ describe('Window.', () => {
             height: 100
         };
 
-        it('Fulfilled', () => testWindow.updateOptions(updatedOptions).then(() => assert(true)));
+        it('Fulfilled', () => testWindow.updateOptions(updatedOptions).then(() => {
+            testWindow.getOptions().then(opts => assert.deepEqual(updatedOptions, opts));
+        }));
     });
 
     //TODO: feature needs testing.
@@ -348,4 +340,5 @@ describe('Window.', () => {
 
         it('Fulfilled', () => testWindow.stopNavigation().then(() => assert(true)));
     });
+
 });
