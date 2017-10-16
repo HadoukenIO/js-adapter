@@ -2,6 +2,5 @@ language: node_js
 node_js:
     - 8
 install: npm i
-scripts:
-    - npm run test:build
-    - npm test -- --ver="alpha"
+script:
+    - npm run build
