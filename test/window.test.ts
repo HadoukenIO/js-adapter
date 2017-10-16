@@ -41,7 +41,7 @@ describe('Window.', () => {
 
         it('Fulfilled', () => testWindow.setBounds(bounds)
            .then(() => {
-               return testWindow.getBounds().then(data => assert(typeof(data.height) === 'number'));
+               return testWindow.getBounds().then(data => assert.deepEqual(bounds, data));
            }));
     });
 
@@ -239,10 +239,7 @@ describe('Window.', () => {
                 return testWindow.resizeBy(10, 10, 'top-left')
                     .then(() => testWindow.getBounds()
                           .then(data => {
-                              return assert(data.top === bounds.top, `Expected ${data.top} to be ${bounds.top}`) &&
-                                  assert(data.left === bounds.left, `Expeceted ${data.left} to be ${bounds.left}`) &&
-                                  assert(data.right === bounds.right, `Expected ${data.right} to be ${bounds.right}`) &&
-                                  assert(data.bottom === bounds.bottom, `Expected ${data.bottom} to be ${bounds.bottom}`);
+                              return assert.deepEqual(bounds, data);
                           }));
             });
         });
@@ -257,10 +254,9 @@ describe('Window.', () => {
                 return testWindow.resizeTo(10, 10, 'top-left')
                     .then(() => testWindow.getBounds()
                           .then(data => {
-                              return assert(data.top === bounds.top, `Expected ${data.top} to be ${bounds.top}`) &&
-                                  assert(data.left === bounds.left, `Expeceted ${data.left} to be ${bounds.left}`) &&
-                                  assert(data.right === bounds.left + 10, `Expected ${data.right} to be ${bounds.left + 10}`) &&
-                                  assert(data.bottom === bounds.top + 10, `Expected ${data.top} to be ${data.top + 10}`);
+                              bounds.left += 10;
+                              bounds.top += 10;
+                              return assert.deepEqual(bounds, data);
                           }));
             });
         });
@@ -285,12 +281,7 @@ describe('Window.', () => {
         it('Fulfilled', () => testWindow.setBounds(bounds)
            .then(() => testWindow.getBounds()
                  .then(data => {
-                     return assert(data.top === bounds.top, `Expected ${data.top} to be ${bounds.top}`) &&
-                         assert(data.width === bounds.width, `Expected ${data.width} to be ${bounds.width}`) &&
-                         assert(data.height === bounds.height, `Expected ${data.height} to be ${bounds.height}`) &&
-                         assert(data.left === bounds.left, `Expected ${data.left} to be ${bounds.left}`) &&
-                         assert(data.bottom === bounds.bottom, `Expected ${data.bottom} to be ${bounds.bottom}`) &&
-                         assert(data.right === bounds.right, `Expected ${data.right} to be ${bounds.right}`);
+                     return assert.deepEqual(bounds, data);
                  })));
     });
 
