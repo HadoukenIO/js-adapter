@@ -14,7 +14,7 @@ describe('PortDiscovery.', function() {
     // tslint:disable-next-line
     this.timeout(10000);
     let fin: Fin;
-    before(() => {
+    before(function() {
         if (supported()) {
             return rawConnect({
                 // tslint:disable-next-line
