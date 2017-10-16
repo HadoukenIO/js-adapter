@@ -1,6 +1,5 @@
 language: node_js
 node_js:
     - 8
-install:
-    - npm i
+install: npm i
 scripts: npm run test:build
