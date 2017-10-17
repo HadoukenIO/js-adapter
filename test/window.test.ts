@@ -342,8 +342,19 @@ describe('Window.', () => {
     describe('navigateForward()', () => {
 
         it('Fulfilled', () => testWindow.navigateForward().then(() => assert(true)));
-    })
-    
+    });
+
+    describe('navigate()', () => {
+        const url = 'https://www.google.com';
+
+        it('Fulfilled', () => testWindow.navigate(url).then(() => assert(true)));
+    });
+
+    describe('navigateBack()', () => {
+
+        it('Fulfilled', () => testWindow.navigateBack().then(() => assert(true)));
+    });
+
     describe('stopNavigation()', () => {
 
         it('Fulfilled', () => testWindow.stopNavigation().then(() => assert(true)));

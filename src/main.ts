@@ -8,7 +8,7 @@ import WebSocketTransport from './transport/websocket';
 
 // Connect to an OpenFin Runtime
 export function connect(config: ConnectConfig): Promise<Fin> {
-    const wire = new Transport(WebSocketTransport);
+    const wire: Transport = new Transport(WebSocketTransport);
     return wire.connect(config)
         .then(token => new Fin(wire, token));
 }
