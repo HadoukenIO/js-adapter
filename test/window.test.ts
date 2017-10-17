@@ -344,4 +344,14 @@ describe('Window.', () => {
 
         it('Fulfilled', () => testWindow.navigate(url).then(() => assert(true)));
     });
+
+    describe('navigateBack()', () => {
+
+        it('Fulfilled', () => testWindow.navigateBack().then(() => assert(true)));
+    });
+
+    describe('stopNavigation()', () => {
+
+        it('Fulfilled', () => testWindow.stopNavigation().then(() => assert(true)));
+    });
 });
