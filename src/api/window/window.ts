@@ -62,7 +62,7 @@ export class _Window extends Base {
         });
     }
 
-    protected runtimeEventComparator(listener: RuntimeEvent): boolean {
+    protected runtimeEventComparator = (listener: RuntimeEvent): boolean => {
         return listener.topic === this.topic && listener.uuid === this.identity.uuid &&
             listener.name === this.identity.name;
     }
@@ -277,6 +277,16 @@ export class _Window extends Base {
     }
 
     /**
+     * Reloads the window current page
+     * @return {Promise.<void>}
+     */
+    public reload(ignoreCache: boolean = false ): Promise<void> {
+        return this.wire.sendAction('reload-window', Object.assign({}, this.identity, {
+            ignoreCache
+        })).then(() => undefined);
+    }
+
+    /**
      * Leaves the current window group so that the window can be move independently of those in the group.
      * @return {Promise.<void>}
      */
@@ -468,10 +478,37 @@ export class _Window extends Base {
     /**
      * Navigates the window back one page.
      * @return {Promise.<void>}
-     * @tutorial {Window.navigateForward}
+     * @tutorial Window.navigateBack
+     */
+    public navigateBack(): Promise<void> {
+        return this.wire.sendAction('navigate-window-back', Object.assign({}, this.identity)).then(() => undefined);
+    }
+
+    /**
+     * Navigates the window to a specified URL.
+     * @param {string} url - The URL to navigate the window to.
+     * @return {Promise.<void>}
+     * @tutorial Window.navigate
+     */
+    public navigate(url: string): Promise<void> {
+        return this.wire.sendAction('navigate-window', Object.assign({}, this.identity, { url })).then(() => undefined);
+    }
+
+    /**
+     * Stops any current navigation the window is performing.
+     * @return {Promise.<void>}
+     * @tutorial Window.stopNavigation
+     */
+    public stopNavigation(): Promise<void> {
+        return this.wire.sendAction('stop-window-navigation', Object.assign({}, this.identity)).then(() => undefined);
+    }
+    /**
+     * Navigates the window back one page
+     * @return {Promise.<void>}
+     * @tutorial Window.navigateForward
      */
     public navigateForward(): Promise<void> {
-         return this.wire.sendAction('navigate-window-forward', Object.assign({}, this.identity)).then(() => undefined);
+        return this.wire.sendAction('navigate-window-forward', Object.assign({}, this.identity)).then(() => undefined);
     }
 }
 
