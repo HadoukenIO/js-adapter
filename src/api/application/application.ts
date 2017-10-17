@@ -19,6 +19,12 @@ export class NavigationRejectedReply extends Reply<'window-navigation-rejected',
     public url: string;
 }
 
+export interface ConfigInterface {
+    desktop?: boolean;
+    startMenu?: boolean;
+    systemStartup?: boolean;
+}
+
 export default class ApplicationModule extends Bare {
 
     /**
@@ -209,6 +215,18 @@ export class Application extends Base {
         return this.wire.sendAction('set-tray-icon', Object.assign({}, this.identity, {
             enabledIcon: iconUrl
         })).then(() => undefined);
+    }
+
+    /**
+     * Sets new application's shortcut configuration.
+     * @param { Object } config New application's shortcut configuration.
+     * @return {Promise.<void>}
+     * @tutorial Application.setShortcuts
+     */
+    public setShortcuts(config: ConfigInterface): Promise<void> {
+        return this.wire.sendAction('set-shortcuts',
+                   Object.assign({}, this.identity, config)
+               ).then(() => undefined);
     }
 
     /**
