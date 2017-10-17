@@ -62,7 +62,7 @@ export class _Window extends Base {
         });
     }
 
-    protected runtimeEventComparator(listener: RuntimeEvent): boolean {
+    protected runtimeEventComparator = (listener: RuntimeEvent): boolean => {
         return listener.topic === this.topic && listener.uuid === this.identity.uuid &&
             listener.name === this.identity.name;
     }
@@ -277,6 +277,16 @@ export class _Window extends Base {
     }
 
     /**
+     * Reloads the window current page
+     * @return {Promise.<void>}
+     */
+    public reload(ignoreCache: boolean = false ): Promise<void> {
+        return this.wire.sendAction('reload-window', Object.assign({}, this.identity, {
+            ignoreCache
+        })).then(() => undefined);
+    }
+
+    /**
      * Leaves the current window group so that the window can be move independently of those in the group.
      * @return {Promise.<void>}
      */
@@ -465,6 +475,22 @@ export class _Window extends Base {
         return this.wire.sendAction('set-zoom-level', Object.assign({}, this.identity, { level })).then(() => undefined);
     }
 
+    /**
+     * Navigates the window back one page.
+     * @return {Promise.<void>}
+     * @tutorial Window.navigateBack
+     */
+    public navigateBack(): Promise<void> {
+        return this.wire.sendAction('navigate-window-back', Object.assign({}, this.identity)).then(() => undefined);
+    }
+    /**
+     * Stops any current navigation the window is performing.
+     * @return {Promise.<void>}
+     * @tutorial Window.stopNavigation
+     */
+     public stopNavigation(): Promise<void> {
+         return this.wire.sendAction('stop-window-navigation', Object.assign({}, this.identity)).then(() => undefined);
+     }
 }
 
 // tslint:disable-next-line

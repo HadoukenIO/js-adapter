@@ -118,6 +118,15 @@ describe('Application.', () => {
         }).then(() => assert(true)));
     });
 
+    describe('setShortcuts()', () => {
+
+        it('Fulfilled', () => testApp.setShortcuts({
+            desktop: true,
+            startMenu: false,
+            systemStartup: true
+        }).then(() => assert(true)));
+    });
+
     describe('terminate()', () => {
 
         const appToCloseConfig = {
