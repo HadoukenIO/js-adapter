@@ -466,13 +466,41 @@ export class _Window extends Base {
     }
 
     /**
+<<<<<<< HEAD
+=======
+     * Navigates the window to a specified URL.
+     * @param {string} url - The URL to navigate the window to.
+     * @return {Promise.<void>}
+     * @tutorial Window.navigate
+     */
+    public navigate(url: string): Promise<void> {
+        return this.wire.sendAction('navigate-window', Object.assign({}, this.identity, { url })).then(() => undefined);
+    }
+
+    /**
+     * Navigates the window back one page.
+     * @return {Promise.<void>}
+     * @tutorial Window.navigateBack
+     */
+    public navigateBack(): Promise<void> {
+        return this.wire.sendAction('navigate-window-back', Object.assign({}, this.identity)).then(() => undefined);
+    }
+
+    /**
+>>>>>>> feature/navigate
      * Stops any current navigation the window is performing.
      * @return {Promise.<void>}
      * @tutorial Window.stopNavigation
      */
+<<<<<<< HEAD
      public stopNavigation(): Promise<void> {
          return this.wire.sendAction('stop-window-navigation', Object.assign({}, this.identity)).then(() => undefined);
      }
+=======
+    public stopNavigation(): Promise<void> {
+        return this.wire.sendAction('stop-window-navigation', Object.assign({}, this.identity)).then(() => undefined);
+    }
+>>>>>>> feature/navigate
 
 }
 
