@@ -502,6 +502,7 @@ export class _Window extends Base {
     public stopNavigation(): Promise<void> {
         return this.wire.sendAction('stop-window-navigation', Object.assign({}, this.identity)).then(() => undefined);
     }
+
     /**
      * Navigates the window back one page
      * @return {Promise.<void>}
