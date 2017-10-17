@@ -476,6 +476,15 @@ export class _Window extends Base {
     }
 
     /**
+     * Navigates the window back one page.
+     * @return {Promise.<void>}
+     * @tutorial Window.navigateBack
+     */
+    public navigateBack(): Promise<void> {
+        return this.wire.sendAction('navigate-window-back', Object.assign({}, this.identity)).then(() => undefined);
+    }
+
+    /**
      * Navigates the window to a specified URL.
      * @param {string} url - The URL to navigate the window to.
      * @return {Promise.<void>}
@@ -486,22 +495,23 @@ export class _Window extends Base {
     }
 
     /**
-     * Navigates the window back one page.
-     * @return {Promise.<void>}
-     * @tutorial Window.navigateBack
-     */
-    public navigateBack(): Promise<void> {
-        return this.wire.sendAction('navigate-window-back', Object.assign({}, this.identity)).then(() => undefined);
-    }
-
-    /**
      * Stops any current navigation the window is performing.
      * @return {Promise.<void>}
      * @tutorial Window.stopNavigation
      */
-     public stopNavigation(): Promise<void> {
+    public stopNavigation(): Promise<void> {
          return this.wire.sendAction('stop-window-navigation', Object.assign({}, this.identity)).then(() => undefined);
-     }
+    }
+
+    /**
+     * Navigates the window back one page
+     * @return {Promise.<void>}
+     * @tutorial Window.navigateForward
+     */
+    public navigateForward(): Promise<void> {
+        return this.wire.sendAction('navigate-window-forward', Object.assign({}, this.identity)).then(() => undefined);
+    }
+
 }
 
 // tslint:disable-next-line
