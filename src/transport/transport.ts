@@ -12,6 +12,8 @@ import {
     RuntimeError
 } from './transport-errors';
 
+import {PortDiscovery} from './port-discovery';
+
 export interface MessageHandler {
     (data: Function): boolean;
 }
@@ -23,6 +25,7 @@ class Transport extends EventEmitter {
     protected messageHandlers: MessageHandler[] = [];
     public me: Identity;
     protected wire: Wire;
+    public topicRefMap: Map<string, number> = new Map();
 
     constructor(wireType: WireConstructor) {
         super();
@@ -34,6 +37,17 @@ class Transport extends EventEmitter {
     }
 
     public connect(config: ConnectConfig): Promise<string> {
+        if (config.address) {
+            return this.connectByPort(config);
+        } else {
+            const portDiscovery = new PortDiscovery(config);
+            return portDiscovery.retrievePort().then( (port: number) => {
+                return this.connectByPort(Object.assign({}, config, {address: `ws://localhost:${port}`}));
+            });
+        }
+    }
+
+    public connectByPort(config: ConnectConfig): Promise<string> {
         const {address, uuid, name} = config;
         const reqAuthPaylaod = Object.assign({}, config, { type: 'file-token' });
         let token: string;
@@ -137,7 +151,7 @@ class Transport extends EventEmitter {
     protected handleMessage(data: Message<Payload>): boolean {
         // tslint:disable-next-line
         const id: number = data.correlationId || NaN;
-        
+
         if (!('correlationId' in data)) {
             this.uncorrelatedListener.call(null, data);
             // tslint:disable-next-line
@@ -166,6 +180,7 @@ export default Transport;
 interface Transport {
     sendAction(action: 'request-external-authorization', payload: {}, uncorrelated: true): Promise<Message<AuthorizationPayload>>;
     sendAction(action: string, payload: {}, uncorrelated: boolean): Promise<Message<Payload>>;
+    topicRefMap: Map<string, number>;
 }
 
 export class Message<T> {
@@ -183,11 +198,34 @@ export class AuthorizationPayload {
 }
 
 export interface ConnectConfig {
-    address: string;
+    address?: string;
     uuid: string;
     name?: string;
     nonPersistent?: boolean;
     runtimeClient?: boolean;
     licenseKey?: string;
     client?: any;
+    manifestUrl?: string;
+    startupApp?: any;
+    lrsUrl?: string;
+    assetsUrl?: string;
+    devToolsPort?: number;
+    installerUI?: boolean;
+    runtime?: {
+        version: string;
+        fallbackVersion?: string;
+        securityRealm?: string;
+        verboseLogging?: boolean;
+        additionalArgument?: string;
+    };
+    appAssets?: [ {
+        src: string;
+        alias: string;
+        target: string;
+        version: string;
+        args: string
+      }
+    ];
+    customItems?: [any];
+    timeout?: number; // in seconds
 }

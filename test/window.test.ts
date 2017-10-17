@@ -45,6 +45,11 @@ describe('Window.', () => {
            }));
     });
 
+    describe('reload()', () => {
+
+        it('Fulfilled', () => testWindow.reload().then(() => assert(true)));
+    });
+
     describe('focus()', () => {
 
         it('Fulfilled', () => testWindow.focus().then(() => assert(true)));
@@ -334,15 +339,23 @@ describe('Window.', () => {
            .then(() => testWindow.getZoomLevel()).then(data => assert(data === zoomLevel)));
     });
 
-<<<<<<< HEAD
     describe('stopNavigation()', () => {
 
         it('Fulfilled', () => testWindow.stopNavigation().then(() => assert(true)));
-=======
+    });
+
     describe('navigate()', () => {
         const url = 'https://www.google.com';
 
         it('Fulfilled', () => testWindow.navigate(url).then(() => assert(true)));
->>>>>>> feature/navigate
+
+    describe('navigateBack()', () => {
+
+        it('Fulfilled', () => testWindow.navigateBack().then(() => assert(true)));
+    });
+
+    describe('stopNavigation()', () => {
+
+        it('Fulfilled', () => testWindow.stopNavigation().then(() => assert(true)));
     });
 });
