@@ -476,14 +476,7 @@ export class _Window extends Base {
     }
 
     /**
-<<<<<<< HEAD
      * Navigates the window back one page.
-=======
-<<<<<<< HEAD
-=======
-     * Navigates the window to a specified URL.
-     * @param {string} url - The URL to navigate the window to.
->>>>>>> feature/stopNavigation
      * @return {Promise.<void>}
      * @tutorial Window.navigateBack
      */
