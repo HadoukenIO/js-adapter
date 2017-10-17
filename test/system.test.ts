@@ -82,6 +82,11 @@ describe('System.', () => {
         it('Fulfilled', () => fin.System.getProxySettings().then(() => assert(true)));
     });
 
+    describe('getHostSpecs()', () => {
+
+        it('Fulfilled', () => fin.System.getHostSpecs().then(specs => assert(specs.name === 'Home')));
+    });
+
     describe('launchExternalProcess()', () => {
         const processOptions = {
             path: 'notepad',

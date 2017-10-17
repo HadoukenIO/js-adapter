@@ -10,6 +10,7 @@ import { ProcessInfo } from './process';
 import { DownloadAssetRequestType } from './download-asset';
 import { RVMInfo } from './rvm';
 import { Entity } from './entity';
+import { HostSpecs } from './host-specs';
 import { ExternalProcessRequestType , TerminateExternalRequestType } from './external-process';
 import Transport from '../../transport/transport';
 
@@ -235,6 +236,15 @@ export default class System extends Base {
     public getRvmInfo(): Promise<RVMInfo> {
         return this.wire.sendAction('get-rvm-info')
             .then(({ payload }) => payload.data);
+    }
+
+    /**
+     * Retrieves system information.
+     * @tutorial system.getHostSpecs
+     * @return {Promise.<Hostspecs>}
+     */
+    public getHostSpecs(): Promise<HostSpecs> {
+        return this.wire.sendAction('get-host-specs').then(({ payload }) => payload.data);
     }
 
     /**
