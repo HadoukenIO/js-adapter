@@ -13,6 +13,6 @@ async function getParentUuid() {
 }
 
 getParentUuid()
-.then(parentUuid => console.log(parentUuid))
-.catch(err => console.log(err));
+.then(console.log)
+.catch(console.error);
 ```
