@@ -145,5 +145,9 @@ describe('System.', () => {
         it('should fail on a unknown uuid', () => fin.System.resolveUuid('fake_uuid').catch(() => assert(true)));
     });
 
-    describe('exit()', () => it('Fulfilled', () => fin.System.exit().then(() => assert(true))));
+    describe('exit()', () => it('Fulfilled', () => {
+        fin.System.exit().then(() => {
+            fin.System.getVersion().catch(err => assert(typeof err === 'object'));
+        });
+    }));
 });
