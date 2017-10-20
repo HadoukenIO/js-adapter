@@ -15,6 +15,7 @@ export const DELAY_MS = 5000;
 export const TEST_TIMEOUT = 12000;
 
 export interface RuntimeProcess {
+    version?: any;
     appConfig: any;
     port: string;
     runtime: ChildProcess;
