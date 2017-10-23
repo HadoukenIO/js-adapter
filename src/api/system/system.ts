@@ -81,6 +81,15 @@ export default class System extends Base {
     }
 
     /**
+     * Exits the Runtime.
+     * @return {Promise.<void>}
+     * @tutorial System.exit
+     */
+    public exit(): Promise<void> {
+        return this.wire.sendAction('exit-desktop', {}).then(() => undefined);
+    }
+
+    /**
      * Returns the version of the runtime. The version contains the major, minor,
      * build and revision numbers.
      * @return {Promise.<string>}
