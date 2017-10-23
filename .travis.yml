@@ -1,0 +1,5 @@
+langauge: node_js
+node_js:
+    - 8
+install: npm i
+script: npm run build
