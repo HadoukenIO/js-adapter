@@ -46,7 +46,7 @@ describe('System.', () => {
 
     describe('getEnvironmentVariable()', () => {
 
-        it('Fulfilled', () => fin.System.getEnvironmentVariable().then(() => assert(true)));
+        it('Fulfilled', () => fin.System.getEnvironmentVariable('HOME').then(env => assert(true)));
     });
 
     describe('getLog()', () => {
@@ -80,6 +80,11 @@ describe('System.', () => {
     describe('getProxySettings()', () => {
 
         it('Fulfilled', () => fin.System.getProxySettings().then(() => assert(true)));
+    });
+
+    describe('getHostSpecs()', () => {
+
+        it('Fulfilled', () => fin.System.getHostSpecs().then(specs => assert(specs.name === 'Home')));
     });
 
     describe('launchExternalProcess()', () => {

@@ -40,6 +40,15 @@ export interface NotificationCallback {
     message?: any;
 }
 
+/**
+ * @classdesc A Notification object represents a window on OpenFin Runtime which
+ * is shown briefly to the user on the bottom-right corner of the primary monitor.
+ * A notification is typically used to alert the user of some important event which
+ * requires his or her attention. Notifications are a child or your application that
+ * are controlled by the runtime.
+ * @class
+ * @alias Notification
+*/
 // tslint:disable-next-line
 export class _Notification extends Base implements Notification {
     private listenerList: Array<string> = ['newListener'];
@@ -74,7 +83,7 @@ export class _Notification extends Base implements Notification {
     protected generalListener: (msg: any) => void;
     protected notificationId: number;
 
-    protected onmessage(message: any): boolean {
+    protected onmessage = (message: any): boolean => {
         const {action, payload: messagePayload} = message;
 
         if (action === 'process-notification-event') {
@@ -110,6 +119,11 @@ export class _Notification extends Base implements Notification {
     public timeout: number | string;
     public message: any;
 
+    /**
+     * Invoked when the notification is shown
+     * @return {Promise.<Message>}
+     * @tutorial Notification.show
+    */
     public show(): Promise<Message<any>> {
 
         if (!this.url) {
@@ -129,6 +143,15 @@ export class _Notification extends Base implements Notification {
         });
     }
 
+    /**
+     * Sends a message to the notification.
+     * @param { any } message The message to be sent to the notification.
+     * Can be either a primitive data type (string, number, or boolean)
+     * or composite data type (object, array) that is composed of other
+     * primitive or composite data types
+     * @return {Promise.<void>}
+     * @tutorial Notification.sendMessage
+    */
     public sendMessage(message: any): Promise<Message<any>> {
 
         return this.wire.sendAction('send-action-to-notifications-center', {
@@ -142,6 +165,11 @@ export class _Notification extends Base implements Notification {
         });
     }
 
+    /**
+     * Closes the notification
+     * @return {Promise.<Messge>}
+     * @tutorial Notification.close
+    */
     public close(): Promise<Message<any>> {
 
         return this.wire.sendAction('send-action-to-notifications-center', {

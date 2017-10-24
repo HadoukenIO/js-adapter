@@ -1,19 +1,22 @@
 const path = require('path');
 const testAppConfig = path.join('test','app.json');
 const liveServer = require('live-server');
+const ps = require('ps-node');
+const exec = require('child_process').exec;
 
 const serverParams = {
     root: path.resolve('html'),
     open: false,
-    logLevel: 2,
+    logLevel: 0,
     port: 8689
 };
 
 module.exports = function(grunt) {
     const version = grunt.option('ver');
+    const remote = grunt.option('remote');
     const uuid = 'testapp';
-    const args = '--v=1 --enable-logging --enable-multi-runtime';
-    
+    const args = '--enable-multi-runtime';
+
     grunt.initConfig({
         ts: {
             default: {
@@ -60,6 +63,13 @@ module.exports = function(grunt) {
             launch: {
                 open: true
             }
+        },
+        copy: {
+            resources: {
+                files: [
+                    { src: 'resources/**', dest: 'out/' }
+                ]
+            }
         }
     });
 
@@ -73,21 +83,43 @@ module.exports = function(grunt) {
         const done = this.async();
         liveServer.start(serverParams).on('listening', done);
     });
-    
+
     grunt.registerTask('start-repl', function() {
         const finRepl = require(`./out/repl/index.js`);
         const done = this.async();
         finRepl.startRepl();
     });
-    
+
+    grunt.registerTask('kill-processes', function() {
+          ps.lookup({
+              command: 'openfin.exe'
+          }, (err, processList) => {
+              if (err) {
+                  throw new Error(err);
+              }
+              processList.forEach(i=> ps.kill(i.pid));
+          });
+    });
+
+    grunt.registerTask('publish-docs', () => {
+        exec(`cd docs && git commit -am "committed new update for node-adapter documentation." && git push ${ remote } master`, function(err, stdout, stderr) {
+             if (err) {
+                return console.log(err);
+             }
+             console.log('published new documentationfor node-adapter.');
+        });
+    });
+
     grunt.loadNpmTasks('grunt-ts');
     grunt.loadNpmTasks('grunt-tslint');
     grunt.loadNpmTasks('grunt-mocha-test');
     grunt.loadNpmTasks('grunt-openfin');
-    
+    grunt.loadNpmTasks('grunt-contrib-copy');
+
     grunt.registerTask('lint', [ 'tslint' ]);
-    grunt.registerTask('build', [ 'ts' ]);
+    grunt.registerTask('build', [ 'ts', 'copy:resources' ]);
     grunt.registerTask('default', [ 'lint', 'build' ]);
-    grunt.registerTask('test', [ 'check-version', 'default', 'start-server', 'openfin', 'mochaTest' ]);
+    grunt.registerTask('test', [ 'check-version', 'default', 'start-server', 'kill-processes', 'openfin', 'mochaTest', 'kill-processes']);
     grunt.registerTask('repl', [ 'check-version', 'default', 'start-server', 'openfin', 'start-repl' ]);
+
 };

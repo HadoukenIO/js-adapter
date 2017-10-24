@@ -3,6 +3,10 @@ import { Identity } from '../../identity';
 import Transport, { Message } from '../../transport/transport';
 import RefCounter from '../../util/ref-counter';
 
+/**
+ * A messaging bus that allows for pub/sub messaging between different applications.
+ * @namespace
+*/
 export default class InterApplicationBus extends Bare {
     public events = {
         subscriberAdded: 'subscriber-added',
@@ -16,6 +20,17 @@ export default class InterApplicationBus extends Bare {
         wire.registerMessageHandler(this.onmessage.bind(this));
     }
 
+    /**
+     * Publishes a message to all applications running on OpenFin Runtime that
+     * are subscribed to the specified topic.
+     * @param { string } topic The topic on which the message is sent
+     * @param { any } message The message to be published. Can be either a primitive
+     * data type (string, number, or boolean) or composite data type (object, array)
+     * that is composed of other primitive or composite data types
+     * @tutorial InterApplicationBus.publish
+     * @return {Promise.<void>}
+     * @tutorial InterApplicationBus.publish
+    */
     public publish(topic: string, message: any): Promise<void> {
         return this.wire.sendAction('publish-message', {
             topic,
@@ -24,6 +39,16 @@ export default class InterApplicationBus extends Bare {
         }).then(() => undefined);
     }
 
+    /**
+     * Sends a message to a specific application on a specific topic.
+     * @param { object } destination The uuid of the application to which the message is sent
+     * @param { string } topic The topic on which the message is sent
+     * @param { any } message The message to be sent. Can be either a primitive data
+     * type (string, number, or boolean) or composite data type (object, array) that
+     * is composed of other primitive or composite data types
+     * @return {Promise.<void>}
+     * @tutorial InterApplicationBus.send
+    */
     public send(destination: Identity, topic: string, message: any): Promise<void> {
         return this.wire.sendAction('send-message', {
             destinationUuid: destination.uuid,
@@ -34,6 +59,22 @@ export default class InterApplicationBus extends Bare {
         }).then(() => undefined);
     }
 
+    /**
+     * Subscribes to messages from the specified application on the specified topic.
+     * If the subscription is for a uuid, [name], topic combination that has already
+     * been published to upon subscription you will receive the last 20 missed messages
+     * in the order they were published.
+     * @param { Identity } source
+     * @param { string } topic The topic on which the message is sent
+     * @param { function } listener A function that is called when a message has
+     * been received. It is passed the message, uuid and name of the sending application.
+     * The message can be either a primitive data type (string, number, or boolean) or
+     * composite data type (object, array) that is composed of other primitive or composite
+     * data types
+     * @tutorial InterApplicationBus.subcribe
+     * @return {Promise.<void>}
+     * @tutorial InterApplicationBus.subcribe
+     */
     public subscribe(source: Identity, topic: string, listener: Function): Promise<void> {
         const subKey = this.createSubscriptionKey(source.uuid, source.name || '*', topic);
         const sendSubscription = () => {
@@ -54,6 +95,14 @@ export default class InterApplicationBus extends Bare {
         return this.refCounter.actOnFirst(subKey, sendSubscription, alreadySubscribed);
     }
 
+    /**
+     * Unsubscribes to messages from the specified application on the specified topic.
+     * @param { Identity } source This object is described in the Identity in the typedef
+     * @param { string } topic The topic on which the message is sent
+     * @param { function } listener A callback previously registered with subscribe()
+     * @return {Promise.<void>}
+     * @tutorial InterApplicationBus.unsubscribe
+     */
     public unsubscribe(source: Identity, topic: string, listener: Function): Promise<void> {
         const subKey = this.createSubscriptionKey(source.uuid, source.name || '*', topic);
         const sendUnsubscription = () => {
@@ -88,13 +137,8 @@ export default class InterApplicationBus extends Bare {
     }
 
     private emitSubscriverEvent(type: string, message: any) {
-        const {payload: {senderName, senderUuid, topic}} = message;
-        const payload = {
-            name: senderName,
-            uuid: senderUuid,
-            topic
-        };
-
+        const {payload: {name, uuid, topic}} = message;
+        const payload = { name, uuid, topic };
         this.emit(type, payload);
     }
 

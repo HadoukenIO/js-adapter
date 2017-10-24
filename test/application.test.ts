@@ -109,6 +109,15 @@ describe('Application.', () => {
         });
     });
 
+    describe('setShortcuts()', () => {
+
+        it('Fulfilled', () => testApp.setShortcuts({
+            desktop: true,
+            startMenu: false,
+            systemStartup: true
+        }).then(() => assert(true)));
+    });
+
     describe('terminate()', () => {
 
         const appToCloseConfig = {
@@ -128,6 +137,17 @@ describe('Application.', () => {
 
         it('Fulfilled', () => {
             return appToClose.terminate().then(() => appToClose.isRunning().then(data => assert(data === false)));
+        });
+    });
+
+    describe('getInfo()', () => {
+
+        it('Shold contain some information', () => {
+            return testApp.getInfo().then(info => {
+                const expectedLaunchMode = 'adapter';
+
+                return assert.equal(info.launchMode, expectedLaunchMode, `Expected launchMode to be "${ expectedLaunchMode }"`);
+            });
         });
     });
 });
