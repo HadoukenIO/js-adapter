@@ -34,10 +34,13 @@ class Transport extends EventEmitter {
         });
     }
 
-    public connectSync = (): any => {
+    public connectSync = (config: ConnectConfig): any => {
+        const {uuid, name} = config;
+        this.me = { uuid, name };
         this.wire.connectSync();
+
     }
-    
+
     public connect(config: ConnectConfig): Promise<string> {
         const {address, uuid, name} = config;
         const reqAuthPaylaod = Object.assign({}, config, { type: 'file-token' });
@@ -88,7 +91,6 @@ class Transport extends EventEmitter {
 
     public sendAction(action: string, payload: any = {}, uncorrelated: boolean = false): Promise<Message<any>> {
         return new Promise((resolve, reject) => {
-            // tslint:disable-next-line
             const id = this.getNextId();
             const msg = {
                 action,
@@ -104,7 +106,6 @@ class Transport extends EventEmitter {
 
     public ferryAction(data: any): Promise<Message<any>> {
         return new Promise((resolve, reject) => {
-            // tslint:disable-next-line
             const id = this.getNextId();
             data.messageId = id;
 
@@ -167,6 +168,7 @@ class Transport extends EventEmitter {
 
     protected getNextId = (): any => {
         if (!fin) {
+            // tslint:disable-next-line
             return this.messageCounter++;
         } else {
             return fin.desktop.getUuid();
@@ -196,8 +198,8 @@ export class AuthorizationPayload {
 }
 
 export interface ConnectConfig {
-    address: string;
     uuid: string;
+    address?: string;
     name?: string;
     nonPersistent?: boolean;
     runtimeClient?: boolean;

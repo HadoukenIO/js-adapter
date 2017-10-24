@@ -8,8 +8,8 @@
     "postinstall": "tsc",
     "test": "grunt test",
     "repl": "grunt repl",
-    "build": "grunt",
-    "browserify": "tsc && browserify out/src/of-main.js -o dist/bundle.js"
+    "build": "grunt && npm run browserify",
+    "browserify": "browserify out/src/of-main.js -o out/bundle.js"
   },
   "devDependencies": {
     "browserify": "^14.4.0",

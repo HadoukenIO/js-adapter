@@ -1,12 +1,9 @@
 import Fin from './api/fin';
-import { Application } from './api/application/application';
-import { _Window as Window } from './api/window/window';
-import System from './api/system/system';
-
-import {default as Transport, ConnectConfig} from './transport/transport';
+import { currentWindowIdentity } from './util/of-renderer-api';
+import {default as Transport} from './transport/transport';
 import ElIPCTransport from './transport/elipc';
-declare var window: any;
 
-const wire = new Transport(ElIPCTransport);
-wire.connectSync();
-window.fin = Object.assign(window.fin, new Fin(wire, null));
+declare var window: any;
+const transport = new Transport(ElIPCTransport);
+transport.connectSync(Object.assign({}, currentWindowIdentity));
+window.fin = Object.assign(window.fin, new Fin(transport, null));
