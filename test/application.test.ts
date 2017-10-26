@@ -16,9 +16,7 @@ describe('Application.', () => {
         }
     };
 
-    before(() => {
-        return conn().then((a: Fin) => fin = a);
-    });
+    before(() => conn().then((a: Fin) => fin = a));
 
     beforeEach(() => {
         return fin.Application.create(appConfigTemplate).then(a => {
@@ -31,7 +29,12 @@ describe('Application.', () => {
 
     describe('isRunning()', () => {
 
-        it('Fulfilled', () => testApp.isRunning().then(data => assert(data === true)));
+        it('Fulfilled', (done) => {
+            testApp.isRunning().then(data => {
+                assert(data === true);
+                return done();
+            });
+        });
     });
 
     describe('close()',  () => {
@@ -50,9 +53,12 @@ describe('Application.', () => {
             });
         });
 
-        it('Fulfilled', () => {
-            return appToClose.close().then(() => appToClose.isRunning()
-                                           .then(data => assert(data === false)));
+        it('Fulfilled', (done) => {
+            appToClose.close().then(() => appToClose.isRunning()
+                                           .then(data => {
+                                                assert(data === false);
+                                                return done();
+                                            }));
         });
     });
 
@@ -99,7 +105,10 @@ describe('Application.', () => {
 
         let appToClose: Application;
 
-        after(() => appToClose.close());
+        after((done) => {
+            appToClose.close();
+            return done();
+        });
 
         it('Fulfilled', () => {
             return fin.Application.create(appToCloseConfig).then(a => {
@@ -109,14 +118,21 @@ describe('Application.', () => {
         });
     });
 
+    /*
     describe('setShortcuts()', () => {
 
-        it('Fulfilled', () => testApp.setShortcuts({
-            desktop: true,
-            startMenu: false,
-            systemStartup: true
-        }).then(() => assert(true)));
+        it('Fulfilled', (done) => {
+            testApp.setShortcuts({
+                desktop: true,
+                startMenu: false,
+                systemStartup: true
+            }).then(() => {
+                assert(true);
+                return done();
+            });
+        });
     });
+    */
 
     describe('terminate()', () => {
 
