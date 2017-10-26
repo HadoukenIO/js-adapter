@@ -1,6 +1,6 @@
 declare var fin: any;
 
-//TODO: IPC2 should not be a thing.
+//TODO: IPC gets deleted by the javascript adapter at the moment.
 export const ipc = fin.__internal_.ipc;
 export const routingId = fin.__internal_.routingId;
 export const CORE_MESSAGE_CHANNEL = fin.__internal_.ipcconfig.channels.CORE_MESSAGE;

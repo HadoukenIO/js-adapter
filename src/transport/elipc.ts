@@ -1,7 +1,7 @@
 import { EventEmitter } from 'events';
 import { Wire, READY_STATE } from './wire';
 import { NotImplementedError } from './transport-errors';
-import { ipc, routingId, outboundTopic, inboundTopic } from '../util/of-renderer-api';
+import { ipc, routingId, outboundTopic, inboundTopic } from '../environment/openfin-renderer-api';
 
 export default class ElIPCTransport extends EventEmitter implements Wire {
 

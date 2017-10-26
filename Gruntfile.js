@@ -3,6 +3,7 @@ const testAppConfig = path.join('test','app.json');
 const liveServer = require('live-server');
 const ps = require('ps-node');
 const exec = require('child_process').exec;
+const rimraf = require('rimraf');
 
 const serverParams = {
     root: path.resolve('html'),
@@ -79,6 +80,21 @@ module.exports = function(grunt) {
         }
     });
 
+    grunt.registerTask('clean', function() {
+        const done = this.async();
+        const outDir = path.resolve('out');
+        grunt.log.ok(outDir);
+
+        rimraf(outDir, err => {
+            if (!err) {
+                grunt.log.ok('out directory deleted');
+                done();
+            } else {
+                grunt.fail.fatal(err);
+            }
+        });
+    });
+
     grunt.registerTask('start-server', function() {
         const done = this.async();
         liveServer.start(serverParams).on('listening', done);
@@ -117,7 +133,7 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-contrib-copy');
 
     grunt.registerTask('lint', [ 'tslint' ]);
-    grunt.registerTask('build', [ 'ts', 'copy:resources' ]);
+    grunt.registerTask('build', [ 'clean', 'ts', 'copy:resources' ]);
     grunt.registerTask('default', [ 'lint', 'build' ]);
     grunt.registerTask('test', [ 'check-version', 'default', 'start-server', 'kill-processes', 'openfin', 'mochaTest', 'kill-processes']);
     grunt.registerTask('repl', [ 'check-version', 'default', 'start-server', 'openfin', 'start-repl' ]);
