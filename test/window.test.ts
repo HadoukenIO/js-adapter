@@ -19,10 +19,10 @@ describe('Window.', () => {
         return conn().then(a => fin = a);
     });
 
-    before(() => {
+    beforeEach(() => {
         return fin.Application.create(appConfigTemplate).then(a => {
             testApp = a;
-            return testApp.run().then(() =>  testApp.getWindow().then(w =>  testWindow = w));
+            return testApp.run().then(() =>  testApp.getWindow().then(w => testWindow = w));
         });
     });
 
@@ -41,7 +41,11 @@ describe('Window.', () => {
 
         it('Fulfilled', () => testWindow.setBounds(bounds)
            .then(() => {
-               return testWindow.getBounds().then(data => assert.deepEqual(bounds, data));
+               return testWindow.getBounds().then(data => {
+                    delete data.bottom;
+                    delete data.right;
+                    assert.deepEqual(bounds, data);
+                });
            }));
     });
 
@@ -112,10 +116,13 @@ describe('Window.', () => {
 
         const scriptToExecute = 'console.log("hello world")';
 
-        it('Descendant Window', () => testWindow.executeJavaScript(scriptToExecute)
-           .then(() => assert(true)));
+        it('Descendant Window', (done) => testWindow.executeJavaScript(scriptToExecute)
+           .then(() => {
+                assert(true);
+                return done();
+            }));
 
-        it('Non descendant Window', () => {
+        it('Non descendant Window', (done) => {
             return rawConnect({
                 address: 'ws://localhost:9696',
                 uuid: 'SECOND_CONECTION'
@@ -123,7 +130,10 @@ describe('Window.', () => {
                 return otherFin.Window.wrap({
                     uuid: testWindow.identity.uuid,
                     name: testWindow.identity.uuid
-                }).executeJavaScript(scriptToExecute).catch(() => assert(true));
+                }).executeJavaScript(scriptToExecute).catch(() => {
+                    assert(true);
+                    return done();
+                });
             });
         });
     });
@@ -239,7 +249,12 @@ describe('Window.', () => {
                 return testWindow.resizeBy(10, 10, 'top-left')
                     .then(() => testWindow.getBounds()
                           .then(data => {
-                              return assert.deepEqual(bounds, data);
+                              data.bottom -= 10;
+                              data.height -= 10;
+                              data.right -= 10;
+                              data.width -= 10;
+
+                              assert.deepEqual(bounds, data);
                           }));
             });
         });
