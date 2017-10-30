@@ -82,6 +82,11 @@ describe('System.', () => {
         it('Fulfilled', () => fin.System.getProxySettings().then(() => assert(true)));
     });
 
+    describe('getHostSpecs()', () => {
+
+        it('Fulfilled', () => fin.System.getHostSpecs().then(specs => assert(true)));
+    });
+
     describe('launchExternalProcess()', () => {
         const processOptions = {
             path: 'notepad',
@@ -89,23 +94,32 @@ describe('System.', () => {
             listener: (code: any) => { code = 'a'; }
         };
 
-        it('Fulfilled', () => fin.System.launchExternalProcess(processOptions)
-           .then(() => assert(true)));
+        it('Fulfilled', (done) => {
+            fin.System.launchExternalProcess(processOptions)
+           .then(() => {
+                assert(true);
+                return done();
+            });
+        });
     });
 
     describe('log()', () => {
         const level = 'info';
         const message = 'log this';
 
-        it('Fulfilled', () => fin.System.log(level, message)
-           .then(() => assert(true)));
+        it('Fulfilled', () => fin.System.log(level, message));
     });
 
     describe('openUrlWithBrowser()', () => {
         const url = 'http://www.openfin.co';
 
-        it('Fulfilled', () => fin.System.openUrlWithBrowser(url)
-           .then(() => assert(true)));
+        it('Fulfilled', (done) => {
+            fin.System.openUrlWithBrowser(url)
+                .then(() => {
+                    assert(true);
+                    return done();
+                });
+        });
     });
 
     //TODO: Need to start a test app as part of the test setup.
