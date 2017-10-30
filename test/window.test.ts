@@ -345,6 +345,17 @@ describe('Window.', () => {
            .then(() => testWindow.getZoomLevel()).then(data => assert(data === zoomLevel)));
     });
 
+    describe('navigate()', () => {
+        const url = 'https://www.google.com';
+
+        it('Fulfilled', () => testWindow.navigate(url).then(() => assert(true)));
+    });
+
+    describe('navigateForward()', () => {
+
+        it('Fulfilled', () => testWindow.navigateForward().then(() => assert(true)));
+    });
+
     describe('navigateBack()', () => {
 
         it('Fulfilled', () => testWindow.navigateBack().then(() => assert(true)));
@@ -354,4 +365,5 @@ describe('Window.', () => {
 
         it('Fulfilled', () => testWindow.stopNavigation().then(() => assert(true)));
     });
+
 });
