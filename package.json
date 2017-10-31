@@ -36,7 +36,8 @@
     "ts-node": "~1.7.0",
     "tslint": "^4.5.1",
     "tslint-microsoft-contrib": "^4.0.1",
-    "typescript": "~2.2.0"
+    "typescript": "~2.2.0",
+    "webpack-node-externals": "^1.6.0"
   },
   "dependencies": {
     "ws": "~1.1.1"
