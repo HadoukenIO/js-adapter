@@ -115,6 +115,14 @@ export class Application extends Base {
     }
 
     /**
+     * Gets the current application
+     * @return {Promise.Application}
+     */
+    public getCurrent(): Promise<Application> {
+        return Promise.resolve(new ApplicationModule(this.wire).wrap(this.identity));
+    }
+
+    /**
      * Retrieves an array of active window groups for all of the application's windows. Each group is
      * represented as an array of wrapped fin.desktop.Windows.
      * @return {Promise.Array.Array.<_Window>}

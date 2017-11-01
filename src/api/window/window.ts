@@ -92,6 +92,14 @@ export class _Window extends Base {
     }
 
     /**
+     * Returns an instance of the current window.
+     * @return {Promise.<void>}
+    */
+    public getCurrent(): Promise<_Window> {
+        return Promise.resolve(new _WindowModule(this.wire).wrap(this.identity));
+    }
+
+    /**
      * Gives focus to the window.
      * @return {Promise.<void>}
      */
