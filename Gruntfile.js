@@ -4,7 +4,17 @@ const liveServer = require('live-server');
 const ps = require('ps-node');
 const exec = require('child_process').exec;
 const rimraf = require('rimraf');
+const webpack = require('webpack');
+const asar = require('asar');
 
+const stagingDir = path.resolve('staging');
+const outDir = path.resolve('out');
+const webpackConfig = {
+    entry: './out/src/of-main.js',
+    output: {
+        filename: './staging/bundle.js'
+  }
+};
 const serverParams = {
     root: path.resolve('html'),
     open: false,
@@ -81,18 +91,9 @@ module.exports = function(grunt) {
     });
 
     grunt.registerTask('clean', function() {
-        const done = this.async();
-        const outDir = path.resolve('out');
-        grunt.log.ok(outDir);
 
-        rimraf(outDir, err => {
-            if (!err) {
-                grunt.log.ok('out directory deleted');
-                done();
-            } else {
-                grunt.fail.fatal(err);
-            }
-        });
+        rimraf.sync(outDir);
+        grunt.log.ok('out directory deleted');
     });
 
     grunt.registerTask('start-server', function() {
@@ -101,9 +102,39 @@ module.exports = function(grunt) {
     });
 
     grunt.registerTask('start-repl', function() {
-        const finRepl = require(`./out/repl/index.js`);
+        const finRepl = require(path.join(outDir, 'repl', 'index.js'));
         const done = this.async();
         finRepl.startRepl();
+    });
+
+    grunt.registerTask('asar', function() {
+        const done = this.async();
+
+        asar.createPackage(stagingDir, path.join(outDir,'adapter-new.asar'), function(err) {
+            if (err) {
+                grunt.log.error(err.message);
+            } else {
+                grunt.log.ok('package created');
+            }
+            rimraf.sync(stagingDir);
+            grunt.log.ok('staging directory deleted');
+            done();
+        });
+    });
+
+    grunt.registerTask('webpack', function() {
+        const done = this.async();
+        webpack(webpackConfig, (err, stats) => {
+            if (err || stats.hasErrors()) {
+                const error = err ? err.message: "webpack error";
+                grunt.log.error(error);
+                done(err);
+            } else {
+                grunt.log.ok('webpack task done');
+                done();
+            }
+        });
+
     });
 
     grunt.registerTask('kill-processes', function() {
@@ -120,9 +151,10 @@ module.exports = function(grunt) {
     grunt.registerTask('publish-docs', () => {
         exec(`cd docs && git commit -am "committed new update for node-adapter documentation." && git push ${ remote } master`, function(err, stdout, stderr) {
              if (err) {
-                return console.log(err);
+                 grunt.log.error(err);
+             } else {
+                 grunt.log.ok('published new documentationfor node-adapter.');
              }
-             console.log('published new documentationfor node-adapter.');
         });
     });
 
@@ -133,7 +165,7 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-contrib-copy');
 
     grunt.registerTask('lint', [ 'tslint' ]);
-    grunt.registerTask('build', [ 'clean', 'ts', 'copy:resources' ]);
+    grunt.registerTask('build', [ 'clean', 'ts', 'webpack', 'asar', 'copy:resources' ]);
     grunt.registerTask('default', [ 'lint', 'build' ]);
     grunt.registerTask('test', [ 'check-version', 'default', 'start-server', 'kill-processes', 'openfin', 'mochaTest', 'kill-processes']);
     grunt.registerTask('repl', [ 'check-version', 'default', 'start-server', 'openfin', 'start-repl' ]);
