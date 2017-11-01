@@ -1,4 +1,4 @@
-import { Environment } from './Environment';
+import { Environment } from './environment';
 import { ConnectConfig } from '../transport/wire';
 import { NotImplementedError } from '../transport/transport-errors';
 

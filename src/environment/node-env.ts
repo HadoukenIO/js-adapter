@@ -1,5 +1,5 @@
 import { writeFile } from 'fs';
-import { Environment } from './Environment';
+import { Environment } from './environment';
 import { PortDiscovery } from '../transport/port-discovery';
 import { ConnectConfig } from '../transport/wire';
 
