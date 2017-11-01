@@ -1,7 +1,7 @@
 import { Wire, WireConstructor, READY_STATE, ConnectConfig } from './wire';
 import { Identity } from '../identity';
 import { EventEmitter } from 'events';
-import { Environment } from '../environment/Environment';
+import { Environment } from '../environment/environment';
 
 import {
     UnexpectedActionError,
