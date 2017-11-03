@@ -4,7 +4,7 @@ import * as fs from 'fs';
 import * as http from 'http';
 import * as net from 'net';
 import * as path from 'path';
-import {ConnectConfig} from './transport';
+import { ConnectConfig } from './wire';
 import { spawn } from 'child_process';
 import * as os from 'os';
 import Timer = NodeJS.Timer;
