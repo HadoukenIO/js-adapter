@@ -26,7 +26,6 @@ export interface ConfigInterface {
 }
 
 export default class ApplicationModule extends Bare {
-
     /**
      * Returns an Application object that represents an existing application.
      * @param { Identity } indentity
@@ -43,6 +42,14 @@ export default class ApplicationModule extends Bare {
     public create(appOptions: any): Promise<Application> {
         return this.wire.sendAction('create-application', appOptions)
             .then(() => this.wrap({ uuid: appOptions.uuid }));
+    }
+
+    /**
+     * Gets the current application
+     * @return {Promise.Application}
+     */
+    public getCurrent() {
+        return Promise.resolve(new ApplicationModule(this.wire).wrap(this.wire.me));
     }
 }
 
@@ -115,14 +122,6 @@ export class Application extends Base {
     }
 
     /**
-     * Gets the current application
-     * @return {Promise.Application}
-     */
-    public getCurrent(): Promise<Application> {
-        return Promise.resolve(new ApplicationModule(this.wire).wrap(this.identity));
-    }
-
-    /**
      * Retrieves an array of active window groups for all of the application's windows. Each group is
      * represented as an array of wrapped fin.desktop.Windows.
      * @return {Promise.Array.Array.<_Window>}
@@ -148,6 +147,15 @@ export class Application extends Base {
     public getManifest(): Promise<any> {
         return this.wire.sendAction('get-application-manifest', this.identity)
             .then(({ payload }) => payload.data);
+    }
+
+    /**
+     * Gets the current application
+     * @return {Promise.Application}
+     */
+    public getCurrent(): Promise<Application> {
+        // debugger;
+        return Promise.resolve(new ApplicationModule(this.wire).wrap(this.identity));
     }
 
     /**

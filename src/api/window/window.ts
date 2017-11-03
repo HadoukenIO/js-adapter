@@ -11,6 +11,14 @@ export default class _WindowModule extends Bare {
     public wrap(identity: Identity): _Window {
         return new _Window(this.wire, identity);
     }
+
+    /**
+     * Returns an instance of the current window.
+     * @return {Promise.<_Window>}
+    */
+    public getCurrent(): Promise<_Window> {
+        return Promise.resolve(new _WindowModule(this.wire).wrap(this.wire.me));
+    }
 }
 
 export interface CloseEventShape {
@@ -89,14 +97,6 @@ export class _Window extends Base {
         return this.wire.sendAction('get-window-bounds', this.identity)
         // tslint:disable-next-line
             .then(({ payload }) => payload.data as Bounds);
-    }
-
-    /**
-     * Returns an instance of the current window.
-     * @return {Promise.<void>}
-    */
-    public getCurrent(): Promise<_Window> {
-        return Promise.resolve(new _WindowModule(this.wire).wrap(this.identity));
     }
 
     /**
