@@ -1,4 +1,4 @@
-import { READY_STATE } from './websocket';
+import { READY_STATE } from './wire';
 
 export class DisconnectedError extends Error {
     constructor(readyState: number) {
@@ -15,6 +15,8 @@ export class DuplicateCorrelationError extends Error {}
 export class NoAckError extends Error {}
 
 export class NoCorrelationError extends Error {}
+
+export class NotImplementedError extends Error {}
 
 export class RuntimeError extends Error {
     constructor(payload: any) {

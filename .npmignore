@@ -9,3 +9,5 @@ resources/
 test
 repl/
 src/
+jsdoc-template/
+docs/

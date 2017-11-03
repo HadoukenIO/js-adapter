@@ -1,7 +1,6 @@
 import Transport, { Message } from '../transport/transport';
 import { Identity } from '../identity';
 import { EventEmitter } from 'events';
-import { createHash } from 'crypto';
 
 export interface RuntimeEvent extends Identity {
     topic: string;
@@ -88,11 +87,7 @@ export class Reply<TOPIC extends string, TYPE extends string|void> implements Id
 }
 
 function createKey(listener: RuntimeEvent): string {
-    const key = createHash('md4')
-        .update(<string>listener.name || '')
-        .update(<string>listener.uuid || '')
-        .update(listener.topic)
-        .update(listener.type);
+    const { name, uuid, topic, type } = listener;
 
-    return key.digest('base64');
+    return `${name}/${uuid}/${topic}/${type}`;
 }
