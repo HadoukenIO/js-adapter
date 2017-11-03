@@ -12,7 +12,7 @@ const outDir = path.resolve('out');
 const webpackConfig = {
     entry: './out/src/of-main.js',
     output: {
-        filename: './staging/bundle.js'
+        filename: './staging/js-adapter.js'
   }
 };
 const serverParams = {
@@ -23,6 +23,7 @@ const serverParams = {
 };
 
 module.exports = function(grunt) {
+    const asarName = 'js-adapter.asar';
     const version = grunt.option('ver');
     const remote = grunt.option('remote');
     const uuid = 'testapp';
@@ -110,7 +111,7 @@ module.exports = function(grunt) {
     grunt.registerTask('asar', function() {
         const done = this.async();
 
-        asar.createPackage(stagingDir, path.join(outDir,'adapter-new.asar'), function(err) {
+        asar.createPackage(stagingDir, path.join(outDir, asarName), function(err) {
             if (err) {
                 grunt.log.error(err.message);
             } else {
