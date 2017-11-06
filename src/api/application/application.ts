@@ -150,15 +150,6 @@ export class Application extends Base {
     }
 
     /**
-     * Gets the current application
-     * @return {Promise.Application}
-     */
-    public getCurrent(): Promise<Application> {
-        // debugger;
-        return Promise.resolve(new ApplicationModule(this.wire).wrap(this.identity));
-    }
-
-    /**
      * Retrieves UUID of the application that launches this application. Invokes the error callback
      * if the application was created from a manifest.
      * @tutorial Application.getParentUuid

@@ -1,18 +1,9 @@
 Returns an instance of the currently running application.
 # Example
 ```js
-async function getCurrent() {
-    const app = await fin.Application.create({
-        uuid: 'app-1',
-        name: 'myApp',
-        url: 'https://openfin.co',
-        autoShow: true
-    });
-
-    await app.run();
-    await app.getCurrent();
-    return app.restart();
+async function getCurrent_and_Restart() {
+    const app = await fin.Application.getCurrent()
+    return await app.restart();
 }
-
-getCurrent().then(() => console.log('Restarting Application')).catch(err => console.error(err))
+getCurrent_and_Restart().then(() => console.log('Restarting Application')).catch(err => console.error(err))
 ```
