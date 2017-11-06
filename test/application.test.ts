@@ -106,8 +106,7 @@ describe('Application.', () => {
         let appToClose: Application;
 
         after((done) => {
-            appToClose.close();
-            return done();
+            appToClose.close().then(done);
         });
 
         it('Fulfilled', () => {
