@@ -26,7 +26,7 @@ describe('Window.', () => {
         });
     });
 
-    after(() => {
+    afterEach(() => {
         return testApp.close();
     });
 
@@ -116,13 +116,12 @@ describe('Window.', () => {
 
         const scriptToExecute = 'console.log("hello world")';
 
-        it('Descendant Window', (done) => testWindow.executeJavaScript(scriptToExecute)
+        it('Descendant Window', () => testWindow.executeJavaScript(scriptToExecute)
            .then(() => {
-                assert(true);
-                return done();
+                return assert(true);
             }));
 
-        it('Non descendant Window', (done) => {
+        it('Non descendant Window', () => {
             return rawConnect({
                 address: 'ws://localhost:9696',
                 uuid: 'SECOND_CONECTION'
@@ -131,8 +130,7 @@ describe('Window.', () => {
                     uuid: testWindow.identity.uuid,
                     name: testWindow.identity.uuid
                 }).executeJavaScript(scriptToExecute).catch(() => {
-                    assert(true);
-                    return done();
+                    return assert(true);
                 });
             });
         });
@@ -269,8 +267,10 @@ describe('Window.', () => {
                 return testWindow.resizeTo(10, 10, 'top-left')
                     .then(() => testWindow.getBounds()
                           .then(data => {
-                              bounds.left += 10;
-                              bounds.top += 10;
+                              bounds.height = 10;
+                              bounds.width = 10;
+                              bounds.bottom  = bounds.top + 10;
+                              bounds.right = bounds.left + 10;
                               return assert.deepEqual(bounds, data);
                           }));
             });
