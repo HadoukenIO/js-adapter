@@ -58,14 +58,14 @@ export class _Window extends Base {
         this.on('removeListener', eventType => {
             this.deregisterEventListener(Object.assign({}, this.identity, {
                 type: eventType,
-                topic : this.topic
+                topic: this.topic
             }));
         });
 
         this.on('newListener', eventType => {
             this.registerEventListener(Object.assign({}, this.identity, {
                 type: eventType,
-                topic : this.topic
+                topic: this.topic
             }));
         });
     }
@@ -95,7 +95,7 @@ export class _Window extends Base {
     */
     public getBounds(): Promise<Bounds> {
         return this.wire.sendAction('get-window-bounds', this.identity)
-        // tslint:disable-next-line
+            // tslint:disable-next-line
             .then(({ payload }) => payload.data as Bounds);
     }
 
@@ -288,7 +288,7 @@ export class _Window extends Base {
      * Reloads the window current page
      * @return {Promise.<void>}
      */
-    public reload(ignoreCache: boolean = false ): Promise<void> {
+    public reload(ignoreCache: boolean = false): Promise<void> {
         return this.wire.sendAction('reload-window', Object.assign({}, this.identity, {
             ignoreCache
         })).then(() => undefined);
@@ -496,9 +496,9 @@ export class _Window extends Base {
      * @return {Promise.<void>}
      * @tutorial Window.stopNavigation
      */
-     public stopNavigation(): Promise<void> {
-         return this.wire.sendAction('stop-window-navigation', Object.assign({}, this.identity)).then(() => undefined);
-     }
+    public stopNavigation(): Promise<void> {
+        return this.wire.sendAction('stop-window-navigation', Object.assign({}, this.identity)).then(() => undefined);
+    }
 }
 
 // tslint:disable-next-line
