@@ -6,11 +6,11 @@ Allows the use of the Hadouken API from node.js. View the [documentation](https:
 
 - Node.js LTS ^6.9
 
-### Install as dependency
+## Install as dependency
 
 $ `npm install -S hadouken-js-adapter`
 
-### Usage
+## Usage
 ```javascript
 const { connect, Identity } = require("hadouken-js-adapter");
 
@@ -40,13 +40,13 @@ function connError(err) {
 }
 ```
 
-### Local build
+## Local build
 
 ```bash
 npm run build
 ```
 
-### Test
+## Test
 
 ```bash
 npm test -- --ver=alpha
@@ -70,4 +70,14 @@ To start the read-eval-print loop:
 
 ```bash
 npm run repl -- --ver=alpha
+```
+
+## Generated documentation
+
+We use [JSDoc](http://usejsdoc.org/) for documentation and generating the documentation will require our custom JSDoc template. Use the following commands to execute the docs task:
+
+```bash
+git submodule init
+git submodule update
+npm run doc
 ```
