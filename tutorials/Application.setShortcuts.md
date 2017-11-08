@@ -17,5 +17,5 @@ setShortcuts({
 		desktop: true,
 		startMenu: false,
 		systemStartup: true
-}).then(() => console.log('Shortcuts are set.')).catch(err => console.error);
+}).then(() => console.log('Shortcuts are set.')).catch(err => console.log(err));
 ```

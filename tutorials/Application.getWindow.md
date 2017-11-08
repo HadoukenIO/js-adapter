@@ -17,5 +17,5 @@ getWindow()
 		win.showAt(0, 400);
 		win.flash();
 })
-.catch(console.error);
+.catch(err => console.log(err));
 ```

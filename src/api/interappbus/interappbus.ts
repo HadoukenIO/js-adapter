@@ -64,7 +64,7 @@ export default class InterApplicationBus extends Bare {
      * If the subscription is for a uuid, [name], topic combination that has already
      * been published to upon subscription you will receive the last 20 missed messages
      * in the order they were published.
-     * @param { Identity } source
+     * @param { Identity } source This object is described in the Identity in the typedef
      * @param { string } topic The topic on which the message is sent
      * @param { function } listener A function that is called when a message has
      * been received. It is passed the message, uuid and name of the sending application.

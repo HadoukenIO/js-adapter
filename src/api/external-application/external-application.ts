@@ -12,7 +12,7 @@ class ExternalApplication extends Base {
 
     /**
      * Returns an External Application object that represents an existing external application.
-     * @param uuid The UUID of the external application to be wrapped
+     * @param {string} uuid The UUID of the external application to be wrapped
      * @return {ExternalApplication}
      */
     public wrap(uuid: string): ExternalApplication {

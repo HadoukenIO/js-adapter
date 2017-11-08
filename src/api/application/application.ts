@@ -98,7 +98,7 @@ export class Application extends Base {
 
     /**
       * Closes the application and any child windows created by the application.
-      * @param { boolean } force assigns the value to false
+      * @param { boolean } [force = false] force assigns the value to false
       * @return {Promise.<boolean>}
     */
     public close(force: boolean = false): Promise<void> {
