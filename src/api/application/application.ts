@@ -38,7 +38,7 @@ export default class ApplicationModule extends Bare {
 
     /**
      * @param {*} appOptions
-     * @return {Application}
+     * @return {Promise.<Application>}
      */
     public create(appOptions: any): Promise<Application> {
         return this.wire.sendAction('create-application', appOptions)
