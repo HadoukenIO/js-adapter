@@ -11,6 +11,14 @@ export default class _WindowModule extends Bare {
     public wrap(identity: Identity): _Window {
         return new _Window(this.wire, identity);
     }
+
+    /**
+     * Returns an instance of the current window.
+     * @return {Promise.<_Window>}
+    */
+    public getCurrent(): Promise<_Window> {
+        return Promise.resolve(new _WindowModule(this.wire).wrap(this.wire.me));
+    }
 }
 
 export interface CloseEventShape {
@@ -50,14 +58,14 @@ export class _Window extends Base {
         this.on('removeListener', eventType => {
             this.deregisterEventListener(Object.assign({}, this.identity, {
                 type: eventType,
-                topic : this.topic
+                topic: this.topic
             }));
         });
 
         this.on('newListener', eventType => {
             this.registerEventListener(Object.assign({}, this.identity, {
                 type: eventType,
-                topic : this.topic
+                topic: this.topic
             }));
         });
     }
@@ -87,7 +95,7 @@ export class _Window extends Base {
     */
     public getBounds(): Promise<Bounds> {
         return this.wire.sendAction('get-window-bounds', this.identity)
-        // tslint:disable-next-line
+            // tslint:disable-next-line
             .then(({ payload }) => payload.data as Bounds);
     }
 
@@ -280,7 +288,7 @@ export class _Window extends Base {
      * Reloads the window current page
      * @return {Promise.<void>}
      */
-    public reload(ignoreCache: boolean = false ): Promise<void> {
+    public reload(ignoreCache: boolean = false): Promise<void> {
         return this.wire.sendAction('reload-window', Object.assign({}, this.identity, {
             ignoreCache
         })).then(() => undefined);
@@ -483,14 +491,35 @@ export class _Window extends Base {
     public navigateBack(): Promise<void> {
         return this.wire.sendAction('navigate-window-back', Object.assign({}, this.identity)).then(() => undefined);
     }
+
+    /**
+     * Navigates the window to a specified URL.
+     * @param {string} url - The URL to navigate the window to.
+     * @return {Promise.<void>}
+     * @tutorial Window.navigate
+     */
+    public navigate(url: string): Promise<void> {
+        return this.wire.sendAction('navigate-window', Object.assign({}, this.identity, { url })).then(() => undefined);
+    }
+
     /**
      * Stops any current navigation the window is performing.
      * @return {Promise.<void>}
      * @tutorial Window.stopNavigation
      */
-     public stopNavigation(): Promise<void> {
-         return this.wire.sendAction('stop-window-navigation', Object.assign({}, this.identity)).then(() => undefined);
-     }
+    public stopNavigation(): Promise<void> {
+        return this.wire.sendAction('stop-window-navigation', Object.assign({}, this.identity)).then(() => undefined);
+    }
+
+    /**
+     * Navigates the window back one page
+     * @return {Promise.<void>}
+     * @tutorial Window.navigateForward
+     */
+    public navigateForward(): Promise<void> {
+        return this.wire.sendAction('navigate-window-forward', Object.assign({}, this.identity)).then(() => undefined);
+    }
+
 }
 
 // tslint:disable-next-line

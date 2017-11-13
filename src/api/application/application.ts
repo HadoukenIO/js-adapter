@@ -26,7 +26,6 @@ export interface ConfigInterface {
 }
 
 export default class ApplicationModule extends Bare {
-
     /**
      * Returns an Application object that represents an existing application.
      * @param { Identity } indentity
@@ -43,6 +42,14 @@ export default class ApplicationModule extends Bare {
     public create(appOptions: any): Promise<Application> {
         return this.wire.sendAction('create-application', appOptions)
             .then(() => this.wrap({ uuid: appOptions.uuid }));
+    }
+
+    /**
+     * Gets the current application
+     * @return {Promise.Application}
+     */
+    public getCurrent() {
+        return Promise.resolve(new ApplicationModule(this.wire).wrap(this.wire.me));
     }
 }
 
