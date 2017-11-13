@@ -11,9 +11,8 @@ async function close_app() {
     });
     
     await app.run();
-    await app.getCurrent();
     return await app.close();
 }
 
-close_app().then(() => console.log('Application was closed')).catch(err => console.error(err))
+close_app().then(() => console.log('Application was closed')).catch(err => console.error(err));
 ```
