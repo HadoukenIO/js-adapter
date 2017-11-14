@@ -48,8 +48,8 @@ export default class ApplicationModule extends Bare {
      * Gets the current application
      * @return {Promise.Application}
      */
-    public getCurrent() {
-        return Promise.resolve(new ApplicationModule(this.wire).wrap(this.wire.me));
+    public getCurrent(): Promise<Application> {
+        return Promise.resolve(new Application(this.wire, this.wire.me));
     }
 }
 

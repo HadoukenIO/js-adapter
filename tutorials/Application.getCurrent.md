@@ -3,7 +3,7 @@ Returns an instance of the currently running application.
 
 ```js
 async function getCurrent_and_Close() {
-    const app = await fin.Application.getCurrent();
+    const app = fin.Application.getCurrent();
     return await app.close();
 }
 
