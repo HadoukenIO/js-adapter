@@ -29,7 +29,7 @@ describe('Window.', () => {
             it('called', () => {
                 const spy = sinon.spy();
 
-                return fin.Application.wrap({ uuid: 'adapter-test-app' }).getWindow().then(win => {
+                return fin.Application.wrap({ uuid: 'adapter-test-app' }).then(app => app.getWindow()).then(win => {
 
                     win.on('closed', spy);
 

@@ -129,7 +129,7 @@ describe('Window.', () => {
                 return otherFin.Window.wrap({
                     uuid: testWindow.identity.uuid,
                     name: testWindow.identity.uuid
-                }).executeJavaScript(scriptToExecute).catch(() => {
+                }).then(win => win.executeJavaScript(scriptToExecute)).catch(() => {
                     return assert(true);
                 });
             });

@@ -8,8 +8,8 @@ import Transport from '../../transport/transport';
 
 // tslint:disable-next-line
 export default class _WindowModule extends Bare {
-    public wrap(identity: Identity): _Window {
-        return new _Window(this.wire, identity);
+    public wrap(identity: Identity): Promise<_Window> {
+        return Promise.resolve(new _Window(this.wire, identity));
     }
 }
 
@@ -473,6 +473,15 @@ export class _Window extends Base {
      */
     public setZoomLevel(level: number): Promise<void> {
         return this.wire.sendAction('set-zoom-level', Object.assign({}, this.identity, { level })).then(() => undefined);
+    }
+
+    /**
+     * Navigates the window to a specified URL.
+     * @param {string} url - The URL to navigate the window to.
+     * @return {Promise.<void>}
+     */
+    public navigate(url: string): Promise<void> {
+        return this.wire.sendAction('navigate-window', Object.assign({}, this.identity, { url })).then(() => undefined);
     }
 
     /**
