@@ -27,7 +27,6 @@ export default class InterApplicationBus extends Bare {
      * @param { any } message The message to be published. Can be either a primitive
      * data type (string, number, or boolean) or composite data type (object, array)
      * that is composed of other primitive or composite data types
-     * @tutorial InterApplicationBus.publish
      * @return {Promise.<void>}
      * @tutorial InterApplicationBus.publish
     */
@@ -64,14 +63,13 @@ export default class InterApplicationBus extends Bare {
      * If the subscription is for a uuid, [name], topic combination that has already
      * been published to upon subscription you will receive the last 20 missed messages
      * in the order they were published.
-     * @param { Identity } source
+     * @param { Identity } source This object is described in the Identity in the typedef
      * @param { string } topic The topic on which the message is sent
      * @param { function } listener A function that is called when a message has
      * been received. It is passed the message, uuid and name of the sending application.
      * The message can be either a primitive data type (string, number, or boolean) or
      * composite data type (object, array) that is composed of other primitive or composite
      * data types
-     * @tutorial InterApplicationBus.subcribe
      * @return {Promise.<void>}
      * @tutorial InterApplicationBus.subcribe
      */
