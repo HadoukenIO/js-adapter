@@ -34,7 +34,7 @@ import Transport from '../../transport/transport';
  * @typedef { Object } TerminateExternalRequestType
  * @property { string } uuid The uuid of the running application
  * @property { number } timeout Time out period before the running application terminates
- * @property { boolean } kiltree Value to terminate the running application
+ * @property { boolean } killtree Value to terminate the running application
  */
 
 /**
@@ -49,8 +49,8 @@ import Transport from '../../transport/transport';
  * ExternalProcessRequestType interface
  * @typedef { Object } ExternalProcessRequestType
  * @property { string } path The file path to where the running application resides
- * @property { string } argument The argument passed to the running application
- * @property { Object } LaunchExternalProcessListner This is described in the {LaunchExternalProcessListner} type definition
+ * @property { string } arguments The argument passed to the running application
+ * @property { Object } listener This is described in the {LaunchExternalProcessListner} type definition
  */
 
 /**
@@ -176,7 +176,7 @@ export default class System extends Base {
 
     /**
       * Retrieves an array containing information for each log file.
-      * @tutorail System.getLogList
+      * @tutorial System.getLogList
       * @return {Promise.Array<LogInfo>}
     */
     public getLogList(): Promise<Array<LogInfo>> {
@@ -229,7 +229,7 @@ export default class System extends Base {
 
     /**
      * Returns information about the running RVM in an object.
-     * @tutorail System.getRvmInfo
+     * @tutorial System.getRvmInfo
      * @return {Promise.<RVMInfo>}
     */
     // incompatible with standalone node process.

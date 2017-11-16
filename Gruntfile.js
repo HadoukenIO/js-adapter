@@ -154,7 +154,7 @@ module.exports = function(grunt) {
              if (err) {
                  grunt.log.error(err);
              } else {
-                 grunt.log.ok('published new documentationfor node-adapter.');
+                 grunt.log.ok('published new documentation for node-adapter.');
              }
         });
     });

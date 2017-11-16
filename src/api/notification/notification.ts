@@ -48,7 +48,7 @@ export interface NotificationCallback {
  * are controlled by the runtime.
  * @class
  * @alias Notification
-*/
+ */
 // tslint:disable-next-line
 export class _Notification extends Base implements Notification {
     private listenerList: Array<string> = ['newListener'];
@@ -123,7 +123,7 @@ export class _Notification extends Base implements Notification {
      * Invoked when the notification is shown
      * @return {Promise.<Message>}
      * @tutorial Notification.show
-    */
+     */
     public show(): Promise<Message<any>> {
 
         if (!this.url) {
@@ -151,7 +151,7 @@ export class _Notification extends Base implements Notification {
      * primitive or composite data types
      * @return {Promise.<void>}
      * @tutorial Notification.sendMessage
-    */
+     */
     public sendMessage(message: any): Promise<Message<any>> {
 
         return this.wire.sendAction('send-action-to-notifications-center', {
@@ -169,7 +169,7 @@ export class _Notification extends Base implements Notification {
      * Closes the notification
      * @return {Promise.<Messge>}
      * @tutorial Notification.close
-    */
+     */
     public close(): Promise<Message<any>> {
 
         return this.wire.sendAction('send-action-to-notifications-center', {

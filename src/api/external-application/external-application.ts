@@ -13,12 +13,12 @@ class ExternalApplication extends Base {
     /**
      * Returns an External Application object that represents an existing external application.
      * @param {string} uuid The UUID of the external application to be wrapped
-     * @return {ExternalApplication}
+     * @return {Promise.<ExternalApplication>}
      */
-    public wrap(uuid: string): ExternalApplication {
+    public wrap(uuid: string): Promise<ExternalApplication> {
         const wrapped = new ExternalApplication(this.wire);
         wrapped.identity = { uuid };
-        return wrapped;
+        return Promise.resolve(wrapped);
     }
 }
 

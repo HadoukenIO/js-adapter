@@ -22,13 +22,11 @@ connect({
 function logic(fin) {
 
     fin.System.getVersion().then(v => console.log("Connected to Hadouken version", v));
-
-    const win = fin.Window.wrap({
+    let win;
+    fin.Window.wrap({
         uuid: "remote-app-uuid",
         name: "remote-window-name"
-    });
-
-    win.moveBy(500, 0).then(win.flash());
+    }).then(w => { win = w; win.moveBy(500, 0)).then(win.flash());
 
 }
 

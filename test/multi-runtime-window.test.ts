@@ -28,16 +28,17 @@ describe('Multi Runtime', () =>  {
                 const runtimeA = conns[0];
                 const runtimeB = conns[1];
                 await delayPromise(DELAY_MS);
-                const app = await runtimeB.fin.Application.create(appConfigTemplate);
-                await app.run();
-                const win = await runtimeA.fin.Application.wrap({ uuid: appConfigTemplate.uuid }).getWindow();
+                const realApp = await runtimeB.fin.Application.create(appConfigTemplate);
+                await realApp.run();
+                const app = await runtimeA.fin.Application.wrap({ uuid: appConfigTemplate.uuid });
+                const win = await app.getWindow();
                 const bounds = await win.getBounds();
                 await win.moveBy(1, 1);
                 const postMoveBounds = await win.getBounds();
 
                 assert.equal(postMoveBounds.top, bounds.top + 1, 'Expected bounds top to match');
                 assert.equal(postMoveBounds.left, bounds.left + 1, 'Expected bounds left to match');
-                return await app.close();
+                return await realApp.close();
             });
         });
 
@@ -51,9 +52,10 @@ describe('Multi Runtime', () =>  {
                 const runtimeA = conns[0];
                 const runtimeB = conns[1];
                 await delayPromise(DELAY_MS);
-                const app = await runtimeB.fin.Application.create(appConfigTemplate);
-                await app.run();
-                const win = await runtimeA.fin.Application.wrap({ uuid: appConfigTemplate.uuid }).getWindow();
+                const realApp = await runtimeB.fin.Application.create(appConfigTemplate);
+                await realApp.run();
+                const app = await runtimeA.fin.Application.wrap({ uuid: appConfigTemplate.uuid });
+                const win = await app.getWindow();
                 const bounds = await win.getBounds();
                 await win.resizeTo(resizeToVal, resizeToVal, 'top-left');
                 const postResizeBounds = await win.getBounds();
@@ -63,7 +65,7 @@ describe('Multi Runtime', () =>  {
                 assert.equal(postResizeBounds.right, bounds.left + resizeToVal, 'Expected right bounds to be left + resizeToVal');
                 assert.equal(postResizeBounds.bottom, bounds.top + resizeToVal, 'Expected bottom bounds to be bottom + resizeToVal');
 
-                return await app.close();
+                return await realApp.close();
 
             });
         });
@@ -78,15 +80,16 @@ describe('Multi Runtime', () =>  {
             const runtimeA = conns[0];
             const runtimeB = conns[1];
             await delayPromise(DELAY_MS);
-            const app = await runtimeB.fin.Application.create(appConfigTemplate);
-            await app.run();
-            const win = await runtimeA.fin.Application.wrap({ uuid: appConfigTemplate.uuid }).getWindow();
+            const realApp = await runtimeB.fin.Application.create(appConfigTemplate);
+            await realApp.run();
+            const app = await runtimeA.fin.Application.wrap({ uuid: appConfigTemplate.uuid });
+            const win = await app.getWindow();
             const state = await win.getState();
             const expectedState = 'normal';
 
             assert.equal(state, expectedState, `Expected state to be ${ expectedState }`);
 
-            return await app.close();
+            return await realApp.close();
 
         });
 
@@ -98,16 +101,17 @@ describe('Multi Runtime', () =>  {
             const runtimeA = conns[0];
             const runtimeB = conns[1];
             await delayPromise(DELAY_MS);
-            const app = await runtimeB.fin.Application.create(appConfigTemplate);
-            await app.run();
-            const win = await runtimeA.fin.Application.wrap({ uuid: appConfigTemplate.uuid }).getWindow();
+            const realApp = await runtimeB.fin.Application.create(appConfigTemplate);
+            await realApp.run();
+            const app = await runtimeA.fin.Application.wrap({ uuid: appConfigTemplate.uuid });
+            const win = await app.getWindow();
             await win.minimize();
             const state = await win.getState();
             const expectedState = 'minimized';
 
             assert.equal(state, expectedState, `Expected state to be ${ expectedState }`);
 
-            return await app.close();
+            return await realApp.close();
         });
     });
 

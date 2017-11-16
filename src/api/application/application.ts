@@ -30,10 +30,10 @@ export default class ApplicationModule extends Bare {
     /**
      * Returns an Application object that represents an existing application.
      * @param { Identity } indentity
-     * @return {Application}
+     * @return {Promise.<Application>}
     */
-    public wrap(identity: Identity): Application {
-        return new Application(this.wire, identity);
+    public wrap(identity: Identity): Promise<Application> {
+        return Promise.resolve(new Application(this.wire, identity));
     }
 
     /**

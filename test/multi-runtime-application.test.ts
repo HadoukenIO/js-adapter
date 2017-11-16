@@ -31,12 +31,13 @@ describe('Multi Runtime', () =>  {
                 const runtimeA = conns[0];
                 const runtimeB = conns[1];
 
-                const app = await runtimeB.fin.Application.create(appConfigTemplate);
-                await app.run();
-                const info = await runtimeA.fin.Application.wrap({ uuid: appConfigTemplate.uuid }).getInfo();
+                const realApp = await runtimeB.fin.Application.create(appConfigTemplate);
+                await realApp.run();
+                const app = await runtimeA.fin.Application.wrap({ uuid: appConfigTemplate.uuid });
+                const info = await app.getInfo();
 
                 assert.equal(info.launchMode, expectedLaunchMode, `Expected launchMode to be "${ expectedLaunchMode }"`);
-                return await app.close();
+                return await realApp.close();
             });
         });
 
@@ -50,12 +51,13 @@ describe('Multi Runtime', () =>  {
                 const expectedUuid = runtimeB.fin.wire.me.uuid;
 
                 await delayPromise(DELAY_MS);
-                const app = await runtimeB.fin.Application.create(appConfigTemplate);
-                await app.run();
-                const parentUuid = await runtimeA.fin.Application.wrap({ uuid: appConfigTemplate.uuid }).getParentUuid();
+                const realApp = await runtimeB.fin.Application.create(appConfigTemplate);
+                await realApp.run();
+                const app = await runtimeA.fin.Application.wrap({ uuid: appConfigTemplate.uuid });
+                const parentUuid = await app.getParentUuid();
 
                 assert.equal(parentUuid, expectedUuid, `Expected uuid to be "${ expectedUuid }"`);
-                return await app.close();
+                return await realApp.close();
             });
         });
 
@@ -68,11 +70,13 @@ describe('Multi Runtime', () =>  {
                 const runtimeB = conns[1];
 
                 await delayPromise(DELAY_MS);
-                const app = await runtimeB.fin.Application.create(appConfigTemplate);
-                await app.run();
-                const isRunning = await runtimeA.fin.Application.wrap({ uuid: appConfigTemplate.uuid }).isRunning();
+                const realApp = await runtimeB.fin.Application.create(appConfigTemplate);
+                await realApp.run();
+                const app = await runtimeA.fin.Application.wrap({ uuid: appConfigTemplate.uuid });
+                const isRunning = await app.isRunning();
+
                 assert.equal(isRunning, true, 'Expected application to be running');
-                return await app.close().then();
+                return await realApp.close().then();
             });
         });
     });

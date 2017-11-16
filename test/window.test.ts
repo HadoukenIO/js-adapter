@@ -129,7 +129,7 @@ describe('Window.', () => {
                 return otherFin.Window.wrap({
                     uuid: testWindow.identity.uuid,
                     name: testWindow.identity.uuid
-                }).executeJavaScript(scriptToExecute).catch(() => {
+                }).then(win => win.executeJavaScript(scriptToExecute)).catch(() => {
                     return assert(true);
                 });
             });
@@ -343,6 +343,10 @@ describe('Window.', () => {
 
         it('Fulfilled', () => testWindow.setZoomLevel(zoomLevel)
            .then(() => testWindow.getZoomLevel()).then(data => assert(data === zoomLevel)));
+    });
+
+    describe('navigate()', () => {
+        it('Fulfilled', () => testWindow.navigate('https://www.google.com').then(() => assert(true)));
     });
 
     describe('navigateBack()', () => {
