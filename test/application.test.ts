@@ -157,7 +157,7 @@ describe('Application.', () => {
 
     describe('getInfo()', () => {
 
-        it('Shold contain some information', () => {
+        it('Should contain some information', () => {
             return testApp.getInfo().then(info => {
                 const expectedLaunchMode = 'adapter';
 
