@@ -37,7 +37,7 @@ describe('Application.', () => {
         });
     });
 
-    describe('close()',  () => {
+    describe('close()', () => {
         const appToCloseConfig = {
             name: 'adapter-test-app-to-close',
             url: 'about:blank',
@@ -55,10 +55,10 @@ describe('Application.', () => {
 
         it('Fulfilled', (done) => {
             appToClose.close().then(() => appToClose.isRunning()
-                                           .then(data => {
-                                                assert(data === false);
-                                                return done();
-                                            }));
+                .then(data => {
+                    assert(data === false);
+                    return done();
+                }));
         });
     });
 
@@ -72,12 +72,49 @@ describe('Application.', () => {
         it('Fulfilled', () => testApp.getGroups().then(data => assert(data instanceof Array)));
     });
 
-    describe('getParentUuid()',  () => {
+    describe('getParentUuid()', () => {
 
         it('Fulfilled', () => {
             return testApp.getParentUuid().then(data => assert(data === fin.me.uuid));
         });
     });
+    /*
+    describe('getShortcuts()', () => {
+        const shortcutsConfig = {
+            desktop: true,
+            startMenu: true,
+            systemStartup: false
+        };
+
+        let shortcutsApp: Application;
+
+        before(() => {
+            return fin.Application.createFromManifest('file:///Z:/dev/js-adapter/test/app.json').then(a => {
+                shortcutsApp = a;
+                return shortcutsApp.run();
+            });
+        });
+
+        it('Fulfilled', () => shortcutsApp.setShortcuts(shortcutsConfig)
+            .then(() => {
+                return shortcutsApp.getShortcuts().then(data => {
+                    console.warn(data);
+                    assert.deepEqual(data, shortcutsConfig);
+                });
+            })
+
+            .catch(e => {
+                console.warn(e.message);
+                assert(1);
+            }));
+    });
+
+    describe('getTrayIconInfo()', () => {
+
+        it('Fulfilled', () => {
+            return testApp.getTrayIconInfo().then(info => assert(true)).catch(err => console.warn(err.message));
+        });
+    });*/
 
     describe('registerCustomData()', () => {
 
@@ -161,7 +198,7 @@ describe('Application.', () => {
             return testApp.getInfo().then(info => {
                 const expectedLaunchMode = 'adapter';
 
-                return assert.equal(info.launchMode, expectedLaunchMode, `Expected launchMode to be "${ expectedLaunchMode }"`);
+                return assert.equal(info.launchMode, expectedLaunchMode, `Expected launchMode to be "${expectedLaunchMode}"`);
             });
         });
     });
