@@ -6,6 +6,14 @@ const exec = require('child_process').exec;
 const rimraf = require('rimraf');
 const webpack = require('webpack');
 const asar = require('asar');
+const fs = require('fs');
+const wrench = require('wrench');
+
+try {
+    var openfinSign = require('openfin-sign');
+} catch (err) {
+    openfinSign = function() {};
+}
 
 const stagingDir = path.resolve('staging');
 const outDir = path.resolve('out');
@@ -159,6 +167,23 @@ module.exports = function(grunt) {
         });
     });
 
+    grunt.registerTask('sign-files', function() {
+        wrench.readdirSyncRecursive(stagingDir).forEach(filename => {
+            const filepath = path.join(stagingDir, filename);
+
+            if (!fs.statSync(filepath).isDirectory()) {
+                console.log('signing: ' + filepath);
+                openfinSign(filepath);
+            }
+        });
+        grunt.log.ok('Finished signing files.');
+    });
+
+    grunt.registerTask('sign-asar', function() {
+        openfinSign(path.join(outDir, asarName));
+        grunt.log.ok('Finished signing asar.');
+    });
+
     grunt.loadNpmTasks('grunt-ts');
     grunt.loadNpmTasks('grunt-tslint');
     grunt.loadNpmTasks('grunt-mocha-test');
@@ -166,7 +191,7 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-contrib-copy');
 
     grunt.registerTask('lint', [ 'tslint' ]);
-    grunt.registerTask('build', [ 'clean', 'ts', 'webpack', 'asar', 'copy:resources' ]);
+    grunt.registerTask('build', [ 'clean', 'ts', 'webpack', 'sign-files', 'asar', 'sign-asar', 'copy:resources' ]);
     grunt.registerTask('default', [ 'lint', 'build' ]);
     grunt.registerTask('test', [ 'check-version', 'default', 'start-server', 'kill-processes', 'openfin', 'mochaTest', 'kill-processes']);
     grunt.registerTask('repl', [ 'check-version', 'default', 'start-server', 'openfin', 'start-repl' ]);
