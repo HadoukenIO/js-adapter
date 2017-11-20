@@ -172,7 +172,6 @@ module.exports = function(grunt) {
             const filepath = path.join(stagingDir, filename);
 
             if (!fs.statSync(filepath).isDirectory()) {
-                console.log('signing: ' + filepath);
                 openfinSign(filepath);
             }
         });
