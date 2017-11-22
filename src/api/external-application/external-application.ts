@@ -1,6 +1,10 @@
 import { Base, Reply } from '../base';
 import { Identity } from '../../identity';
 
+export interface ExternalApplicationInfo {
+    parent: Identity;
+}
+
 /**
  * @classdesc An ExternalApplication object representing an application. Allows
  * the developer to create, execute, show and close an external application as
@@ -19,6 +23,15 @@ class ExternalApplication extends Base {
         const wrapped = new ExternalApplication(this.wire);
         wrapped.identity = { uuid };
         return Promise.resolve(wrapped);
+    }
+
+    /**
+     * Retrieves information about the external application.
+     * @return {Promise.<ExternalApplicationInfo>}
+     * @tutorial externalApplication.getInfo
+     */
+    public getInfo(): Promise<ExternalApplicationInfo> {
+        return this.wire.sendAction('get-external-application-info', this.identity).then(({ payload }) => payload.data);
     }
 }
 
