@@ -1,6 +1,7 @@
 import { conn } from './connect';
 import { Fin, Application } from '../src/main';
 import * as assert from 'assert';
+import * as path from 'path';
 
 describe('Application.', () => {
     let fin: Fin;
@@ -78,43 +79,31 @@ describe('Application.', () => {
             return testApp.getParentUuid().then(data => assert(data === fin.me.uuid));
         });
     });
-    /*
+
     describe('getShortcuts()', () => {
-        const shortcutsConfig = {
-            desktop: true,
-            startMenu: true,
-            systemStartup: false
-        };
 
-        let shortcutsApp: Application;
-
-        before(() => {
-            return fin.Application.createFromManifest('file:///Z:/dev/js-adapter/test/app.json').then(a => {
-                shortcutsApp = a;
-                return shortcutsApp.run();
+        it('Fulfilled', () => fin.Application.createFromManifest(path.resolve('test/app.json'))
+            .then(app => {
+            return app.getShortcuts().then(data => {
+                assert(typeof(data.desktop) === 'boolean');
+                assert(typeof(data.startMenu) === 'boolean');
+                assert(typeof(data.systemStartup) === 'boolean');
             });
-        });
-
-        it('Fulfilled', () => shortcutsApp.setShortcuts(shortcutsConfig)
-            .then(() => {
-                return shortcutsApp.getShortcuts().then(data => {
-                    console.warn(data);
-                    assert.deepEqual(data, shortcutsConfig);
-                });
-            })
-
-            .catch(e => {
-                console.warn(e.message);
-                assert(1);
-            }));
+        }));
     });
 
     describe('getTrayIconInfo()', () => {
 
-        it('Fulfilled', () => {
-            return testApp.getTrayIconInfo().then(info => assert(true)).catch(err => console.warn(err.message));
-        });
-    });*/
+       it('Fulfilled', () => testApp.setTrayIcon('http://cdn.openfin.co/assets/testing/icons/circled-digit-one.png')
+            .then(() => {
+            return testApp.getTrayIconInfo().then(info => {
+                assert(typeof(info.x) === 'number');
+                assert(typeof(info.y) === 'number');
+                assert(typeof(info.bounds) === 'object');
+                assert(typeof(info.monitorInfo) === 'object');
+            });
+        }));
+    });
 
     describe('registerCustomData()', () => {
 
