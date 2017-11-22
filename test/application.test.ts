@@ -143,21 +143,19 @@ describe('Application.', () => {
         });
     });
 
-    /*
     describe('setShortcuts()', () => {
 
-        it('Fulfilled', (done) => {
-            testApp.setShortcuts({
-                desktop: true,
-                startMenu: false,
-                systemStartup: true
-            }).then(() => {
-                assert(true);
-                return done();
-            });
-        });
+        it('Fulfilled', () => fin.Application.createFromManifest(path.resolve('test/app.json'))
+            .then(app => {
+                app.setShortcuts({
+                    desktop: true,
+                    startMenu: false,
+                    systemStartup: true
+                }).then(() => {
+                    assert(true);
+                });
+        }));
     });
-    */
 
     describe('terminate()', () => {
 

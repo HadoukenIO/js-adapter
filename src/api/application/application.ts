@@ -253,7 +253,7 @@ export class Application extends Base {
      * @tutorial Application.setShortcuts
      */
     public setShortcuts(config: ConfigInterface): Promise<void> {
-        return this.wire.sendAction('set-shortcuts', Object.assign({}, this.identity, config)
+        return this.wire.sendAction('set-shortcuts', Object.assign({}, this.identity, {data: config})
                ).then(() => undefined);
     }
 
