@@ -10,9 +10,9 @@ describe('ExternalApplication.', () => {
 
         it('Should contain parent information', () => fin.ExternalApplication.wrap('notepad-uuid')
             .then(extApp => {
-                return extApp.getInfo().then(info => {
+                extApp.getInfo().then(info => {
                     // todo: need to get parent uuid and name info
-                    return assert(info.parent === null);
+                    assert(info.parent === null);
                 });
         }));
     });

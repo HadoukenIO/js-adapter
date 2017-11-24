@@ -1,8 +1,20 @@
-import { Base, Reply } from '../base';
+import { Bare, Base, Reply } from '../base';
 import { Identity } from '../../identity';
+import Transport from '../../transport/transport';
 
 export interface ExternalApplicationInfo {
     parent: Identity;
+}
+
+export default class ExternalApplicationModule extends Bare {
+    /**
+     * Returns an External Application object that represents an existing external application.
+     * @param {string} uuid The UUID of the external application to be wrapped
+     * @return {Promise.<ExternalApplication>}
+     */
+    public wrap(uuid: string): Promise<ExternalApplication> {
+        return Promise.resolve(new ExternalApplication(this.wire, {uuid}));
+    }
 }
 
 /**
@@ -11,33 +23,39 @@ export interface ExternalApplicationInfo {
  * well as listen to application events.
  * @class
  */
-class ExternalApplication extends Base {
-    public identity: Identity;
+export class ExternalApplication extends Base {
 
-    /**
-     * Returns an External Application object that represents an existing external application.
-     * @param {string} uuid The UUID of the external application to be wrapped
-     * @return {Promise.<ExternalApplication>}
-     */
-    public wrap(uuid: string): Promise<ExternalApplication> {
-        const wrapped = new ExternalApplication(this.wire);
-        wrapped.identity = { uuid };
-        return Promise.resolve(wrapped);
+    constructor(wire: Transport, public identity: Identity) {
+        super(wire);
+
+        this.on('removeListener', eventType => {
+            this.deregisterEventListener(Object.assign({}, this.identity, {
+                type: eventType,
+                topic : this.topic
+            }));
+        });
+
+        this.on('newListener', eventType => {
+            this.registerEventListener(Object.assign({}, this.identity, {
+                type: eventType,
+                topic : this.topic
+            }));
+        });
     }
 
     /**
      * Retrieves information about the external application.
      * @return {Promise.<ExternalApplicationInfo>}
-     * @tutorial externalApplication.getInfo
+     * @tutorial ExternalApplication.getInfo
      */
     public getInfo(): Promise<ExternalApplicationInfo> {
         return this.wire.sendAction('get-external-application-info', this.identity).then(({ payload }) => payload.data);
     }
 }
 
-interface ExternalApplication {
-    addEventListener(type: 'connected', listener: (data: Reply<'externalapplication', 'connected'>) => Promise<void>): this;
-    addEventListener(type: 'disconnected', listener: (data: Reply<'externalapplication', 'disconnected'>) => Promise<void>): this;
+export interface ExternalApplication {
+    on(type: 'connected', listener: (data: Reply<'externalapplication', 'connected'>) => void): this;
+    on(type: 'disconnected', listener: (data: Reply<'externalapplication', 'disconnected'>) => void): this;
+    on(type: 'removeListener', listener: (eventType: string) => void): this;
+    on(type: 'newListener', listener: (eventType: string) => void): this;
 }
-
-export default ExternalApplication;
