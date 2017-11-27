@@ -1,6 +1,6 @@
 # Hadouken Node.js adapter [![Build Status](https://build.openf.in:443/buildStatus/icon?job=node-adapter&style=plastic)]()
 
-Allows the use of the Hadouken API from node.js. View the [documentation](https://hadoukenio.github.io/js-adapter/)
+Allows the use of the Hadouken API from node.js.
 
 ## Requirements
 
