@@ -44,6 +44,382 @@ export interface CloseEventShape {
 // tslint:disable-next-line
 export class _Window extends Base {
 
+    /**
+     * Raised when a window within this application requires credentials from the user.
+     *
+     * @event Window#auth-requested
+     * @type {object}
+     * @property {string} name - Name of the window.
+     * @property {string} uuid - UUID of the application that the window belongs to.
+     * @property {object} authInfo
+     * @property {string} authInfo.host - Host server.
+     * @property {boolean} authInfo.isProxy - Indicates if the request involves a proxy.
+     * @property {number} authInfo.port - Port number.
+     * @property {string} authInfo.realm - Authentication request realm.
+     * @property {string} authInfo.scheme - Authentication scheme.
+     */
+
+    /**
+     * Raised when a window loses focus.
+     *
+     * @event Window#blurred
+     * @type {object}
+     * @property {string} name - Name of the window.
+     * @property {string} uuid - UUID of the application that the window belongs to.
+     */
+
+    /**
+     * Raised after changes in a window's size and/or position.
+     *
+     * @event Window#bounds-changed
+     * @type {object}
+     * @property {string} name - Name of the window.
+     * @property {string} uuid - UUID of the application that the window belongs to.
+     * @property {number} changeType - Describes what kind of change occurred.
+     0 means a change in position.
+     1 means a change in size.
+     2 means a change in position and size.
+     * @property {string} deferred - Indicated whether pending changes have been applied.
+     * @property {number} height - New height of the window.
+     * @property {number} left - New left most coordinate of the window.
+     * @property {number} top - New top most coordinate of the window.
+     * @property {number} width - New width of the window.
+     */
+
+    /**
+     * Raised when a window has been prevented from closing. A window will be prevented from closing by default,
+     either through the API or by a user when ‘close-requested’ has been subscribed to and the Window.close(force) flag is false.
+     *
+     * @event Window#close-requested
+     * @type {object}
+     * @property {string} name - Name of the window.
+     * @property {string} uuid - UUID of the application that the window belongs to.
+     */
+
+    /**
+     * Raised when a window has closed.
+     *
+     * @event Window#closed
+     * @type {object}
+     * @property {string} name - Name of the window.
+     * @property {string} uuid - UUID of the application that the window belongs to.
+     */
+
+    /**
+     * Raised when a window has crashed.
+     *
+     * @event Window#crashed
+     * @type {object}
+     * @property {string} name - Name of the window.
+     * @property {string} uuid - UUID of the application that the window belongs to.
+     */
+
+    /**
+     * Raised when the frame is disabled after all prevent user changes in window's size and/or position have completed.
+     *
+     * @event Window#disabled-frame-bounds-changed
+     * @type {object}
+     * @property {string} name - Name of the window.
+     * @property {string} uuid - UUID of the application that the window belongs to.
+     * @property {number} changeType - Describes what kind of change occurred.
+     0 means a change in position.
+     1 means a change in size.
+     2 means a change in position and size.
+     * @property {string} deferred - Indicated whether pending changes have been applied.
+     * @property {number} height - New height of the window.
+     * @property {number} left - New left most coordinate of the window.
+     * @property {number} top - New top most coordinate of the window.
+     * @property {number} width - New width of the window.
+     */
+
+    /**
+     * Raised when the frame is disabled during prevented user changes to a window's size and/or position.
+     *
+     * @event Window#disabled-frame-bounds-changing
+     * @type {object}
+     * @property {string} name - Name of the window.
+     * @property {string} uuid - UUID of the application that the window belongs to.
+     * @property {number} changeType - Describes what kind of change occurred.
+     0 means a change in position.
+     1 means a change in size.
+     2 means a change in position and size.
+     * @property {string} deferred - Indicated whether pending changes have been applied.
+     * @property {number} height - New height of the window.
+     * @property {number} left - New left most coordinate of the window.
+     * @property {number} top - New top most coordinate of the window.
+     * @property {number} width - New width of the window.
+     */
+
+    /**
+     * Raised when the window has been embedded.
+     *
+     * @event Window#embedded
+     * @type {object}
+     * @property {string} name - Name of the window.
+     * @property {string} uuid - UUID of the application that the window belongs to.
+     */
+
+    /**
+     * Raised when an external process has exited.
+     *
+     * @event Window#external-process-exited
+     * @type {object}
+     * @property {string} name - Name of the window.
+     * @property {string} uuid - UUID of the application that the window belongs to.
+     * @property {string} processUuid - The process handle UUID.
+     * @property {number} exitCode - The process exit code
+     */
+
+    /**
+     * Raised when an external process has started.
+     *
+     * @event Window#external-process-started
+     * @type {object}
+     * @property {string} name - Name of the window.
+     * @property {string} uuid - UUID of the application that the window belongs to.
+     * @property {string} processUuid - The process handle UUID.
+     */
+
+    /**
+     * Raised when a window's frame becomes disabled.
+     *
+     * @event Window#frame-disabled
+     * @type {object}
+     * @property {string} name - Name of the window.
+     * @property {string} uuid - UUID of the application that the window belongs to.
+     */
+
+    /**
+     * Raised when a window's frame becomes enabled.
+     *
+     * @event Window#frame-enabled
+     * @type {object}
+     * @property {string} name - Name of the window.
+     * @property {string} uuid - UUID of the application that the window belongs to.
+     */
+
+    /**
+     * Raised when a window joins/leaves a group and/or when the group a window is a member of changes.
+     *
+     * @event Window#group-changed
+     * @type {object}
+     * @property {string} name - Name of the window.
+     * @property {string} uuid - UUID of the application that the window belongs to.
+     * @property {string} source - Which group array the window that the event listener was registered on is included in:
+     'source' The window is included in sourceGroup.
+     'target' The window is included in targetGroup.
+     'nothing' The window is not included in sourceGroup nor targetGroup.
+     * @property {string} reason - The reason this event was triggered.
+     'leave' A window has left the group due to a leave or merge with group.
+     'join' A window has joined the group.
+     'merge' Two groups have been merged together.
+     'disband' There are no other windows in the group.
+     * @property {string} name - Name of the window.
+     * @property {legacyWindowIdentity[]} sourceGroup - All the windows in the group the sourceWindow originated from.
+     * @property {string} sourceWindowAppUuid - UUID of the application the sourceWindow belongs to the
+     source window is the window in which (merge/join/leave)group(s) was called.
+     * @property {string} sourceWindowName - Name of the sourcewindow.
+     The source window is the window in which (merge/join/leave)group(s) was called.
+     * @property {legacyWindowIdentity[]} targetGroup - All the windows in the group the targetWindow orginated from.
+     * @property {string} targetWindowAppUuid - UUID of the application the targetWindow belongs to.
+     The target window is the window that was passed into (merge/join)group(s).
+     * @property {string} targetWindowName - Name of the targetWindow.
+     The target window is the window that was passed into (merge/join)group(s).
+     */
+
+    /**
+     * Raised when a window has been hidden.
+     *
+     * @event Window#hidden
+     * @type {object}
+     * @property {string} name - Name of the window.
+     * @property {string} uuid - UUID of the application that the window belongs to.
+     * @property {string} reason - Action prompted the close The reasons are:
+     "hide"
+     "hide-on-close"
+    */
+
+    /**
+     * Raised when a window is initialized.
+     *
+     * @event Window#initialized
+     * @type {object}
+     * @property {string} name - Name of the window.
+     * @property {string} uuid - UUID of the application that the window belongs to.
+     */
+
+    /**
+     * Raised when a window is maximized.
+     *
+     * @event Window#maximized
+     * @type {object}
+     * @property {string} name - Name of the window.
+     * @property {string} uuid - UUID of the application that the window belongs to.
+     */
+
+    /**
+     * Raised when a window is minimized.
+     *
+     * @event Window#minimized
+     * @type {object}
+     * @property {string} name - Name of the window.
+     * @property {string} uuid - UUID of the application that the window belongs to.
+     */
+
+    /**
+     * Raised when window navigation is rejected as per ContentNavigation whitelist/blacklist rules.
+     *
+     * @event Window#navigation-rejected
+     * @type {object}
+     * @property {string} name - Name of the window.
+     * @property {string} uuid - UUID of the application that the window belongs to.
+     * @property {string} sourceName - source of navigation window name.
+     * @property {string} url - Blocked content url.
+     */
+
+    /**
+     * Raised when a window is out of memory.
+     *
+     * @event Window#out-of-memory
+     * @type {object}
+     * @property {string} name - Name of the window.
+     * @property {string} uuid - UUID of the application that the window belongs to.
+     */
+
+    /**
+     * Raised after the execution of all plugin modules. Contains information about all
+     plugin modules' final states.
+     *
+     * @event Window#plugins-state-changed
+     * @type {object}
+     * @property {string} name - Name of the window.
+     * @property {string} uuid - UUID of the application that the window belongs to.
+     * @property {pluginModuleState[]} plugins - An array of all final plugin module states
+     */
+
+    /**
+     * Raised during the execution of a plugin module in a window.
+     Contains information about a single plugin module's state, for which the event has been raised.
+     *
+     * @event Window#plugins-state-changing
+     * @type {object}
+     * @property {string} name - Name of the window.
+     * @property {string} uuid - UUID of the application that the window belongs to.
+     * @property {pluginModuleState[]} plugins - An array of all final plugin module states
+     */
+
+    /**
+     * Raised after the execution of all of a window's preload scripts. Contains
+     information about all window's preload scripts' final states.
+     *
+     * @event Window#preload-scripts-state-changed
+     * @type {object}
+     * @property {string} name - Name of the window.
+     * @property {string} uuid - UUID of the application that the window belongs to.
+     * @property {preloadScriptState[]} preloadState -  An array of all final preload scripts' states
+     */
+
+    /**
+     * Raised during the execution of a window's preload script. Contains information
+     about a single window's preload script's state, for which the event has been raised.
+     *
+     * @event Window#preload-scripts-state-changing
+     * @type {object}
+     * @property {string} name - Name of the window.
+     * @property {string} uuid - UUID of the application that the window belongs to.
+     * @property {preloadScriptState[]} preloadState -  An array of all final preload scripts' states
+     */
+
+    /**
+     * Raised when an HTTP load was cancelled or failed.
+     *
+     * @event Window#resource-load-failed
+     * @type {object}
+     * @property {string} name - Name of the window.
+     * @property {string} uuid - UUID of the application that the window belongs to.
+     * @property {number} errorCode - The Chromium error code.
+     * @property {string} errorDescription - The Chromium error description.
+     * @property {string} validatedURL - The url attempted.
+     * @property {boolean} isMainFrame - Was the attempt made from the main frame.
+     */
+
+    /**
+     * Raised when an HTTP resource request has received response details.
+     *
+     * @event Window#resource-response-received
+     * @type {object}
+     * @property {string} name - Name of the window.
+     * @property {string} uuid - UUID of the application that the window belongs to.
+     * @property {boolean} status - Status of the request.
+     * @property {string} newUrl - The URL of the responded resource.
+     * @property {string} originalUrl - The requested URL.
+     * @property {number} httpResponseCode - The HTTP Response code.
+     * @property {string} requestMethod - The HTTP request method.
+     * @property {string} referrer - The HTTP referrer.
+     * @property {object} headers - The HTTP headers.
+     * @property {string} resourceType - Resource type:
+     "mainFrame", "subFrame",
+     "styleSheet", "script", "image",
+     "object", "xhr", or "other"
+    */
+
+    /**
+     * Raised when a window has reloaded.
+     *
+     * @event Window#reloaded
+     * @type {object}
+     * @property {string} name - Name of the window.
+     * @property {string} uuid - UUID of the application that the window belongs to.
+     * @property {string} url - Url has has been reloaded.
+     */
+
+    /**
+     * Raised when a window is displayed after having been minimized or
+     when a window leaves the maximize state without minimizing.
+     *
+     * @event Window#restored
+     * @type {object}
+     * @property {string} name - Name of the window.
+     * @property {string} uuid - UUID of the application that the window belongs to.
+     */
+
+    /**
+     * Raised when a window has been prevented from showing.
+     A window will be prevented from showing by default, either through the API or by a user when
+     ‘show-requested’ has been subscribed to on the window or 'window-show-requested'
+     on the parent application and the Window.show(force) flag is false.
+     *
+     * @event Window#show-requested
+     * @type {object}
+     * @property {string} name - Name of the window.
+     * @property {string} uuid - UUID of the application that the window belongs to.
+     */
+
+    /**
+     * Raised when a window been shown.
+     *
+     * @event Window#shown
+     * @type {object}
+     * @property {string} name - Name of the window.
+     * @property {string} uuid - UUID of the application that the window belongs to.
+     */
+
+    /**
+     * @typedef {object} legacyWindowIdentity
+     * @summary Object summary
+     * @desc Object description
+     * @property {string} appUuid - The UUID of the application this window entry belongs to.
+     * @property {string} windowName - The name of this window entry.
+     */
+
+    /**
+     * @typedef {object} preloadScriptState
+     * @summary Object summary
+     * @desc Object description
+     * @property {string} url - The url of the preload script.
+     * @property {string} state - The preload script state:
+     "load-failed", "failed", "succeeded"
+     */
     constructor(wire: Transport, public identity: Identity) {
         super(wire);
 
@@ -94,6 +470,7 @@ export class _Window extends Base {
     /**
      * Gives focus to the window.
      * @return {Promise.<void>}
+     * @emits _Window#focused
      */
     public focus(): Promise<void> {
         return this.wire.sendAction('focus-window', this.identity).then(() => undefined);
@@ -400,7 +777,7 @@ export class _Window extends Base {
 
     /**
      * Sets the window's size and position.
-     * @param { Bounds } bounds This is a object that holds the properties of
+     * @property { Bounds } bounds This is a * @type {string} name - name of the window.object that holds the propertys of
      * @tutorial Window.setBounds
      * @return {Promise.<void>}
      */
@@ -500,6 +877,7 @@ export class _Window extends Base {
      public stopNavigation(): Promise<void> {
          return this.wire.sendAction('stop-window-navigation', Object.assign({}, this.identity)).then(() => undefined);
      }
+
 }
 
 // tslint:disable-next-line
