@@ -2,10 +2,12 @@ import { Bare, Base } from '../base';
 import { Identity } from '../../identity';
 import Transport from '../../transport/transport';
 
+export type EntityType = 'window' | 'iframe' | 'external connection' | 'unknown';
+
 export interface FrameInfo {
     uuid: string;
     name: string;
-    entityType: string;
+    entityType: EntityType;
     parent: Identity;
 }
 
@@ -25,7 +27,7 @@ export default class _FrameModule extends Bare {
      * Get a reference to the current frame
      * @return {Promise.<_Frame>}
      */
-    public getCurrent(): object {
+    public getCurrent(): Promise<_Frame> {
         return Promise.resolve(new _Frame(this.wire, this.me));
     }
 }
