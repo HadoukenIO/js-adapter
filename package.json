@@ -12,6 +12,9 @@
     "prepublish": "npm run build",
     "doc": "npm run build && jsdoc -c jsdoc-conf.json -t jsdoc-template -u tutorials out/src --verbose"
   },
+  "optionalDependencies": {
+    "openfin-sign": "git+ssh://git@github.com:openfin/openfin-sign.git#caee55ecbe6f81e6ed9630790781fe4d1835cb03"
+  },
   "devDependencies": {
     "grunt": "~1.0.1",
     "grunt-contrib-copy": "^1.0.0",
@@ -34,6 +37,7 @@
     "@types/ws": "~0.0.36",
     "typescript": "~2.2.0",
     "webpack": "^3.8.1",
+    "wrench": "^1.5.9",
     "asar": "^0.12.1"
   },
   "dependencies": {
