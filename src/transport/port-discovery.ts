@@ -5,13 +5,11 @@ import * as http from 'http';
 import * as net from 'net';
 import * as path from 'path';
 import { ConnectConfig } from './wire';
-import { spawn } from 'child_process';
-import * as os from 'os';
+import Launcher from '../launcher/launcher';
 import Timer = NodeJS.Timer;
+import { ChildProcess } from 'child_process';
 
-const OpenFin_Installer: string = 'OpenFinInstaller.exe';
-const Installer_Work_Dir = path.join(process.env.TEMP, 'openfinode');
-const Security_Realm_Config_Key: string = '--security-realm=';
+const launcher = new Launcher();
 
 // header for messages from Runtime
 interface ChromiumMessageHeader {
@@ -70,29 +68,6 @@ function matchRuntimeInstance(config: ConnectConfig, message: PortDiscoveryMessa
     }
 }
 
-function copyInstaller(config: ConnectConfig): Promise<string> {
-    return new Promise((resolve, reject) => {
-        try {
-            fs.mkdirSync(Installer_Work_Dir);
-        } catch (e) {
-            if (!e.message.includes('file already exists')) {
-                reject(`Error creating work directory ${e.message}`);
-                return;
-            }
-        }
-        const rd = fs.createReadStream(path.join(__dirname, '..', '..', 'resources', 'win', OpenFin_Installer));
-        const outf: string = path.join(Installer_Work_Dir, OpenFin_Installer);
-        const wr = fs.createWriteStream(outf);
-        wr.on('error', (err: Error) => reject(err));
-        wr.on('finish', () => {
-            console.log(`copied ${outf}`);
-            resolve();
-        });
-        console.log(`copying ${outf}`);
-        rd.pipe(wr);
-    });
-}
-
 function generateManifest(config: ConnectConfig): any {
     const manifest = Object.assign({},
         {devtools_port: config.devToolsPort},
@@ -106,7 +81,7 @@ function generateManifest(config: ConnectConfig): any {
         manifest.runtime = Object.assign({}, {version: config.runtime.version,
                                             fallbackVersion: config.runtime.fallbackVersion});
         if (config.runtime.securityRealm) {
-            runtimeArgs = runtimeArgs.concat(` ${Security_Realm_Config_Key}${config.runtime.securityRealm} `);
+            runtimeArgs = runtimeArgs.concat(` ${launcher.Security_Realm_Config_Key}${config.runtime.securityRealm} `);
         }
         if (config.runtime.verboseLogging === true) {
             runtimeArgs = runtimeArgs.concat(' --v=1 ');
@@ -195,11 +170,7 @@ export class PortDiscovery {
     private timeoutTimer: Timer;
 
     constructor(config: ConnectConfig) {
-        if (os.platform() === 'win32') {
-            this.savedConfig = Object.assign({}, config);
-        } else {
-            throw new Error(`Port Discovery not supported on ${os.platform()}`);
-        }
+        this.savedConfig = Object.assign({}, config);
     }
 
     public retrievePort(): Promise<number> {
@@ -210,11 +181,12 @@ export class PortDiscovery {
                     this.cleanup();
                 }, this.savedConfig.timeout * 1000);
             }
-            copyInstaller(this.savedConfig).then(() => this.createManifest())
+            this.createManifest()
                 .then(() => this.createDiscoveryNamedPipe())
                 .then(() => {
                     const mPromise: Promise<PortDiscoveryMessage> = this.listenDiscoveryMessage();
-                    this.launchInstaller();
+                    launcher.launch(this.savedConfig, this.manifestLocation, this.namedPipeName)
+                       .then((openfin: ChildProcess) => openfin.once('error', err => reject(err)));
                     mPromise.then((msg: PortDiscoveryMessage) => {
                         if (matchRuntimeInstance(this.savedConfig, msg)) {
                             console.log(`Port discovery returns ${msg.port}`);
@@ -290,11 +262,11 @@ export class PortDiscovery {
                                 if (parsed.runtime) {
                                     this.savedConfig.runtime = Object.assign({}, {version: parsed.runtime.version});
                                     if (parsed.runtime.arguments) {
-                                        const index: number = parsed.runtime.arguments.indexOf(Security_Realm_Config_Key);
+                                        const index: number = parsed.runtime.arguments.indexOf(launcher.Security_Realm_Config_Key);
                                         if (index > 0) {
                                             parsed.runtime.arguments.split(' ').forEach((value: string) => {
-                                                if (value.startsWith(Security_Realm_Config_Key)) {
-                                                    const realm = value.substring(Security_Realm_Config_Key.length);
+                                                if (value.startsWith(launcher.Security_Realm_Config_Key)) {
+                                                    const realm = value.substring(launcher.Security_Realm_Config_Key.length);
                                                     this.savedConfig.runtime.securityRealm = realm;
                                                     console.log(`Parsed security realm ${realm} from ${this.savedConfig.manifestUrl}`);
                                                 }
@@ -315,7 +287,15 @@ export class PortDiscovery {
                 });
             } else {
                 const manifestFileName = 'NodeAdapter-' + this.savedConfig.uuid.replace(/ /g, '-') + '.json';
-                this.manifestLocation = path.join(Installer_Work_Dir, manifestFileName);
+                try {
+                    fs.mkdirSync(launcher.Installer_Work_Dir);
+                } catch (e) {
+                    if (!e.message.includes('file already exists')) {
+                        reject(`Error creating work directory ${e.message}`);
+                        return;
+                    }
+                }
+                this.manifestLocation = path.join(launcher.Installer_Work_Dir, manifestFileName);
                 console.log(`Creating manifest ${this.manifestLocation}`);
                 const wr = fs.createWriteStream(this.manifestLocation);
                 const manifest = generateManifest(this.savedConfig);
@@ -330,29 +310,6 @@ export class PortDiscovery {
                 });
             }
         });
-    }
-
-    private launchInstaller(): void {
-        const installer: string = path.join(Installer_Work_Dir, OpenFin_Installer);
-        const runtimeArgs = `--runtime-arguments=--runtime-information-channel-v6=${this.namedPipeName}`;
-        const installerArgs: Array<string> = [];
-        if (this.savedConfig.installerUI !== true) {
-            installerArgs.push('--no-installer-ui');
-        }
-        installerArgs.push(`--config=${this.manifestLocation}`);
-        installerArgs.push(`${runtimeArgs}`);
-        if (this.savedConfig.assetsUrl) {
-            installerArgs.push(`--assetsUrl=${this.savedConfig.assetsUrl}`);
-        }
-        console.log(`launching ${installer} ${installerArgs}`);
-        const exe = spawn(installer, installerArgs);
-        exe.stdout.on('data', (data: string) => {
-            console.log(`stdout: ${data}`);
-        });
-        exe.stderr.on('data', (data: string) => {
-            console.log(`stderr: ${data}`);
-        });
-        exe.on('error', (err: Error) => console.error(err));
     }
 
     private cleanup(): void {
