@@ -477,7 +477,7 @@ export class _Window extends Base {
      * Retrieves an array of frame info objects representing the main frame and any
      * iframes that are currently on the page.
      * @return {Promise.<Array<FrameInfo>>}
-     * @tutorial window.getAllFrames
+     * @tutorial Window.getAllFrames
      */
     public getAllFrames(): Promise<Array<FrameInfo>> {
         return this.wire.sendAction('get-all-frames', this.identity).then(({ payload }) => payload.data);
@@ -622,7 +622,7 @@ export class _Window extends Base {
     /**
      * Gets an information object for the window.
      * @return {Promise.<WindowInfo>}
-     * @tutorial window.getInfo
+     * @tutorial Window.getInfo
      */
     public getInfo():  Promise<WindowInfo> {
         return this.wire.sendAction('get-window-info', this.identity).then(({ payload }) => payload.data);
