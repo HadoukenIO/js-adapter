@@ -20,6 +20,22 @@ export interface CloseEventShape {
     topic: string;
 }
 
+export interface WindowInfo {
+    canNavigateBack: boolean;
+    canNavigateForward: boolean;
+    plugins: Array<any>;
+    preloadScripts: Array<any>;
+    title: string;
+    url: string;
+}
+
+export interface FrameInfo {
+    name: string;
+    uuid: string;
+    entityType: string;
+    parent?: Identity;
+}
+
 /**
  * Bounds is a interface that has the properties of height,
  * width, left, top which are all numbers
@@ -458,6 +474,16 @@ export class _Window extends Base {
     }
 
     /**
+     * Retrieves an array of frame info objects representing the main frame and any
+     * iframes that are currently on the page.
+     * @return {Promise.<Array<FrameInfo>>}
+     * @tutorial window.getAllFrames
+     */
+    public getAllFrames(): Promise<Array<FrameInfo>> {
+        return this.wire.sendAction('get-all-frames', this.identity).then(({ payload }) => payload.data);
+    }
+
+    /**
      * Gets the current bounds (top, left, width, height) of the window.
      * @return {Promise.<Bounds>}
     */
@@ -591,6 +617,15 @@ export class _Window extends Base {
 
             return winGroups;
         });
+    }
+
+    /**
+     * Gets an information object for the window.
+     * @return {Promise.<WindowInfo>}
+     * @tutorial window.getInfo
+     */
+    public getInfo():  Promise<WindowInfo> {
+        return this.wire.sendAction('get-window-info', this.identity).then(({ payload }) => payload.data);
     }
 
     /**
