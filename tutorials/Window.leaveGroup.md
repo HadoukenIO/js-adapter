@@ -12,12 +12,12 @@ async function createWin(uuid) {
     return await app.getWindow();
 }
 
-async function joinGroups() {
+async function leaveGroup() {
     const mainAppwin = await createWin('app-1');
     const app = await createWin('app-2');
 
     return await mainAppwin.leaveGroup(app);
 }
 
-joinGroups().then(() => console.log('Windows disconnected')).catch(err => console.log(err));
+leaveGroup().then(() => console.log('Windows disconnected')).catch(err => console.log(err));
 ```

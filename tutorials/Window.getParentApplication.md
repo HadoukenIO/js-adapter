@@ -1,8 +1,8 @@
-Determines if the window is currently showing.
+Gets the parent application
 
 # Example
 ```js
-async function getBounds() {
+async function getParentApplication() {
     const app = await fin.Application.create({
         name: 'myApp',
         uuid: 'app-1',
@@ -11,8 +11,8 @@ async function getBounds() {
     });
     await app.run();
     const win = await app.getWindow();
-    return await win.getBounds();
+    return await win.getParentApplication();
 }
 
-isWindowShowing().then(bool => console.log(bool)).catch(err => console.log(err));
+getParentApplication().then(parentApplication => console.log(parentApplication)).catch(err => console.log(err));
 ```

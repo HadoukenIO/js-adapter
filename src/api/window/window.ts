@@ -486,6 +486,7 @@ export class _Window extends Base {
     /**
      * Gets the current bounds (top, left, width, height) of the window.
      * @return {Promise.<Bounds>}
+     * @tutorial Window.getBounds
     */
     public getBounds(): Promise<Bounds> {
         return this.wire.sendAction('get-window-bounds', this.identity)
@@ -497,6 +498,7 @@ export class _Window extends Base {
      * Gives focus to the window.
      * @return {Promise.<void>}
      * @emits _Window#focused
+     * @tutorial Window.focus
      */
     public focus(): Promise<void> {
         return this.wire.sendAction('focus-window', this.identity).then(() => undefined);
@@ -505,6 +507,7 @@ export class _Window extends Base {
     /**
      * Removes focus from the window.
      * @return {Promise.<void>}
+     * @tutorial Window.blur
      */
     public blur(): Promise<void> {
         return this.wire.sendAction('blur-window', this.identity).then(() => undefined);
@@ -513,6 +516,7 @@ export class _Window extends Base {
     /**
      * Brings the window to the front of the window stack.
      * @return {Promise.<void>}
+     * @tutorial Window.bringToFront
      */
     public bringToFront(): Promise<void> {
         return this.wire.sendAction('bring-window-to-front', this.identity).then(() => undefined);
@@ -530,6 +534,7 @@ export class _Window extends Base {
     /**
      * Hides the window.
      * @return {Promise.<void>}
+     * @tutorial Window.hide
      */
     public hide(): Promise<void> {
         return this.wire.sendAction('hide-window', this.identity).then(() => undefined);
@@ -539,6 +544,7 @@ export class _Window extends Base {
      * closes the window application
      * @param { boolean } force A boolean that is assign to flase
      * @return {Promise.<void>}
+     * @tutorial Window.close
     */
     public close(force: boolean = false): Promise<void> {
         return this.wire.sendAction('close-window', Object.assign({}, this.identity, { force }))
@@ -551,6 +557,7 @@ export class _Window extends Base {
     /**
      * Returns then running applications uuid
      * @return {Promise.<string>}
+     * @tutorial Window.getNativeId
      */
     public getNativeId(): Promise<string> {
         return this.wire.sendAction('get-window-native-id', this.identity)
@@ -560,6 +567,7 @@ export class _Window extends Base {
     /**
      * Prevents a user from changing a window's size/position when using the window's frame.
      * @return {Promise.<void>}
+     * @tutorial Window.disableFrame
      */
     public disableFrame(): Promise<void> {
         return this.wire.sendAction('disable-window-frame', this.identity).then(() => undefined);
@@ -568,6 +576,7 @@ export class _Window extends Base {
     /**
      * Re-enables user changes to a window's size/position when using the window's frame.
      * @return {Promise.<void>}
+     * @tutorial Window.enableFrame
      */
     public enableFrame(): Promise<void> {
         return this.wire.sendAction('enable-window-frame', this.identity).then(() => undefined);
@@ -578,6 +587,7 @@ export class _Window extends Base {
      * applications you have created.
      * @param { string } code JavaScript code to be executed on the window.
      * @return {Promise.<void>}
+     * @tutorial Window.executeJavaScript
      */
     public executeJavaScript(code: string): Promise<void> {
         return this.wire.sendAction('execute-javascript-in-window', Object.assign({}, this.identity, { code }))
@@ -587,6 +597,7 @@ export class _Window extends Base {
     /**
      * Flashes the window’s frame and taskbar icon until stopFlashing is called.
      * @return {Promise.<void>}
+     * @tutorial Window.flash
      */
     public flash(): Promise<void> {
         return this.wire.sendAction('flash-window', this.identity).then(() => undefined);
@@ -595,6 +606,7 @@ export class _Window extends Base {
     /**
      * Stops the taskbar icon from flashing.
      * @return {Promise.<void>}
+     * @tutorial Window.stopFlashing
      */
     public stopFlashing(): Promise<void> {
         return this.wire.sendAction('stop-flash-window', this.identity).then(() => undefined);
@@ -605,6 +617,7 @@ export class _Window extends Base {
      * window. If a window is not in a group an empty array is returned. Please note that
      * calling window is included in the result array.
      * @return {Promise.Array.Array.<_Window>}
+     * @tutorial Window.getGroup
      */
     public getGroup(): Promise<Array<Array<_Window>>> {
         return this.wire.sendAction('get-window-group', this.identity).then(({ payload }) => {
@@ -631,6 +644,7 @@ export class _Window extends Base {
     /**
      * Gets the current settings of the window.
      * @return {Promise.<any>}
+     * @tutorial Window.getOptions
      */
     public getOptions(): Promise<any> {
         return this.wire.sendAction('get-window-options', this.identity).then(({ payload }) => payload.data);
@@ -639,6 +653,7 @@ export class _Window extends Base {
     /**
      * Gets the parent application.
      * @return {Promise.<Application>}
+     * @tutorial Window.getParentApplication
      */
     public getParentApplication(): Promise<Application> {
         return Promise.resolve(new Application(this.wire, this.identity));
@@ -647,6 +662,7 @@ export class _Window extends Base {
     /**
      * Gets the parent window.
      * @return {Promise.<_Window>}
+     * @tutorial Window.getParentWindow
      */
     public getParentWindow(): Promise<_Window> {
         return Promise.resolve(new Application(this.wire, this.identity)).then(app => app.getWindow());
@@ -655,6 +671,7 @@ export class _Window extends Base {
     /**
      * Gets a base64 encoded PNG snapshot of the window.
      * @return {Promise.<string>}
+     * @tutorial Window.getSnapshot
      */
     public getSnapshot(): Promise<string> {
         return this.wire.sendAction('get-window-snapshot', this.identity).then(({ payload }) => payload.data);
@@ -663,6 +680,7 @@ export class _Window extends Base {
     /**
      * Gets the current state ("minimized", "maximized", or "restored") of the window.
      * @return {Promise.<string>}
+     * @tutorial Window.getState
      */
     public getState(): Promise<string> {
         return this.wire.sendAction('get-window-state', this.identity).then(({ payload }) => payload.data);
@@ -671,6 +689,7 @@ export class _Window extends Base {
     /**
      * Determines if the window is currently showing.
      * @return {Promise.<boolean>}
+     * @tutorial Window.isShowing
      */
     public isShowing(): Promise<boolean> {
         return this.wire.sendAction('is-window-showing', this.identity).then(({ payload }) => payload.data);
@@ -680,6 +699,7 @@ export class _Window extends Base {
      * Joins the same window group as the specified window.
      * @param { class } target The window whose group is to be joined
      * @return {Promise.<void>}
+     * @tutorial Window.joinGroup
      */
     public joinGroup(target: _Window): Promise<void> {
         return this.wire.sendAction('join-window-group', Object.assign({}, this.identity, {
@@ -691,6 +711,7 @@ export class _Window extends Base {
     /**
      * Reloads the window current page
      * @return {Promise.<void>}
+     * @tutorial Window.reload
      */
     public reload(ignoreCache: boolean = false ): Promise<void> {
         return this.wire.sendAction('reload-window', Object.assign({}, this.identity, {
@@ -701,6 +722,7 @@ export class _Window extends Base {
     /**
      * Leaves the current window group so that the window can be move independently of those in the group.
      * @return {Promise.<void>}
+     * @tutorial Window.leaveGroup
      */
     public leaveGroup(): Promise<void> {
         return this.wire.sendAction('leave-window-group', this.identity).then(() => undefined);
@@ -709,6 +731,7 @@ export class _Window extends Base {
     /**
      * Maximizes the window
      * @return {Promise.<void>}
+     * @tutorial Window.maximize
      */
     public maximize(): Promise<void> {
         return this.wire.sendAction('maximize-window', this.identity).then(() => undefined);
