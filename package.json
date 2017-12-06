@@ -33,8 +33,7 @@
     "@types/sinon": "^1.16.34",
     "@types/ws": "~0.0.36",
     "typescript": "~2.2.0",
-    "webpack": "^3.8.1",
-    "asar": "^0.12.1"
+    "webpack": "^3.8.1"
   },
   "dependencies": {
     "ws": "~1.1.1"

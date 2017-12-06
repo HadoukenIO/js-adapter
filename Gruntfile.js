@@ -5,14 +5,12 @@ const ps = require('ps-node');
 const exec = require('child_process').exec;
 const rimraf = require('rimraf');
 const webpack = require('webpack');
-const asar = require('asar');
 
-const stagingDir = path.resolve('staging');
 const outDir = path.resolve('out');
 const webpackConfig = {
     entry: './out/src/of-main.js',
     output: {
-        filename: './staging/js-adapter.js'
+        filename: './out/js-adapter.js'
   }
 };
 const serverParams = {
@@ -23,7 +21,6 @@ const serverParams = {
 };
 
 module.exports = function(grunt) {
-    const asarName = 'js-adapter.asar';
     const version = grunt.option('ver');
     const remote = grunt.option('remote');
     const uuid = 'testapp';
@@ -108,21 +105,6 @@ module.exports = function(grunt) {
         finRepl.startRepl();
     });
 
-    grunt.registerTask('asar', function() {
-        const done = this.async();
-
-        asar.createPackage(stagingDir, path.join(outDir, asarName), function(err) {
-            if (err) {
-                grunt.log.error(err.message);
-            } else {
-                grunt.log.ok('package created');
-            }
-            rimraf.sync(stagingDir);
-            grunt.log.ok('staging directory deleted');
-            done();
-        });
-    });
-
     grunt.registerTask('webpack', function() {
         const done = this.async();
         webpack(webpackConfig, (err, stats) => {
@@ -166,7 +148,7 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-contrib-copy');
 
     grunt.registerTask('lint', [ 'tslint' ]);
-    grunt.registerTask('build', [ 'clean', 'ts', 'webpack', 'asar', 'copy:resources' ]);
+    grunt.registerTask('build', [ 'clean', 'ts', 'webpack', 'copy:resources' ]);
     grunt.registerTask('default', [ 'lint', 'build' ]);
     grunt.registerTask('test', [ 'check-version', 'default', 'start-server', 'kill-processes', 'openfin', 'mochaTest', 'kill-processes']);
     grunt.registerTask('repl', [ 'check-version', 'default', 'start-server', 'openfin', 'start-repl' ]);
