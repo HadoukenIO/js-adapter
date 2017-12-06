@@ -24,7 +24,7 @@ export interface ConnectConfig {
     assetsUrl?: string;
     devToolsPort?: number;
     installerUI?: boolean;
-    runtime?: {
+    runtime: {
         version: string;
         fallbackVersion?: string;
         securityRealm?: string;

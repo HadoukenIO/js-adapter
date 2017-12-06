@@ -186,7 +186,8 @@ export class PortDiscovery {
                 .then(() => {
                     const mPromise: Promise<PortDiscoveryMessage> = this.listenDiscoveryMessage();
                     launcher.launch(this.savedConfig, this.manifestLocation, this.namedPipeName)
-                       .then((openfin: ChildProcess) => openfin.once('error', err => reject(err)));
+                       .then((openfin: ChildProcess) => openfin.once('error', err => reject(err)))
+                       .catch(err => reject(err));
                     mPromise.then((msg: PortDiscoveryMessage) => {
                         if (matchRuntimeInstance(this.savedConfig, msg)) {
                             console.log(`Port discovery returns ${msg.port}`);
@@ -196,9 +197,15 @@ export class PortDiscovery {
                     });
                 })
                 .catch(reason => {
+                    console.log('caught in retrieve port');
+                    console.error(reason);
                     reject(reason);
                     this.cleanup();
                 });
+        }).catch(err => {
+            console.error(err);
+            console.log('caught error in port discover');
+            return false;
         });
     }
 

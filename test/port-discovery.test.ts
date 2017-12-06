@@ -4,18 +4,15 @@ import * as os from 'os';
 import * as fs from 'fs';
 // tslint:disable-next-line
 const appConfig = JSON.parse(fs.readFileSync('test/app.json').toString());
+import Launcher from '../src/launcher/launcher';
 
-// tslint:disable-next-line
-function supported(): boolean {
-    return (os.platform() === 'win32');
-}
 describe('PortDiscovery.', function() {
     // do NOT use => function here for 'this' to be set properly
     // tslint:disable-next-line
     this.timeout(10000);
     let fin: Fin;
     before(function() {
-        if (supported()) {
+        if (Launcher.isSupported()) {
             return rawConnect({
                 // tslint:disable-next-line
                 uuid: 'example_uuid' + Math.random(),
@@ -31,7 +28,7 @@ describe('PortDiscovery.', function() {
     });
 
     it('getVersion', () => {
-        if (supported()) {
+        if (Launcher.isSupported()) {
             fin.System.getVersion().then(() => assert(true));
         } else {
             assert(true);
