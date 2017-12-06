@@ -7,12 +7,13 @@ import { PointTopLeft } from './point';
 import { GetLogRequestType, LogInfo } from './log';
 import { ProxyInfo, ProxyConfig } from './proxy';
 import { ProcessInfo } from './process';
-import { DownloadAssetRequestType } from './download-asset';
+import { AppAssetInfo, AppAssetRequest, RuntimeDownloadOptions } from './download-asset';
 import { RVMInfo } from './rvm';
 import { Entity } from './entity';
 import { HostSpecs } from './host-specs';
 import { ExternalProcessRequestType , TerminateExternalRequestType } from './external-process';
 import Transport from '../../transport/transport';
+import { CookieInfo, CookieOption } from './cookie';
 
 /**
  * Identity interface
@@ -109,6 +110,14 @@ export default class System extends Base {
     */
     public deleteCacheOnExit(): Promise<void> {
         return this.wire.sendAction('delete-cache-request').then(() => undefined);
+    }
+
+    /**
+     * Exits the Runtime.
+     * @return {Promise.<void>}
+     */
+    public exit(): Promise<void> {
+        return this.wire.sendAction('exit-desktop').then(() => undefined);
     }
 
     /**
@@ -327,12 +336,29 @@ export default class System extends Base {
 
     /**
      * Downloads the given application asset
-     * @param { Object } appAsset App asset object
+     * @param { AppAssetInfo } appAsset App asset object
      * @return {Promise.<void>}
     */
     // incompatible with standalone node process.
-    public downloadAsset(appAsset: DownloadAssetRequestType): Promise<void> {
+    public downloadAsset(appAsset: AppAssetInfo): Promise<void> {
         return this.wire.sendAction('download-asset', appAsset).then(() => undefined);
+    }
+
+    /**
+    * Downloads a version of the runtime.
+    * @param { RuntimeDownloadOptions } options - Download options.
+    * @return {Promise.<void>}
+    */
+    // standalone node process will not work if configUrl is empty.
+    public downloadRuntime(options: RuntimeDownloadOptions): Promise<void> {
+        //The expected downloadId in core to be a string.
+        const downloadId = this.wire.environment.getNextMessageId().toString();
+        const data: any = {
+            version: options.version,
+            downloadId: downloadId
+        };
+
+        return this.wire.sendAction('download-runtime', data).then(() => undefined);
     }
 
     /**
@@ -342,6 +368,25 @@ export default class System extends Base {
     public getAllExternalApplications(): Promise<Array<Identity>> {
         return this.wire.sendAction('get-all-external-applications')
             .then(({ payload }) => payload.data);
+    }
+
+    /**
+     * Retrieves app asset information.
+     * @param { AppAssetRequest } options
+     * @param { string } options.alias - alias of app asset
+     * @return {Promise.<AppAssetInfo>}
+     */
+    public getAppAssetInfo(options: AppAssetRequest): Promise<AppAssetInfo> {
+        return this.wire.sendAction('get-app-asset-info', options).then(({ payload }) => payload.data);
+    }
+
+    /**
+     * Get additional info of cookies.
+     * @param { CookieOption } options - See tutorial for more details.
+     * @return {Promise.Array.<CookieInfo>}
+     */
+    public getCookies(options: CookieOption): Promise<Array<CookieInfo>> {
+        return this.wire.sendAction('get-cookies', options).then(({ payload }) => payload.data);
     }
 
     /**
