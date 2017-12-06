@@ -4,16 +4,22 @@ import { WindowInfo } from './window';
 import { Identity } from '../../identity';
 import { MonitorInfo }  from './monitor';
 import { PointTopLeft } from './point';
-import { GetLogRequestType, LogInfo } from './log';
+import { GetLogRequestType, LogInfo, LogLevel } from './log';
 import { ProxyInfo, ProxyConfig } from './proxy';
 import { ProcessInfo } from './process';
 import { AppAssetInfo, AppAssetRequest, RuntimeDownloadOptions } from './download-asset';
 import { RVMInfo } from './rvm';
-import { Entity } from './entity';
+import { Entity, EntityInfo } from './entity';
 import { HostSpecs } from './host-specs';
 import { ExternalProcessRequestType , TerminateExternalRequestType } from './external-process';
 import Transport from '../../transport/transport';
 import { CookieInfo, CookieOption } from './cookie';
+import { RegistryInfo } from './registry-info';
+
+export interface ExternalConnection {
+    token: string;
+    uuid: string;
+}
 
 /**
  * Identity interface
@@ -156,8 +162,27 @@ export default class System extends Base {
      * @return {Promise.<string>}
     */
     public getDeviceId(): Promise<string> {
-        return this.wire.sendAction('get-device-id')
-            .then(({ payload }) => payload.data);
+        return this.wire.sendAction('get-device-id').then(({ payload }) => payload.data);
+    }
+
+    /**
+     * Returns a hex encoded hash of the mac address and the currently logged in user name
+     * @return {Promise.<string>}
+     * @tutorial system.getDeviceUserId
+     */
+    public getDeviceUserId(): Promise<string> {
+        return this.wire.sendAction('get-device-user-id').then(({ payload }) => payload.data);
+    }
+
+    /**
+     * Retrieves a frame info object for the uuid and name passed in
+     * @param { string } uuid - The UUID of the target.
+     * @param { string } name - The name of the target.
+     * @return {Promise.<EntityInfo>}
+     * @tutorial system.getEntityInfo
+     */
+    public getEntityInfo(uuid: string, name: string): Promise<EntityInfo> {
+        return this.wire.sendAction('get-entity-info', { uuid, name }).then(({ payload }) => payload.data);
     }
 
     /**
@@ -173,14 +198,32 @@ export default class System extends Base {
     }
 
     /**
+     * Get current focused window.
+     * @return {Promise.<WindowInfo>}
+     * @tutorial system.getFocusedWindow
+     */
+    public getFocusedWindow(): Promise<WindowInfo> {
+        return this.wire.sendAction('get-focused-window').then(({ payload }) => payload.data);
+    }
+
+    /**
      * Retrieves the contents of the log with the specified filename.
      * @param { GetLogRequestType } options A object that id defined by the GetLogRequestType interface
      * @tutorial System.getLog
      * @return {Promise.<string>}
-    */
+     */
     public getLog(options: GetLogRequestType): Promise<string> {
         return this.wire.sendAction('view-log', options)
             .then(({ payload }) => payload.data);
+    }
+
+    /**
+     * Returns the minimum (inclusive) logging level that is currently being written to the log.
+     * @return {Promise.<LogLevel>}
+     * @tutorial system.getMinLogLevel
+     */
+    public getMinLogLevel(): Promise<LogLevel> {
+        return this.wire.sendAction('get-min-log-level').then(({ payload }) => payload.data);
     }
 
     /**
@@ -390,6 +433,16 @@ export default class System extends Base {
     }
 
     /**
+     * Set the minimum log level above which logs will be written to the OpenFin log
+     * @param { LogLevel } The minimum level (inclusive) above which all calls to log will be written
+     * @return {Promise.<void>}
+     * @tutorial system.setMinLogLevel
+     */
+    public setMinLogLevel(level: LogLevel): Promise<void> {
+        return this.wire.sendAction('set-min-log-level', {level}).then(() => undefined);
+    }
+
+    /**
      * Retrieves the UUID of the computer on which the runtime is installed
      * @param { string } uuid The uuid of the running application
      * @return {Promise.<Entity>}
@@ -405,9 +458,36 @@ export default class System extends Base {
      * @param { Identity } requestingIdentity This object is described in the Identity typedef
      * @param { any } data Any data type to pass to the method
      * @return {Promise.<any>}
-    */
+     */
     public executeOnRemote(requestingIdentity: Identity, data: any): Promise<any> {
         data.requestingIdentity = requestingIdentity;
         return this.wire.ferryAction(data);
+    }
+
+    /**
+     * Reads the specifed value from the registry.
+     * @param { string } rootKey - The registry root key.
+     * @param { string } subkey - The registry key.
+     * @param { string } value - The registry value name.
+     * @return {Promise.<RegistryInfo>}
+     * @tutorial system.readRegistryValue
+     */
+    public readRegistryValue(rootKey: string, subkey: string, value: string): Promise<RegistryInfo> {
+        return this.wire.sendAction('read-registry-value', {
+            rootKey: rootKey,
+            subkey: subkey,
+            value: value
+        }).then(({ payload }) => payload.data);
+    }
+
+    /**
+     * This function call will register a unique id and produce a token.
+     * The token can be used to broker an external connection.
+     * @param { string } uuid - A UUID for the remote connection.
+     * @return {Promise.<ExternalConnection>}
+     * @tutorial system.registerExternalConnection
+     */
+    public registerExternalConnection(uuid: string): Promise<ExternalConnection> {
+        return this.wire.sendAction('register-external-connection', {uuid}).then(({ payload }) => payload.data);
     }
 }
