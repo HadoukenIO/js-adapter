@@ -91,7 +91,7 @@ export default class System extends Base {
      * Returns the version of the runtime. The version contains the major, minor,
      * build and revision numbers.
      * @return {Promise.<string>}
-     * @tutorial System.getVerison
+     * @tutorial System.getVersion
      */
     public getVersion(): Promise<string> {
         return this.wire.sendAction('get-version')
@@ -102,8 +102,8 @@ export default class System extends Base {
      * Clears cached data containing window state/positions, application resource
      * files (images, HTML, JavaScript files), cookies, and items stored in the
      * Local Storage.
-     * @tutorial System.clearCache
      * @return {Promise.<void>}
+     * @tutorial System.clearCache
      */
     public clearCache(): Promise<void> {
         return this.wire.sendAction('clear-cache').then(() => undefined);
@@ -111,8 +111,8 @@ export default class System extends Base {
 
     /**
      * Clears all cached data when OpenFin Runtime exits.
-     * @tutorial System.deleteCacheOnExit
      * @return {Promise.<void>}
+     * @tutorial System.deleteCacheOnExit
      */
     public deleteCacheOnExit(): Promise<void> {
         return this.wire.sendAction('delete-cache-request').then(() => undefined);
@@ -129,8 +129,8 @@ export default class System extends Base {
 
     /**
      * Retrieves an array of data (name, ids, bounds) for all application windows.
-     * @tutorial System.getAllWindows
      * @return {Promise.Array.<WindowInfo>}
+     * @tutorial System.getAllWindows
      */
     public getAllWindows(): Promise<Array<WindowInfo>> {
         return this.wire.sendAction('get-all-windows')
@@ -139,8 +139,8 @@ export default class System extends Base {
 
     /**
      * Retrieves an array of data for all applications.
-     * @tutorial System.getAllApplications
      * @return {Promise.Array.<ApplicationInfo>}
+     * @tutorial System.getAllApplications
      */
     public getAllApplications(): Promise<Array<ApplicationInfo>> {
         return this.wire.sendAction('get-all-applications')
@@ -149,8 +149,8 @@ export default class System extends Base {
 
     /**
      * Retrieves the command line argument string that started OpenFin Runtime.
-     * @tutorial System.getCommandLineArguments
      * @return {Promise.<string>}
+     * @tutorial System.getCommandLineArguments
      */
     public getCommandLineArguments(): Promise<string> {
         return this.wire.sendAction('get-command-line-arguments')
@@ -159,8 +159,8 @@ export default class System extends Base {
 
     /**
      * Returns a hex encoded hash of the mac address and the currently logged in user name
-     * @tutorial System.getDeviceId
      * @return {Promise.<string>}
+     * @tutorial System.getDeviceId
      */
     public getDeviceId(): Promise<string> {
         return this.wire.sendAction('get-device-id').then(({ payload }) => payload.data);
@@ -188,8 +188,8 @@ export default class System extends Base {
 
     /**
      * Gets the value of a given environment variable on the computer on which the runtime is installed
-     * @tutorial System.getEnvironmentVariable
      * @return {Promise.<string>}
+     * @tutorial System.getEnvironmentVariable
      */
     public getEnvironmentVariable(envName: string): Promise<string> {
         return this.wire.sendAction('get-environment-variable', {
@@ -210,8 +210,8 @@ export default class System extends Base {
     /**
      * Retrieves the contents of the log with the specified filename.
      * @param { GetLogRequestType } options A object that id defined by the GetLogRequestType interface
-     * @tutorial System.getLog
      * @return {Promise.<string>}
+     * @tutorial System.getLog
      */
     public getLog(options: GetLogRequestType): Promise<string> {
         return this.wire.sendAction('view-log', options)
@@ -229,8 +229,8 @@ export default class System extends Base {
 
     /**
      * Retrieves an array containing information for each log file.
-     * @tutorial System.getLogList
      * @return {Promise.Array<LogInfo>}
+     * @tutorial System.getLogList
      */
     public getLogList(): Promise<Array<LogInfo>> {
         return this.wire.sendAction('list-logs')
@@ -240,8 +240,8 @@ export default class System extends Base {
     /**
      * Retrieves an object that contains data about the monitor setup of the
      * computer that the runtime is running on.
-     * @tutorial System.getMonitorInfo
      * @return {Promise.<MonitorInfo>}
+     * @tutorial System.getMonitorInfo
      */
     public getMonitorInfo(): Promise<MonitorInfo> {
         return this.wire.sendAction('get-monitor-info')
@@ -250,8 +250,8 @@ export default class System extends Base {
 
     /**
      * Returns the mouse in virtual screen coordinates (left, top).
-     * @tutorial System.getMousePosition
      * @return {Promise.<PointTopLeft>}
+     * @tutorial System.getMousePosition
      */
     public getMousePosition(): Promise<PointTopLeft> {
         return this.wire.sendAction('get-mouse-position')
@@ -262,8 +262,8 @@ export default class System extends Base {
      * Retrieves an array of all of the runtime processes that are currently
      * running. Each element in the array is an object containing the uuid
      * and the name of the application to which the process belongs.
-     * @tutorial System.getProcessList
      * @return {Promise.Array.<ProcessInfo>}
+     * @tutorial System.getProcessList
      */
     public getProcessList(): Promise<Array<ProcessInfo>> {
         return this.wire.sendAction('process-snapshot')
@@ -272,8 +272,8 @@ export default class System extends Base {
 
     /**
      * Retrieves the Proxy settings.
-     * @tutorial System.getProxySettings
      * @return {Promise.<ProxyInfo>}
+     * @tutorial System.getProxySettings
      */
     public getProxySettings(): Promise<ProxyInfo> {
         return this.wire.sendAction('get-proxy-settings')
@@ -282,8 +282,8 @@ export default class System extends Base {
 
     /**
      * Returns information about the running RVM in an object.
-     * @tutorial System.getRvmInfo
      * @return {Promise.<RVMInfo>}
+     * @tutorial System.getRvmInfo
      */
     // incompatible with standalone node process.
     public getRvmInfo(): Promise<RVMInfo> {
@@ -293,8 +293,8 @@ export default class System extends Base {
 
     /**
      * Retrieves system information.
-     * @tutorial System.getHostSpecs
      * @return {Promise.<Hostspecs>}
+     * @tutorial System.getHostSpecs
      */
     public getHostSpecs(): Promise<HostSpecs> {
         return this.wire.sendAction('get-host-specs').then(({ payload }) => payload.data);
@@ -333,8 +333,8 @@ export default class System extends Base {
     /**
      * Opens the passed URL in the default web browser.
      * @param { string } url The URL to open
-     * @tutorial System.openUrlWidthBrowser
      * @return {Promise.<void>}
+     * @tutorial System.openUrlWithBrowser
      */
     public openUrlWithBrowser(url: string): Promise<void> {
         return this.wire.sendAction('open-url-with-browser', { url }).then(() => undefined);
