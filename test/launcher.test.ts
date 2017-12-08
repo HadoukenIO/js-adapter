@@ -1,9 +1,9 @@
-import { resolveRuntimeVersion, promisify } from '../src/launcher/util';
-import Launcher from '../src/launcher/launcher'
-import {download, getRuntimePath} from '../src/launcher/mac-launch';
-import * as fs from 'fs'
-import * as os from 'os'
 import * as assert from 'assert';
+import * as os from 'os';
+import * as path from 'path';
+import Launcher from '../src/launcher/launcher';
+import { download, getRuntimePath } from '../src/launcher/mac-launch';
+import { resolveRuntimeVersion, rmDir } from '../src/launcher/util';
 
 describe('Launcher', () => {
     describe('Resolve Runtime', () => {
@@ -23,63 +23,40 @@ describe('Launcher', () => {
     describe('Launcher', () => {
         it('runs stable', async () => {
           if (Launcher.isSupported()) {
-             doesntThrowAsync(() => {
-                  const launcher = new Launcher();
-                  launcher.launch({uuid: 'sdafasdfasd', runtime: {version: 'stable'}}, '', 'some port');
-              });
+            const launcher = new Launcher();
+            const of = await launcher.launch({
+                uuid: 'sdafasdfasd',
+                runtime: {version: 'community'}}, path.resolve('./app.json'), 'some port');
+            assert(() => of.spawnfile.indexOf('Openfin.app') !== -1);
           } else {
-              assert.ok(true, 'OS not supported')
+              assert.ok(true, 'OS not supported');
           }
         });
     });
     if (os.platform() === 'darwin') {
-        describe('Mac Launcher', async () => {
-          await it('downloads and unzips the version', async () => {
+        describe('Mac Launcher', async () => { //TODO mock this
+           it('downloads and unzips the version', async () => {
                const version = await resolveRuntimeVersion('community');
                const location = await getRuntimePath(version);
-               console.log(version)
-               await rmDir(location, false);
-               console.log('calling download')
+               // tslint:disable-next-line:no-empty
+               await rmDir(location, false).catch(e => {});
                await doesntThrowAsync(async () => await download(version, location));
-           })
+           }).timeout(40000);
         });
     }
 });
 
-async function rmDir (dirPath: string, removeSelf: boolean = true) {
-    let files;
-    try {
-       files = await promisify(fs.readdir)(dirPath);
-    } catch (e) {
-      return;
-    }
-    const stat = promisify(fs.stat);
-    const unlink = promisify(fs.unlink);
-    if (files.length > 0) {
-      for (let i = 0; i < files.length; i++) {
-        const filePath = dirPath + '/' + files[i];
-        const file =  await stat(filePath);
-        if (file.isFile()) {
-            await unlink(filePath);
-        } else {
-            await rmDir(filePath);
-        }
-      }
-    }
-    if (removeSelf) {
-        await promisify(fs.rmdir)(dirPath);
-    }
-  };
 function makeVersionCheck (index: number, min: number) {
     return (ans: string) => parseInt(ans.split('.')[index]) >= min;
 }
 
-async function testVersion (input: string, expected: string | function): Promise<boolean > {
+async function testVersion (input: string, expected: string | Function): Promise<boolean > {
    const ans = await resolveRuntimeVersion(input);
    return typeof expected === 'string' ? ans === expected : expected(ans);
 };
 
-async function assertThrowsAsync(fn, regExp) {
+async function assertThrowsAsync(fn: Function, regExp: RegExp) {
+    // tslint:disable-next-line:no-empty
     let f = () => {};
     try {
       await fn();
@@ -91,17 +68,12 @@ async function assertThrowsAsync(fn, regExp) {
   }
 
 async function doesntThrowAsync (fn: Function) {
-    assertThrowsAsync(async () => {
+        let f = () => { throw new Error('Didn\'t Throw!asdfasgsafdasdf'); };
         try {
-           console.log('awaiting');
            await fn();
-           console.log('done');
         } catch (e) {
-            console.log('caught unexpected error:');
-            console.error(e);
-            return;
+            f = () => { throw e; };
+        } finally {
+            assert.throws(f, /Didn't Throw!asdfasgsafdasdf/);
         }
-        console.log('throwing');
-        throw new Error('Didn\'t Throw!asdfasgsafdasdf');
-     }, /Didn't Throw!asdfasgsafdasdf/);
 }

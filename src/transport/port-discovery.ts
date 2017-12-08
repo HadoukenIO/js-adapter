@@ -4,6 +4,7 @@ import * as fs from 'fs';
 import * as http from 'http';
 import * as net from 'net';
 import * as path from 'path';
+import * as os from 'os';
 import { ConnectConfig } from './wire';
 import Launcher from '../launcher/launcher';
 import Timer = NodeJS.Timer;
@@ -173,7 +174,7 @@ export class PortDiscovery {
         this.savedConfig = Object.assign({}, config);
     }
 
-    public retrievePort(): Promise<number> {
+    public retrievePort(): Promise<any> {
         return new Promise((resolve, reject) => {
             if (this.savedConfig.timeout) {
                 this.timeoutTimer = setTimeout(() => {
@@ -186,7 +187,13 @@ export class PortDiscovery {
                 .then(() => {
                     const mPromise: Promise<PortDiscoveryMessage> = this.listenDiscoveryMessage();
                     launcher.launch(this.savedConfig, this.manifestLocation, this.namedPipeName)
-                       .then((openfin: ChildProcess) => openfin.once('error', err => reject(err)))
+                       .then((openfin: ChildProcess) => {
+                           openfin.on('error', err => reject(err));
+                           if (this.savedConfig.runtime.verboseLogging) {
+                            openfin.stdout.pipe(process.stdout);
+                            openfin.stderr.pipe(process.stderr);
+                           }
+                        })
                        .catch(err => reject(err));
                     mPromise.then((msg: PortDiscoveryMessage) => {
                         if (matchRuntimeInstance(this.savedConfig, msg)) {
@@ -194,7 +201,7 @@ export class PortDiscovery {
                             resolve(msg.port);
                             this.cleanup();
                         }
-                    });
+                    }).catch(e => reject(e));
                 })
                 .catch(reason => {
                     console.log('caught in retrieve port');
@@ -212,13 +219,25 @@ export class PortDiscovery {
     private createDiscoveryNamedPipe(): Promise<any> {
         return new Promise((resolve, reject) => {
             this.discoverState = DiscoverState.INIT;
+            let unix = false;
             const randomNum: string = crypto.randomBytes(16).toString('hex');
             this.namedPipeName = 'NodeAdapter.' + randomNum;
             this.namedPipeServer = net.createServer();
-            const pipePath: string = path.join('\\\\.\\pipe\\', 'chrome.' + this.namedPipeName);
-            console.log(`listening to ${pipePath}`);
-            this.namedPipeServer.listen(pipePath);
-            resolve();
+            const pipePath: string = os.platform() === 'win32' 
+                ? path.join('\\\\.\\pipe\\', 'chrome.' + this.namedPipeName)
+                : path.join(os.tmpdir(), this.namedPipeName + '.sock');
+            if (os.platform() !== 'win32') {
+                unix = true;
+                this.namedPipeName = pipePath;
+            }
+            this.namedPipeServer.listen(pipePath, () => {
+                console.log(`listening to ${this.namedPipeServer.address()}`);
+                if (unix) {
+                    this.namedPipeName = this.namedPipeServer.address();
+                    fs.chmodSync(pipePath, 0o777);
+                }
+                resolve();
+            });
         });
     }
 

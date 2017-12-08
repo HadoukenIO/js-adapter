@@ -1,32 +1,39 @@
 import * as fs from 'fs';
 import * as path from 'path';
-import { spawn } from 'child_process';
+import { ChildProcess, spawn } from 'child_process';
 import { ConnectConfig } from '../transport/wire';
-import  {promisify, resolveRuntimeVersion, downloadFile } from './util';
+import  {promisify, resolveRuntimeVersion, rmDir, downloadFile, unzip } from './util';
 
 const runtimeRoot = 'https://developer.openfin.co/release/runtime/';
+const mkdir = promisify(fs.mkdir);
 
 export async function download (version: string, folder: string) {
   const url = `${runtimeRoot}mac/x64/${version}`;
-  console.log(version, folder);
-  const res = await downloadFile(url, path.join(folder, 'tmp'));
-  console.log('got runtime');
-  console.log(res);
+  const tmp = 'tmp';
+  await rmDir(folder, false);
+  // tslint:disable-next-line:no-empty
+  await mkdir(path.join(folder, tmp)).catch(e => {});
+  const file = path.join(folder, tmp, 'tmp');
+  await downloadFile(url, file);
+  await unzip(file, folder);
+  await rmDir(path.join(folder, tmp));
   return folder;
 }
 
 export async function getRuntimePath (version: string) : Promise<string> {
   const versionPath = ['OpenFin', 'Runtime', version];
   const HOME = process.env.HOME;
-  const mkdir = promisify(fs.mkdir);
-  const appendToPath = (next: string) => (val: string) => mkdir(path.join(val, next));
-  const catchExistsError = (err: TypeError) => err.code === 'EEXIST' ? err.path : Promise.reject(err);
-  return await versionPath.reduce((p: Promise<string>, next: string) => p
-    .then(appendToPath(next))
-    .catch(catchExistsError), Promise.resolve(HOME)).catch(e => {
-      console.log('error in get runtime path');
-      console.log(e);
-    });
+  const appendToPath = (next: string) =>  (val: string) => mkdir(path.join(val, next));
+  const catchExistsError = (err: Error) => err.code === 'EEXIST' ? err.path : Promise.reject(err);
+  return await versionPath.reduce(async (p: Promise<string>, next: string) => {
+    try {
+      const prev = await p;
+      await appendToPath(next)(prev);
+      return path.join(prev, next);
+    } catch (e) {
+      return await catchExistsError(e);
+    }
+  }, Promise.resolve(HOME));
 }
 
 export async function install (versionOrChannel: string): Promise < string > {
@@ -40,7 +47,6 @@ export async function install (versionOrChannel: string): Promise < string > {
       try {
         await download(version, rtFolder);
       } catch (err) {
-        console.error(err);
           throw Error(`Could not install runtime ${versionOrChannel} (${version})`);
       }
     }
@@ -50,18 +56,29 @@ export async function install (versionOrChannel: string): Promise < string > {
 export default async function launch(config: ConnectConfig, manifestLocation: string, namedPipeName: string): Promise < ChildProcess > {
   try {
     const runtimePath = await install(config.runtime.version)
-    .catch(e => config.runtime.fallbackVersion
-      ? install(config.runtime.fallbackVersion)
-      : Promise.reject(e));
-    const args = config.runtime.arguments ? config.runtime.arguments.split(' ') : [];
+    .catch(e => {
+      if (config.runtime.fallbackVersion !== undefined) {
+        // tslint:disable-next-line:no-console
+        console.log(`could not install openfin ${config.runtime.version}`);
+        // tslint:disable-next-line:no-console
+        console.log(`trying fallback ${config.runtime.fallbackVersion}`);
+        return install(config.runtime.fallbackVersion);
+      }
+      return Promise.reject(e);
+    });
+    const args = config.runtime.additionalArgument ? config.runtime.additionalArgument.split(' ') : [];
 
     args.unshift(`--startup-url=${manifestLocation}`);
-    const of = spawn(runtimePath, args, {
-      encoding: 'utf8'
-    });
+    args.push(`--runtime-information-channel-v6=${namedPipeName}`);
+    if (config.runtime.verboseLogging) {
+       args.push(`--v=1`);
+       args.push('--attach-console');
+    }
+    console.log(args);
+    const of = spawn(runtimePath, args);
     return of;
   } catch (e) {
-    console.log(e);
+    console.error('Failed to launch\n', e);
     throw e;
   }
 }

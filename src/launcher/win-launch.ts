@@ -1,3 +1,5 @@
+import * as fs from 'fs';
+import * as path from 'path';
 import { ChildProcess, spawn } from 'child_process';
 import { ConnectConfig } from '../transport/wire';
 
