@@ -44,9 +44,28 @@ describe('System.', () => {
         it('Fulfilled', () => fin.System.getDeviceId().then(() => assert(true)));
     });
 
+    describe('getDeviceUserId()', () => {
+
+        it('Fulfilled', () => fin.System.getDeviceUserId().then(id => {
+            assert(typeof (id) === 'string');
+        }));
+    });
+
+    describe('getEntityInfo()', () => {
+
+        it('Fulfilled', () => fin.System.getEntityInfo('testapp', 'OpenfinPOC').then(entity => {
+            assert(typeof (entity) === 'object');
+        }));
+    });
+
     describe('getEnvironmentVariable()', () => {
 
         it('Fulfilled', () => fin.System.getEnvironmentVariable('HOME').then(env => assert(true)));
+    });
+
+    describe('getFocusedWindow()', () => {
+
+        it('Fulfilled', () => fin.System.getFocusedWindow().then(win => assert(true)));
     });
 
     describe('getLog()', () => {
@@ -60,6 +79,11 @@ describe('System.', () => {
     describe('getLogList()', () => {
 
         it('Fulfilled', () => fin.System.getLogList().then(() => assert(true)));
+    });
+
+    describe('getMinLogLevel()', () => {
+
+        it('Fulfilled', () => fin.System.getMinLogLevel().then(level => assert(typeof level === 'string')));
     });
 
     describe('getMonitorInfo()', () => {
@@ -118,6 +142,36 @@ describe('System.', () => {
                 .then(() => {
                     assert(true);
                     return done();
+                });
+        });
+    });
+
+    describe('readRegistryValue()', () => {
+
+        it('Fulfilled', () => {
+            fin.System.readRegistryValue('HKEY_LOCAL_MACHINE', 'HARDWARE\\DESCRIPTION\\System', 'BootArchitecture')
+                .then(val => {
+                    assert(typeof val === 'object');
+                });
+        });
+    });
+
+    describe('registerExternalConnection()', () => {
+
+        it('Fulfilled', () => {
+            fin.System.registerExternalConnection('testapp')
+                .then(data => {
+                    assert(typeof data === 'object');
+                });
+        });
+    });
+
+    describe('setMinLogLevel()', () => {
+
+        it('Fulfilled', () => {
+            fin.System.setMinLogLevel('info')
+                .then(() => {
+                    fin.System.getMinLogLevel().then(level => assert(level === 'info'));
                 });
         });
     });

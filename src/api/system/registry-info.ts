@@ -1,5 +1,5 @@
 export interface RegistryInfo {
-    data: number;
+    data: any;
     rootKey: string;
     subkey: string;
     type: string;

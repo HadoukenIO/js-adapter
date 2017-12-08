@@ -11,22 +11,100 @@ import { AppAssetInfo, AppAssetRequest, RuntimeDownloadOptions } from './downloa
 import { RVMInfo } from './rvm';
 import { Entity, EntityInfo } from './entity';
 import { HostSpecs } from './host-specs';
-import { ExternalProcessRequestType , TerminateExternalRequestType } from './external-process';
+import { ExternalProcessRequestType , TerminateExternalRequestType, ExternalConnection } from './external-process';
 import Transport from '../../transport/transport';
 import { CookieInfo, CookieOption } from './cookie';
 import { RegistryInfo } from './registry-info';
 
-export interface ExternalConnection {
-    token: string;
-    uuid: string;
-}
+/**
+ * AppAssetInfo interface
+ * @typedef { Object } AppAssetInfo
+ * @property { string } src  The URL to a zip file containing the package files (executables, dlls, etc…)
+ * @property { string } alias The name of the asset
+ * @property { string } version The version of the package
+ * @property { string } target Specify default executable to launch. This option can be overridden in launchExternalProcess
+ * @property { args } args The default command line arguments for the aforementioned target.
+ * @property { boolean } mandatory When set to true, the app will fail to load if the asset cannot be downloaded.
+ * When set to false, the app will continue to load if the asset cannot be downloaded. (Default: true)
+ */
+
+/**
+ * AppAssetRequest interface
+ * @typedef { Object } AppAssetRequest
+ * @property { string } alias The name of the asset
+ */
+
+/**
+ * CookieInfo interface
+ * @typedef { Object } CookieInfo
+ * @property { string } name  The name of the cookie
+ * @property { string } domain The domain of the cookie
+ * @property { string } path The path of the cookie
+ */
+
+/**
+ * CookieOption interface
+ * @typedef { Object } CookieOption
+ * @property { string } name The name of the cookie
+ */
+
+/**
+ * ExternalConnection interface
+ * @typedef { Object } ExternalConnection
+ * @property { string } token The token to broker an external connection
+ * @property { string } uuid The uuid of the external connection
+ */
+
+ /**
+ * ExternalProcessRequestType interface
+ * @typedef { Object } ExternalProcessRequestType
+ * @property { string } path The file path to where the running application resides
+ * @property { string } arguments The argument passed to the running application
+ * @property { Object } listener This is described in the {LaunchExternalProcessListner} type definition
+ */
+
+/**
+ * Entity interface
+ * @typedef { Object } Entity
+ * @property { string } type The type of the entity
+ * @property { string } uuid The uuid of the entity
+ */
+
+/**
+ * EntityInfo interface
+ * @typedef { Object } EntityInfo
+ * @property { string } name The name of the entity
+ * @property { string } uuid The uuid of the entity
+ * @property { Identity } parent The parent of the entity
+ * @property { string } entityType The type of the entity
+ */
+
+ /**
+ * GetLogRequestType interface
+ * @typedef { Object } GetLogRequestType
+ * @property { string } name The name of the running application
+ * @property { number } endFile The file length of the log file
+ * @property { number } sizeLimit The set size limit of the log file
+ */
 
 /**
  * Identity interface
  * @typedef { Object } Identity
  * @property { string } name The name of the application
  * @property { string } uuid The uuid of the application
-*/
+ */
+
+/**
+ * @typedef { verbose | info | warning | error | fatal } LogLevel
+ * @summary Log verbosity levels.
+ * @desc Describes the minimum level (inclusive) above which logs will be written
+ *
+ * @property { string } verbose all logs written
+ * @property { string } info info and above
+ * @property { string } warning warning and above
+ * @property { string } error error and above
+ * @property { string } fatal fatal only, indicates a crash is imminent
+ */
 
 /**
  * ProxyConfig interface
@@ -37,27 +115,28 @@ export interface ExternalConnection {
  */
 
 /**
+ * RegistryInfo interface
+ * @typedef { Object } RegistryInfo
+ * @property { any } data The registry data
+ * @property { string } rootKey The registry root key
+ * @property { string } subkey The registry key
+ * @property { string } type The registry type
+ * @property { string } value The registry value name
+ */
+
+/**
+ * RuntimeDownloadOptions interface
+ * @typedef { Object } RuntimeDownloadOptions
+ * @desc These are the options object required by the downloadRuntime function.
+ * @property { string } version The given version to download
+ */
+
+/**
  * TerminateExternalRequestType interface
  * @typedef { Object } TerminateExternalRequestType
  * @property { string } uuid The uuid of the running application
  * @property { number } timeout Time out period before the running application terminates
  * @property { boolean } killtree Value to terminate the running application
- */
-
-/**
- * GetLogRequestType interface
- * @typedef { Object } GetLogRequestType
- * @property { string } name The name of the running application
- * @property { number } endFile The file length of the log file
- * @property { number } sizeLimit The set size limit of the log file
- */
-
-/**
- * ExternalProcessRequestType interface
- * @typedef { Object } ExternalProcessRequestType
- * @property { string } path The file path to where the running application resides
- * @property { string } arguments The argument passed to the running application
- * @property { Object } listener This is described in the {LaunchExternalProcessListner} type definition
  */
 
 /**
