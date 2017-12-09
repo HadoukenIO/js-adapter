@@ -19,6 +19,7 @@ interface ChromiumMessageHeader {
     message_type: number;   // uint32
     flags: number;          // uint32
     attachment_count: number;   // uint32
+    extraInteger?: boolean;  // for unix
 }
 const MessageHeaderSize: number = 20;  // sizeof(ChromiumMessageHeader)
 
@@ -58,12 +59,12 @@ interface PortDiscoveryMessageEnvolope {
     payload: PortDiscoveryMessage;
 }
 
-function matchRuntimeInstance(config: ConnectConfig, message: PortDiscoveryMessage): Boolean {
+function matchRuntimeInstance(config: ConnectConfig, message: PortDiscoveryMessage): Boolean {console.log(config, message)
     if (config.runtime.version && config.runtime.securityRealm) {
         return config.runtime.version === message.requestedVersion &&
             config.runtime.securityRealm === message.securityRealm;
     } else if (config.runtime.version) {
-        return config.runtime.version === message.version && !message.securityRealm;
+        return config.runtime.version === message.requestedVersion && !message.securityRealm;
     } else {
         return false;
     }
@@ -103,7 +104,11 @@ function generateManifest(config: ConnectConfig): any {
 function onRuntimeHello(data: Buffer, conn: net.Socket): void {
     const header: ChromiumMessageHeader = readHeader(data);
     if (header.message_type === ChromiumMessageType.RUNTIME_HELLO_MESSAGE) {
-        const helloPayload: number = readUint32(data, MessageHeaderSize);
+        let helloPayload: number = readUint32(data, MessageHeaderSize);
+        if (helloPayload === 0) { //need to read again on unix
+            header.extraInteger = true;
+            helloPayload = readUint32(data, MessageHeaderSize + 4);
+        }
         console.log(`Hello payload ${helloPayload}`);  // supposed to be pid of Runtime
         writeHelloMessage(header, conn);
     } else {
@@ -116,10 +121,22 @@ function onDiscoverMessage(data: Buffer): PortDiscoveryMessage {
     if (header.message_type === ChromiumMessageType.RUNTIME_STRING_MESSAGE) {
         const strLength: number = readUint32(data, MessageHeaderSize); // length of following discovery string
         console.log(`discovery message length ${strLength}`);
-        let msg: string = data.toString('utf8', MessageHeaderSize + 4, MessageHeaderSize + 4 + strLength);
+       //BAD CODE
+       let msg: string;
+       if (os.platform() !== 'win32') {
+         const raw = data.toString('utf8');
+         const firstBrace = raw.indexOf('{');
+         const lastBrace = raw.lastIndexOf('}');
+         msg = raw.slice(firstBrace, lastBrace + 1);
+         console.log(header.payload_size)
+         console.log(raw.length, firstBrace, lastBrace)
+       } else {
+       ////////Bad code end 
+         msg = data.toString('utf8', MessageHeaderSize + 4, MessageHeaderSize + 4 + strLength);
         console.log(`discovery message ${msg}`);
-        msg = msg.replace(/\\/g, '\\\\');
-        const env: PortDiscoveryMessageEnvolope = JSON.parse(msg);
+       }
+        const msg2 = msg.replace(/\\/g, '\\\\');
+        const env: PortDiscoveryMessageEnvolope = JSON.parse(msg2);
         if (env.payload) {
             return env.payload;
         }
@@ -141,13 +158,25 @@ function readHeader(data: Buffer): ChromiumMessageHeader {
 
 function writeHelloMessage(header: ChromiumMessageHeader, conn: net.Socket): void {
     console.log(`Writing hello message ${process.pid}`);
-    const data: Buffer = Buffer.alloc(MessageHeaderSize + 4);
+    const data: Buffer = Buffer.alloc(MessageHeaderSize + header.extraInteger ? 28 : 4);
+    console.log('buffer allocated')
+    console.log(header)
     writeUint32(data, header.payload_size, 0);
+    console.log('write ', 1)
     writeUint32(data, header.routing_id, 4);
+    console.log('write ', 2)
     writeUint32(data, header.message_type, 8);
+    console.log('write ', 3)
     writeUint32(data, header.flags, 12);
+    console.log('write ', 4)
     writeUint32(data, header.attachment_count, 16);
-    writeUint32(data, process.pid, 20);
+    console.log('write ')
+    let next = 20
+    if (header.extraInteger) {
+        writeUint32(data, 0, next)
+        next += 4
+    }
+    writeUint32(data, process.pid, next);
     conn.write(data, () => {
         console.log(`Finished writing hello message ${conn.bytesWritten}`);
     });
@@ -254,6 +283,7 @@ export class PortDiscovery {
                             this.discoverState = DiscoverState.HELLO;
                         } else if (this.discoverState === DiscoverState.HELLO) {
                             const msg = onDiscoverMessage(data);
+                            console.log(msg)
                             if (msg) {
                                 resolve(msg);
                             }

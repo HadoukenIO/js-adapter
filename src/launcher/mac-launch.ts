@@ -55,9 +55,11 @@ export async function install (versionOrChannel: string): Promise < string > {
 
 export default async function launch(config: ConnectConfig, manifestLocation: string, namedPipeName: string): Promise < ChildProcess > {
   try {
+    let fb = false;
     const runtimePath = await install(config.runtime.version)
     .catch(e => {
       if (config.runtime.fallbackVersion !== undefined) {
+        fb = true;
         // tslint:disable-next-line:no-console
         console.log(`could not install openfin ${config.runtime.version}`);
         // tslint:disable-next-line:no-console
@@ -69,7 +71,11 @@ export default async function launch(config: ConnectConfig, manifestLocation: st
     const args = config.runtime.additionalArgument ? config.runtime.additionalArgument.split(' ') : [];
 
     args.unshift(`--startup-url=${manifestLocation}`);
+    args.push(`--version-keyword=${fb ? config.runtime.fallbackVersion : config.runtime.version}`);
     args.push(`--runtime-information-channel-v6=${namedPipeName}`);
+    if (config.runtime.securityRealm) {
+      args.push(`--security-realm=${config.runtime.securityRealm}`)
+    }
     if (config.runtime.verboseLogging) {
        args.push(`--v=1`);
        args.push('--attach-console');

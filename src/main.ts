@@ -13,7 +13,8 @@ const environment = new NodeEnvironment();
 export function connect(config: ConnectConfig): Promise<Fin> {
     const wire: Transport = new Transport(WebSocketTransport, environment);
     return wire.connect(config)
-        .then(token => new Fin(wire, token));
+        .then(token => new Fin(wire, token))
+        .catch(e => console.error(e));
 }
 
 export { Identity } from './identity'

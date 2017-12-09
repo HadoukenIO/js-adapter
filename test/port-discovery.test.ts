@@ -8,7 +8,7 @@ const appConfig = JSON.parse(fs.readFileSync('test/app.json').toString());
 describe('PortDiscovery.', function() {
     // do NOT use => function here for 'this' to be set properly
     // tslint:disable-next-line
-    this.timeout(50000);
+    this.timeout(30000);
     let fin: Fin;
     before(function() {
         if (Launcher.isSupported()) {
@@ -16,12 +16,15 @@ describe('PortDiscovery.', function() {
                 // tslint:disable-next-line
                 uuid: 'example_uuid' + Math.random(),
                 runtime: {
-                    version: 'community',
+                    version: 'alpha',
                     verboseLogging: true,
                     securityRealm: 'adapter-test-port-discovery'
                 }
             }).then((a: Fin) => {
+                console.log('connect returned')
                 fin = a;
+            }).catch(e => {
+                console.log('testing fail')
             });
         }
     });
