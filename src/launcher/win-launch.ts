@@ -12,9 +12,11 @@ function copyInstaller(config: NewConnectConfig, Installer_Work_Dir: string): Pr
         const wr = fs.createWriteStream(outf);
         wr.on('error', (err: Error) => reject(err));
         wr.on('finish', () => {
+            // tslint:disable-next-line:no-console
             console.log(`copied ${outf}`);
             resolve();
         });
+        // tslint:disable-next-line:no-console
         console.log(`copying ${outf}`);
         rd.pipe(wr);
     });
@@ -32,13 +34,15 @@ function launchRVM(config: NewConnectConfig, manifestLocation: string, namedPipe
     if (config.assetsUrl) {
         installerArgs.push(`--assetsUrl=${config.assetsUrl}`);
     }
+    // tslint:disable-next-line:no-console
     console.log(`launching ${installer} ${installerArgs}`);
     const exe = spawn(installer, installerArgs);
     exe.stdout.on('data', (data: string) => {
+        // tslint:disable-next-line:no-console
         console.log(`stdout: ${data}`);
     });
     exe.stderr.on('data', (data: string) => {
-        console.log(`stderr: ${data}`);
+        console.error(`stderr: ${data}`);
     });
     exe.on('error', (err: Error) => console.error(err));
     return exe;

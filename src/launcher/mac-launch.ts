@@ -24,7 +24,7 @@ export async function getRuntimePath (version: string) : Promise<string> {
   const versionPath = ['OpenFin', 'Runtime', version];
   const HOME = process.env.HOME;
   const appendToPath = (next: string) =>  (val: string) => mkdir(path.join(val, next));
-  const catchExistsError = (err: ErrnoException) => err.code === 'EEXIST' ? err.path : Promise.reject(err);
+  const catchExistsError = (err: NodeJS.ErrnoException) => err.code === 'EEXIST' ? err.path : Promise.reject(err);
   return await versionPath.reduce(async (p: Promise<string>, next: string) => {
     try {
       const prev = await p;
