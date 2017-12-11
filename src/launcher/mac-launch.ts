@@ -1,8 +1,7 @@
-import { ErrnoException } from 'NodeJS';
 import * as fs from 'fs';
 import * as path from 'path';
 import { ChildProcess, spawn } from 'child_process';
-import { ConnectConfig } from '../transport/wire';
+import { NewConnectConfig } from '../transport/wire';
 import  {promisify, resolveRuntimeVersion, rmDir, downloadFile, unzip } from './util';
 
 const runtimeRoot = 'https://developer.openfin.co/release/runtime/';
@@ -54,7 +53,7 @@ export async function install (versionOrChannel: string): Promise < string > {
     return rtPath;
 }
 
-export default async function launch(config: ConnectConfig, manifestLocation: string, namedPipeName: string): Promise < ChildProcess > {
+export default async function launch(config: NewConnectConfig, manifestLocation: string, namedPipeName: string): Promise < ChildProcess > {
   try {
     let fb = false;
     const runtimePath = await install(config.runtime.version)

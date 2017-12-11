@@ -5,7 +5,7 @@ import * as http from 'http';
 import * as net from 'net';
 import * as path from 'path';
 import * as os from 'os';
-import { ConnectConfig } from './wire';
+import { NewConnectConfig } from './wire';
 import Launcher from '../launcher/launcher';
 import Timer = NodeJS.Timer;
 import { ChildProcess } from 'child_process';
@@ -59,7 +59,7 @@ interface PortDiscoveryMessageEnvolope {
     payload: PortDiscoveryMessage;
 }
 
-function matchRuntimeInstance(config: ConnectConfig, message: PortDiscoveryMessage): Boolean {
+function matchRuntimeInstance(config: NewConnectConfig, message: PortDiscoveryMessage): Boolean {
     if (config.runtime.version && config.runtime.securityRealm) {
         return config.runtime.version === message.requestedVersion &&
             config.runtime.securityRealm === message.securityRealm;
@@ -70,7 +70,7 @@ function matchRuntimeInstance(config: ConnectConfig, message: PortDiscoveryMessa
     }
 }
 
-function generateManifest(config: ConnectConfig): any {
+function generateManifest(config: NewConnectConfig): any {
     const manifest = Object.assign({},
         {devtools_port: config.devToolsPort},
                 {startup_app: config.startupApp},
@@ -183,7 +183,7 @@ function writeUint32(data: Buffer, value: number, offset: number): void {
 }
 
 export class PortDiscovery {
-    private savedConfig: ConnectConfig;
+    private savedConfig: NewConnectConfig;
     private namedPipeName: string;
     private manifestLocation: string;
     private discoverState: DiscoverState;
@@ -191,11 +191,12 @@ export class PortDiscovery {
     private pipeConnection: net.Socket; // created by Runtime. only one allowed
     private timeoutTimer: Timer;
 
-    constructor(config: ConnectConfig) {
+    constructor(config: NewConnectConfig) {
         this.savedConfig = Object.assign({}, config);
     }
 
-    public retrievePort(): Promise<any> {
+    public retrievePort(): Promise<number> {
+        console.log('retrieve port called');
         return new Promise((resolve, reject) => {
             if (this.savedConfig.timeout) {
                 this.timeoutTimer = setTimeout(() => {
@@ -230,10 +231,6 @@ export class PortDiscovery {
                     reject(reason);
                     this.cleanup();
                 });
-        }).catch(err => {
-            console.error(err);
-            console.log('caught error in port discover');
-            return false;
         });
     }
 
@@ -255,8 +252,13 @@ export class PortDiscovery {
                 console.log(`listening to ${this.namedPipeServer.address()}`);
                 if (unix) {
                     //On unix using a named socket, address will always be a string
-                    const address : string|{port: number, family: string, address: string} = this.namedPipeServer.address();
-                    this.namedPipeName = address.address || address;
+                    interface AddressObj {
+                        port: number;
+                        family: string;
+                        address: string;
+                    }
+                    const address : string|AddressObj = this.namedPipeServer.address();
+                    this.namedPipeName = <AddressObj>address.address || <string>address;
                     fs.chmodSync(pipePath, 0o777);
                 }
                 resolve();

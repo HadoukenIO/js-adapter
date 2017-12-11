@@ -1,11 +1,11 @@
 import * as fs from 'fs';
 import * as path from 'path';
 import { ChildProcess, spawn } from 'child_process';
-import { ConnectConfig } from '../transport/wire';
+import { NewConnectConfig } from '../transport/wire';
 
 const OpenFin_Installer: string = 'OpenFinInstaller.exe';
 
-function copyInstaller(config: ConnectConfig, Installer_Work_Dir: string): Promise<string> {
+function copyInstaller(config: NewConnectConfig, Installer_Work_Dir: string): Promise<string> {
     return new Promise((resolve, reject) => {
         const rd = fs.createReadStream(path.join(__dirname, '..', '..', 'resources', 'win', OpenFin_Installer));
         const outf: string = path.join(Installer_Work_Dir, OpenFin_Installer);
@@ -20,7 +20,7 @@ function copyInstaller(config: ConnectConfig, Installer_Work_Dir: string): Promi
     });
 }
 
-function launchInstaller(config: ConnectConfig, manifestLocation: string, namedPipeName: string, Installer_Work_Dir: string): ChildProcess {
+function launchRVM(config: NewConnectConfig, manifestLocation: string, namedPipeName: string, Installer_Work_Dir: string): ChildProcess {
     const installer: string = path.join(Installer_Work_Dir, OpenFin_Installer);
     const runtimeArgs = `--runtime-arguments=--runtime-information-channel-v6=${namedPipeName}`;
     const installerArgs: Array<string> = [];
@@ -45,7 +45,7 @@ function launchInstaller(config: ConnectConfig, manifestLocation: string, namedP
 }
 
 // tslint:disable-next-line:max-line-length
-export default function launch (config: ConnectConfig, manifestLocation: string, namedPipeName: string, Installer_Work_Dir: string) : Promise<ChildProcess> {
+export default function launch (config: NewConnectConfig, manifestLocation: string, namedPipeName: string, Installer_Work_Dir: string) : Promise<ChildProcess> {
     return copyInstaller(config, Installer_Work_Dir)
-        .then( () => launchInstaller(config, manifestLocation, namedPipeName, Installer_Work_Dir));
+        .then( () => launchRVM(config, manifestLocation, namedPipeName, Installer_Work_Dir));
 }
