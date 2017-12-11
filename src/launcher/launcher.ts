@@ -25,7 +25,7 @@ export default class Launcher {
         }
     }
 
-    public static isSupported () : boolean {
+    public static IS_SUPPORTED () : boolean {
         const platform = os.platform();
         return platform === 'win32' || platform === 'darwin';
     }

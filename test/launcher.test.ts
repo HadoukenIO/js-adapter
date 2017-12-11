@@ -22,11 +22,12 @@ describe('Launcher', () => {
     });
     describe('Launcher', () => {
         it('runs stable', async () => {
-          if (Launcher.isSupported()) {
+          if (Launcher.IS_SUPPORTED()) {
             const launcher = new Launcher();
             const of = await launcher.launch({
                 uuid: 'sdafasdfasd',
                 runtime: {version: 'community'}}, path.resolve('./app.json'), 'some port');
+            //But it does when spawn is passed a file name
             assert(() => of.spawnfile.indexOf('Openfin.app') !== -1);
           } else {
               assert.ok(true, 'OS not supported');
@@ -39,7 +40,7 @@ describe('Launcher', () => {
                const version = await resolveRuntimeVersion('community');
                const location = await getRuntimePath(version);
                // tslint:disable-next-line:no-empty
-               await rmDir(location, false).catch(e => {});
+               await rmDir(location, false);
                await doesntThrowAsync(async () => await download(version, location));
            }).timeout(40000);
         });
@@ -53,7 +54,7 @@ function makeVersionCheck (index: number, min: number) {
 async function testVersion (input: string, expected: string | Function): Promise<boolean > {
    const ans = await resolveRuntimeVersion(input);
    return typeof expected === 'string' ? ans === expected : expected(ans);
-};
+}
 
 async function assertThrowsAsync(fn: Function, regExp: RegExp) {
     // tslint:disable-next-line:no-empty

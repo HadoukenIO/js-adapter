@@ -59,7 +59,7 @@ interface PortDiscoveryMessageEnvolope {
     payload: PortDiscoveryMessage;
 }
 
-function matchRuntimeInstance(config: ConnectConfig, message: PortDiscoveryMessage): Boolean {console.log(config, message)
+function matchRuntimeInstance(config: ConnectConfig, message: PortDiscoveryMessage): Boolean {
     if (config.runtime.version && config.runtime.securityRealm) {
         return config.runtime.version === message.requestedVersion &&
             config.runtime.securityRealm === message.securityRealm;
@@ -128,17 +128,17 @@ function onDiscoverMessage(data: Buffer): PortDiscoveryMessage {
          const firstBrace = raw.indexOf('{');
          const lastBrace = raw.lastIndexOf('}');
          msg = raw.slice(firstBrace, lastBrace + 1);
-         console.log(header.payload_size)
-         console.log(raw.length, firstBrace, lastBrace)
+
        } else {
-       ////////Bad code end 
+       ////////Bad code end
          msg = data.toString('utf8', MessageHeaderSize + 4, MessageHeaderSize + 4 + strLength);
-        console.log(`discovery message ${msg}`);
        }
         const msg2 = msg.replace(/\\/g, '\\\\');
         const env: PortDiscoveryMessageEnvolope = JSON.parse(msg2);
         if (env.payload) {
             return env.payload;
+        } else {
+            console.warn('discovery message did not have payload');
         }
     } else {
         console.error(`Invalid port discovery message type ${header.message_type}`);
@@ -157,24 +157,16 @@ function readHeader(data: Buffer): ChromiumMessageHeader {
 }
 
 function writeHelloMessage(header: ChromiumMessageHeader, conn: net.Socket): void {
-    console.log(`Writing hello message ${process.pid}`);
-    const data: Buffer = Buffer.alloc(MessageHeaderSize + header.extraInteger ? 28 : 4);
-    console.log('buffer allocated')
-    console.log(header)
+    const data: Buffer = Buffer.alloc(MessageHeaderSize +  (header.extraInteger ? 28 : 4));
     writeUint32(data, header.payload_size, 0);
-    console.log('write ', 1)
     writeUint32(data, header.routing_id, 4);
-    console.log('write ', 2)
     writeUint32(data, header.message_type, 8);
-    console.log('write ', 3)
     writeUint32(data, header.flags, 12);
-    console.log('write ', 4)
     writeUint32(data, header.attachment_count, 16);
-    console.log('write ')
-    let next = 20
+    let next = 20;
     if (header.extraInteger) {
-        writeUint32(data, 0, next)
-        next += 4
+        writeUint32(data, 0, next);
+        next += 4;
     }
     writeUint32(data, process.pid, next);
     conn.write(data, () => {
@@ -252,7 +244,7 @@ export class PortDiscovery {
             const randomNum: string = crypto.randomBytes(16).toString('hex');
             this.namedPipeName = 'NodeAdapter.' + randomNum;
             this.namedPipeServer = net.createServer();
-            const pipePath: string = os.platform() === 'win32' 
+            const pipePath: string = os.platform() === 'win32'
                 ? path.join('\\\\.\\pipe\\', 'chrome.' + this.namedPipeName)
                 : path.join(os.tmpdir(), this.namedPipeName + '.sock');
             if (os.platform() !== 'win32') {
@@ -262,7 +254,9 @@ export class PortDiscovery {
             this.namedPipeServer.listen(pipePath, () => {
                 console.log(`listening to ${this.namedPipeServer.address()}`);
                 if (unix) {
-                    this.namedPipeName = this.namedPipeServer.address();
+                    //On unix using a named socket, address will always be a string
+                    const address : string|{port: number, family: string, address: string} = this.namedPipeServer.address();
+                    this.namedPipeName = address.address || address;
                     fs.chmodSync(pipePath, 0o777);
                 }
                 resolve();
@@ -283,7 +277,6 @@ export class PortDiscovery {
                             this.discoverState = DiscoverState.HELLO;
                         } else if (this.discoverState === DiscoverState.HELLO) {
                             const msg = onDiscoverMessage(data);
-                            console.log(msg)
                             if (msg) {
                                 resolve(msg);
                             }

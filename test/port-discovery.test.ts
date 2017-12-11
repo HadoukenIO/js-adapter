@@ -11,26 +11,23 @@ describe('PortDiscovery.', function() {
     this.timeout(30000);
     let fin: Fin;
     before(function() {
-        if (Launcher.isSupported()) {
+        if (Launcher.IS_SUPPORTED()) {
             return rawConnect({
                 // tslint:disable-next-line
                 uuid: 'example_uuid' + Math.random(),
                 runtime: {
                     version: 'alpha',
-                    verboseLogging: true,
+                    verboseLogging: false,
                     securityRealm: 'adapter-test-port-discovery'
                 }
             }).then((a: Fin) => {
-                console.log('connect returned')
                 fin = a;
-            }).catch(e => {
-                console.log('testing fail')
             });
         }
     });
 
     it('getVersion', () => {
-        if (Launcher.isSupported()) {
+        if (Launcher.IS_SUPPORTED()) {
             fin.System.getVersion().then(() => assert(true));
         } else {
             assert(true);

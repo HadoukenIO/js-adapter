@@ -6,17 +6,19 @@ export function promisify (func: Function): (...args: any[]) => Promise<any > {
     return (...args: any[]) => new Promise((resolve, reject) => {
         func(...args, (err: Error, val: any) => err ? reject(err) : resolve(val));
     });
-};
+}
 
 export async function get (url: string): Promise<any > {
     return new Promise((resolve, reject) => {
         const request = https.get(url, (response) => {
-          if (response.statusCode < 200 || response.statusCode > 299) {
-             reject(new Error('Failed to load page, status code: ' + response.statusCode));
-           }
-          const body : string|Buffer[] = [];
-          response.on('data', (chunk) => body.push(chunk));
-          response.on('end', () => resolve(body.join('')));
+            if (response.statusCode < 200 || response.statusCode > 299) {
+                reject(new Error('Failed to load page, status code: ' + response.statusCode));
+            }
+            const body : string[]|Buffer[] = [];
+            response.on('data', (chunk: string|Buffer) : void => {
+                body.push(chunk);
+            });
+            response.on('end', () : void => resolve(body.join('')));
         });
         request.on('error', (err) => reject(err));
         });
@@ -33,38 +35,27 @@ const readdir = promisify(fs.readdir);
 const rmdir = promisify(fs.rmdir);
 
 export async function rmDir (dirPath: string, removeSelf: boolean = true) {
-    let files;
+    let files: string[];
     try {
        files = await readdir(dirPath);
     } catch (e) {
       return;
     }
     if (files.length > 0) {
-      for (let i = 0; i < files.length; i++) {
-        const filePath = dirPath + '/' + files[i];
+      await promiseMap(files, async (f: string) => {
+        const filePath = dirPath + '/' + f;
         const file =  await lstat(filePath);
         if (file.isFile() || file.isSymbolicLink()) {
-            await unlink(filePath).catch(e => {
-                console.log('unlink error');
-                console.log(e);
-                // console.log(file)
-            });
+            await unlink(filePath);
         } else {
-            await rmDir(filePath, true).catch(e => {
-                console.log('caught error in rmDir', filePath);
-                console.error(e);
-            });
+            await rmDir(filePath, true);
         }
-      }
+      });
     }
     if (removeSelf) {
-        rmdir(dirPath).catch(e => {
-            console.log('error removing self');
-            console.log(dirPath);
-            console.log(e);
-        });
+       await rmdir(dirPath);
     }
-  };
+}
 
 export async function downloadFile (url: string, writeLocation: string) {
       return new Promise((resolve, reject) => {
@@ -79,7 +70,7 @@ export async function downloadFile (url: string, writeLocation: string) {
             } else {
                 const file = fs.createWriteStream(writeLocation);
                 response.pipe(file);
-                file.on('finish', function() {
+                file.on('finish', () => {
                     file.close();
                     resolve();
                 });
@@ -115,7 +106,8 @@ export async function resolveRuntimeVersion(versionOrChannel: string) : Promise<
 }
 
 function first (arr: any[], func : (x: any, i: number, r: any[]) => boolean) {
-    for (let i = 0; i < arr.length; i ++) {
+        // tslint:disable-next-line:no-increment-decrement
+        for (let i = 0; i < arr.length; i ++) {
         if (func(arr[i], i, arr)) {
             return arr[i];
         }
@@ -129,4 +121,8 @@ function takeWhile (arr: any[], func: (x: any, i: number, r: any[]) => boolean) 
         : {take: false, vals},
         {take: true, vals: []})
     .vals;
+}
+
+async function promiseMap (arr: any[], asyncF: (x: any, i: number, r: any[]) => Promise<any> ) {
+    return Promise.all(arr.map(asyncF));
 }

@@ -1,3 +1,4 @@
+import { ErrnoException } from 'NodeJS';
 import * as fs from 'fs';
 import * as path from 'path';
 import { ChildProcess, spawn } from 'child_process';
@@ -24,7 +25,7 @@ export async function getRuntimePath (version: string) : Promise<string> {
   const versionPath = ['OpenFin', 'Runtime', version];
   const HOME = process.env.HOME;
   const appendToPath = (next: string) =>  (val: string) => mkdir(path.join(val, next));
-  const catchExistsError = (err: Error) => err.code === 'EEXIST' ? err.path : Promise.reject(err);
+  const catchExistsError = (err: ErrnoException) => err.code === 'EEXIST' ? err.path : Promise.reject(err);
   return await versionPath.reduce(async (p: Promise<string>, next: string) => {
     try {
       const prev = await p;
@@ -60,10 +61,8 @@ export default async function launch(config: ConnectConfig, manifestLocation: st
     .catch(e => {
       if (config.runtime.fallbackVersion !== undefined) {
         fb = true;
-        // tslint:disable-next-line:no-console
-        console.log(`could not install openfin ${config.runtime.version}`);
-        // tslint:disable-next-line:no-console
-        console.log(`trying fallback ${config.runtime.fallbackVersion}`);
+        console.warn(`could not install openfin ${config.runtime.version}`);
+        console.warn(`trying fallback ${config.runtime.fallbackVersion}`);
         return install(config.runtime.fallbackVersion);
       }
       return Promise.reject(e);
@@ -74,15 +73,13 @@ export default async function launch(config: ConnectConfig, manifestLocation: st
     args.push(`--version-keyword=${fb ? config.runtime.fallbackVersion : config.runtime.version}`);
     args.push(`--runtime-information-channel-v6=${namedPipeName}`);
     if (config.runtime.securityRealm) {
-      args.push(`--security-realm=${config.runtime.securityRealm}`)
+      args.push(`--security-realm=${config.runtime.securityRealm}`);
     }
     if (config.runtime.verboseLogging) {
-       args.push(`--v=1`);
+       args.push('--v=1');
        args.push('--attach-console');
     }
-    console.log(args);
-    const of = spawn(runtimePath, args);
-    return of;
+    return spawn(runtimePath, args);
   } catch (e) {
     console.error('Failed to launch\n', e);
     throw e;
