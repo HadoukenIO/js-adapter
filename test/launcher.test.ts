@@ -1,8 +1,10 @@
 // tslint:disable: mocha-no-side-effect-code
 import * as assert from 'assert';
+import * as os from 'os';
 import * as path from 'path';
 import Launcher from '../src/launcher/launcher';
-import { resolveRuntimeVersion } from '../src/launcher/util';
+import { download, getRuntimePath, OsConfig } from '../src/launcher/mac-launch';
+import { resolveRuntimeVersion, rmDir } from '../src/launcher/util';
 
 describe('Launcher', () => {
     describe('Resolve Runtime', () => {
@@ -33,17 +35,29 @@ describe('Launcher', () => {
           }
         });
     });
-    // if (os.platform() === 'darwin') {
-    //     describe('Mac Launcher', async () => { //TODO mock this
-    //        it('downloads and unzips the version', async () => {
-    //            const version = await resolveRuntimeVersion('community');
-    //            const location = await getRuntimePath(version);
-    //            // tslint:disable-next-line:no-empty
-    //            await rmDir(location, false);
-    //            await doesntThrowAsync(async () => await download(version, location));
-    //        }).timeout(40000);
-    //     });
-    // }
+    if (os.platform() === 'darwin') {
+        describe('Mac Launcher', async () => { //TODO mock this
+           it('downloads and unzips the version', async () => {
+               const version = await resolveRuntimeVersion('community');
+               const location = await getRuntimePath(version);
+               // tslint:disable-next-line:no-empty
+               await rmDir(location, false);
+               const mockConf: OsConfig = {urlPath: 'mac/x64', manifestLocation: '', namedPipeName: '', executablePath: ''};
+               await doesntThrowAsync(async () => await download(version, location, mockConf));
+           }).timeout(40000);
+        });
+    } else if (os.platform() === 'linux') {
+        describe('Mac Launcher', async () => { //TODO mock this
+           it('downloads and unzips the version', async () => {
+               const version = await resolveRuntimeVersion('community');
+               const location = await getRuntimePath(version);
+               // tslint:disable-next-line:no-empty
+               await rmDir(location, false);
+               const mockConf: OsConfig = {urlPath: `linux/${os.arch()}`, manifestLocation: '', namedPipeName: '', executablePath: ''};
+               await doesntThrowAsync(async () => await download(version, location, mockConf));
+           }).timeout(40000);
+        });
+    }
 });
 
 function makeVersionCheck (index: number, min: number) {
@@ -67,13 +81,13 @@ async function assertThrowsAsync(fn: Function, regExp: RegExp) {
     }
   }
 
-// async function doesntThrowAsync (fn: Function) {
-//         let f = () => { throw new Error('Didn\'t Throw!asdfasgsafdasdf'); };
-//         try {
-//            await fn();
-//         } catch (e) {
-//             f = () => { throw e; };
-//         } finally {
-//             assert.throws(f, /Didn't Throw!asdfasgsafdasdf/);
-//         }
-// }
+async function doesntThrowAsync (fn: Function) {
+        let f = () => { throw new Error('Didn\'t Throw!asdfasgsafdasdf'); };
+        try {
+           await fn();
+        } catch (e) {
+            f = () => { throw e; };
+        } finally {
+            assert.throws(f, /Didn't Throw!asdfasgsafdasdf/);
+        }
+}
