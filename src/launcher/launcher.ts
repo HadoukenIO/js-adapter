@@ -1,7 +1,7 @@
 import * as os from 'os';
 import * as path from 'path';
 import winLaunch from './win-launch';
-import macLaunch, {OsConfig} from './mac-launch';
+import macLaunch, {OsConfig} from './nix-launch';
 import { ChildProcess } from 'child_process';
 import { NewConnectConfig } from '../transport/wire';
 

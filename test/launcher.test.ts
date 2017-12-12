@@ -3,7 +3,7 @@ import * as assert from 'assert';
 import * as os from 'os';
 import * as path from 'path';
 import Launcher from '../src/launcher/launcher';
-import { download, getRuntimePath, OsConfig } from '../src/launcher/mac-launch';
+import { download, getRuntimePath, OsConfig } from '../src/launcher/nix-launch';
 import { resolveRuntimeVersion, rmDir } from '../src/launcher/util';
 
 describe('Launcher', () => {
