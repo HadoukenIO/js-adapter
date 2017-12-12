@@ -1,4 +1,10 @@
-import { Wire, WireConstructor, READY_STATE, ConnectConfig } from './wire';
+import { Wire,
+    WireConstructor,
+    READY_STATE,
+    ConnectConfig,
+    isExistingConnectConfig,
+    isNewConnectConfig,
+    ExistingConnectConfig } from './wire';
 import { Identity } from '../identity';
 import { EventEmitter } from 'events';
 import { Environment } from '../environment/environment';
@@ -44,16 +50,17 @@ class Transport extends EventEmitter {
     }
 
     public async connect(config: ConnectConfig): Promise<string> {
-        if (config.address) {
+        if (isExistingConnectConfig(config)) {
             return this.connectByPort(config);
-        } else {
-
+        } else if (isNewConnectConfig(config)) {
             const port = await this.environment.retreivePort(config);
             return this.connectByPort(Object.assign({}, config, {address: `ws://localhost:${port}`}));
+        } else {
+            throw new Error ('Invalid Config');
         }
     }
 
-    public async connectByPort(config: ConnectConfig): Promise<string> {
+    public async connectByPort(config: ExistingConnectConfig): Promise<string> {
         const {address, uuid, name} = config;
         const reqAuthPayload = Object.assign({}, config, { type: 'file-token' });
 

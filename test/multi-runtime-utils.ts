@@ -179,8 +179,9 @@ export function launchAndConnect(version: string  = appConfig.runtime.version,
     return new Promise((resolve, reject) => {
 
         spawnRealm(version, args).then((runtimeProcess: RuntimeProcess) => {
+            const port = runtimeProcess.port;
             rawConnect({
-                address: `ws://localhost:${runtimeProcess.port}`,
+                address: `ws://localhost:${port}`,
                 uuid
             }).then((fin: any) => {
                 runtimeProcess.fin = fin;

@@ -1,27 +1,23 @@
 import * as assert from 'assert';
-import { connect as rawConnect, Fin } from '../src/main';
-import * as os from 'os';
 import * as fs from 'fs';
+import Launcher from '../src/launcher/launcher';
+import { connect as rawConnect, Fin } from '../src/main';
 // tslint:disable-next-line
 const appConfig = JSON.parse(fs.readFileSync('test/app.json').toString());
 
-// tslint:disable-next-line
-function supported(): boolean {
-    return (os.platform() === 'win32');
-}
 describe('PortDiscovery.', function() {
     // do NOT use => function here for 'this' to be set properly
     // tslint:disable-next-line
-    this.timeout(10000);
+    this.timeout(30000);
     let fin: Fin;
     before(function() {
-        if (supported()) {
+        if (Launcher.IS_SUPPORTED()) {
             return rawConnect({
                 // tslint:disable-next-line
                 uuid: 'example_uuid' + Math.random(),
                 runtime: {
-                    version: appConfig.runtime.version,
-                    verboseLogging: true,
+                    version: 'alpha',
+                    verboseLogging: false,
                     securityRealm: 'adapter-test-port-discovery'
                 }
             }).then((a: Fin) => {
@@ -31,7 +27,7 @@ describe('PortDiscovery.', function() {
     });
 
     it('getVersion', () => {
-        if (supported()) {
+        if (Launcher.IS_SUPPORTED()) {
             fin.System.getVersion().then(() => assert(true));
         } else {
             assert(true);
