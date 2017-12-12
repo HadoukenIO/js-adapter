@@ -8,7 +8,7 @@ const runtimeRoot = 'https://developer.openfin.co/release/runtime/';
 const mkdir = promisify(fs.mkdir);
 
 export async function download (version: string, folder: string, osConfig: OsConfig) {
-  const url = `${runtimeRoot}${osConfig.urlPath}${version}`;
+  const url = `${runtimeRoot}${osConfig.urlPath}/${version}`;
   const tmp = 'tmp';
   await rmDir(folder, false);
   // tslint:disable-next-line:no-empty
@@ -47,7 +47,8 @@ export async function install (versionOrChannel: string, osConfig: OsConfig): Pr
       try {
         await download(version, rtFolder, osConfig);
       } catch (err) {
-          await rmDir(rtFolder, true);
+          console.error(`Failed to download, attempting to empty ${rtFolder}`);
+          await rmDir(rtFolder, false);
           throw Error(`Could not install runtime ${versionOrChannel} (${version})`);
       }
     }
@@ -60,7 +61,6 @@ export interface OsConfig {
 
 export default async function launch(config: NewConnectConfig, osConfig: OsConfig): Promise < ChildProcess > {
   try {
-    console.log(osConfig);
     let fb = false;
     const runtimePath = await install(config.runtime.version, osConfig)
     .catch(e => {
