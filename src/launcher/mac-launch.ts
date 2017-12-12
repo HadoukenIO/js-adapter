@@ -7,8 +7,8 @@ import  {promisify, resolveRuntimeVersion, rmDir, downloadFile, unzip } from './
 const runtimeRoot = 'https://developer.openfin.co/release/runtime/';
 const mkdir = promisify(fs.mkdir);
 
-export async function download (version: string, folder: string) {
-  const url = `${runtimeRoot}mac/x64/${version}`;
+export async function download (version: string, folder: string, osConfig: OsConfig) {
+  const url = `${runtimeRoot}${osConfig.urlPath}${version}`;
   const tmp = 'tmp';
   await rmDir(folder, false);
   // tslint:disable-next-line:no-empty
@@ -36,16 +36,16 @@ export async function getRuntimePath (version: string) : Promise<string> {
   }, Promise.resolve(HOME));
 }
 
-export async function install (versionOrChannel: string): Promise < string > {
+export async function install (versionOrChannel: string, osConfig: OsConfig): Promise < string > {
     const version = await resolveRuntimeVersion(versionOrChannel);
     const rtFolder: string = await getRuntimePath(version);
-    const rtPath: string = path.join(rtFolder, 'OpenFin.app/Contents/MacOS/OpenFin');
+    const rtPath: string = path.join(rtFolder, osConfig.executablePath);
     const exists = await promisify(fs.stat)(rtPath).catch(e => false);
     if (Boolean(exists)) {
       await promisify(fs.chmod)(rtPath, 0o755);
     } else {
       try {
-        await download(version, rtFolder);
+        await download(version, rtFolder, osConfig);
       } catch (err) {
           throw Error(`Could not install runtime ${versionOrChannel} (${version})`);
       }
@@ -53,24 +53,28 @@ export async function install (versionOrChannel: string): Promise < string > {
     return rtPath;
 }
 
-export default async function launch(config: NewConnectConfig, manifestLocation: string, namedPipeName: string): Promise < ChildProcess > {
+export interface OsConfig {
+  manifestLocation: string; namedPipeName: string; urlPath: string; executablePath: string;
+}
+
+export default async function launch(config: NewConnectConfig, osConfig: OsConfig): Promise < ChildProcess > {
   try {
     let fb = false;
-    const runtimePath = await install(config.runtime.version)
+    const runtimePath = await install(config.runtime.version, osConfig)
     .catch(e => {
       if (config.runtime.fallbackVersion !== undefined) {
         fb = true;
         console.warn(`could not install openfin ${config.runtime.version}`);
         console.warn(`trying fallback ${config.runtime.fallbackVersion}`);
-        return install(config.runtime.fallbackVersion);
+        return install(config.runtime.fallbackVersion, osConfig);
       }
       return Promise.reject(e);
     });
     const args = config.runtime.additionalArgument ? config.runtime.additionalArgument.split(' ') : [];
 
-    args.unshift(`--startup-url=${manifestLocation}`);
+    args.unshift(`--startup-url=${osConfig.manifestLocation}`);
     args.push(`--version-keyword=${fb ? config.runtime.fallbackVersion : config.runtime.version}`);
-    args.push(`--runtime-information-channel-v6=${namedPipeName}`);
+    args.push(`--runtime-information-channel-v6=${osConfig.namedPipeName}`);
     if (config.runtime.securityRealm) {
       args.push(`--security-realm=${config.runtime.securityRealm}`);
     }
