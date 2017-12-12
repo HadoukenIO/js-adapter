@@ -60,6 +60,7 @@ export interface OsConfig {
 
 export default async function launch(config: NewConnectConfig, osConfig: OsConfig): Promise < ChildProcess > {
   try {
+    console.log(osConfig);
     let fb = false;
     const runtimePath = await install(config.runtime.version, osConfig)
     .catch(e => {
