@@ -38,7 +38,7 @@ describe('Launcher', () => {
     if (os.platform() === 'darwin') {
         describe('Mac Launcher', async () => { //TODO mock this
            it('downloads and unzips the version', async () => {
-               const version = await resolveRuntimeVersion('community');
+               const version = await resolveRuntimeVersion('stable');
                const location = await getRuntimePath(version);
                // tslint:disable-next-line:no-empty
                await rmDir(location, false);
@@ -49,7 +49,7 @@ describe('Launcher', () => {
     } else if (os.platform() === 'linux') {
         describe('Mac Launcher', async () => { //TODO mock this
            it('downloads and unzips the version', async () => {
-               const version = await resolveRuntimeVersion('community');
+               const version = await resolveRuntimeVersion('stable');
                const location = await getRuntimePath(version);
                // tslint:disable-next-line:no-empty
                await rmDir(location, false);
