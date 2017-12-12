@@ -47,6 +47,7 @@ export async function install (versionOrChannel: string, osConfig: OsConfig): Pr
       try {
         await download(version, rtFolder, osConfig);
       } catch (err) {
+          await rmDir(rtFolder, true);
           throw Error(`Could not install runtime ${versionOrChannel} (${version})`);
       }
     }
