@@ -154,7 +154,6 @@ function generateAppConfig(): any {
 }
 
 function versionPath (version: string): string {
-    console.log(process.env.LOCALAPPDATA);
     const ofFolder = path.resolve(process.env.LOCALAPPDATA, 'OpenFin', 'runtime');
     const exeLocation = path.join('OpenFin', 'openfin.exe');
 

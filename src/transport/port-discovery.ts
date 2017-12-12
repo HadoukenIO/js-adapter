@@ -128,7 +128,6 @@ function onDiscoverMessage(data: Buffer): PortDiscoveryMessage {
          const firstBrace = raw.indexOf('{');
          const lastBrace = raw.lastIndexOf('}');
          msg = raw.slice(firstBrace, lastBrace + 1);
-
        } else {
        ////////Bad code end
          msg = data.toString('utf8', MessageHeaderSize + 4, MessageHeaderSize + 4 + strLength);
@@ -251,14 +250,9 @@ export class PortDiscovery {
             this.namedPipeServer.listen(pipePath, () => {
                 console.log(`listening to ${this.namedPipeServer.address()}`);
                 if (unix) {
-                    //On unix using a named socket, address will always be a string
-                    interface AddressObj {
-                        port: number;
-                        family: string;
-                        address: string;
-                    }
-                    const address : string|AddressObj = this.namedPipeServer.address();
-                    this.namedPipeName = <AddressObj>address.address || <string>address;
+                    //@ts-ignore On unix using a named socket, address will always be a string @types/node needs update
+                    const address : string = this.namedPipeServer.address();
+                    this.namedPipeName = address;
                     fs.chmodSync(pipePath, 0o777);
                 }
                 resolve();

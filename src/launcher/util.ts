@@ -14,8 +14,8 @@ export async function get (url: string): Promise<any > {
             if (response.statusCode < 200 || response.statusCode > 299) {
                 reject(new Error('Failed to load page, status code: ' + response.statusCode));
             }
-            const body : string[]|Buffer[] = [];
-            response.on('data', (chunk: string|Buffer) : void => {
+            const body : string[] = [];
+            response.on('data', (chunk: string) : void => {
                 body.push(chunk);
             });
             response.on('end', () : void => resolve(body.join('')));
@@ -88,7 +88,8 @@ export async function resolveRuntimeVersion(versionOrChannel: string) : Promise<
     if (isVersion) {
         const mustMatch = takeWhile(splitVersion, (x: string) => x !== '*');
         if (splitVersion.length - mustMatch.length > 0) {
-           const res = await get('https://cdn.openfin.co/release/runtimeVersions');
+        //    tslint:disable-next-line:no-backbone-get-set-outside-model
+            const res = await get('https://cdn.openfin.co/release/runtimeVersions');
            const versions = res.split('\r\n');
            const match = first(versions, (v: string) => v.split('.').slice(0, mustMatch.length).join('.') === mustMatch.join('.'));
            if (match) {
@@ -99,6 +100,7 @@ export async function resolveRuntimeVersion(versionOrChannel: string) : Promise<
         }
     }
     try {
+        // tslint:disable-next-line:no-backbone-get-set-outside-model
         return await get(`https://cdn.openfin.co/release/runtime/${versionOrChannel}`);
     } catch (err) {
         throw Error('Could not resolve runtime version');

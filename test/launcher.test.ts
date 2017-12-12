@@ -1,3 +1,4 @@
+// tslint:disable: mocha-no-side-effect-code
 import * as assert from 'assert';
 import * as os from 'os';
 import * as path from 'path';
@@ -27,7 +28,7 @@ describe('Launcher', () => {
             const of = await launcher.launch({
                 uuid: 'sdafasdfasd',
                 runtime: {version: 'community'}}, path.resolve('./app.json'), 'some port');
-            //But it does when spawn is passed a file name
+            //@ts-ignore: But it does when spawn is passed a file name
             assert(() => of.spawnfile.indexOf('Openfin.app') !== -1);
           } else {
               assert.ok(true, 'OS not supported');
