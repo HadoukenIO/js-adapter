@@ -4,7 +4,7 @@ import * as os from 'os';
 import * as path from 'path';
 import Launcher from '../src/launcher/launcher';
 import { download, getRuntimePath, OsConfig } from '../src/launcher/nix-launch';
-import { resolveRuntimeVersion, rmDir } from '../src/launcher/util';
+import { resolveRuntimeVersion, rmDir, promiseMap} from '../src/launcher/util';
 
 describe('Launcher', () => {
     describe('Resolve Runtime', () => {
@@ -34,6 +34,25 @@ describe('Launcher', () => {
               assert.ok(true, 'OS not supported');
           }
         });
+        it('handles simultaneous parallel launches', async () => {
+            if (Launcher.IS_SUPPORTED()) {
+                const version = await resolveRuntimeVersion('stable');
+                const location = await getRuntimePath(version);
+                // tslint:disable-next-line:no-empty
+                await rmDir(location, false);
+                const launcher1 = new Launcher();
+                const launcher2 = new Launcher();
+                const launcher3 = new Launcher();
+                await promiseMap([launcher1, launcher2, launcher3], (l, i, r) => l.launch({
+                    uuid: `parrallel_launch${i}`,
+                    runtime: {version: 'community'}
+                }, path.resolve('./app.json'), 'some port'
+                ));
+                assert(true);
+              } else {
+                  assert.ok(true, 'OS not supported');
+              }
+        }).timeout(40000);
     });
     if (os.platform() === 'darwin') {
         describe('Mac Launcher', async () => { //TODO mock this
