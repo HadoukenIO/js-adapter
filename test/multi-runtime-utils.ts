@@ -1,9 +1,7 @@
 import * as rimraf from 'rimraf';
-import { spawn, ChildProcess } from  'child_process';
 import * as fs from 'fs';
-import * as https from 'https';
 import * as path from 'path';
-import { connect as rawConnect } from '../src/main';
+import { connect as rawConnect, Fin } from '../src/main';
 const appConfig = JSON.parse(fs.readFileSync('test/app.json').toString());
 
 let uuidNum = 0;
@@ -15,20 +13,13 @@ export const DELAY_MS = 5000;
 export const TEST_TIMEOUT = 12000;
 
 export interface RuntimeProcess {
-    version?: any;
-    appConfig: any;
-    port: string;
-    runtime: ChildProcess;
-    realm: string;
-    fin?: any;
+    appConfig?: any;
+    realm?: string;
+    fin?: Fin;
 }
 
 function spawnRealm (version: string, args?: Array<string>): Promise<RuntimeProcess> {
 
-    return new Promise((resolve, reject) => {
-
-        // tslint:disable-next-line no-function-expression
-        resolveOpenFinVersion(version).then(function(returnedVersion: string) {
             // tslint:disable-next-line
             const realm = `test_realm_${ Math.random() }`;
             const cacheDir = realmCachePath(realm);
@@ -37,8 +28,7 @@ function spawnRealm (version: string, args?: Array<string>): Promise<RuntimeProc
 
             args = args || [
                 '--enable-multi-runtime',
-                '--enable-mesh',
-                `--security-realm=${realm}`
+                '--enable-mesh'
                 // '--v=1',
                 // '--enable-logging',
                 // '--debug'
@@ -48,91 +38,24 @@ function spawnRealm (version: string, args?: Array<string>): Promise<RuntimeProc
             fs.mkdirSync(cacheDir);
 
             fs.writeFileSync(configLocation, JSON.stringify(appConfig));
-
-            const ofEXElocation = versionPath(returnedVersion);
-
-            try {
-
-                const runtime = spawn(ofEXElocation, args);
-
-                runtime.on('error', reject);
-
-                // tslint:disable-next-line no-function-expression
-                const portSniffer = function(data: any) {
-                    const sData = '' + data;
-                    const matched = /^Opened on (\d+)/.exec(sData);
-
-                    if (matched && matched.length > 1 ) {
-                        const port = matched[1];
-
-                        runtime.stdout.removeListener('data', portSniffer);
-
-                        resolve({
-                            appConfig,
-                            port,
-                            runtime,
-                            realm,
-                            version: returnedVersion
-                        });
+            return rawConnect(Object.assign(appConfig,
+                {runtime:
+                    {
+                        version,
+                        additionalArguments: args.join(' '),
+                        securityRealm: realm
                     }
-                };
-
-                runtime.stdout.on('data', portSniffer);
-
-            } catch (e) {
-                reject(e);
-            }
-
-        }).catch(reject);
-
-    });
-
-}
-
-function resolveOpenFinVersion(version: string): Promise<string> {
-    return new Promise((resolve, reject) => {
-
-        // match point version eg. 6.29.17.14, fail on channels
-        const isPointVersion = /\d+\.\d+\.\d+\.\d+/;
-        const isChannel = !isPointVersion.test(version);
-
-        if (isChannel) {
-            const options = {
-                hostname: 'developer.openfin.co',
-                port: 443,
-                path: `/release/runtime/${version}`,
-                method: 'GET'
-            };
-
-            const req = https.request(options, (res: any) => {
-
-                res.once('data', (versionBuff: any) => {
-                    const returnedVersion = versionBuff.toString();
-
-                    if (isPointVersion.test(returnedVersion)) {
-                        resolve(returnedVersion);
-
-                    } else {
-                        reject(new Error (`version not found: ${version}`));
-                    }
-
-                });
+                })).then(fin => {
+                 return {
+                    appConfig,
+                    fin,
+                    realm
+                 };
             });
-
-            req.on('error', reject);
-
-            req.end();
-
-        } else {
-            resolve(version);
-        }
-    });
-
 }
 
 function realmCachePath (realm: string): string {
     const ofCacheFolder = path.resolve(process.env.LOCALAPPDATA, 'OpenFin', 'cache');
-
     return path.resolve(ofCacheFolder, realm);
 }
 
@@ -153,44 +76,19 @@ function generateAppConfig(): any {
     };
 }
 
-function versionPath (version: string): string {
-    const ofFolder = path.resolve(process.env.LOCALAPPDATA, 'OpenFin', 'runtime');
-    const exeLocation = path.join('OpenFin', 'openfin.exe');
-
-    return path.resolve(ofFolder, version, exeLocation);
+async function closeAndClean(runtimeProcess: RuntimeProcess): Promise<void> {
+        // await runtimeProcess.fin.Application.terminate();
+        rimraf.sync(realmCachePath(runtimeProcess.realm));
 }
 
-function closeAndClean(runtimeProcess: RuntimeProcess): Promise<RuntimeProcess> {
-    return new Promise((resolve, reject) => {
-        runtimeProcess.runtime.once('exit', () => {
-            rimraf.sync(realmCachePath(runtimeProcess.realm));
-            resolve();
-        });
-
-        runtimeProcess.runtime.kill();
-    });
-}
-
-export function launchAndConnect(version: string  = appConfig.runtime.version,
+export async function launchAndConnect(version: string  = process.env.OF_VER,
                                  // tslint:disable-next-line
                                  uuid: string = `my-uuid ${ appConfig.startup_app.uuid } ${ Math.floor(Math.random() * 1000)}`,
-                                 realm: boolean = false, args?: Array<string>): Promise<RuntimeProcess> {
-
-    return new Promise((resolve, reject) => {
-
-        spawnRealm(version, args).then((runtimeProcess: RuntimeProcess) => {
-            const port = runtimeProcess.port;
-            rawConnect({
-                address: `ws://localhost:${port}`,
-                uuid
-            }).then((fin: any) => {
-                runtimeProcess.fin = fin;
-                runtimes.push(runtimeProcess);
-                resolve(runtimeProcess);
-            });
-
-        });
-    });
+                                 realm: boolean = false, args?: Array<string>):
+                                  Promise<Fin> {
+    const runtimeProcess = await spawnRealm(version, args);
+    runtimes.push(runtimeProcess);
+    return runtimeProcess.fin;
 }
 
 export function cleanOpenRuntimes(): Promise<void> {

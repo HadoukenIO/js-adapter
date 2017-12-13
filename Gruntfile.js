@@ -25,6 +25,9 @@ module.exports = function(grunt) {
     const remote = grunt.option('remote');
     const uuid = 'testapp';
     const args = '--enable-multi-runtime';
+    process.env.OF_VER = version
+    process.env.TEST_SERVER_PORT = serverParams.port
+    
 
     grunt.initConfig({
         ts: {
@@ -44,8 +47,8 @@ module.exports = function(grunt) {
         },
         mochaTest: {
             default: {
-                src: 'out/test/**/*.js'
-            }
+                src: 'out/test/**/*.js',
+            },
         },
         openfin: {
             options: {
@@ -150,7 +153,7 @@ module.exports = function(grunt) {
     grunt.registerTask('lint', [ 'tslint' ]);
     grunt.registerTask('build', [ 'clean', 'ts', 'webpack', 'copy:resources' ]);
     grunt.registerTask('default', [ 'lint', 'build' ]);
-    grunt.registerTask('test', [ 'check-version', 'default', 'start-server', 'kill-processes', 'openfin', 'mochaTest', 'kill-processes']);
+    grunt.registerTask('test', [ 'check-version', 'default', 'start-server', 'kill-processes', 'mochaTest', 'kill-processes']);
     grunt.registerTask('repl', [ 'check-version', 'default', 'start-server', 'openfin', 'start-repl' ]);
 
 };

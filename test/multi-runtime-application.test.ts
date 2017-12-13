@@ -28,12 +28,12 @@ describe('Multi Runtime', () =>  {
                 const conns = await Promise.all([launchAndConnect(), launchAndConnect()]);
                 await delayPromise(DELAY_MS);
 
-                const runtimeA = conns[0];
-                const runtimeB = conns[1];
+                const finA = conns[0];
+                const finB = conns[1];
 
-                const realApp = await runtimeB.fin.Application.create(appConfigTemplate);
+                const realApp = await finB.Application.create(appConfigTemplate);
                 await realApp.run();
-                const app = await runtimeA.fin.Application.wrap({ uuid: appConfigTemplate.uuid });
+                const app = await finA.Application.wrap({ uuid: appConfigTemplate.uuid });
                 const info = await app.getInfo();
 
                 assert.equal(info.launchMode, expectedLaunchMode, `Expected launchMode to be "${ expectedLaunchMode }"`);
@@ -46,14 +46,14 @@ describe('Multi Runtime', () =>  {
                 // tslint:disable-next-line no-invalid-this
                 this.timeout(TEST_TIMEOUT);
                 const conns = await Promise.all([launchAndConnect(), launchAndConnect()]);
-                const runtimeA = conns[0];
-                const runtimeB = conns[1];
-                const expectedUuid = runtimeB.fin.wire.me.uuid;
+                const finA = conns[0];
+                const finB = conns[1];
+                const expectedUuid = finB.wire.me.uuid;
 
                 await delayPromise(DELAY_MS);
-                const realApp = await runtimeB.fin.Application.create(appConfigTemplate);
+                const realApp = await finB.Application.create(appConfigTemplate);
                 await realApp.run();
-                const app = await runtimeA.fin.Application.wrap({ uuid: appConfigTemplate.uuid });
+                const app = await finA.Application.wrap({ uuid: appConfigTemplate.uuid });
                 const parentUuid = await app.getParentUuid();
 
                 assert.equal(parentUuid, expectedUuid, `Expected uuid to be "${ expectedUuid }"`);
@@ -66,13 +66,13 @@ describe('Multi Runtime', () =>  {
                 // tslint:disable-next-line no-invalid-this
                 this.timeout(TEST_TIMEOUT);
                 const conns = await Promise.all([launchAndConnect(), launchAndConnect()]);
-                const runtimeA = conns[0];
-                const runtimeB = conns[1];
+                const finA = conns[0];
+                const finB = conns[1];
 
                 await delayPromise(DELAY_MS);
-                const realApp = await runtimeB.fin.Application.create(appConfigTemplate);
+                const realApp = await finB.Application.create(appConfigTemplate);
                 await realApp.run();
-                const app = await runtimeA.fin.Application.wrap({ uuid: appConfigTemplate.uuid });
+                const app = await finA.Application.wrap({ uuid: appConfigTemplate.uuid });
                 const isRunning = await app.isRunning();
 
                 assert.equal(isRunning, true, 'Expected application to be running');

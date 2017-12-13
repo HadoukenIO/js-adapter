@@ -27,7 +27,7 @@ describe('Launcher', () => {
             const launcher = new Launcher();
             const of = await launcher.launch({
                 uuid: 'sdafasdfasd',
-                runtime: {version: 'community'}}, path.resolve('./app.json'), 'some port');
+                runtime: {version: 'stable'}}, path.resolve('./app.json'), 'some port');
             //@ts-ignore: But it does when spawn is passed a file name
             assert(() => of.spawnfile.indexOf('Openfin.app') !== -1);
           } else {
@@ -38,7 +38,7 @@ describe('Launcher', () => {
     if (os.platform() === 'darwin') {
         describe('Mac Launcher', async () => { //TODO mock this
            it('downloads and unzips the version', async () => {
-               const version = await resolveRuntimeVersion('stable');
+               const version = await resolveRuntimeVersion(process.env.OF_VER);
                const location = await getRuntimePath(version);
                // tslint:disable-next-line:no-empty
                await rmDir(location, false);
