@@ -7,7 +7,12 @@ import  {promisify, resolveRuntimeVersion, rmDir, downloadFile, unzip } from './
 const runtimeRoot = 'https://developer.openfin.co/release/runtime/';
 const mkdir = promisify(fs.mkdir);
 
-export async function download (version: string, folder: string, osConfig: OsConfig) {
+interface SharedDownloads {
+  [key: string]: Promise<string>;
+}
+const downloads: SharedDownloads = {};
+
+export async function download (version: string, folder: string, osConfig: OsConfig): Promise<string> {
   const url = `${runtimeRoot}${osConfig.urlPath}/${version}`;
   const tmp = 'tmp';
   await rmDir(folder, false);
@@ -16,7 +21,7 @@ export async function download (version: string, folder: string, osConfig: OsCon
   const file = path.join(folder, tmp, 'tmp');
   await downloadFile(url, file);
   await unzip(file, folder);
-  await rmDir(path.join(folder, tmp));
+  await rmDir(path.join(folder, tmp), true);
   return folder;
 }
 
@@ -45,7 +50,11 @@ export async function install (versionOrChannel: string, osConfig: OsConfig): Pr
       await promisify(fs.chmod)(rtPath, 0o755);
     } else {
       try {
-        await download(version, rtFolder, osConfig);
+        if (!downloads[version]) {
+           downloads[version] = download(version, rtFolder, osConfig);
+        }
+        await downloads[version];
+        downloads[version] = undefined;
       } catch (err) {
           console.error(`Failed to download, attempting to empty ${rtFolder}`);
           await rmDir(rtFolder, false);

@@ -125,6 +125,6 @@ function takeWhile (arr: any[], func: (x: any, i: number, r: any[]) => boolean) 
     .vals;
 }
 
-async function promiseMap (arr: any[], asyncF: (x: any, i: number, r: any[]) => Promise<any> ) {
+export async function promiseMap (arr: any[], asyncF: (x: any, i: number, r: any[]) => Promise<any> ) {
     return Promise.all(arr.map(asyncF));
 }
