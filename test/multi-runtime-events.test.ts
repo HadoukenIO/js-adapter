@@ -2,7 +2,7 @@ import * as assert from 'assert';
 import { delayPromise } from './delay-promise';
 import { launchAndConnect, cleanOpenRuntimes, DELAY_MS, TEST_TIMEOUT } from './multi-runtime-utils';
 
-describe('Multi Runtime', () =>  {
+describe('Multi Runtime', () => {
 
     function getAppConfig() {
         const appConfigTemplate = {
@@ -56,7 +56,7 @@ describe('Multi Runtime', () =>  {
                     test();
                 });
 
-                it('should raise initialized events', function(done: Function) {
+                it('should raise initialized events', function(done: (value: void) => void) {
                     // tslint:disable-next-line no-invalid-this
                     this.timeout(TEST_TIMEOUT);
 
@@ -87,7 +87,7 @@ describe('Multi Runtime', () =>  {
         describe('Launch then subscribe', () => {
             describe('Window', () => {
 
-                it('should raise initialized', function(done: Function) {
+                it('should raise initialized', function(done: (value: void) => void) {
                     // tslint:disable-next-line no-invalid-this
                     this.timeout(TEST_TIMEOUT);
 
@@ -145,7 +145,7 @@ describe('Multi Runtime', () =>  {
                     test();
                 });
 
-                it('should raise initialized events', function(done: Function) {
+                it('should raise initialized events', function(done: (value: void) => void) {
                     // tslint:disable-next-line no-invalid-this
                     this.timeout(TEST_TIMEOUT * 2); //We need a bit more time for these tests.
 
@@ -185,7 +185,7 @@ describe('Multi Runtime', () =>  {
         describe('Subscribe then launch', () => {
             describe('Window', () => {
 
-                it('should raise bounds-changed', function(done: Function) {
+                it('should raise bounds-changed', function(done: (value: void) => void) {
                     // tslint:disable-next-line no-invalid-this
                     this.timeout(TEST_TIMEOUT * 2); //We need a bit more time for these tests.
 
@@ -213,7 +213,7 @@ describe('Multi Runtime', () =>  {
                     test();
                 });
 
-                it('should raise hidden', function(done: Function) {
+                it('should raise hidden', function(done: (value: void) => void) {
                     // tslint:disable-next-line no-invalid-this
                     this.timeout(TEST_TIMEOUT * 2); //We need a bit more time for these tests.
 

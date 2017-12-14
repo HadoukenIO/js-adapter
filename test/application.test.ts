@@ -37,7 +37,7 @@ describe('Application.', function() {
         });
     });
 
-    describe('close()',  () => {
+    describe('close()', () => {
         const appToCloseConfig = {
             name: 'adapter-test-app-to-close',
             url: 'about:blank',
@@ -55,10 +55,10 @@ describe('Application.', function() {
 
         it('Fulfilled', (done) => {
             appToClose.close().then(() => appToClose.isRunning()
-                                           .then(data => {
-                                                assert(data === false);
-                                                return done();
-                                            }));
+                .then(data => {
+                    assert(data === false);
+                    return done();
+                }));
         });
     });
 
@@ -72,7 +72,7 @@ describe('Application.', function() {
         it('Fulfilled', () => testApp.getGroups().then(data => assert(data instanceof Array)));
     });
 
-    describe('getParentUuid()',  () => {
+    describe('getParentUuid()', () => {
 
         it('Fulfilled', () => {
             return testApp.getParentUuid().then(data => assert(data === fin.me.uuid));
@@ -105,9 +105,7 @@ describe('Application.', function() {
 
         let appToClose: Application;
 
-        after((done) => {
-            appToClose.close().then(done);
-        });
+        after(() => appToClose.close());
 
         it('Fulfilled', () => {
             return fin.Application.create(appToCloseConfig).then(a => {
@@ -161,7 +159,7 @@ describe('Application.', function() {
             return testApp.getInfo().then(info => {
                 const expectedLaunchMode = 'adapter';
 
-                return assert.equal(info.launchMode, expectedLaunchMode, `Expected launchMode to be "${ expectedLaunchMode }"`);
+                return assert.equal(info.launchMode, expectedLaunchMode, `Expected launchMode to be "${expectedLaunchMode}"`);
             });
         });
     });

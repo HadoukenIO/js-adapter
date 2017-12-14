@@ -22,7 +22,7 @@ describe('Window.', () => {
     beforeEach(() => {
         return fin.Application.create(appConfigTemplate).then(a => {
             testApp = a;
-            return testApp.run().then(() =>  testApp.getWindow().then(w => testWindow = w));
+            return testApp.run().then(() => testApp.getWindow().then(w => testWindow = w));
         });
     });
 
@@ -40,13 +40,13 @@ describe('Window.', () => {
         };
 
         it('Fulfilled', () => testWindow.setBounds(bounds)
-           .then(() => {
-               return testWindow.getBounds().then(data => {
+            .then(() => {
+                return testWindow.getBounds().then(data => {
                     delete data.bottom;
                     delete data.right;
                     assert.deepEqual(bounds, data);
                 });
-           }));
+            }));
     });
 
     describe('reload()', () => {
@@ -89,17 +89,17 @@ describe('Window.', () => {
         before(() => {
             return fin.Application.create(appToCloseConfig).then(a => {
                 appToClose = a;
-                return appToClose.run().then(() =>  appToClose.getWindow().then(w =>  winToClose = w));
+                return appToClose.run().then(() => appToClose.getWindow().then(w => winToClose = w));
             });
         });
 
         it('Fulfilled', () => winToClose.close().then(() => appToClose.isRunning()
-                                                      .then(data => assert(data === false))));
+            .then(data => assert(data === false))));
     });
 
     describe('getNativeId()', () => {
 
-        it('Fulfilled', () => testWindow.getNativeId().then(data => assert(typeof(data) === 'string')));
+        it('Fulfilled', () => testWindow.getNativeId().then(data => assert(typeof (data) === 'string')));
     });
 
     describe('disableFrame()', () => {
@@ -117,7 +117,7 @@ describe('Window.', () => {
         const scriptToExecute = 'console.log("hello world")';
 
         it('Descendant Window', () => testWindow.executeJavaScript(scriptToExecute)
-           .then(() => {
+            .then(() => {
                 return assert(true);
             }));
 
@@ -144,7 +144,7 @@ describe('Window.', () => {
     describe('getGroup()', () => {
 
         it('Fulfilled', () => testWindow.getGroup().then(data => assert(data instanceof Array,
-                                                                        `Expected ${typeof(data)} to be an instance of Array`)));
+            `Expected ${typeof (data)} to be an instance of Array`)));
     });
 
     describe('getOptions()', () => {
@@ -155,7 +155,7 @@ describe('Window.', () => {
     describe('getParentApplication()', () => {
 
         it('Fulfilled', () => testWindow.getParentApplication()
-           .then(data => assert(data.identity.uuid === appConfigTemplate.uuid)));
+            .then(data => assert(data.identity.uuid === appConfigTemplate.uuid)));
     });
 
     describe('getParentWindow()', () => {
@@ -170,12 +170,12 @@ describe('Window.', () => {
 
     describe('getState()', () => {
 
-        it('Fulfilled', () => testWindow.getState().then(data => assert(typeof(data) === 'string')));
+        it('Fulfilled', () => testWindow.getState().then(data => assert(typeof (data) === 'string')));
     });
 
     describe('isShowing()', () => {
 
-        it('Fulfilled', () => testWindow.isShowing().then(data => assert(typeof(data) === 'boolean')));
+        it('Fulfilled', () => testWindow.isShowing().then(data => assert(typeof (data) === 'boolean')));
     });
 
     //TODO: feature needs testing.
@@ -204,7 +204,7 @@ describe('Window.', () => {
     describe('minimize()', () => {
 
         it('Fulfilled', () => testWindow.minimize().then(() => testWindow.getState())
-           .then(data => assert(data === 'minimized')));
+            .then(data => assert(data === 'minimized')));
     });
 
     describe('moveBy()', () => {
@@ -215,10 +215,10 @@ describe('Window.', () => {
 
                 return testWindow.moveBy(1, 1)
                     .then(() => testWindow.getBounds()
-                          .then(data => {
-                              return assert(data.top === bounds.top + 1, `Expected ${data.top} to be ${bounds.top + 1}`) &&
-                                  assert(data.left === bounds.left + 1, `Expected ${data.top} to be ${bounds.top + 1}`);
-                          }));
+                        .then(data => {
+                            return assert(data.top === bounds.top + 1, `Expected ${data.top} to be ${bounds.top + 1}`) &&
+                                assert(data.left === bounds.left + 1, `Expected ${data.top} to be ${bounds.top + 1}`);
+                        }));
             });
 
         });
@@ -229,11 +229,11 @@ describe('Window.', () => {
         it('Fulfilled', () => {
 
             return testWindow.moveTo(10, 10)
-                .then(() =>  testWindow.getBounds()
-                      .then(data => {
-                          return assert(data.top === 10, `Expected ${data.top} to be 10`) &&
-                              assert(data.left === 10, `Expected ${data.left} to be 10`);
-                      }));
+                .then(() => testWindow.getBounds()
+                    .then(data => {
+                        return assert(data.top === 10, `Expected ${data.top} to be 10`) &&
+                            assert(data.left === 10, `Expected ${data.left} to be 10`);
+                    }));
         });
 
     });
@@ -246,14 +246,14 @@ describe('Window.', () => {
 
                 return testWindow.resizeBy(10, 10, 'top-left')
                     .then(() => testWindow.getBounds()
-                          .then(data => {
-                              data.bottom -= 10;
-                              data.height -= 10;
-                              data.right -= 10;
-                              data.width -= 10;
+                        .then(data => {
+                            data.bottom -= 10;
+                            data.height -= 10;
+                            data.right -= 10;
+                            data.width -= 10;
 
-                              assert.deepEqual(bounds, data);
-                          }));
+                            assert.deepEqual(bounds, data);
+                        }));
             });
         });
     });
@@ -266,13 +266,13 @@ describe('Window.', () => {
 
                 return testWindow.resizeTo(10, 10, 'top-left')
                     .then(() => testWindow.getBounds()
-                          .then(data => {
-                              bounds.height = 10;
-                              bounds.width = 10;
-                              bounds.bottom  = bounds.top + 10;
-                              bounds.right = bounds.left + 10;
-                              return assert.deepEqual(bounds, data);
-                          }));
+                        .then(data => {
+                            bounds.height = 10;
+                            bounds.width = 10;
+                            bounds.bottom = bounds.top + 10;
+                            bounds.right = bounds.left + 10;
+                            return assert.deepEqual(bounds, data);
+                        }));
             });
         });
     });
@@ -294,10 +294,10 @@ describe('Window.', () => {
         };
 
         it('Fulfilled', () => testWindow.setBounds(bounds)
-           .then(() => testWindow.getBounds()
-                 .then(data => {
-                     return assert.deepEqual(bounds, data);
-                 })));
+            .then(() => testWindow.getBounds()
+                .then(data => {
+                    return assert.deepEqual(bounds, data);
+                })));
     });
 
     describe('show()', () => {
@@ -309,11 +309,11 @@ describe('Window.', () => {
 
         it('Fulfilled', () => {
             return testWindow.showAt(10, 10)
-                .then(() =>  testWindow.getBounds()
-                      .then(data => {
-                          return assert(data.top === 10, `Expected ${data.top} to be 10`) &&
-                              assert(data.left === 10, `Expected ${data.left} to be 10`);
-                      }));
+                .then(() => testWindow.getBounds()
+                    .then(data => {
+                        return assert(data.top === 10, `Expected ${data.top} to be 10`) &&
+                            assert(data.left === 10, `Expected ${data.left} to be 10`);
+                    }));
         });
     });
 
@@ -342,7 +342,7 @@ describe('Window.', () => {
         const zoomLevel = 1;
 
         it('Fulfilled', () => testWindow.setZoomLevel(zoomLevel)
-           .then(() => testWindow.getZoomLevel()).then(data => assert(data === zoomLevel)));
+            .then(() => testWindow.getZoomLevel()).then(data => assert(data === zoomLevel)));
     });
 
     describe('navigate()', () => {

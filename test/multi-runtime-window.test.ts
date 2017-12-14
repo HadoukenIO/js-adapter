@@ -2,7 +2,7 @@ import * as assert from 'assert';
 import { delayPromise } from './delay-promise';
 import { launchAndConnect, cleanOpenRuntimes, DELAY_MS, TEST_TIMEOUT } from './multi-runtime-utils';
 
-describe('Multi Runtime', () =>  {
+describe('Multi Runtime', () => {
     const appConfigTemplate = {
         name: 'adapter-test-app',
         url: 'about:blank',
@@ -20,7 +20,7 @@ describe('Multi Runtime', () =>  {
     describe('Window', () => {
 
         describe('moveBy', () => {
-            it('should move the Window by the given values', async function () {
+            it('should move the Window by the given values', async function() {
                 // tslint:disable-next-line no-invalid-this
                 this.timeout(TEST_TIMEOUT);
 
@@ -43,7 +43,7 @@ describe('Multi Runtime', () =>  {
         });
 
         describe('resizeTo', () => {
-            it('should resize the Window by the given values', async function () {
+            it('should resize the Window by the given values', async function() {
                 // tslint:disable-next-line no-invalid-this
                 this.timeout(TEST_TIMEOUT);
 
@@ -72,7 +72,7 @@ describe('Multi Runtime', () =>  {
     });
 
     describe('getState', () => {
-        it('should return the state of the Window', async function () {
+        it('should return the state of the Window', async function() {
             // tslint:disable-next-line no-invalid-this
             this.timeout(TEST_TIMEOUT);
 
@@ -87,13 +87,13 @@ describe('Multi Runtime', () =>  {
             const state = await win.getState();
             const expectedState = 'normal';
 
-            assert.equal(state, expectedState, `Expected state to be ${ expectedState }`);
+            assert.equal(state, expectedState, `Expected state to be ${expectedState}`);
 
             return await realApp.close();
 
         });
 
-        it('should return the state of the Window post a minimize action', async function () {
+        it('should return the state of the Window post a minimize action', async function() {
             // tslint:disable-next-line no-invalid-this
             this.timeout(TEST_TIMEOUT);
 
@@ -109,7 +109,7 @@ describe('Multi Runtime', () =>  {
             const state = await win.getState();
             const expectedState = 'minimized';
 
-            assert.equal(state, expectedState, `Expected state to be ${ expectedState }`);
+            assert.equal(state, expectedState, `Expected state to be ${expectedState}`);
 
             return await realApp.close();
         });

@@ -15,11 +15,11 @@ describe('Notification', () => {
 
     describe('shape - instance', () => {
         it('should have a sendMessage method', () => {
-            assert(typeof(notification.sendMessage) === 'function');
+            assert(typeof (notification.sendMessage) === 'function');
         });
 
         it('should have a close method', () => {
-            assert(typeof(notification.sendMessage) === 'function');
+            assert(typeof (notification.sendMessage) === 'function');
         });
     });
 

@@ -2,7 +2,7 @@ import * as assert from 'assert';
 import { delayPromise } from './delay-promise';
 import { launchAndConnect, cleanOpenRuntimes, DELAY_MS, TEST_TIMEOUT } from './multi-runtime-utils';
 
-describe('Multi Runtime', () =>  {
+describe('Multi Runtime', () => {
     const appConfigTemplate = {
         name: 'adapter-test-app',
         url: 'about:blank',
@@ -20,29 +20,29 @@ describe('Multi Runtime', () =>  {
     describe('Application', () => {
 
         describe('getInfo', () => {
-            it('should return the application Information', async function () {
+            it('should return the application Information', async function() {
                 // tslint:disable-next-line no-invalid-this
+                console.log('in test')
                 this.timeout(TEST_TIMEOUT);
                 const expectedLaunchMode = 'adapter';
-
                 const conns = await Promise.all([launchAndConnect(), launchAndConnect()]).catch(console.error);
-                await delayPromise(DELAY_MS);
-
                 const finA = conns[0];
                 const finB = conns[1];
 
                 const realApp = await finB.Application.create(appConfigTemplate);
                 await realApp.run();
+                console.log('real app running')
                 const app = await finA.Application.wrap({ uuid: appConfigTemplate.uuid });
                 const info = await app.getInfo();
-
-                assert.equal(info.launchMode, expectedLaunchMode, `Expected launchMode to be "${ expectedLaunchMode }"`);
+                console.log(info);
+                assert.equal(info.launchMode, expectedLaunchMode, `Expected launchMode to be "${expectedLaunchMode}"`);
+                console.log('closing')
                 return await realApp.close();
             });
         });
 
         describe('getParentUuid', () => {
-            it('should return the uuid of the parent adapter connection', async function () {
+            it('should return the uuid of the parent adapter connection', async function() {
                 // tslint:disable-next-line no-invalid-this
                 this.timeout(TEST_TIMEOUT);
                 const conns = await Promise.all([launchAndConnect(), launchAndConnect()]);
@@ -56,13 +56,13 @@ describe('Multi Runtime', () =>  {
                 const app = await finA.Application.wrap({ uuid: appConfigTemplate.uuid });
                 const parentUuid = await app.getParentUuid();
 
-                assert.equal(parentUuid, expectedUuid, `Expected uuid to be "${ expectedUuid }"`);
+                assert.equal(parentUuid, expectedUuid, `Expected uuid to be "${expectedUuid}"`);
                 return await realApp.close();
             });
         });
 
         describe('isRunning', () => {
-            it('should return the running state of an application', async function () {
+            it('should return the running state of an application', async function() {
                 // tslint:disable-next-line no-invalid-this
                 this.timeout(TEST_TIMEOUT);
                 const conns = await Promise.all([launchAndConnect(), launchAndConnect()]);

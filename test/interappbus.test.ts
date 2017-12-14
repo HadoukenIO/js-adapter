@@ -10,7 +10,7 @@ const topic2 = 'topic2';
 const m = Math.random().toString(36).slice(2);
 
 // tslint:disable-next-line
-function noop() {}
+function noop() { }
 
 describe('InterApplicationBus.', () => {
     let fin: Fin;

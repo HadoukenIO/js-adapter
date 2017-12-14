@@ -51,7 +51,7 @@ describe('Multi Runtime', function() {
                         assert.equal(finB.wire.me.uuid, source.uuid, 'Expected source to be runtimeB');
                         assert.equal(data, message, 'Expected message to be the data sent');
                         done();
-                   });
+                    });
                 return await finB.InterApplicationBus.publish(topic, data);
 
             }
@@ -98,11 +98,11 @@ describe('Multi Runtime', function() {
                 await delayPromise(DELAY_MS);
 
                 await finA.InterApplicationBus.subscribe({ uuid: finB.wire.me.uuid },
-                                                                 topic, (message: any, source: any) => {
-                    assert.equal(finB.wire.me.uuid, source.uuid, 'Expected source to be runtimeB');
-                    assert.equal(data, message, 'Expected message to be the data sent');
-                    done();
-                });
+                    topic, (message: any, source: any) => {
+                        assert.equal(finB.wire.me.uuid, source.uuid, 'Expected source to be runtimeB');
+                        assert.equal(data, message, 'Expected message to be the data sent');
+                        done();
+                    });
 
                 await finB.InterApplicationBus.send({ uuid: finA.wire.me.uuid }, topic, data);
             }
@@ -130,7 +130,7 @@ describe('Multi Runtime', function() {
                 });
                 await delayPromise(300);
                 // tslint:disable-next-line
-                return await finB.InterApplicationBus.subscribe({ uuid: finA.wire.me.uuid }, 'my-topic', () => {});
+                return await finB.InterApplicationBus.subscribe({ uuid: finA.wire.me.uuid }, 'my-topic', () => { });
             }
 
             test();
@@ -156,7 +156,7 @@ describe('Multi Runtime', function() {
                 });
 
                 // tslint:disable-next-line
-                function listener() {};
+                function listener() { };
                 await finB.InterApplicationBus.subscribe({ uuid: finA.wire.me.uuid }, topic, listener);
                 await delayPromise(300);
                 await finB.InterApplicationBus.unsubscribe({ uuid: finA.wire.me.uuid }, topic, listener);
