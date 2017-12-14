@@ -1,6 +1,6 @@
 
 import { delayPromise } from './delay-promise';
-import { launchAndConnect, cleanOpenRuntimes, DELAY_MS, TEST_TIMEOUT } from './multi-runtime-utils';
+import { cleanOpenRuntimes, DELAY_MS, getRuntimeProcessInfo, launchAndConnect, TEST_TIMEOUT } from './multi-runtime-utils';
 
 describe('Multi Runtime', () => {
 
@@ -10,8 +10,8 @@ describe('Multi Runtime', () => {
         return await cleanOpenRuntimes();
     });
 
-    function uuidFromConnection(conn: any, realm: string) {
-        const { version, port } = conn;
+    function uuidFromConnection(conn: any) {
+        const { version, port, realm } = getRuntimeProcessInfo(conn);
         return `${version}/${port}/${realm ? realm : ''}`;
     }
 
@@ -42,9 +42,9 @@ describe('Multi Runtime', () => {
 
             const apps = await finA.System.getAllExternalApplications();
             const uuidList = apps.map((a: any) => { return a.uuid; });
-            // assert.ok(!uuidList.includes(uuidFromConnection(runtimeB, runtimeB.realm)),
-                    //   'Expected runtimeB to be missing from the uuid list');
-            // assert.ok(uuidList.includes(uuidFromConnection(runtimeC, realm)), 'Expected runtimeC to be found');
+            assert.ok(!uuidList.includes(uuidFromConnection(finB)),
+                      'Expected runtimeB to be missing from the uuid list');
+            assert.ok(uuidList.includes(uuidFromConnection(finC)), 'Expected runtimeC to be found');
             return apps;
         });
     });

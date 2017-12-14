@@ -1,3 +1,4 @@
+import * as path from 'path';
 import * as https from 'https';
 import * as fs from 'fs';
 import {exec} from 'child_process';
@@ -123,6 +124,22 @@ function takeWhile (arr: any[], func: (x: any, i: number, r: any[]) => boolean) 
         : {take: false, vals},
         {take: true, vals: []})
     .vals;
+}
+
+const mkdir = promisify(fs.mkdir);
+const appendToPath = (next: string) =>  (val: string) => mkdir(path.resolve(val, next));
+const catchExistsError = (err: NodeJS.ErrnoException) => err.code === 'EEXIST' ? err.path : Promise.reject(err);
+
+export async function resolveDir(base: string, paths: string[]) : Promise<string> {
+    return await paths.reduce(async (p: Promise<string>, next: string) => {
+      try {
+        const prev = await p;
+        await appendToPath(next)(prev);
+        return path.join(prev, next);
+      } catch (e) {
+        return await catchExistsError(e);
+      }
+    }, Promise.resolve(base));
 }
 
 export async function promiseMap (arr: any[], asyncF: (x: any, i: number, r: any[]) => Promise<any> ) {

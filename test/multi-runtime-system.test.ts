@@ -1,6 +1,6 @@
 import * as assert from 'assert';
 import { delayPromise } from './delay-promise';
-import { launchAndConnect, cleanOpenRuntimes, DELAY_MS, TEST_TIMEOUT } from './multi-runtime-utils';
+import { launchAndConnect, cleanOpenRuntimes, DELAY_MS, TEST_TIMEOUT, getRuntimeProcessInfo } from './multi-runtime-utils';
 
 describe('Multi Runtime', () =>  {
 
@@ -70,7 +70,10 @@ describe('Multi Runtime', () =>  {
                 await delayPromise(DELAY_MS);
 
                 const [finA] = conns;
-                const connStrings = conns.map(conn => `${conn.version}/${conn.port}/${conn.realm}`);
+                const connStrings = conns.map(f => {
+                    const conn = getRuntimeProcessInfo(f);
+                    return `${conn.version}/${conn.port}/${conn.realm}`;
+                });
                 // Does not include the runtime it is called from as an External Application
                 connStrings.shift();
 

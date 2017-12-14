@@ -4,22 +4,28 @@ import { ChildProcess, spawn } from 'child_process';
 import { NewConnectConfig } from '../transport/wire';
 
 const OpenFin_Installer: string = 'OpenFinInstaller.exe';
-
+interface SharedDownloads {
+    [key: string]: Promise<string>;
+  }
+  const downloads: SharedDownloads = {};
 function copyInstaller(config: NewConnectConfig, Installer_Work_Dir: string): Promise<string> {
-    return new Promise((resolve, reject) => {
-        const rd = fs.createReadStream(path.join(__dirname, '..', '..', 'resources', 'win', OpenFin_Installer));
-        const outf: string = path.join(Installer_Work_Dir, OpenFin_Installer);
-        const wr = fs.createWriteStream(outf);
-        wr.on('error', (err: Error) => reject(err));
-        wr.on('finish', () => {
+    if (!downloads[Installer_Work_Dir]) {
+        downloads[Installer_Work_Dir] = new Promise((resolve, reject) => {
+            const rd = fs.createReadStream(path.join(__dirname, '..', '..', 'resources', 'win', OpenFin_Installer));
+            const outf: string = path.join(Installer_Work_Dir, OpenFin_Installer);
+            const wr = fs.createWriteStream(outf);
+            wr.on('error', (err: Error) => reject(err));
+            wr.on('finish', () => {
+                // tslint:disable-next-line:no-console
+                console.log(`copied ${outf}`);
+                resolve();
+            });
             // tslint:disable-next-line:no-console
-            console.log(`copied ${outf}`);
-            resolve();
+            console.log(`copying ${outf}`);
+            rd.pipe(wr);
         });
-        // tslint:disable-next-line:no-console
-        console.log(`copying ${outf}`);
-        rd.pipe(wr);
-    });
+   }
+   return downloads[Installer_Work_Dir];
 }
 
 function launchRVM(config: NewConnectConfig, manifestLocation: string, namedPipeName: string, Installer_Work_Dir: string): ChildProcess {

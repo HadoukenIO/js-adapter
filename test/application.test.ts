@@ -2,37 +2,37 @@ import { conn } from './connect';
 import { Fin, Application } from '../src/main';
 import * as assert from 'assert';
 
-describe('Application.', () => {
+describe('Application.', function() {
     let fin: Fin;
     let testApp: Application;
 
-    const appConfigTemplate = {
-        name: 'adapter-test-app',
-        url: 'about:blank',
-        uuid: 'adapter-test-app',
-        autoShow: true,
-        accelerator: {
-            devtools: true
-        }
-    };
+    let counter = 0;
+    // tslint:disable-next-line:no-invalid-this
+    this.timeout(30000);
+    before(() => conn().then((a: Fin) => {
+        fin = a;
+    }));
 
-    before(() => conn().then((a: Fin) => fin = a));
-
-    beforeEach(() => {
-        return fin.Application.create(appConfigTemplate).then(a => {
-            testApp = a;
-            return testApp.run();
+    beforeEach(async () => {
+        testApp = await fin.Application.create({
+            name: `adapter-test-app-${counter}`,
+            url: 'about:blank',
+            uuid: `adapter-test-app____-${counter++}`,
+            autoShow: true,
+            accelerator: {
+                devtools: true
+            }
         });
+        await testApp.run();
     });
 
     afterEach(() => testApp.close());
 
     describe('isRunning()', () => {
 
-        it('Fulfilled', (done) => {
+        it('Fulfilled', () => {
             testApp.isRunning().then(data => {
                 assert(data === true);
-                return done();
             });
         });
     });

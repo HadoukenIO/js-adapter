@@ -128,7 +128,7 @@ describe('Multi Runtime', () =>  {
                         const appConfig = getAppConfig();
                         const finA = await launchAndConnect();
                         await delayPromise(DELAY_MS);
-                        const app = await finA.Application.wrap({ uuid: appConfig });
+                        const app = await finA.Application.wrap({ uuid: appConfig.uuid });
                         app.on('closed', (e: any) => {
                             assert.equal(e.type, 'closed', 'Expected event type to match event');
                             done();

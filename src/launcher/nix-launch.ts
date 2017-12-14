@@ -2,7 +2,7 @@ import * as fs from 'fs';
 import * as path from 'path';
 import { ChildProcess, spawn } from 'child_process';
 import { NewConnectConfig } from '../transport/wire';
-import  {promisify, resolveRuntimeVersion, rmDir, downloadFile, unzip } from './util';
+import  {promisify, resolveRuntimeVersion, rmDir, downloadFile, unzip, resolveDir } from './util';
 
 const runtimeRoot = 'https://developer.openfin.co/release/runtime/';
 const mkdir = promisify(fs.mkdir);
@@ -28,17 +28,7 @@ export async function download (version: string, folder: string, osConfig: OsCon
 export async function getRuntimePath (version: string) : Promise<string> {
   const versionPath = ['OpenFin', 'Runtime', version];
   const HOME = process.env.HOME;
-  const appendToPath = (next: string) =>  (val: string) => mkdir(path.join(val, next));
-  const catchExistsError = (err: NodeJS.ErrnoException) => err.code === 'EEXIST' ? err.path : Promise.reject(err);
-  return await versionPath.reduce(async (p: Promise<string>, next: string) => {
-    try {
-      const prev = await p;
-      await appendToPath(next)(prev);
-      return path.join(prev, next);
-    } catch (e) {
-      return await catchExistsError(e);
-    }
-  }, Promise.resolve(HOME));
+  return resolveDir(HOME, versionPath);
 }
 
 export async function install (versionOrChannel: string, osConfig: OsConfig): Promise < string > {

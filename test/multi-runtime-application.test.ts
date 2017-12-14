@@ -25,7 +25,7 @@ describe('Multi Runtime', () =>  {
                 this.timeout(TEST_TIMEOUT);
                 const expectedLaunchMode = 'adapter';
 
-                const conns = await Promise.all([launchAndConnect(), launchAndConnect()]);
+                const conns = await Promise.all([launchAndConnect(), launchAndConnect()]).catch(console.error);
                 await delayPromise(DELAY_MS);
 
                 const finA = conns[0];

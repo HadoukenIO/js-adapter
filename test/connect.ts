@@ -7,7 +7,7 @@ export function conn() {
             runtime: {version: process.env.OF_VER},
             // tslint:disable-next-line
             uuid: 'example_uuid' + Math.random()
-        });
+        }).catch(console.error);
     }
 
     return c;

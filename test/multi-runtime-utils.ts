@@ -1,7 +1,9 @@
+import * as os from 'os';
 import * as rimraf from 'rimraf';
 import * as fs from 'fs';
 import * as path from 'path';
 import { connect as rawConnect, Fin } from '../src/main';
+import { resolveDir } from '../src/launcher/util';
 const appConfig = JSON.parse(fs.readFileSync('test/app.json').toString());
 
 let uuidNum = 0;
@@ -15,14 +17,16 @@ export const TEST_TIMEOUT = 12000;
 export interface RuntimeProcess {
     appConfig?: any;
     realm?: string;
+    port: string;
+    version: string;
     fin?: Fin;
 }
 
-function spawnRealm (version: string, args?: Array<string>): Promise<RuntimeProcess> {
+async function spawnRealm (version: string, args?: Array<string>): Promise<RuntimeProcess> {
 
             // tslint:disable-next-line
             const realm = `test_realm_${ Math.random() }`;
-            const cacheDir = realmCachePath(realm);
+            const cacheDir = await realmCachePath(realm);
             const appConfig = generateAppConfig();
             const configLocation = path.resolve(cacheDir, `${appConfig.startup_app.uuid}.json`);
 
@@ -35,28 +39,29 @@ function spawnRealm (version: string, args?: Array<string>): Promise<RuntimeProc
             ];
 
             args.push(`--startup-url=${configLocation}`);
-            fs.mkdirSync(cacheDir);
 
             fs.writeFileSync(configLocation, JSON.stringify(appConfig));
-            return rawConnect(Object.assign(appConfig,
+            const fin = await rawConnect(Object.assign(appConfig,
                 {runtime:
                     {
                         version,
                         additionalArguments: args.join(' '),
                         securityRealm: realm
                     }
-                })).then(fin => {
+                }))
+            const v = await fin.System.getVersion();
+
                  return {
                     appConfig,
                     fin,
+                    version: v,
+                    port: fin.wire.wire.wire.url.split(':').slice(-1),
                     realm
                  };
-            });
 }
 
-function realmCachePath (realm: string): string {
-    const ofCacheFolder = path.resolve(process.env.LOCALAPPDATA, 'OpenFin', 'cache');
-    return path.resolve(ofCacheFolder, realm);
+async function realmCachePath (realm: string): Promise<string> {
+    return resolveDir(os.tmpdir(), ['OpenFin', 'cache', realm]);
 }
 
 function generateAppConfig(): any {
@@ -65,6 +70,7 @@ function generateAppConfig(): any {
 
     return {
         // tslint:disable-next-line
+        uuid,
         websocket_port: ws_port ++,
         startup_app: {
             uuid,
@@ -77,8 +83,9 @@ function generateAppConfig(): any {
 }
 
 async function closeAndClean(runtimeProcess: RuntimeProcess): Promise<void> {
-        // await runtimeProcess.fin.Application.terminate();
-        rimraf.sync(realmCachePath(runtimeProcess.realm));
+        // await runtimfin.eProcess.fin.Application.terminate();
+        const cachePath = await realmCachePath(runtimeProcess.realm);
+        rimraf.sync(cachePath);
 }
 
 export async function launchAndConnect(version: string  = process.env.OF_VER,
@@ -96,4 +103,13 @@ export function cleanOpenRuntimes(): Promise<void> {
         runtimes = [];
         return null;
     });
+}
+
+export function getRuntimeProcessInfo(fin: Fin) {
+    for (let i = 0; i < runtimes.length; i++) {
+        const r = runtimes[i];
+        if (r.fin === fin) {
+            return r;
+        }
+    }
 }
