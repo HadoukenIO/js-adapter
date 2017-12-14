@@ -10,7 +10,15 @@ export interface WireConstructor {
     new(onmessage: (data: any) => void): Wire;
 }
 
-export interface ConnectConfig {
+export interface RuntimeConfig {
+        version: string;
+        fallbackVersion?: string;
+        securityRealm?: string;
+        verboseLogging?: boolean;
+        additionalArgument?: string;
+
+}
+export interface BaseConfig {
     uuid: string;
     address?: string;
     name?: string;
@@ -24,13 +32,7 @@ export interface ConnectConfig {
     assetsUrl?: string;
     devToolsPort?: number;
     installerUI?: boolean;
-    runtime?: {
-        version: string;
-        fallbackVersion?: string;
-        securityRealm?: string;
-        verboseLogging?: boolean;
-        additionalArgument?: string;
-    };
+    runtime?: RuntimeConfig;
     appAssets?: [ {
         src: string;
         alias: string;
@@ -41,6 +43,28 @@ export interface ConnectConfig {
     ];
     customItems?: [any];
     timeout?: number; // in seconds
+}
+
+export interface ExistingConnectConfig extends BaseConfig {
+    address: string;
+}
+
+export interface NewConnectConfig extends BaseConfig {
+    runtime: RuntimeConfig;
+}
+
+export type ConnectConfig = ExistingConnectConfig | NewConnectConfig;
+
+export function isExistingConnectConfig (config: ConnectConfig): config is ExistingConnectConfig {
+   if (typeof config.address === 'string') {
+       return true;
+   }
+}
+
+export function isNewConnectConfig(config: ConnectConfig): config is NewConnectConfig {
+   if (config.runtime && typeof config.runtime.version === 'string') {
+       return true;
+   }
 }
 
 export enum READY_STATE { // https://github.com/websockets/ws/blob/master/doc/ws.md#ready-state-constants

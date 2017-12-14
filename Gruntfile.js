@@ -150,7 +150,7 @@ module.exports = function(grunt) {
     grunt.registerTask('lint', [ 'tslint' ]);
     grunt.registerTask('build', [ 'clean', 'ts', 'webpack', 'copy:resources' ]);
     grunt.registerTask('default', [ 'lint', 'build' ]);
-    grunt.registerTask('test', [ 'check-version', 'default', 'start-server', 'kill-processes', 'openfin', 'mochaTest', 'kill-processes']);
+    grunt.registerTask('test', [ 'check-version', 'default', 'start-server', 'kill-processes', 'mochaTest', 'kill-processes']);
     grunt.registerTask('repl', [ 'check-version', 'default', 'start-server', 'openfin', 'start-repl' ]);
 
 };
