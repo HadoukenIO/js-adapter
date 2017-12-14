@@ -6,8 +6,10 @@ import { NewConnectConfig } from '../transport/wire';
 const OpenFin_Installer: string = 'OpenFinInstaller.exe';
 interface SharedDownloads {
     [key: string]: Promise<string>;
-  }
-  const downloads: SharedDownloads = {};
+}
+
+const downloads: SharedDownloads = {};
+
 function copyInstaller(config: NewConnectConfig, Installer_Work_Dir: string): Promise<string> {
     if (!downloads[Installer_Work_Dir]) {
         downloads[Installer_Work_Dir] = new Promise((resolve, reject) => {
@@ -24,8 +26,8 @@ function copyInstaller(config: NewConnectConfig, Installer_Work_Dir: string): Pr
             console.log(`copying ${outf}`);
             rd.pipe(wr);
         });
-   }
-   return downloads[Installer_Work_Dir];
+    }
+    return downloads[Installer_Work_Dir];
 }
 
 function launchRVM(config: NewConnectConfig, manifestLocation: string, namedPipeName: string, Installer_Work_Dir: string): ChildProcess {
