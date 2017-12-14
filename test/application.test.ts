@@ -79,16 +79,12 @@ describe('Application.', () => {
         });
     });
 
-    describe('registerCustomData()', () => {
+    /*
+    describe('registerUser()', () => {
 
-        const customData = {
-            userId: 'mockUser',
-            organization: 'mockOrg'
-        };
-
-        it('Fulfilled', () => testApp.registerCustomData(customData).then(data => assert(true)));
+        it('Fulfilled', () => testApp.registerUser('mockUser', 'myApp').then(() => assert(true)));
     });
-
+    */
     describe('removeTrayIcon()', () => {
 
         it('Fulfilled', () => testApp.removeTrayIcon().then(data => assert(true)));
