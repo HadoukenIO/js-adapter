@@ -48,7 +48,7 @@ class Transport extends EventEmitter {
             return this.connectByPort(config);
         } else {
 
-            const port = await this.environment.retreivePort(config);
+            const port = await this.environment.retrievePort(config);
             return this.connectByPort(Object.assign({}, config, {address: `ws://localhost:${port}`}));
         }
     }
