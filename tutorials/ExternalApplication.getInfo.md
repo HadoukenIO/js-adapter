@@ -1,4 +1,4 @@
-Retrieves information about the application.
+Retrieves information about a given application connected to the bus.
 
 #### response
 ```
@@ -14,7 +14,7 @@ Retrieves information about the application.
 
 ```js
 async function getInfo() {
-    const extApp = await fin.ExternalApplication.wrap('notepad-uuid');
+    const extApp = await fin.ExternalApplication.wrap('javaApp-uuid');
     return await extApp.getInfo();
 }
 getInfo().then(info => console.log(info)).catch(err => console.log(err));
