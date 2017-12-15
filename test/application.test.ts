@@ -1,6 +1,7 @@
 import { conn } from './connect';
 import { Fin, Application } from '../src/main';
 import * as assert from 'assert';
+import * as path from 'path';
 
 describe('Application.', () => {
     let fin: Fin;
@@ -37,7 +38,7 @@ describe('Application.', () => {
         });
     });
 
-    describe('close()',  () => {
+    describe('close()', () => {
         const appToCloseConfig = {
             name: 'adapter-test-app-to-close',
             url: 'about:blank',
@@ -55,10 +56,10 @@ describe('Application.', () => {
 
         it('Fulfilled', (done) => {
             appToClose.close().then(() => appToClose.isRunning()
-                                           .then(data => {
-                                                assert(data === false);
-                                                return done();
-                                            }));
+                .then(data => {
+                    assert(data === false);
+                    return done();
+                }));
         });
     });
 
@@ -72,11 +73,36 @@ describe('Application.', () => {
         it('Fulfilled', () => testApp.getGroups().then(data => assert(data instanceof Array)));
     });
 
-    describe('getParentUuid()',  () => {
+    describe('getParentUuid()', () => {
 
         it('Fulfilled', () => {
             return testApp.getParentUuid().then(data => assert(data === fin.me.uuid));
         });
+    });
+
+    describe('getShortcuts()', () => {
+
+        it('Fulfilled', () => fin.Application.createFromManifest(path.resolve('test/app.json'))
+            .then(app => {
+            return app.getShortcuts().then(data => {
+                assert(typeof(data.desktop) === 'boolean');
+                assert(typeof(data.startMenu) === 'boolean');
+                assert(typeof(data.systemStartup) === 'boolean');
+            });
+        }));
+    });
+
+    describe('getTrayIconInfo()', () => {
+
+       it('Fulfilled', () => testApp.setTrayIcon('http://cdn.openfin.co/assets/testing/icons/circled-digit-one.png')
+            .then(() => {
+            return testApp.getTrayIconInfo().then(info => {
+                assert(typeof(info.x) === 'number');
+                assert(typeof(info.y) === 'number');
+                assert(typeof(info.bounds) === 'object');
+                assert(typeof(info.monitorInfo) === 'object');
+            });
+        }));
     });
 
     describe('registerCustomData()', () => {
@@ -117,21 +143,19 @@ describe('Application.', () => {
         });
     });
 
-    /*
     describe('setShortcuts()', () => {
 
-        it('Fulfilled', (done) => {
-            testApp.setShortcuts({
-                desktop: true,
-                startMenu: false,
-                systemStartup: true
-            }).then(() => {
-                assert(true);
-                return done();
-            });
-        });
+        it('Fulfilled', () => fin.Application.createFromManifest(path.resolve('test/app.json'))
+            .then(app => {
+                app.setShortcuts({
+                    desktop: true,
+                    startMenu: false,
+                    systemStartup: true
+                }).then(() => {
+                    assert(true);
+                });
+        }));
     });
-    */
 
     describe('terminate()', () => {
 
@@ -161,7 +185,7 @@ describe('Application.', () => {
             return testApp.getInfo().then(info => {
                 const expectedLaunchMode = 'adapter';
 
-                return assert.equal(info.launchMode, expectedLaunchMode, `Expected launchMode to be "${ expectedLaunchMode }"`);
+                return assert.equal(info.launchMode, expectedLaunchMode, `Expected launchMode to be "${expectedLaunchMode}"`);
             });
         });
     });

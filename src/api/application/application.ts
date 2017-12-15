@@ -4,6 +4,7 @@ import { _Window } from '../window/window';
 import { Point } from '../system/point';
 import { MonitorInfo } from '../system/monitor';
 import Transport from '../../transport/transport';
+import Bounds from '../window/bounds';
 
 export interface TrayIconClickReply extends Point, Reply<'application', 'tray-icon-clicked'> {
     button: number;
@@ -25,13 +26,20 @@ export interface ConfigInterface {
     systemStartup?: boolean;
 }
 
+export interface TrayInfo {
+    bounds: Bounds;
+    monitorInfo: MonitorInfo;
+    x: number;
+    y: number;
+}
+
 export default class ApplicationModule extends Bare {
 
     /**
      * Returns an Application object that represents an existing application.
      * @param { Identity } indentity
      * @return {Promise.<Application>}
-    */
+     */
     public wrap(identity: Identity): Promise<Application> {
         return Promise.resolve(new Application(this.wire, identity));
     }
@@ -44,13 +52,24 @@ export default class ApplicationModule extends Bare {
         return this.wire.sendAction('create-application', appOptions)
             .then(() => this.wrap({ uuid: appOptions.uuid }));
     }
+
+    /**
+     * Retrieves application's manifest and returns a wrapped application.
+     * @param {string} manifestUrl - The URL of app's manifest.
+     * @return {Promise.<Application>}
+     * @tutorial application.createFromManifest
+     */
+    public createFromManifest(manifestUrl: string): Promise<Application> {
+        return this.wire.sendAction('get-application-manifest', {manifestUrl})
+            .then(({ payload }) => this.wrap({uuid: payload.data.startup_app.uuid}));
+    }
 }
 
 /**
  * @classdesc An object representing an application. Allows the developer to create,
  * execute, show/close an application as well as listen to application events.
  * @class
-*/
+ */
 export class Application extends Base {
 
     constructor(wire: Transport, public identity: Identity) {
@@ -88,19 +107,19 @@ export class Application extends Base {
     }
 
     /**
-      * Determines if the application is currently running.
-      * @return {Promise.<boolean>}
-    */
+     * Determines if the application is currently running.
+     * @return {Promise.<boolean>}
+     */
     public isRunning(): Promise<boolean> {
         return this.wire.sendAction('is-application-running', this.identity)
             .then(({ payload }) => payload.data);
     }
 
     /**
-      * Closes the application and any child windows created by the application.
-      * @param { boolean } [force = false] force assigns the value to false
-      * @return {Promise.<boolean>}
-    */
+     * Closes the application and any child windows created by the application.
+     * @param { boolean } [force = false] force assigns the value to false
+     * @return {Promise.<boolean>}
+     */
     public close(force: boolean = false): Promise<void> {
         return this.wire.sendAction('close-application', Object.assign({}, this.identity, {force})).then(() => undefined);
     }
@@ -108,7 +127,7 @@ export class Application extends Base {
     /**
      * Retrieves an array of wrapped fin.desktop.Windows for each of the application’s child windows.
      * @return {Promise.Array.<_Window>}
-    */
+     */
     public getChildWindows(): Promise<Array<_Window>> {
         return this.wire.sendAction('get-child-windows', this.identity)
             .then(({ payload }) =>  this.windowListFromNameList(payload.data));
@@ -118,7 +137,7 @@ export class Application extends Base {
      * Retrieves an array of active window groups for all of the application's windows. Each group is
      * represented as an array of wrapped fin.desktop.Windows.
      * @return {Promise.Array.Array.<_Window>}
-    */
+     */
     public getGroups(): Promise<Array<Array<_Window>>> {
         const winGroups: Array<Array<_Window>> = <Array<Array<_Window>>>[];
         return this.wire.sendAction('get-application-groups', this.identity)
@@ -136,7 +155,7 @@ export class Application extends Base {
      * Retrieves the JSON manifest that was used to create the application. Invokes the error callback
      * if the application was not created from a manifest.
      * @return {Promise.<any>}
-    */
+     */
     public getManifest(): Promise<any> {
         return this.wire.sendAction('get-application-manifest', this.identity)
             .then(({ payload }) => payload.data);
@@ -147,9 +166,19 @@ export class Application extends Base {
      * if the application was created from a manifest.
      * @tutorial Application.getParentUuid
      * @return {Promise.<string>}
-    */
+     */
     public getParentUuid(): Promise<string> {
         return this.wire.sendAction('get-parent-application', this.identity)
+            .then(({ payload }) => payload.data);
+    }
+
+    /**
+     * Retrieves current application's shortcut configuration.
+     * @tutorial application.getShortcuts
+     * @return {Promise.<ConfigInterface>}
+     */
+    public getShortcuts(): Promise<ConfigInterface> {
+        return this.wire.sendAction('get-shortcuts', this.identity)
             .then(({ payload }) => payload.data);
     }
 
@@ -157,7 +186,7 @@ export class Application extends Base {
      * Returns an instance of the main Window of the application
      * @tutorial Application.getWindow
      * @return {Promise.<_Window>}
-    */
+     */
     public getWindow(): Promise<_Window> {
         return Promise.resolve(new _Window(this.wire, {
             uuid: <string>this.identity.uuid,
@@ -169,7 +198,7 @@ export class Application extends Base {
      * Passes in custom data that will be relayed to the RVM
      * @param { object } data Data to be passed to the RVM
      * @return {Promise.<void>}
-    */
+     */
     public registerCustomData(data: Object): Promise<void> {
         return this.wire.sendAction('register-custom-data', Object.assign({}, this.identity, {data})).then(() => undefined);
     }
@@ -224,9 +253,19 @@ export class Application extends Base {
      * @tutorial Application.setShortcuts
      */
     public setShortcuts(config: ConfigInterface): Promise<void> {
-        return this.wire.sendAction('set-shortcuts',
-                   Object.assign({}, this.identity, config)
+        return this.wire.sendAction('set-shortcuts', Object.assign({}, this.identity, {data: config})
                ).then(() => undefined);
+    }
+
+    /**
+     * @summary Retrieves information about the system tray.
+     * @desc The only information currently returned is the position and dimensions.
+     * @return {Promise.<TrayInfo>}
+     * @tutorial application.getTrayIconInfo
+     */
+    public getTrayIconInfo(): Promise<TrayInfo> {
+        return this.wire.sendAction('get-tray-icon-info', this.identity)
+            .then(({ payload }) => payload.data);
     }
 
     /**
