@@ -1,6 +1,7 @@
 import Fin from './api/fin';
 import { Application } from './api/application/application';
 import { _Window as Window } from './api/window/window';
+import { _Frame as Frame } from './api/frame/frame';
 import System from './api/system/system';
 import { ConnectConfig } from './transport/wire';
 import { default as NodeEnvironment } from './environment/node-env';
@@ -17,4 +18,4 @@ export function connect(config: ConnectConfig): Promise<Fin> {
 }
 
 export { Identity } from './identity'
-export { Fin, Application, Window, System };
+export { Fin, Application, Window, System , Frame};
