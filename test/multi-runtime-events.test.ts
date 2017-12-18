@@ -28,6 +28,64 @@ describe('Multi Runtime', () =>  {
     describe('Events', () => {
 
         describe('Launch then subscribe', () => {
+            describe('System', () => {
+                // tslint:disable-next-line
+                it('should raise application closed events', function(done: Function) {
+                    // tslint:disable-next-line no-invalid-this
+                    this.timeout(TEST_TIMEOUT * 2);
+
+                    async function test() {
+                        const appConfig = getAppConfig();
+                        const runtimeA = await launchAndConnect();
+                        const runtimeB = await launchAndConnect();
+                        await delayPromise(DELAY_MS);
+
+                        const realApp = await runtimeB.fin.Application.create(appConfig);
+                        await realApp.run();
+
+                        runtimeA.fin.System.on('application-closed', (e: any) => {
+                            assert.equal(e.type, 'application-closed', 'Expected event type to match event');
+                            done();
+                        });
+
+                        await delayPromise(30);
+                        await realApp.close();
+                        await delayPromise(1500);
+                    }
+
+                    test();
+                });
+
+                it('should raise application created events', function(done: Function) {
+                    // tslint:disable-next-line no-invalid-this
+                    this.timeout(TEST_TIMEOUT * 2);
+
+                    async function test() {
+                        const runtimeA = await launchAndConnect();
+                        const runtimeB = await launchAndConnect();
+                        const appConfig = getAppConfig();
+                        await delayPromise(DELAY_MS);
+                        let realApp: any;
+
+                        runtimeA.fin.System.on('application-created', (e: any) => {
+                            assert.equal(e.type, 'application-created', 'Expected event type to match event');
+                            done();
+                        });
+
+                        await delayPromise(30);
+
+                        realApp = await runtimeB.fin.Application.create(appConfig);
+                        await realApp.run();
+                        await realApp.close();
+
+                    }
+
+                    test();
+                });
+            });
+        });
+
+        describe('Launch then subscribe', () => {
             describe('application', () => {
                 // tslint:disable-next-line
                 it.skip('should raise closed events', function(done: Function) {
@@ -112,6 +170,73 @@ describe('Multi Runtime', () =>  {
                     test();
                 });
             });
+        });
+
+        describe('Subscribe then launch', () => {
+
+            describe('System', () => {
+
+                // tslint:disable-next-line
+                it('should raise application closed events', function(done: Function) {
+                    // tslint:disable-next-line no-invalid-this
+                    this.timeout(TEST_TIMEOUT * 2);
+
+                    async function test() {
+                        const appConfig = getAppConfig();
+                        const runtimeA = await launchAndConnect();
+                        await delayPromise(DELAY_MS);
+                        runtimeA.fin.System.on('application-closed', (e: any) => {
+                            assert.equal(e.type, 'application-closed', 'Expected event type to match event');
+                            done();
+                        });
+                        const runtimeB = await launchAndConnect();
+                        await delayPromise(DELAY_MS);
+                        const realApp = await runtimeB.fin.Application.create(appConfig);
+                        await realApp.run();
+
+                        await delayPromise(30);
+                        await realApp.close();
+                        await delayPromise(1500);
+                    }
+
+                    test();
+                });
+
+                it('should raise application-started events', function(done: Function) {
+                    // tslint:disable-next-line no-invalid-this
+                    this.timeout(TEST_TIMEOUT * 2); //We need a bit more time for these tests.
+
+                    async function test() {
+                        const appConfig = getAppConfig();
+                        const argsConnect = [
+                            '--security-realm=supersecret',
+                            '--enable-mesh',
+                            '--enable-multi-runtime',
+                            '--v=1'
+                        ];
+                        const runtimeA = await launchAndConnect(undefined, undefined, true, argsConnect);
+                        await delayPromise(DELAY_MS);
+
+                        const app = await runtimeA.fin.Application.wrap({ uuid: appConfig.uuid });
+
+                        runtimeA.fin.System.on('application-created', (e: any) => {
+                            assert.equal(e.type, 'application-created', 'Expected event type to match event');
+                            app.close().then(done);
+                        });
+
+                        const runtimeB = await launchAndConnect();
+                        await delayPromise(DELAY_MS);
+                        const realApp = await runtimeB.fin.Application.create(appConfig);
+                        await delayPromise(300);
+                        await realApp.run();
+                        await delayPromise(300);
+                        await realApp.close();
+                    }
+
+                    test();
+                });
+            });
+
         });
 
         describe('Subscribe then launch', () => {
