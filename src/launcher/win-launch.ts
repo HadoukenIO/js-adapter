@@ -23,13 +23,13 @@ function copyInstaller(config: NewConnectConfig, Installer_Work_Dir: string): Pr
                 resolve();
             });
             rd.pipe(wr);
-        }); 
+        });
     } else {
-       downloads[Installer_Work_Dir] = downloads[Installer_Work_Dir].then((x: string) => {
+        downloads[Installer_Work_Dir] = downloads[Installer_Work_Dir].then((x: string) => {
             return new Promise((resolve, reject) => {
                 setTimeout(() => resolve(x), 1000);
             });
-       });
+        });
     }
     return downloads[Installer_Work_Dir];
 }

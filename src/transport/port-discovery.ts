@@ -8,6 +8,7 @@ import { NewConnectConfig } from './wire';
 import Launcher from '../launcher/launcher';
 import Timer = NodeJS.Timer;
 import { ChildProcess } from 'child_process';
+import { setTimeout } from 'timers';
 
 const launcher = new Launcher();
 
@@ -211,6 +212,11 @@ export class PortDiscovery {
                                 openfin.stdout.on('data', console.log);
                                 openfin.stdout.pipe(process.stdout);
                                 openfin.stderr.pipe(process.stderr);
+                            }
+                            if (!this.timeoutTimer) {
+                                this.timeoutTimer = setTimeout(() => {
+                                    console.warn('hmmm, something seems off. Port Discovery should not take this long');
+                                }, 10000);
                             }
                         })
                         .catch(err => reject(err));
