@@ -104,7 +104,6 @@ describe('Application.', () => {
             });
         }));
     });
-  
     /*
     describe('registerUser()', () => {
 
