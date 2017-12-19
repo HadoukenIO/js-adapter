@@ -1,6 +1,6 @@
 import Fin from './api/fin';
 import { currentWindowIdentity } from './environment/openfin-renderer-api';
-import {default as Transport} from './transport/transport';
+import { default as Transport } from './transport/transport';
 import ElIPCTransport from './transport/elipc';
 import { default as OpenFinEnvironment } from './environment/openfin-env';
 

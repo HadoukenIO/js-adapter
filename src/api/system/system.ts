@@ -2,7 +2,7 @@ import { Base } from '../base';
 import { ApplicationInfo } from './application';
 import { WindowInfo } from './window';
 import { Identity } from '../../identity';
-import { MonitorInfo }  from './monitor';
+import { MonitorInfo } from './monitor';
 import { PointTopLeft } from './point';
 import { GetLogRequestType, LogInfo } from './log';
 import { ProxyInfo, ProxyConfig } from './proxy';
@@ -11,7 +11,7 @@ import { DownloadAssetRequestType } from './download-asset';
 import { RVMInfo } from './rvm';
 import { Entity } from './entity';
 import { HostSpecs } from './host-specs';
-import { ExternalProcessRequestType , TerminateExternalRequestType } from './external-process';
+import { ExternalProcessRequestType, TerminateExternalRequestType } from './external-process';
 import Transport from '../../transport/transport';
 
 /**
@@ -64,17 +64,17 @@ export default class System extends Base {
     constructor(wire: Transport) {
         super(wire);
 
-        this.on('removeListener', (eventType:  string) => {
+        this.on('removeListener', (eventType: string) => {
             this.deregisterEventListener(Object.assign({}, this.identity, {
                 type: eventType,
-                topic : this.topic
+                topic: this.topic
             }));
         });
 
         this.on('newListener', (eventType: string) => {
             this.registerEventListener(Object.assign({}, this.identity, {
                 type: eventType,
-                topic : this.topic
+                topic: this.topic
             }));
         });
 

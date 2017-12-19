@@ -1,0 +1,19 @@
+{
+    "devtools_port": 9090,
+    "startup_app": {
+        "name": "OpenfinPOC",
+        "description": "OpenFin POC",
+        "url": "file://Z:\\Documents\\Projects\\js-adapter/www.google.com",
+        "uuid": "OpenfinPOC-pddpiasf4xq610mkje3zncdi",
+        "autoShow": true
+    },
+    "runtime": {
+        "arguments": "",
+        "version": "beta"
+    },
+    "shortcut": {
+        "company": "OpenFin",
+        "description": "Openfin POC",
+        "name": "Openfin POC"
+    }
+}

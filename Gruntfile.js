@@ -1,5 +1,5 @@
 const path = require('path');
-const testAppConfig = path.join('test','app.json');
+const testAppConfig = path.resolve('test','app.json');
 const liveServer = require('live-server');
 const ps = require('ps-node');
 const exec = require('child_process').exec;
@@ -24,7 +24,7 @@ module.exports = function(grunt) {
     const version = grunt.option('ver');
     const remote = grunt.option('remote');
     const uuid = 'testapp';
-    const args = '--enable-multi-runtime';
+    const args = '--enable-multi-runtime --debug=5858';
     process.env.OF_VER = version
     process.env.TEST_SERVER_PORT = serverParams.port
     
@@ -59,7 +59,7 @@ module.exports = function(grunt) {
                     create: true,
                     options: {
                         runtime: {
-                            arguments: args,
+                            //arguments: args,
                             version
                         },
                         startup_app: {
@@ -153,7 +153,7 @@ module.exports = function(grunt) {
     grunt.registerTask('lint', [ 'tslint' ]);
     grunt.registerTask('build', [ 'clean', 'ts', 'webpack', 'copy:resources' ]);
     grunt.registerTask('default', [ 'lint', 'build' ]);
-    grunt.registerTask('test', [ 'check-version', 'default', 'start-server', 'kill-processes', 'mochaTest', 'kill-processes']);
+    grunt.registerTask('test', [ 'check-version', 'default', 'start-server', 'mochaTest']);
     grunt.registerTask('repl', [ 'check-version', 'default', 'start-server', 'openfin', 'start-repl' ]);
 
 };

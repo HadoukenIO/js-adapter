@@ -1,4 +1,4 @@
-export interface WindowInfo  {
+export interface WindowInfo {
     uuid: string;
     mainWindow: WindowDetail;
     childWindows: Array<WindowDetail>;

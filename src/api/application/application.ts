@@ -59,14 +59,14 @@ export class Application extends Base {
         this.on('removeListener', eventType => {
             this.deregisterEventListener(Object.assign({}, this.identity, {
                 type: eventType,
-                topic : this.topic
+                topic: this.topic
             }));
         });
 
         this.on('newListener', eventType => {
             this.registerEventListener(Object.assign({}, this.identity, {
                 type: eventType,
-                topic : this.topic
+                topic: this.topic
             }));
         });
     }
@@ -102,7 +102,7 @@ export class Application extends Base {
       * @return {Promise.<boolean>}
     */
     public close(force: boolean = false): Promise<void> {
-        return this.wire.sendAction('close-application', Object.assign({}, this.identity, {force})).then(() => undefined);
+        return this.wire.sendAction('close-application', Object.assign({}, this.identity, { force })).then(() => undefined);
     }
 
     /**
@@ -111,7 +111,7 @@ export class Application extends Base {
     */
     public getChildWindows(): Promise<Array<_Window>> {
         return this.wire.sendAction('get-child-windows', this.identity)
-            .then(({ payload }) =>  this.windowListFromNameList(payload.data));
+            .then(({ payload }) => this.windowListFromNameList(payload.data));
     }
 
     /**
@@ -171,7 +171,7 @@ export class Application extends Base {
      * @return {Promise.<void>}
     */
     public registerCustomData(data: Object): Promise<void> {
-        return this.wire.sendAction('register-custom-data', Object.assign({}, this.identity, {data})).then(() => undefined);
+        return this.wire.sendAction('register-custom-data', Object.assign({}, this.identity, { data })).then(() => undefined);
     }
 
     /**
@@ -225,8 +225,8 @@ export class Application extends Base {
      */
     public setShortcuts(config: ConfigInterface): Promise<void> {
         return this.wire.sendAction('set-shortcuts',
-                   Object.assign({}, this.identity, config)
-               ).then(() => undefined);
+            Object.assign({}, this.identity, config)
+        ).then(() => undefined);
     }
 
     /**

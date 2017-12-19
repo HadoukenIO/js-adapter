@@ -1,5 +1,4 @@
-// tslint:disable:no-console
-import * as crypto from'crypto';
+import * as crypto from 'crypto';
 import * as fs from 'fs';
 import * as http from 'http';
 import * as net from 'net';
@@ -38,7 +37,7 @@ interface ChromiumStringMessage {
 
 // value for message_type
 enum ChromiumMessageType {
-    RUNTIME_HELLO_MESSAGE = Math.pow( 2, 16 ) - 1,  // UINT16_MAX
+    RUNTIME_HELLO_MESSAGE = Math.pow(2, 16) - 1,  // UINT16_MAX
     RUNTIME_STRING_MESSAGE = 0
 }
 
@@ -72,24 +71,26 @@ function matchRuntimeInstance(config: NewConnectConfig, message: PortDiscoveryMe
 
 function generateManifest(config: NewConnectConfig): any {
     const manifest = Object.assign({},
-        {devtools_port: config.devToolsPort},
-                {startup_app: config.startupApp},
-                {lrsUrl: config.lrsUrl},
-                {assetsUrl: config.assetsUrl},
-                {licenseKey: config.licenseKey},
-                {appAssets: config.appAssets});
+        { devtools_port: config.devToolsPort },
+        { startup_app: config.startupApp },
+        { lrsUrl: config.lrsUrl },
+        { assetsUrl: config.assetsUrl },
+        { licenseKey: config.licenseKey },
+        { appAssets: config.appAssets });
     if (config.runtime) {
         let runtimeArgs: string = '';
-        manifest.runtime = Object.assign({}, {version: config.runtime.version,
-                                            fallbackVersion: config.runtime.fallbackVersion});
+        manifest.runtime = Object.assign({}, {
+            version: config.runtime.version,
+            fallbackVersion: config.runtime.fallbackVersion
+        });
         if (config.runtime.securityRealm) {
-            runtimeArgs = runtimeArgs.concat(` ${launcher.Security_Realm_Config_Key}${config.runtime.securityRealm} `);
+            runtimeArgs = runtimeArgs.concat(`${launcher.Security_Realm_Config_Key}${config.runtime.securityRealm} `);
         }
         if (config.runtime.verboseLogging === true) {
-            runtimeArgs = runtimeArgs.concat(' --v=1 ');
+            runtimeArgs = runtimeArgs.concat('--v=1  --attach-console ');
         }
         if (config.runtime.additionalArgument) {
-            runtimeArgs = runtimeArgs.concat(` ${config.runtime.additionalArgument} `);
+            runtimeArgs = runtimeArgs.concat(`${config.runtime.additionalArgument}`);
         }
         manifest.runtime.arguments = runtimeArgs;
     }
@@ -109,7 +110,6 @@ function onRuntimeHello(data: Buffer, conn: net.Socket): void {
             header.extraInteger = true;
             helloPayload = readUint32(data, MessageHeaderSize + 4);
         }
-        console.log(`Hello payload ${helloPayload}`);  // supposed to be pid of Runtime
         writeHelloMessage(header, conn);
     } else {
         console.error(`Invalid port discovery hello message type ${header.message_type}`);
@@ -120,18 +120,17 @@ function onDiscoverMessage(data: Buffer): PortDiscoveryMessage {
     const header: ChromiumMessageHeader = readHeader(data);
     if (header.message_type === ChromiumMessageType.RUNTIME_STRING_MESSAGE) {
         const strLength: number = readUint32(data, MessageHeaderSize); // length of following discovery string
-        console.log(`discovery message length ${strLength}`);
-       //BAD CODE
-       let msg: string;
-       if (os.platform() !== 'win32') {
-         const raw = data.toString('utf8');
-         const firstBrace = raw.indexOf('{');
-         const lastBrace = raw.lastIndexOf('}');
-         msg = raw.slice(firstBrace, lastBrace + 1);
-       } else {
-       ////////Bad code end
-         msg = data.toString('utf8', MessageHeaderSize + 4, MessageHeaderSize + 4 + strLength);
-       }
+        //BAD CODE
+        let msg: string;
+        if (os.platform() !== 'win32') {
+            const raw = data.toString('utf8');
+            const firstBrace = raw.indexOf('{');
+            const lastBrace = raw.lastIndexOf('}');
+            msg = raw.slice(firstBrace, lastBrace + 1);
+        } else {
+            ////////Bad code end
+            msg = data.toString('utf8', MessageHeaderSize + 4, MessageHeaderSize + 4 + strLength);
+        }
         const msg2 = msg.replace(/\\/g, '\\\\');
         const env: PortDiscoveryMessageEnvolope = JSON.parse(msg2);
         if (env.payload) {
@@ -147,16 +146,15 @@ function onDiscoverMessage(data: Buffer): PortDiscoveryMessage {
 function readHeader(data: Buffer): ChromiumMessageHeader {
     const header: ChromiumMessageHeader = <ChromiumMessageHeader>{};
     header.payload_size = readUint32(data, 0);
-    header.routing_id   = readUint32(data, 4);
+    header.routing_id = readUint32(data, 4);
     header.message_type = readUint32(data, 8);
-    header.flags        = readUint32(data, 12);
+    header.flags = readUint32(data, 12);
     header.attachment_count = readUint32(data, 16);
-    console.log(`Received header ${header.message_type}`);
     return header;
 }
 
 function writeHelloMessage(header: ChromiumMessageHeader, conn: net.Socket): void {
-    const data: Buffer = Buffer.alloc(MessageHeaderSize +  (header.extraInteger ? 28 : 4));
+    const data: Buffer = Buffer.alloc(MessageHeaderSize + (header.extraInteger ? 28 : 4));
     writeUint32(data, header.payload_size, 0);
     writeUint32(data, header.routing_id, 4);
     writeUint32(data, header.message_type, 8);
@@ -168,9 +166,7 @@ function writeHelloMessage(header: ChromiumMessageHeader, conn: net.Socket): voi
         next += 4;
     }
     writeUint32(data, process.pid, next);
-    conn.write(data, () => {
-        console.log(`Finished writing hello message ${conn.bytesWritten}`);
-    });
+    conn.write(data);
 }
 
 function readUint32(data: Buffer, offset: number): number {
@@ -195,7 +191,6 @@ export class PortDiscovery {
     }
 
     public retrievePort(): Promise<number> {
-        console.log('retrieve port called');
         return new Promise((resolve, reject) => {
             if (this.savedConfig.timeout) {
                 this.timeoutTimer = setTimeout(() => {
@@ -206,26 +201,30 @@ export class PortDiscovery {
             this.createManifest()
                 .then(() => this.createDiscoveryNamedPipe())
                 .then(() => {
+                    console.log(this.namedPipeName);
                     const mPromise: Promise<PortDiscoveryMessage> = this.listenDiscoveryMessage();
                     launcher.launch(this.savedConfig, this.manifestLocation, this.namedPipeName)
-                       .then((openfin: ChildProcess) => {
-                           openfin.on('error', err => reject(err));
-                           if (this.savedConfig.runtime.verboseLogging) {
-                            openfin.stdout.pipe(process.stdout);
-                            openfin.stderr.pipe(process.stderr);
-                           }
+                        .then((openfin: ChildProcess) => {
+                            console.log('openfin returned ', this.savedConfig.uuid);
+                            openfin.on('error', err => reject(err));
+                            if (this.savedConfig.runtime.verboseLogging) {
+                                openfin.stdout.on('data', console.log);
+                                openfin.stdout.pipe(process.stdout);
+                                openfin.stderr.pipe(process.stderr);
+                            }
                         })
-                       .catch(err => reject(err));
+                        .catch(err => reject(err));
                     mPromise.then((msg: PortDiscoveryMessage) => {
+                        console.log('msg');
                         if (matchRuntimeInstance(this.savedConfig, msg)) {
-                            console.log(`Port discovery returns ${msg.port}`);
                             resolve(msg.port);
                             this.cleanup();
+                        } else {
+                            console.warn('Port Discovery did not match runtime instance');
                         }
                     }).catch(e => reject(e));
                 })
                 .catch(reason => {
-                    console.log('caught in retrieve port');
                     console.error(reason);
                     reject(reason);
                     this.cleanup();
@@ -248,10 +247,9 @@ export class PortDiscovery {
                 this.namedPipeName = pipePath;
             }
             this.namedPipeServer.listen(pipePath, () => {
-                console.log(`listening to ${this.namedPipeServer.address()}`);
                 if (unix) {
                     //@ts-ignore On unix using a named socket, address will always be a string @types/node needs update
-                    const address : string = this.namedPipeServer.address();
+                    const address: string = this.namedPipeServer.address();
                     this.namedPipeName = address;
                     fs.chmodSync(pipePath, 0o777);
                 }
@@ -263,11 +261,11 @@ export class PortDiscovery {
     private listenDiscoveryMessage(): Promise<PortDiscoveryMessage> {
         return new Promise((resolve, reject) => {
             this.namedPipeServer.on('connection', (conn: net.Socket) => {
-                console.log(`named pipe connected ${JSON.stringify(conn.address())}`);
+                console.log('connection made');
                 if (!this.pipeConnection) {
                     this.pipeConnection = conn;
                     conn.on('data', (data: Buffer) => {
-                        console.log(`onData from named pipe ${data.length}`);
+                        console.log('msg received', this.discoverState, this.savedConfig.uuid);
                         if (this.discoverState === DiscoverState.INIT) {
                             onRuntimeHello(data, conn);
                             this.discoverState = DiscoverState.HELLO;
@@ -280,7 +278,6 @@ export class PortDiscovery {
                     });
                     conn.on('error', err => reject(err));
                 } else {
-                    console.error('Duplicate pipe connection');
                     conn.end();
                 }
             });
@@ -291,7 +288,6 @@ export class PortDiscovery {
     private createManifest(): Promise<string> {
         return new Promise((resolve, reject) => {
             if (this.savedConfig.manifestUrl) {
-                console.log(`Retrieving ${this.savedConfig.manifestUrl}`);
                 http.get(this.savedConfig.manifestUrl, res => {
                     if (res.statusCode !== 200) {
                         reject(new Error(`Error getting ${this.savedConfig.manifestUrl} status ${res.statusCode}`));
@@ -303,9 +299,9 @@ export class PortDiscovery {
                             try {
                                 const parsed = JSON.parse(rawData);
                                 // Installer needs assetsUrl if set
-                                Object.assign(this.savedConfig, {assetsUrl: parsed.assetsUrl});
+                                Object.assign(this.savedConfig, { assetsUrl: parsed.assetsUrl });
                                 if (parsed.runtime) {
-                                    this.savedConfig.runtime = Object.assign({}, {version: parsed.runtime.version});
+                                    this.savedConfig.runtime = Object.assign({}, { version: parsed.runtime.version });
                                     if (parsed.runtime.arguments) {
                                         const index: number = parsed.runtime.arguments.indexOf(launcher.Security_Realm_Config_Key);
                                         if (index > 0) {
@@ -313,7 +309,6 @@ export class PortDiscovery {
                                                 if (value.startsWith(launcher.Security_Realm_Config_Key)) {
                                                     const realm = value.substring(launcher.Security_Realm_Config_Key.length);
                                                     this.savedConfig.runtime.securityRealm = realm;
-                                                    console.log(`Parsed security realm ${realm} from ${this.savedConfig.manifestUrl}`);
                                                 }
                                             });
                                         }
@@ -341,15 +336,12 @@ export class PortDiscovery {
                     }
                 }
                 this.manifestLocation = path.join(launcher.Installer_Work_Dir, manifestFileName);
-                console.log(`Creating manifest ${this.manifestLocation}`);
                 const wr = fs.createWriteStream(this.manifestLocation);
                 const manifest = generateManifest(this.savedConfig);
                 wr.on('error', (err: Error) => reject(err));
                 wr.on('finish', () => {
-                    console.log(`created ${this.manifestLocation}`);
                     resolve();
                 });
-                console.log(`creating ${this.manifestLocation}`);
                 wr.write(JSON.stringify(manifest), () => {
                     wr.end();
                 });
@@ -359,7 +351,6 @@ export class PortDiscovery {
 
     private cleanup(): void {
         if (this.namedPipeServer) {
-            console.log('shutting down named pipe');
             if (this.pipeConnection) {
                 this.pipeConnection.end();
             }

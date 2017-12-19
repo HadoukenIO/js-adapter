@@ -16,7 +16,7 @@ export function startRepl() {
             //need to cast to any because the definition for REPLServer does not have it.
             // tslint:disable-next-line
             const r = repl.start('> ') as any;
-            
+
             Object.defineProperty(r.context, 'fin', {
                 configurable: false,
                 enumerable: true,
@@ -24,7 +24,7 @@ export function startRepl() {
             });
         });
 
-        fin.on('disconnected',  () => {
+        fin.on('disconnected', () => {
             // tslint:disable-next-line
             console.log('runtime is now disconnected');
         });

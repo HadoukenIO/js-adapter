@@ -1,10 +1,12 @@
-import { Wire,
+import {
+    Wire,
     WireConstructor,
     READY_STATE,
     ConnectConfig,
     isExistingConnectConfig,
     isNewConnectConfig,
-    ExistingConnectConfig } from './wire';
+    ExistingConnectConfig
+} from './wire';
 import { Identity } from '../identity';
 import { EventEmitter } from 'events';
 import { Environment } from '../environment/environment';
@@ -43,7 +45,7 @@ class Transport extends EventEmitter {
     }
 
     public connectSync = (config: ConnectConfig): any => {
-        const {uuid, name} = config;
+        const { uuid, name } = config;
         this.me = { uuid, name };
         this.wire.connectSync();
 
@@ -54,14 +56,14 @@ class Transport extends EventEmitter {
             return this.connectByPort(config);
         } else if (isNewConnectConfig(config)) {
             const port = await this.environment.retreivePort(config);
-            return this.connectByPort(Object.assign({}, config, {address: `ws://localhost:${port}`}));
+            return this.connectByPort(Object.assign({}, config, { address: `ws://localhost:${port}` }));
         } else {
-            throw new Error ('Invalid Config');
+            throw new Error('Invalid Config');
         }
     }
 
     public async connectByPort(config: ExistingConnectConfig): Promise<string> {
-        const {address, uuid, name} = config;
+        const { address, uuid, name } = config;
         const reqAuthPayload = Object.assign({}, config, { type: 'file-token' });
 
         this.me = { uuid, name };

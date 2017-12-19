@@ -121,7 +121,7 @@ export default class InterApplicationBus extends Bare {
     }
 
     private processMessage(message: Message<InterAppPayload>) {
-        const {payload: {message: payloadMessage, sourceWindowName, sourceUuid, topic}} = message;
+        const { payload: { message: payloadMessage, sourceWindowName, sourceUuid, topic } } = message;
         const keys = [
             this.createSubscriptionKey(sourceUuid, sourceWindowName, topic),
             this.createSubscriptionKey(sourceUuid, '*', topic),
@@ -135,7 +135,7 @@ export default class InterApplicationBus extends Bare {
     }
 
     private emitSubscriverEvent(type: string, message: any) {
-        const {payload: {name, uuid, topic}} = message;
+        const { payload: { name, uuid, topic } } = message;
         const payload = { name, uuid, topic };
         this.emit(type, payload);
     }
@@ -150,7 +150,7 @@ export default class InterApplicationBus extends Bare {
     }
 
     protected onmessage(message: Message<InterAppPayload>): boolean {
-        const {action} = message;
+        const { action } = message;
 
         switch (action) {
             case 'process-message': this.processMessage(message);
