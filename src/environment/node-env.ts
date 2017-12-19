@@ -12,7 +12,7 @@ export default class NodeEnvironment implements Environment {
         });
     }
 
-    public retreivePort = (config: ConnectConfig): Promise<number> => {
+    public retrievePort = (config: ConnectConfig): Promise<number> => {
         const portDiscovery = new PortDiscovery(config);
         return portDiscovery.retrievePort();
     }

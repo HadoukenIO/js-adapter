@@ -23,7 +23,7 @@ class Transport extends EventEmitter {
     protected messageHandlers: MessageHandler[] = [];
     public me: Identity;
     protected wire: Wire;
-    protected environment: Environment;
+    public environment: Environment;
     public topicRefMap: Map<string, number> = new Map();
 
     constructor(wireType: WireConstructor, environment: Environment) {
@@ -48,7 +48,7 @@ class Transport extends EventEmitter {
             return this.connectByPort(config);
         } else {
 
-            const port = await this.environment.retreivePort(config);
+            const port = await this.environment.retrievePort(config);
             return this.connectByPort(Object.assign({}, config, {address: `ws://localhost:${port}`}));
         }
     }

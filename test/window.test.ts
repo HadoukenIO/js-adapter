@@ -152,6 +152,16 @@ describe('Window.', () => {
         it('Fulfilled', () => testWindow.getOptions().then(() => assert(true)));
     });
 
+    describe('getInfo()', () => {
+
+        it('Fulfilled', () => testWindow.getInfo().then(info => assert(typeof(info) === 'object')));
+    });
+
+    describe('getAllFrames()', () => {
+
+        it('Fulfilled', () => testWindow.getAllFrames().then(framesInfo => assert(framesInfo instanceof Array)));
+    });
+
     describe('getParentApplication()', () => {
 
         it('Fulfilled', () => testWindow.getParentApplication()

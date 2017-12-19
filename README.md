@@ -32,7 +32,7 @@ function logic(fin) {
 
 function connError(err) {
 
-    console.log("Error triying to connect,", err.message);
+    console.log("Error trying to connect,", err.message);
 
     console.log(err.stack);
 }

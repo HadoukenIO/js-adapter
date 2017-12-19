@@ -20,3 +20,8 @@ export interface TerminateExternalRequestType {
     timeout: number;
     killTree: boolean;
 }
+
+export interface ExternalConnection {
+    token: string;
+    uuid: string;
+}
