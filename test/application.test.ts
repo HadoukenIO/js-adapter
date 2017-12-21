@@ -2,14 +2,16 @@ import { conn } from './connect';
 import { Fin, Application } from '../src/main';
 import * as assert from 'assert';
 
+// tslint:disable-next-line
 describe('Application.', function() {
     let fin: Fin;
     let testApp: Application;
+    // tslint:disable-next-line
+    this.timeout(30000);
 
     let counter = 0;
-    // tslint:disable-next-line:no-invalid-this
-    this.timeout(30000);
     before(() => conn().then((a: Fin) => {
+
         fin = a;
     }));
 
@@ -17,6 +19,7 @@ describe('Application.', function() {
         testApp = await fin.Application.create({
             name: `adapter-test-app-${counter}`,
             url: 'about:blank',
+            // tslint:disable-next-line
             uuid: `adapter-test-app____-${counter++}`,
             autoShow: true,
             accelerator: {

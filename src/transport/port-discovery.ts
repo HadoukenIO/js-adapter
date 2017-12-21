@@ -7,7 +7,6 @@ import * as os from 'os';
 import { NewConnectConfig } from './wire';
 import Launcher from '../launcher/launcher';
 import Timer = NodeJS.Timer;
-import { ChildProcess } from 'child_process';
 import { setTimeout } from 'timers';
 
 const launcher = new Launcher();
@@ -191,51 +190,35 @@ export class PortDiscovery {
         this.savedConfig = Object.assign({}, config);
     }
 
-    public retrievePort(): Promise<number> {
-        return new Promise((resolve, reject) => {
-            if (this.savedConfig.timeout) {
+    // tslint:disable-next-line:no-unused-variable
+    public async retrievePortAsync(): Promise<number> {
+        try {
+            await this.createManifest();
+            await this.createDiscoveryNamedPipe();
+            const mPromise: Promise<PortDiscoveryMessage> = this.listenDiscoveryMessage();
+            const msg = await Promise.race([(async () => {
+                const openfin = await launcher.launch(this.savedConfig, this.manifestLocation, this.namedPipeName);
+                openfin.on('error', err => { throw err; });
+                if (this.savedConfig.runtime.verboseLogging) {
+                    openfin.stdout.pipe(process.stdout);
+                    openfin.stderr.pipe(process.stderr);
+                }
                 this.timeoutTimer = setTimeout(() => {
-                    reject(new Error('Port discovery timed out'));
-                    this.cleanup();
-                }, this.savedConfig.timeout * 1000);
+                    //  provide a log to aid in debugging in case of a hanging promise
+                    console.warn('Port Discovery is taking a while. Either the runtime is downloading or it failedcto retrieve the port.');
+                }, 15 * 1000);
+                return await mPromise;
+            })(), mPromise]);
+            if (matchRuntimeInstance(this.savedConfig, msg)) {
+                this.cleanup();
+                return msg.port;
+            } else {
+                console.warn('Port Discovery did not match runtime instance');
             }
-            this.createManifest()
-                .then(() => this.createDiscoveryNamedPipe())
-                .then(() => {
-                    console.log(this.namedPipeName);
-                    const mPromise: Promise<PortDiscoveryMessage> = this.listenDiscoveryMessage();
-                    launcher.launch(this.savedConfig, this.manifestLocation, this.namedPipeName)
-                        .then((openfin: ChildProcess) => {
-                            console.log('openfin returned ', this.savedConfig.uuid);
-                            openfin.on('error', err => reject(err));
-                            if (this.savedConfig.runtime.verboseLogging) {
-                                openfin.stdout.on('data', console.log);
-                                openfin.stdout.pipe(process.stdout);
-                                openfin.stderr.pipe(process.stderr);
-                            }
-                            if (!this.timeoutTimer) {
-                                this.timeoutTimer = setTimeout(() => {
-                                    console.warn('hmmm, something seems off. Port Discovery should not take this long');
-                                }, 10000);
-                            }
-                        })
-                        .catch(err => reject(err));
-                    mPromise.then((msg: PortDiscoveryMessage) => {
-                        console.log('msg');
-                        if (matchRuntimeInstance(this.savedConfig, msg)) {
-                            resolve(msg.port);
-                            this.cleanup();
-                        } else {
-                            console.warn('Port Discovery did not match runtime instance');
-                        }
-                    }).catch(e => reject(e));
-                })
-                .catch(reason => {
-                    console.error(reason);
-                    reject(reason);
-                    this.cleanup();
-                });
-        });
+        } catch (reason) {
+            this.cleanup();
+            throw reason;
+        }
     }
 
     private createDiscoveryNamedPipe(): Promise<any> {
@@ -267,11 +250,9 @@ export class PortDiscovery {
     private listenDiscoveryMessage(): Promise<PortDiscoveryMessage> {
         return new Promise((resolve, reject) => {
             this.namedPipeServer.on('connection', (conn: net.Socket) => {
-                console.log('connection made');
                 if (!this.pipeConnection) {
                     this.pipeConnection = conn;
                     conn.on('data', (data: Buffer) => {
-                        console.log('msg received', this.discoverState, this.savedConfig.uuid);
                         if (this.discoverState === DiscoverState.INIT) {
                             onRuntimeHello(data, conn);
                             this.discoverState = DiscoverState.HELLO;
@@ -337,7 +318,7 @@ export class PortDiscovery {
                     fs.mkdirSync(launcher.Installer_Work_Dir);
                 } catch (e) {
                     if (!e.message.includes('file already exists')) {
-                        reject(`Error creating work directory ${e.message}`);
+                        reject(new Error(`Error creating work directory ${e.message}`));
                         return;
                     }
                 }
@@ -366,4 +347,23 @@ export class PortDiscovery {
             clearTimeout(this.timeoutTimer);
         }
     }
+}
+
+const getPort = makeQueued(async (config: NewConnectConfig): Promise<number> => {
+    const pd = new PortDiscovery(config);
+    return await pd.retrievePortAsync();
+});
+
+export default getPort;
+
+function makeQueued<R, T extends (...args: any[]) => Promise<R>>(func: T): T {
+    let initial: Promise<R>;
+    return async function(...args: any[]): Promise<R> {
+        const x: Promise<R | void> = initial || Promise.resolve();
+        initial = x
+            .then(() => func(...args))
+            .catch(() => func(...args));
+        return initial;
+        // tslint:disable-next-line:prefer-type-cast no-function-expression
+    } as T;
 }

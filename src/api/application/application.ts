@@ -260,6 +260,7 @@ export class Application extends Base {
 
 export interface Application {
     on(type: 'closed', listener: (data: Reply<'application', 'closed'>) => void): this;
+    on(type: 'initialized', listener: (data: Reply<'application', 'initialized'>) => void): this;
     on(type: 'connected', listener: (data: Reply<'application', 'connected'>) => void): this;
     on(type: 'crashed', listener: (data: Reply<'application', 'crashed'>) => void): this;
     on(type: 'error', listener: (data: Reply<'application', 'error'>) => void): this;

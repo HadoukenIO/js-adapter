@@ -4,7 +4,10 @@ import { delayPromise } from './delay-promise';
 import * as assert from 'assert';
 import { Fin } from '../src/main';
 
-describe('Window.', () => {
+// tslint:disable-next-line:no-function-expression
+describe('Window.', function() {
+    // tslint:disable-next-line
+    this.timeout(30000);
     describe('addEventListener()', () => {
         let fin: Fin;
 

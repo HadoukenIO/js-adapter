@@ -1,41 +1,27 @@
 import * as fs from 'fs';
 import * as path from 'path';
 import { ChildProcess, spawn } from 'child_process';
+import { exists } from './util';
 import { NewConnectConfig } from '../transport/wire';
-import { setTimeout } from 'timers';
-
 const OpenFin_Installer: string = 'OpenFinInstaller.exe';
-interface SharedDownloads {
-    [key: string]: Promise<string>;
-}
-
-const downloads: SharedDownloads = {};
 
 function copyInstaller(config: NewConnectConfig, Installer_Work_Dir: string): Promise<string> {
-    if (!downloads[Installer_Work_Dir]) {
-        console.log('copying installer')
-        downloads[Installer_Work_Dir] = new Promise((resolve, reject) => {
+    return new Promise(async (resolve, reject) => {
+        const outf: string = path.join(Installer_Work_Dir, OpenFin_Installer);
+        if (! await exists(outf)) {
             const rd = fs.createReadStream(path.join(__dirname, '..', '..', 'resources', 'win', OpenFin_Installer));
-            const outf: string = path.join(Installer_Work_Dir, OpenFin_Installer);
             const wr = fs.createWriteStream(outf);
             wr.on('error', (err: Error) => reject(err));
             wr.on('finish', () => {
-                resolve();
+                resolve(outf);
             });
             rd.pipe(wr);
-        });
-    } else {
-        downloads[Installer_Work_Dir] = downloads[Installer_Work_Dir].then((x: string) => {
-            return new Promise((resolve, reject) => {
-                setTimeout(() => resolve(x), 1000);
-            });
-        });
-    }
-    return downloads[Installer_Work_Dir];
+        }
+        resolve(outf);
+    });
 }
 
-function launchRVM(config: NewConnectConfig, manifestLocation: string, namedPipeName: string, Installer_Work_Dir: string): ChildProcess {
-    const installer: string = path.join(Installer_Work_Dir, OpenFin_Installer);
+function launchRVM(config: NewConnectConfig, manifestLocation: string, namedPipeName: string, installer: string): ChildProcess {
     const runtimeArgs = `--runtime-arguments=--runtime-information-channel-v6=${namedPipeName}`;
     const installerArgs: Array<string> = [];
     if (config.installerUI !== true) {
@@ -46,15 +32,15 @@ function launchRVM(config: NewConnectConfig, manifestLocation: string, namedPipe
     if (config.assetsUrl) {
         installerArgs.push(`--assetsUrl=${config.assetsUrl}`);
     }
-    const exe = spawn(installer, installerArgs);
-    console.log(`spawning ${installer} ${installerArgs.join('')}`);
-    return exe;
+    return spawn(installer, installerArgs);
 }
 
 // tslint:disable-next-line:max-line-length
-export default function launch(config: NewConnectConfig, manifestLocation: string, namedPipeName: string, Installer_Work_Dir: string): Promise<ChildProcess> {
-    return copyInstaller(config, Installer_Work_Dir)
-        .then(() => {
-            return launchRVM(config, manifestLocation, namedPipeName, Installer_Work_Dir);
-        });
+export default async function launch(config: NewConnectConfig, manifestLocation: string, namedPipeName: string, Installer_Work_Dir: string): Promise<ChildProcess> {
+    const installer = await copyInstaller(config, Installer_Work_Dir);
+    const rvm = await launchRVM(config, manifestLocation, namedPipeName, installer);
+    return new Promise<ChildProcess>((resolve, reject) => {
+        rvm.stderr.on('data', err => reject(err));
+        rvm.on('exit', () => resolve(rvm));
+    });
 }

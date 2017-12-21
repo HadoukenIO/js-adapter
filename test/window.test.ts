@@ -2,7 +2,7 @@ import { conn } from './connect';
 import * as assert from 'assert';
 import { connect as rawConnect, Fin, Application, Window } from '../src/main';
 
-describe('Window.', () => {
+describe('Window.', function() {
     let fin: Fin;
     let testApp: Application;
     let testWindow: Window;
@@ -14,6 +14,9 @@ describe('Window.', () => {
         autoShow: true,
         nonPersistent: true
     };
+
+    // tslint:disable-next-line
+    this.timeout(30000);
 
     before(() => {
         return conn().then(a => fin = a);

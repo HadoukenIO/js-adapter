@@ -4,6 +4,7 @@ import * as assert from 'assert';
 import * as fs from 'fs';
 import { connect as rawConnect } from '../src/main';
 import { promiseMap } from '../src/launcher/util';
+import { ConnectConfig } from '../src/transport/wire';
 // tslint:disable-next-line
 const appConfig = JSON.parse(fs.readFileSync('test/app.json').toString());
 
@@ -11,57 +12,48 @@ describe('PortDiscovery.', function() {
     // do NOT use => function here for 'this' to be set properly
     // tslint:disable-next-line
     this.timeout(120000);
-    let fin: Fin;
-    before(function() {
-        if (Launcher.IS_SUPPORTED()) {
-            return rawConnect({
-                // tslint:disable-next-line
-                uuid: 'example_uuid' + Math.random(),
-                runtime: {
-                    version: 'alpha',
-                    verboseLogging: true,
-                    securityRealm: 'adapter-test-port-discovery'
-                }
-            }).then((a: Fin) => {
-                fin = a;
-            });
+    let spawns = 0;
+    function makeConfig(config: any = {}): ConnectConfig {
+        const defaultRconfig = {
+            version: 'alpha',
+            verboseLogging: false,
+            securityRealm: 'adapter-test-port-discovery-' + spawns
+        };
+        if (config.runtime) {
+            config.runtime = Object.assign(defaultRconfig, config.runtime);
         }
-    });
-
-    it('getVersion', () => {
+        return Object.assign({
+            runtime: defaultRconfig,
+            // tslint:disable-next-line
+            uuid: 'js-adapter-port-discovery-test-' + spawns++,
+        }, config);
+    }
+    const quickConnect = async (config?: any): Promise<Fin> => await rawConnect(makeConfig(config));
+    it('getVersion', async () => {
         if (Launcher.IS_SUPPORTED()) {
-            fin.System.getVersion().then(() => assert(true));
+            const fin = await quickConnect();
+            await fin.System.getVersion();
+            assert(true);
         } else {
             assert(true);
         }
     });
 
-    it.skip('Can handle multiple runtime args', () => {
+    it('Can handle multiple launches in sequence', async () => {
         if (Launcher.IS_SUPPORTED()) {
-            fin.System.getVersion().then(() => assert(true));
+            const fin0 = await quickConnect();
+            const fin1 = await quickConnect();
+            const fin2 = await quickConnect();
+            const fin3 = await quickConnect();
+            await promiseMap([fin0, fin1, fin2, fin3], f => f.System.getVersion());
+            assert(true);
         } else {
             assert(true);
         }
     });
 
     it('discovers in parrallel', async () => {
-        await promiseMap([{
-            uuid: 'example_uuid' + Math.random(),
-            runtime: {
-                version: '8.56.28.3',
-                // additionalArgument: '--debug=5858',
-                verboseLogging: true,
-                securityRealm: 'adapter-test-port-discovery-2'
-            }
-        }, {
-            uuid: 'example_uuid' + Math.random(),
-            runtime: {
-                version: '8.56.28.3',
-                additionalArgument: '--inspect-port=5858',
-                verboseLogging: true,
-                securityRealm: 'adapter-test-port-discovery-FAILING'
-            }
-        }], rawConnect);
+        await promiseMap([{}, {}, {}], quickConnect);
         assert(true);
     });
 });

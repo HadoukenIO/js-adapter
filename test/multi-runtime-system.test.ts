@@ -30,7 +30,7 @@ describe('Multi Runtime', () => {
         describe('getAllApplications', () => {
             it('should return the application information from all runtimes', async function() {
                 // tslint:disable-next-line no-invalid-this
-                this.timeout(15000);
+                this.timeout(30000);
 
                 const appConfigA = getAppConfig();
                 const appConfigB = getAppConfig();

@@ -9,6 +9,16 @@ export function promisify(func: Function): (...args: any[]) => Promise<any> {
     });
 }
 
+const stat = promisify(fs.stat);
+export async function exists(path: string): Promise<Boolean> {
+    try {
+        const exists = await stat(path);
+        return Boolean(exists);
+    } catch (e) {
+        return false;
+    }
+}
+
 export async function get(url: string): Promise<any> {
     return new Promise((resolve, reject) => {
         const request = https.get(url, (response) => {
@@ -108,7 +118,7 @@ export async function resolveRuntimeVersion(versionOrChannel: string): Promise<s
     }
 }
 
-function first(arr: any[], func: (x: any, i: number, r: any[]) => boolean) {
+export function first(arr: any[], func: (x: any, i: number, r: any[]) => boolean) {
     // tslint:disable-next-line:no-increment-decrement
     for (let i = 0; i < arr.length; i++) {
         if (func(arr[i], i, arr)) {
@@ -127,21 +137,19 @@ function takeWhile(arr: any[], func: (x: any, i: number, r: any[]) => boolean) {
 }
 
 const mkdir = promisify(fs.mkdir);
-const appendToPath = (next: string) => (val: string) => mkdir(path.resolve(val, next));
-const catchExistsError = (err: NodeJS.ErrnoException) => err.code === 'EEXIST' ? err.path : Promise.reject(err);
 
 export async function resolveDir(base: string, paths: string[]): Promise<string> {
     return await paths.reduce(async (p: Promise<string>, next: string) => {
         try {
             const prev = await p;
-            await appendToPath(next)(prev);
+            await mkdir(path.resolve(prev, next));
             return path.join(prev, next);
-        } catch (e) {
-            return await catchExistsError(e);
+        } catch (err) {
+            return err.code === 'EEXIST' ? err.path : Promise.reject(err);
         }
     }, Promise.resolve(base));
 }
 
-export async function promiseMap(arr: any[], asyncF: (x: any, i: number, r: any[]) => Promise<any>) {
+export async function promiseMap<T>(arr: T[], asyncF: (x: T, i: number, r: any[]) => Promise<any>): Promise<any[]> {
     return Promise.all(arr.map(asyncF));
 }

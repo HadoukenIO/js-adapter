@@ -883,6 +883,7 @@ export class _Window extends Base {
 // tslint:disable-next-line
 export interface _Window {
     on(type: 'focused', listener: Function): this;
+    on(type: 'initialized', listener: Function): this;
     on(type: 'bounds-changed', listener: (data: BoundsChangedReply) => void): this;
     on(type: 'hidden', listener: Function): this;
     on(type: 'removeListener', listener: (eventType: string) => void): this;

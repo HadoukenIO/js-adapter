@@ -2,7 +2,7 @@ import * as fs from 'fs';
 import * as path from 'path';
 import { ChildProcess, spawn } from 'child_process';
 import { NewConnectConfig } from '../transport/wire';
-import { promisify, resolveRuntimeVersion, rmDir, downloadFile, unzip, resolveDir } from './util';
+import { promisify, resolveRuntimeVersion, rmDir, downloadFile, unzip, resolveDir, exists } from './util';
 
 const runtimeRoot = 'https://developer.openfin.co/release/runtime/';
 const mkdir = promisify(fs.mkdir);
@@ -35,8 +35,8 @@ export async function install(versionOrChannel: string, osConfig: OsConfig): Pro
     const version = await resolveRuntimeVersion(versionOrChannel);
     const rtFolder: string = await getRuntimePath(version);
     const rtPath: string = path.join(rtFolder, osConfig.executablePath);
-    const exists = await promisify(fs.stat)(rtPath).catch(e => false);
-    if (Boolean(exists)) {
+    const rtExists = await exists(rtPath);
+    if (Boolean(rtExists)) {
         await promisify(fs.chmod)(rtPath, 0o755);
     } else {
         try {

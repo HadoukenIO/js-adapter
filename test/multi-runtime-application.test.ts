@@ -22,21 +22,17 @@ describe('Multi Runtime', () => {
         describe('getInfo', () => {
             it('should return the application Information', async function() {
                 // tslint:disable-next-line no-invalid-this
-                console.log('in test')
                 this.timeout(TEST_TIMEOUT);
                 const expectedLaunchMode = 'adapter';
-                const conns = await Promise.all([launchAndConnect(), launchAndConnect()]).catch(console.error);
+                const conns = await Promise.all([launchAndConnect(), launchAndConnect()]);
                 const finA = conns[0];
                 const finB = conns[1];
 
                 const realApp = await finB.Application.create(appConfigTemplate);
                 await realApp.run();
-                console.log('real app running')
                 const app = await finA.Application.wrap({ uuid: appConfigTemplate.uuid });
                 const info = await app.getInfo();
-                console.log(info);
                 assert.equal(info.launchMode, expectedLaunchMode, `Expected launchMode to be "${expectedLaunchMode}"`);
-                console.log('closing')
                 return await realApp.close();
             });
         });
