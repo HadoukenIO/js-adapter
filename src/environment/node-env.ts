@@ -1,6 +1,6 @@
 import { writeFile } from 'fs';
 import { Environment } from './environment';
-import retrievePort from '../transport/port-discovery';
+import { PortDiscovery } from '../transport/port-discovery';
 import { NewConnectConfig } from '../transport/wire';
 
 export default class NodeEnvironment implements Environment {
@@ -13,7 +13,8 @@ export default class NodeEnvironment implements Environment {
     }
 
     public retreivePort = (config: NewConnectConfig): Promise<number> => {
-        return retrievePort(config);
+        const pd = new PortDiscovery(config);
+        return pd.retrievePort();
     }
 
     public getNextMessageId = (): any => {

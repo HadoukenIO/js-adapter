@@ -44,8 +44,7 @@ describe('PortDiscovery.', function() {
             const fin0 = await quickConnect();
             const fin1 = await quickConnect();
             const fin2 = await quickConnect();
-            const fin3 = await quickConnect();
-            await promiseMap([fin0, fin1, fin2, fin3], f => f.System.getVersion());
+            await promiseMap([fin0, fin1, fin2], f => f.System.getVersion());
             assert(true);
         } else {
             assert(true);

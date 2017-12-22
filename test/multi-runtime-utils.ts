@@ -12,7 +12,7 @@ let ws_port = 9697;
 let runtimes: Array<RuntimeProcess> = [];
 
 export const DELAY_MS = 50;
-export const TEST_TIMEOUT = 30000;
+export const TEST_TIMEOUT = 60000;
 
 export interface RuntimeProcess {
     appConfig?: any;
@@ -85,7 +85,7 @@ function generateAppConfig(): any {
 }
 
 async function closeAndClean(runtimeProcess: RuntimeProcess): Promise<void> {
-    // await runtimfin.eProcess.fin.Application.terminate();
+    // await runtimfimProcess.fin.Application.terminate();
     const cachePath = await realmCachePath(runtimeProcess.realm);
     rimraf.sync(cachePath);
 }

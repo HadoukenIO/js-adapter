@@ -191,7 +191,7 @@ export class PortDiscovery {
     }
 
     // tslint:disable-next-line:no-unused-variable
-    public async retrievePortAsync(): Promise<number> {
+    public async retrievePort(): Promise<number> {
         try {
             await this.createManifest();
             await this.createDiscoveryNamedPipe();
@@ -205,8 +205,8 @@ export class PortDiscovery {
                 }
                 this.timeoutTimer = setTimeout(() => {
                     //  provide a log to aid in debugging in case of a hanging promise
-                    console.warn('Port Discovery is taking a while. Either the runtime is downloading or it failedcto retrieve the port.');
-                }, 15 * 1000);
+                    console.warn('Port Discovery is taking a while. Either the runtime is downloading or it failed to retrieve the port.');
+                }, 30 * 1000);
                 return await mPromise;
             })(), mPromise]);
             if (matchRuntimeInstance(this.savedConfig, msg)) {
@@ -347,23 +347,4 @@ export class PortDiscovery {
             clearTimeout(this.timeoutTimer);
         }
     }
-}
-
-const getPort = makeQueued(async (config: NewConnectConfig): Promise<number> => {
-    const pd = new PortDiscovery(config);
-    return await pd.retrievePortAsync();
-});
-
-export default getPort;
-
-function makeQueued<R, T extends (...args: any[]) => Promise<R>>(func: T): T {
-    let initial: Promise<R>;
-    return async function(...args: any[]): Promise<R> {
-        const x: Promise<R | void> = initial || Promise.resolve();
-        initial = x
-            .then(() => func(...args))
-            .catch(() => func(...args));
-        return initial;
-        // tslint:disable-next-line:prefer-type-cast no-function-expression
-    } as T;
 }

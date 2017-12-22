@@ -1,46 +1,58 @@
-import * as fs from 'fs';
 import * as path from 'path';
 import { ChildProcess, spawn } from 'child_process';
 import { exists } from './util';
 import { NewConnectConfig } from '../transport/wire';
 const OpenFin_Installer: string = 'OpenFinInstaller.exe';
 
-function copyInstaller(config: NewConnectConfig, Installer_Work_Dir: string): Promise<string> {
-    return new Promise(async (resolve, reject) => {
-        const outf: string = path.join(Installer_Work_Dir, OpenFin_Installer);
-        if (! await exists(outf)) {
-            const rd = fs.createReadStream(path.join(__dirname, '..', '..', 'resources', 'win', OpenFin_Installer));
-            const wr = fs.createWriteStream(outf);
-            wr.on('error', (err: Error) => reject(err));
-            wr.on('finish', () => {
-                resolve(outf);
+async function checkRVMAsync(config: NewConnectConfig, Installer_Work_Dir: string, manifestLocation: string): Promise<string> {
+    const rvmPath: string = path.resolve(process.env.LOCALAPPDATA, 'OpenFin', 'OpenFinRVM.exe');
+    if (! await exists(rvmPath)) {
+        await new Promise(async (resolve, reject) => {
+            const installer = path.join(__dirname, '..', '..', 'resources', 'win', OpenFin_Installer);
+            const installing = spawn(installer, [`--config=${manifestLocation}`, '--do-not-launch']);
+            installing.on('exit', (code) => {
+                resolve();
             });
-            rd.pipe(wr);
+            installing.on('error', reject);
+        });
+        if (! await exists(rvmPath)) {
+            throw new Error('Failed to install the RVM');
         }
-        resolve(outf);
-    });
+    }
+    return rvmPath;
 }
 
-function launchRVM(config: NewConnectConfig, manifestLocation: string, namedPipeName: string, installer: string): ChildProcess {
+function launchRVM(config: NewConnectConfig, manifestLocation: string, namedPipeName: string, rvm: string): ChildProcess {
     const runtimeArgs = `--runtime-arguments=--runtime-information-channel-v6=${namedPipeName}`;
-    const installerArgs: Array<string> = [];
+    const rvmArgs: Array<string> = [];
     if (config.installerUI !== true) {
-        installerArgs.push('--no-installer-ui');
+        rvmArgs.push('--no-installer-ui');
     }
-    installerArgs.push(`--config=${manifestLocation}`);
-    installerArgs.push(runtimeArgs);
+    rvmArgs.push(`--config=${manifestLocation}`);
+    rvmArgs.push(runtimeArgs);
     if (config.assetsUrl) {
-        installerArgs.push(`--assetsUrl=${config.assetsUrl}`);
+        rvmArgs.push(`--assetsUrl=${config.assetsUrl}`);
     }
-    return spawn(installer, installerArgs);
+    return spawn(rvm, rvmArgs);
 }
+
+const checkRVM = makeQueued(checkRVMAsync);
 
 // tslint:disable-next-line:max-line-length
 export default async function launch(config: NewConnectConfig, manifestLocation: string, namedPipeName: string, Installer_Work_Dir: string): Promise<ChildProcess> {
-    const installer = await copyInstaller(config, Installer_Work_Dir);
-    const rvm = await launchRVM(config, manifestLocation, namedPipeName, installer);
-    return new Promise<ChildProcess>((resolve, reject) => {
-        rvm.stderr.on('data', err => reject(err));
-        rvm.on('exit', () => resolve(rvm));
-    });
+    const rvmPath = await checkRVM(config, Installer_Work_Dir, manifestLocation);
+    return await launchRVM(config, manifestLocation, namedPipeName, rvmPath);
+}
+
+function makeQueued<R, T extends (...args: any[]) => Promise<R>>(func: T): T {
+    let initial: Promise<R>;
+    return async function(...args: any[]): Promise<R> {
+        const x: Promise<R | void> = initial || Promise.resolve();
+        initial = x
+            .then(() => new Promise<void>((resolve, reject) => setImmediate(() => resolve())))
+            .then(() => func(...args))
+            .catch(() => func(...args));
+        return initial;
+    // tslint:disable-next-line:prefer-type-cast no-function-expression
+    } as T;
 }
