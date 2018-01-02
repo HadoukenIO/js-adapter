@@ -20,7 +20,7 @@ describe('Application.', function() {
             name: `adapter-test-app-${counter}`,
             url: 'about:blank',
             // tslint:disable-next-line
-            uuid: `adapter-test-app____-${counter++}`,
+            uuid: `adapter-application-test-app-${counter++}`,
             autoShow: true,
             accelerator: {
                 devtools: true

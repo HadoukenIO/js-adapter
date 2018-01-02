@@ -1,6 +1,6 @@
 import * as assert from 'assert';
 import { delayPromise } from './delay-promise';
-import { launchAndConnect, cleanOpenRuntimes, DELAY_MS, TEST_TIMEOUT, getRuntimeProcessInfo } from './multi-runtime-utils';
+import { launchX, cleanOpenRuntimes, DELAY_MS, TEST_TIMEOUT, getRuntimeProcessInfo } from './multi-runtime-utils';
 
 describe('Multi Runtime', () => {
 
@@ -30,13 +30,13 @@ describe('Multi Runtime', () => {
         describe('getAllApplications', () => {
             it('should return the application information from all runtimes', async function() {
                 // tslint:disable-next-line no-invalid-this
-                this.timeout(30000);
+                this.timeout(TEST_TIMEOUT);
 
                 const appConfigA = getAppConfig();
                 const appConfigB = getAppConfig();
                 const appConfigC = getAppConfig();
                 const appConfigD = getAppConfig();
-                const conns = await Promise.all([launchAndConnect(), launchAndConnect(), launchAndConnect()]);
+                const conns = await launchX(3);
                 // Why delay here?
                 await delayPromise(DELAY_MS);
 
@@ -66,7 +66,7 @@ describe('Multi Runtime', () => {
                 // tslint:disable-next-line no-invalid-this
                 this.timeout(TEST_TIMEOUT);
 
-                const conns = await Promise.all([launchAndConnect(), launchAndConnect(), launchAndConnect()]);
+                const conns = await launchX(3);
                 await delayPromise(DELAY_MS);
 
                 const [finA] = conns;
@@ -96,7 +96,7 @@ describe('Multi Runtime', () => {
                 const appConfigB = getAppConfig();
                 const appConfigC = getAppConfig();
                 const appConfigD = getAppConfig();
-                const conns = await Promise.all([launchAndConnect(), launchAndConnect(), launchAndConnect()]);
+                const conns = await launchX(3);
                 // Why delay here?
                 await delayPromise(DELAY_MS);
 
@@ -137,7 +137,7 @@ describe('Multi Runtime', () => {
                 const appConfigB = getAppConfig();
                 const appConfigC = getAppConfig();
                 const appConfigD = getAppConfig();
-                const conns = await Promise.all([launchAndConnect(), launchAndConnect(), launchAndConnect()]);
+                const conns = await launchX(3);
                 // Why delay here?
                 await delayPromise(DELAY_MS);
 

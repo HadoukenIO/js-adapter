@@ -1,18 +1,29 @@
 import * as assert from 'assert';
 import { delayPromise } from './delay-promise';
-import { launchAndConnect, cleanOpenRuntimes, DELAY_MS, TEST_TIMEOUT } from './multi-runtime-utils';
+import { launchX, cleanOpenRuntimes, DELAY_MS, TEST_TIMEOUT } from './multi-runtime-utils';
 
 describe('Multi Runtime', () => {
-    const appConfigTemplate = {
-        name: 'adapter-test-app',
-        url: 'about:blank',
-        uuid: 'adapter-test-app',
-        autoShow: true,
-        accelerator: {
-            devtools: true
-        }
-    };
+    let appConfigTemplate: any;
+    function getAppConfig() {
+        const appConfigTemplate = {
+            name: 'adapter-test-app',
+            url: 'about:blank',
+            uuid: 'adapter-test-app',
+            autoShow: true,
+            saveWindowState: false,
+            accelerator: {
+                devtools: true
+            }
+        };
 
+        // tslint:disable-next-line
+        appConfigTemplate.uuid += Math.floor(Math.random() * 10000);
+        return appConfigTemplate;
+    }
+
+    beforeEach(() => {
+        appConfigTemplate = getAppConfig();
+    });
     afterEach(async () => {
         return await cleanOpenRuntimes();
     });
@@ -24,7 +35,7 @@ describe('Multi Runtime', () => {
                 // tslint:disable-next-line no-invalid-this
                 this.timeout(TEST_TIMEOUT);
 
-                const conns = await Promise.all([launchAndConnect(), launchAndConnect()]);
+                const conns = await launchX(2);
                 const finA = conns[0];
                 const finB = conns[1];
                 await delayPromise(DELAY_MS);
@@ -48,7 +59,7 @@ describe('Multi Runtime', () => {
                 this.timeout(TEST_TIMEOUT);
 
                 const resizeToVal = 200;
-                const conns = await Promise.all([launchAndConnect(), launchAndConnect()]);
+                const conns = await launchX(2);
                 const finA = conns[0];
                 const finB = conns[1];
                 await delayPromise(DELAY_MS);
@@ -76,7 +87,7 @@ describe('Multi Runtime', () => {
             // tslint:disable-next-line no-invalid-this
             this.timeout(TEST_TIMEOUT);
 
-            const conns = await Promise.all([launchAndConnect(), launchAndConnect()]);
+            const conns = await launchX(2);
             const finA = conns[0];
             const finB = conns[1];
             await delayPromise(DELAY_MS);
@@ -97,7 +108,7 @@ describe('Multi Runtime', () => {
             // tslint:disable-next-line no-invalid-this
             this.timeout(TEST_TIMEOUT);
 
-            const conns = await Promise.all([launchAndConnect(), launchAndConnect()]);
+            const conns = await launchX(2);
             const finA = conns[0];
             const finB = conns[1];
             await delayPromise(DELAY_MS);

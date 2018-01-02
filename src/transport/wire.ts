@@ -16,6 +16,7 @@ export interface RuntimeConfig {
     securityRealm?: string;
     verboseLogging?: boolean;
     additionalArgument?: string;
+    rvmDir?: string;
 
 }
 export interface BaseConfig {

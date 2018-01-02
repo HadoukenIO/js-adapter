@@ -23,10 +23,12 @@ const serverParams = {
 module.exports = function(grunt) {
     const version = grunt.option('ver');
     const remote = grunt.option('remote');
+    const rvmDir = grunt.option('rvmDir');
     const uuid = 'testapp';
     const args = '--enable-multi-runtime --debug=5858';
     process.env.OF_VER = version;
     process.env.TEST_SERVER_PORT = serverParams.port;
+    process.env.RVM_DIR = rvmDir || process.env.localAppData;
 
     grunt.initConfig({
         shell: {
@@ -47,7 +49,8 @@ module.exports = function(grunt) {
         },
         mochaTest: {
             default: {
-                src: 'out/test/**/*.js'
+                src: 'out/test/**/*.js',
+                timeout: 30000
             }
         },
         openfin: {

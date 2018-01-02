@@ -17,6 +17,7 @@ describe('PortDiscovery.', function() {
         const defaultRconfig = {
             version: 'alpha',
             verboseLogging: false,
+            rvmDir: process.env.RVM_DIR,
             securityRealm: 'adapter-test-port-discovery-' + spawns
         };
         if (config.runtime) {

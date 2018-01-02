@@ -2,17 +2,17 @@ import * as os from 'os';
 import * as rimraf from 'rimraf';
 import * as fs from 'fs';
 import * as path from 'path';
+import * as ChildProcess from 'child_process';
 import { connect as rawConnect, Fin } from '../src/main';
-import { resolveDir, promisify, first } from '../src/launcher/util';
+import { resolveDir, promisify, first, serial, promiseMap } from '../src/launcher/util';
 const appConfig = JSON.parse(fs.readFileSync(path.resolve('test/app.json')).toString());
 
 let uuidNum = 0;
-let ws_port = 9697;
 
 let runtimes: Array<RuntimeProcess> = [];
 
-export const DELAY_MS = 50;
-export const TEST_TIMEOUT = 60000;
+export const DELAY_MS = 100;
+export const TEST_TIMEOUT = 40 * 1000;
 
 export interface RuntimeProcess {
     appConfig?: any;
@@ -22,10 +22,10 @@ export interface RuntimeProcess {
     fin?: Fin;
 }
 
-async function spawnRealm(version: string, args?: Array<string>): Promise<RuntimeProcess> {
+async function spawnRealm(version: string, realm?: string, args?: Array<string>): Promise<RuntimeProcess> {
 
     // tslint:disable-next-line
-    const realm = `test_realm_${Math.random()}`;
+    realm = realm || `test_realm_${Math.random()}`;
     const cacheDir = await realmCachePath(realm);
     const appConfig = generateAppConfig();
     const configLocation = path.resolve(cacheDir, `${appConfig.startup_app.uuid}.json`);
@@ -46,12 +46,12 @@ async function spawnRealm(version: string, args?: Array<string>): Promise<Runtim
             runtime:
                 {
                     version,
-                    additionalArguments: args.join(' '),
-                    securityRealm: realm
+                    additionalArgument: args.join(' '),
+                    securityRealm: realm,
+                    rvmDir: process.env.RVM_DIR
                 }
         }));
     const v = await fin.System.getVersion();
-
     return {
         appConfig,
         fin,
@@ -73,7 +73,6 @@ function generateAppConfig(): any {
     return {
         uuid,
         // tslint:disable-next-line
-        websocket_port: ws_port++,
         startup_app: {
             uuid,
             name: uuid,
@@ -86,6 +85,18 @@ function generateAppConfig(): any {
 
 async function closeAndClean(runtimeProcess: RuntimeProcess): Promise<void> {
     // await runtimfimProcess.fin.Application.terminate();
+    if (os.platform().match('win')) {
+        try {
+            const cmd = `for /f "tokens=5" %a in \
+            ('netstat -aon ^| find ":${runtimeProcess.port}" ^| find "LISTENING"') \
+            do taskkill /f /pid %a`;
+            ChildProcess.execSync(cmd);
+            // tslint:disable-next-line:no-empty
+        } catch (e) {
+        }
+
+    }
+
     const cachePath = await realmCachePath(runtimeProcess.realm);
     rimraf.sync(cachePath);
 }
@@ -93,18 +104,21 @@ async function closeAndClean(runtimeProcess: RuntimeProcess): Promise<void> {
 export async function launchAndConnect(version: string = process.env.OF_VER,
     // tslint:disable-next-line
     uuid: string = `my-uuid ${appConfig.startup_app.uuid} ${Math.floor(Math.random() * 1000)}`,
-    realm: boolean = false, args?: Array<string>):
+    realm?: string, args?: Array<string>):
     Promise<Fin> {
-    const runtimeProcess = await spawnRealm(version, args);
+    const runtimeProcess = await spawnRealm(version, realm, args);
     runtimes.push(runtimeProcess);
     return runtimeProcess.fin;
 }
 
-export function cleanOpenRuntimes(): Promise<void> {
-    return Promise.all(runtimes.map((runtimeProcess: RuntimeProcess) => closeAndClean(runtimeProcess))).then(() => {
-        runtimes = [];
-        return null;
-    });
+export async function launchX(n: number): Promise<Fin[]> {
+    return serial<Fin>(Array(n).fill(launchAndConnect, 0, n));
 }
 
-export const getRuntimeProcessInfo = (fin: Fin) => first(runtimes, x => x.Fin === fin);
+export async function cleanOpenRuntimes(): Promise<void> {
+    await promiseMap(runtimes, closeAndClean);
+    runtimes = [];
+    return null;
+}
+
+export const getRuntimeProcessInfo = (fin: Fin) => first(runtimes, x => x.fin === fin);

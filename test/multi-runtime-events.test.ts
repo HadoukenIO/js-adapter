@@ -1,6 +1,6 @@
 import * as assert from 'assert';
 import { delayPromise } from './delay-promise';
-import { launchAndConnect, cleanOpenRuntimes, DELAY_MS, TEST_TIMEOUT } from './multi-runtime-utils';
+import { launchAndConnect, cleanOpenRuntimes, DELAY_MS, TEST_TIMEOUT, launchX } from './multi-runtime-utils';
 
 describe('Multi Runtime', () => {
 
@@ -36,8 +36,9 @@ describe('Multi Runtime', () => {
 
                     async function test() {
                         const appConfig = getAppConfig();
-                        const finA = await launchAndConnect();
-                        const finB = await launchAndConnect();
+                        const conns = await launchX(2);
+                        const finA = conns[0];
+                        const finB = conns[1];
                         await delayPromise(DELAY_MS);
 
                         const realApp = await finB.Application.create(appConfig.uuid);
@@ -56,13 +57,14 @@ describe('Multi Runtime', () => {
                     test();
                 });
 
-                it('should raise initialized events', function(done: (value: void) => void) {
+                it('should raise initialized events', function(done: () => void) {
                     // tslint:disable-next-line no-invalid-this
                     this.timeout(TEST_TIMEOUT);
 
                     async function test() {
-                        const finA = await launchAndConnect();
-                        const finB = await launchAndConnect();
+                        const conns = await launchX(2);
+                        const finA = conns[0];
+                        const finB = conns[1];
                         const appConfig = getAppConfig();
                         await delayPromise(DELAY_MS);
 
@@ -93,8 +95,9 @@ describe('Multi Runtime', () => {
 
                     async function test() {
                         const appConfig = getAppConfig();
-                        const finA = await launchAndConnect();
-                        const finB = await launchAndConnect();
+                        const conns = await launchX(2);
+                        const finA = conns[0];
+                        const finB = conns[1];
                         await delayPromise(DELAY_MS);
                         const app = await finA.Application.wrap({ uuid: appConfig.uuid });
                         const win = await app.getWindow();
@@ -152,12 +155,11 @@ describe('Multi Runtime', () => {
                     async function test() {
                         const appConfig = getAppConfig();
                         const argsConnect = [
-                            '--security-realm=supersecret',
                             '--enable-mesh',
                             '--enable-multi-runtime',
                             '--v=1'
                         ];
-                        const finA = await launchAndConnect(undefined, undefined, true, argsConnect);
+                        const finA = await launchAndConnect(undefined, undefined, 'supersecret', argsConnect);
                         await delayPromise(DELAY_MS);
 
                         const app = await finA.Application.wrap({ uuid: appConfig.uuid });
@@ -220,7 +222,6 @@ describe('Multi Runtime', () => {
                     async function test() {
                         const appConfig = getAppConfig();
                         const finA = await launchAndConnect();
-                        await delayPromise(DELAY_MS);
                         const app = await finA.Application.wrap({ uuid: appConfig.uuid });
                         const win = await app.getWindow();
 
@@ -230,7 +231,6 @@ describe('Multi Runtime', () => {
                         });
 
                         const finB = await launchAndConnect();
-                        await delayPromise(DELAY_MS);
                         const realApp = await finB.Application.create(appConfig);
                         await realApp.run();
                         const realWindow = await realApp.getWindow();

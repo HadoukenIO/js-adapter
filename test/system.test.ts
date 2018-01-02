@@ -2,10 +2,12 @@ import { conn } from './connect';
 import { Fin } from '../src/main';
 import * as assert from 'assert';
 
-describe('System.', () => {
+describe('System.', function() {
     let fin: Fin;
+    // tslint:disable-next-line
+    this.timeout(30000);
 
-    before(() => {
+    beforeEach(() => {
         return conn().then((a: Fin) => fin = a);
     });
 

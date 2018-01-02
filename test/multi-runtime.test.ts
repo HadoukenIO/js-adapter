@@ -1,10 +1,9 @@
 import * as assert from 'assert';
 import { delayPromise } from './delay-promise';
 import { cleanOpenRuntimes, DELAY_MS, getRuntimeProcessInfo, launchAndConnect, TEST_TIMEOUT } from './multi-runtime-utils';
+import { serial } from '../src/launcher/util';
 
 describe('Multi Runtime', () => {
-
-    let realmCount = 0;
 
     afterEach(async () => {
         return await cleanOpenRuntimes();
@@ -15,26 +14,18 @@ describe('Multi Runtime', () => {
         return `${version}/${port}/${realm ? realm : ''}`;
     }
 
-    function getRealm() {
-        // tslint:disable-next-line
-        return `supersecret_${Math.floor(Math.random() * 10000)}_${++realmCount}`;
-    }
-
     describe('Connections', () => {
         it('should respect the enable-mesh flag for security realms', async function() {
-            const realm = getRealm();
-            const argsNoConnect = [`--security-realm=${getRealm()}`];
             const argsConnect = [
-                `--security-realm=${realm}`,
                 '--enable-mesh',
                 '--enable-multi-runtime'
             ];
 
             // tslint:disable-next-line no-invalid-this
             this.timeout(TEST_TIMEOUT);
-            const conns = await Promise.all([launchAndConnect(),
-            launchAndConnect(undefined, undefined, true, argsNoConnect),
-            launchAndConnect(undefined, undefined, true, argsConnect)]);
+            const conns = await serial([() => launchAndConnect(),
+            () => launchAndConnect(undefined, undefined, 'super-secret-realm', []),
+            () => launchAndConnect(undefined, undefined, undefined, argsConnect)]);
             const finA = conns[0];
             const finB = conns[1];
             const finC = conns[2];

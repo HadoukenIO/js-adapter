@@ -35,7 +35,7 @@ describe('Launcher', () => {
                 assert.ok(true, 'OS not supported');
             }
         });
-        it('handles simultaneous parallel launches', async () => {
+        it.skip('handles simultaneous parallel launches', async () => {
             if (Launcher.IS_SUPPORTED()) {
                 const version = await resolveRuntimeVersion('stable');
                 const location = await getRuntimePath(version);
@@ -53,7 +53,7 @@ describe('Launcher', () => {
             } else {
                 assert.ok(true, 'OS not supported');
             }
-        }).timeout(40000);
+        });
     });
     if (os.platform() === 'darwin') {
         describe('Mac Launcher', async () => { //TODO mock this

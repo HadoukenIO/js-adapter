@@ -118,7 +118,7 @@ export async function resolveRuntimeVersion(versionOrChannel: string): Promise<s
     }
 }
 
-export function first(arr: any[], func: (x: any, i: number, r: any[]) => boolean) {
+export function first<T>(arr: T[], func: (x: T, i: number, r: T[]) => boolean): T | null {
     // tslint:disable-next-line:no-increment-decrement
     for (let i = 0; i < arr.length; i++) {
         if (func(arr[i], i, arr)) {
@@ -150,6 +150,19 @@ export async function resolveDir(base: string, paths: string[]): Promise<string>
     }, Promise.resolve(base));
 }
 
-export async function promiseMap<T>(arr: T[], asyncF: (x: T, i: number, r: any[]) => Promise<any>): Promise<any[]> {
-    return Promise.all(arr.map(asyncF));
+export async function promiseMap<T, S>(arr: T[], asyncF: (x: T, i: number, r: T[]) => Promise<S>): Promise<S[]> {
+    return Promise.all<S>(arr.map(asyncF));
+}
+
+export type asyncF<T> = (...args: any[]) => Promise<T>;
+export async function serial<T>(arr: asyncF<T>[]): Promise<T[]> {
+    const ret: T[] = [];
+    for (const func of arr) {
+        const next = await func();
+        ret.push(next);
+    }
+    return ret;
+}
+export async function promiseMapSerial<T>(arr: any[], func: asyncF<T>): Promise<T[]> {
+    return serial(arr.map((value, index, array) => () => func(value, index, array)));
 }

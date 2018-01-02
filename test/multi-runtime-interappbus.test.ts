@@ -1,6 +1,6 @@
 import * as assert from 'assert';
 import { delayPromise } from './delay-promise';
-import { launchAndConnect, cleanOpenRuntimes, DELAY_MS, TEST_TIMEOUT } from './multi-runtime-utils';
+import { cleanOpenRuntimes, DELAY_MS, TEST_TIMEOUT, launchX } from './multi-runtime-utils';
 
 describe('Multi Runtime', function() {
 
@@ -14,7 +14,7 @@ describe('Multi Runtime', function() {
             this.timeout(TEST_TIMEOUT);
 
             async function test() {
-                const conns = await Promise.all([launchAndConnect(), launchAndConnect()]);
+                const conns = await launchX(2);
                 const finA = conns[0];
                 const finB = conns[1];
                 const topic = 'my-topic';
@@ -38,22 +38,18 @@ describe('Multi Runtime', function() {
             this.timeout(TEST_TIMEOUT);
 
             async function test() {
-                const conns = await Promise.all([launchAndConnect(), launchAndConnect()]);
+                const conns = await launchX(2);
                 const finA = conns[0];
                 const finB = conns[1];
                 const topic = 'my-topic';
                 const data = 'hello';
-
-                await delayPromise(DELAY_MS);
-
                 await finA.InterApplicationBus
                     .subscribe({ uuid: finB.wire.me.uuid }, topic, (message: any, source: any) => {
                         assert.equal(finB.wire.me.uuid, source.uuid, 'Expected source to be runtimeB');
                         assert.equal(data, message, 'Expected message to be the data sent');
                         done();
                     });
-                return await finB.InterApplicationBus.publish(topic, data);
-
+                await finB.InterApplicationBus.publish(topic, data);
             }
 
             test();
@@ -64,7 +60,7 @@ describe('Multi Runtime', function() {
             this.timeout(TEST_TIMEOUT);
 
             async function test() {
-                const conns = await Promise.all([launchAndConnect(), launchAndConnect()]);
+                const conns = await launchX(2);
                 const finA = conns[0];
                 const finB = conns[1];
                 const topic = 'my-topic';
@@ -89,7 +85,7 @@ describe('Multi Runtime', function() {
             this.timeout(TEST_TIMEOUT);
 
             async function test() {
-                const conns = await Promise.all([launchAndConnect(), launchAndConnect()]);
+                const conns = await launchX(2);
                 const finA = conns[0];
                 const finB = conns[1];
                 const topic = 'my-topic';
@@ -115,7 +111,7 @@ describe('Multi Runtime', function() {
             this.timeout(TEST_TIMEOUT);
 
             async function test() {
-                const conns = await Promise.all([launchAndConnect(), launchAndConnect()]);
+                const conns = await launchX(2);
                 const finA = conns[0];
                 const finB = conns[1];
                 const topic = 'my-topic';
@@ -141,7 +137,7 @@ describe('Multi Runtime', function() {
             this.timeout(TEST_TIMEOUT);
 
             async function test() {
-                const conns = await Promise.all([launchAndConnect(), launchAndConnect()]);
+                const conns = await launchX(2);
                 const finA = conns[0];
                 const finB = conns[1];
                 const topic = 'my-topic';
