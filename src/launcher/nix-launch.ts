@@ -4,7 +4,7 @@ import { ChildProcess, spawn } from 'child_process';
 import { NewConnectConfig } from '../transport/wire';
 import { promisify, resolveRuntimeVersion, rmDir, downloadFile, unzip, resolveDir, exists } from './util';
 
-const runtimeRoot = 'https://developer.openfin.co/release/runtime/';
+const runtimeRoot = 'https://cdn.openfin.co/release/runtime/';
 const mkdir = promisify(fs.mkdir);
 
 interface SharedDownloads {
