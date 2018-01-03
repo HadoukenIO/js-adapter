@@ -89,8 +89,8 @@ function generateManifest(config: NewConnectConfig): any {
         if (config.runtime.verboseLogging === true) {
             runtimeArgs = runtimeArgs.concat('--v=1  --attach-console ');
         }
-        if (config.runtime.additionalArgument) {
-            runtimeArgs = runtimeArgs.concat(`${config.runtime.additionalArgument}`);
+        if (config.runtime.arguments) {
+            runtimeArgs = runtimeArgs.concat(`${config.runtime.arguments}`);
         }
         manifest.runtime.arguments = runtimeArgs;
     }

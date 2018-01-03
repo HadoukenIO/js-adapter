@@ -15,7 +15,8 @@ export interface RuntimeConfig {
     fallbackVersion?: string;
     securityRealm?: string;
     verboseLogging?: boolean;
-    additionalArgument?: string;
+    // tslint:disable-next-line:no-banned-terms
+    arguments?: string;
     rvmDir?: string;
 
 }

@@ -95,10 +95,10 @@ export async function downloadFile(url: string, writeLocation: string) {
 
 export async function resolveRuntimeVersion(versionOrChannel: string): Promise<string> {
     const splitVersion = versionOrChannel.split('.');
-    const isVersion = splitVersion.length === 4 && splitVersion.every(x => x === '*' || /^\d+$/.test(x));
+    const isVersion = splitVersion.length > 1 && splitVersion.every(x => x === '*' || /^\d+$/.test(x));
     if (isVersion) {
         const mustMatch = takeWhile(splitVersion, (x: string) => x !== '*');
-        if (splitVersion.length - mustMatch.length > 0) {
+        if (4 - mustMatch.length > 0) {
             //    tslint:disable-next-line:no-backbone-get-set-outside-model
             const res = await get('https://cdn.openfin.co/release/runtimeVersions');
             const versions = res.split('\r\n');

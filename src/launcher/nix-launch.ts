@@ -71,7 +71,7 @@ export default async function launch(config: NewConnectConfig, osConfig: OsConfi
                 }
                 return Promise.reject(e);
             });
-        const args = config.runtime.additionalArgument ? config.runtime.additionalArgument.split(' ') : [];
+        const args = config.runtime.arguments ? config.runtime.arguments.split(' ') : [];
 
         args.unshift(`--startup-url=${osConfig.manifestLocation}`);
         args.push(`--version-keyword=${fb ? config.runtime.fallbackVersion : config.runtime.version}`);
