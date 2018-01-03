@@ -46,7 +46,7 @@ async function spawnRealm(version: string, realm?: string, args?: Array<string>)
             runtime:
                 {
                     version,
-                    additionalArgument: args.join(' '),
+                    arguments: args.join(' '),
                     securityRealm: realm,
                     rvmDir: process.env.RVM_DIR
                 }
