@@ -195,12 +195,13 @@ export class Application extends Base {
     }
 
     /**
-     * Passes in custom data that will be relayed to the RVM
-     * @param { object } data Data to be passed to the RVM
-     * @return {Promise.<void>}
-     */
-    public registerCustomData(data: Object): Promise<void> {
-        return this.wire.sendAction('register-custom-data', Object.assign({}, this.identity, {data})).then(() => undefined);
+    * Manually registers a user with the licensing service. The only data sent by this call is userName and appName.
+    * @param { string } userName - username to be passed to the RVM.
+    * @param { string } appName - app name to be passed to the RVM.
+    * @return {Promise.<void>}
+    */
+    public registerUser(userName: string, appName: string): Promise<void> {
+        return this.wire.sendAction('register-user', Object.assign({}, this.identity, {userName, appName})).then(() => undefined);
     }
 
     /**
