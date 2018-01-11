@@ -1,9 +1,13 @@
 import * as assert from 'assert';
 import { delayPromise } from './delay-promise';
 import { cleanOpenRuntimes, DELAY_MS, TEST_TIMEOUT, launchX } from './multi-runtime-utils';
+import { clean } from './connect';
 
 describe('Multi Runtime', () => {
     let appConfigTemplate: any;
+    before(() => {
+        clean();
+    });
 
     describe('Application', () => {
 
@@ -32,7 +36,7 @@ describe('Multi Runtime', () => {
         });
 
         describe('getInfo', () => {
-            it('should return the application Information', async function() {
+            it('should return the application Information', async function () {
                 // tslint:disable-next-line no-invalid-this
                 this.timeout(TEST_TIMEOUT);
                 const expectedLaunchMode = 'adapter';
@@ -49,7 +53,7 @@ describe('Multi Runtime', () => {
         });
 
         describe('getParentUuid', () => {
-            it('should return the uuid of the parent adapter connection', async function() {
+            it('should return the uuid of the parent adapter connection', async function () {
                 // tslint:disable-next-line no-invalid-this
                 this.timeout(TEST_TIMEOUT);
                 const conns = await launchX(2);
@@ -69,7 +73,7 @@ describe('Multi Runtime', () => {
         });
 
         describe('isRunning', () => {
-            it('should return the running state of an application', async function() {
+            it('should return the running state of an application', async function () {
                 // tslint:disable-next-line no-invalid-this
                 this.timeout(TEST_TIMEOUT);
                 const conns = await launchX(2);

@@ -2,7 +2,7 @@ import { conn } from './connect';
 import { Fin } from '../src/main';
 import * as assert from 'assert';
 
-describe('System.', function() {
+describe('System.', function () {
     let fin: Fin;
     // tslint:disable-next-line
     this.timeout(30000);

@@ -2,11 +2,13 @@ import { conn } from './connect';
 import * as assert from 'assert';
 import { Fin } from '../src/main';
 
-describe('Notification', () => {
+// tslint:disable-next-line
+describe('Notification', function () {
     let fin: Fin;
     let notification: any;
-
     before(() => {
+        // tslint:disable-next-line:no-invalid-this
+        this.timeout(30000);
         return conn().then(_fin => {
             fin = _fin;
             notification = fin.Notification.create({});

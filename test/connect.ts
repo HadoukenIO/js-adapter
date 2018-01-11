@@ -1,4 +1,5 @@
 import { connect, Fin } from '../src/main';
+import { kill } from './multi-runtime-utils';
 
 let c: Promise<Fin>;
 export function conn() {
@@ -15,4 +16,12 @@ export function conn() {
     }
 
     return c;
+}
+
+export async function clean() {
+    if (c) {
+        const f = await c;
+        kill(f);
+        c = null;
+    }
 }

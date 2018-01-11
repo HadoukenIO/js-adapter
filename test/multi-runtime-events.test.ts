@@ -48,7 +48,7 @@ describe('Multi Runtime', () => {
                             done();
                         });
 
-                        await delayPromise(30);
+                        await delayPromise(DELAY_MS);
                         await realApp.close();
                         await delayPromise(1500);
                     }
@@ -72,12 +72,12 @@ describe('Multi Runtime', () => {
                             done();
                         });
 
-                        await delayPromise(30);
+                        await delayPromise(DELAY_MS);
 
                         realApp = await finB.Application.create(appConfig);
                         await realApp.run();
                         await realApp.close();
-                        await delayPromise(30);
+                        await delayPromise(DELAY_MS);
                     }
 
                     test();
@@ -108,9 +108,9 @@ describe('Multi Runtime', () => {
                             done();
                         });
 
-                        await delayPromise(30);
+                        await delayPromise(DELAY_MS);
                         await realApp.close();
-                        await delayPromise(30);
+                        await delayPromise(DELAY_MS);
                     }
 
                     test();
@@ -135,10 +135,10 @@ describe('Multi Runtime', () => {
                             app.close().then(done);
                         });
 
-                        await delayPromise(30);
+                        await delayPromise(DELAY_MS);
                         await realApp.run();
                         await realApp.close();
-                        await delayPromise(30);
+                        await delayPromise(DELAY_MS);
                     }
 
                     test();
@@ -167,10 +167,10 @@ describe('Multi Runtime', () => {
                             win.close().then(done);
                         });
 
-                        await delayPromise(30);
+                        await delayPromise(DELAY_MS);
                         const realApp = await finB.Application.create(appConfig);
                         await realApp.run();
-                        await delayPromise(30);
+                        await delayPromise(DELAY_MS);
                     }
 
                     test();
@@ -200,7 +200,7 @@ describe('Multi Runtime', () => {
                         const realApp = await finB.Application.create(appConfig);
                         await realApp.run();
 
-                        await delayPromise(30);
+                        await delayPromise(DELAY_MS);
                         await realApp.close();
                         await delayPromise(1500);
                     }
@@ -233,11 +233,11 @@ describe('Multi Runtime', () => {
                         const finB = await launchAndConnect();
                         await delayPromise(DELAY_MS);
                         const realApp = await finB.Application.create(appConfig);
-                        await delayPromise(300);
+                        await delayPromise(DELAY_MS);
                         await realApp.run();
-                        await delayPromise(300);
+                        await delayPromise(DELAY_MS);
                         await realApp.close();
-                        await delayPromise(30);
+                        await delayPromise(DELAY_MS);
                     }
 
                     test();
@@ -270,9 +270,9 @@ describe('Multi Runtime', () => {
                         const realApp = await finB.Application.create(appConfig);
                         await realApp.run();
 
-                        await delayPromise(30);
+                        await delayPromise(DELAY_MS);
                         await realApp.close();
-                        await delayPromise(30);
+                        await delayPromise(DELAY_MS);
                     }
 
                     test();
@@ -302,11 +302,11 @@ describe('Multi Runtime', () => {
                         const finB = await launchAndConnect();
                         await delayPromise(DELAY_MS);
                         const realApp = await finB.Application.create(appConfig);
-                        await delayPromise(300);
+                        await delayPromise(DELAY_MS);
                         await realApp.run();
-                        await delayPromise(300);
+                        await delayPromise(DELAY_MS);
                         await realApp.close();
-                        await delayPromise(30);
+                        await delayPromise(DELAY_MS);
                     }
 
                     test();
@@ -339,9 +339,9 @@ describe('Multi Runtime', () => {
                         const realApp = await finB.Application.create(appConfig);
                         await realApp.run();
                         const realWindow = await realApp.getWindow();
-                        await delayPromise(300);
+                        await delayPromise(DELAY_MS);
                         await realWindow.moveBy(100, 100);
-                        await delayPromise(30);
+                        await delayPromise(DELAY_MS);
                     }
 
                     test();
@@ -366,9 +366,9 @@ describe('Multi Runtime', () => {
                         const realApp = await finB.Application.create(appConfig);
                         await realApp.run();
                         const realWindow = await realApp.getWindow();
-                        await delayPromise(300);
+                        await delayPromise(DELAY_MS);
                         await realWindow.hide();
-                        await delayPromise(30);
+                        await delayPromise(DELAY_MS);
                     }
 
                     test();

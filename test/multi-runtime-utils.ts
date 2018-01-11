@@ -11,8 +11,8 @@ let uuidNum = 0;
 
 let runtimes: Array<RuntimeProcess> = [];
 
-export const DELAY_MS = 100;
-export const TEST_TIMEOUT = 60 * 1000;
+export const DELAY_MS = 300;
+export const TEST_TIMEOUT = 30 * 1000;
 
 export interface RuntimeProcess {
     appConfig?: any;
@@ -57,13 +57,18 @@ async function spawnRealm(version: string, realm?: string, args?: Array<string>)
         fin,
         version: v,
         // @ts-ignore: TODO get current connection from fin
-        port: fin.wire.wire.wire.url.split(':').slice(-1),
+        port: getPort(fin),
         realm
     };
 }
 
 async function realmCachePath(realm: string): Promise<string> {
     return resolveDir(os.tmpdir(), ['OpenFin', 'cache', realm]);
+}
+
+export function getPort(fin: Fin): string {
+    // @ts-ignore: TODO get current connection from fin
+    return fin.wire.wire.wire.url.split(':').slice(-1);
 }
 
 function generateAppConfig(): any {
@@ -83,20 +88,26 @@ function generateAppConfig(): any {
     };
 }
 
-async function closeAndClean(runtimeProcess: RuntimeProcess): Promise<void> {
-    // await runtimfimProcess.fin.Application.terminate();
+function winKill(port: string) {
     if (os.platform().match('win')) {
         try {
             const cmd = `for /f "tokens=5" %a in \
-            ('netstat -aon ^| find ":${runtimeProcess.port}" ^| find "LISTENING"') \
+            ('netstat -aon ^| find ":${port}" ^| find "LISTENING"') \
             do taskkill /f /pid %a`;
             ChildProcess.execSync(cmd);
             // tslint:disable-next-line:no-empty
         } catch (e) {
         }
-
     }
+}
 
+export function kill(fin: Fin) {
+    winKill(getPort(fin));
+}
+
+async function closeAndClean(runtimeProcess: RuntimeProcess): Promise<void> {
+    // await runtimfimProcess.fin.Application.terminate();
+    winKill(runtimeProcess.port);
     const cachePath = await realmCachePath(runtimeProcess.realm);
     rimraf.sync(cachePath);
 }
