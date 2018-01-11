@@ -12,8 +12,7 @@
         "ts": "tsc",
         "path": "PATH",
         "prepublish": "npm run build",
-        "doc":
-            "npm run build && jsdoc -c jsdoc-conf.json -t jsdoc-template -u tutorials out/src --verbose"
+        "doc": "npm run build && jsdoc -c jsdoc-conf.json -t jsdoc-template -u tutorials out/src --verbose"
     },
     "devDependencies": {
         "@types/mocha": "^2.2.38",
@@ -26,6 +25,7 @@
         "grunt-contrib-copy": "^1.0.0",
         "grunt-mocha-test": "^0.13.3",
         "grunt-openfin": "latest",
+        "grunt-shell": "^2.1.0",
         "grunt-tslint": "^4.0.1",
         "jsdoc": "^3.5.5",
         "live-server": "^1.2.0",
@@ -39,7 +39,6 @@
         "webpack": "^3.8.1"
     },
     "dependencies": {
-        "grunt-shell": "^2.1.0",
         "ws": "~1.1.1"
     }
 }

@@ -20,7 +20,7 @@ const serverParams = {
     port: 8689
 };
 
-module.exports = function(grunt) {
+module.exports = function (grunt) {
     const version = grunt.option('ver');
     const remote = grunt.option('remote');
     const rvmDir = grunt.option('rvmDir');
@@ -68,9 +68,7 @@ module.exports = function(grunt) {
                         startup_app: {
                             uuid,
                             autoShow: true,
-                            url: `http://localhost:${
-                                serverParams.port
-                            }/index.html`,
+                            url: `http://localhost:${serverParams.port}/index.html`,
                             nonPersistent: true,
                             saveWindowState: false
                         }
@@ -88,31 +86,29 @@ module.exports = function(grunt) {
         }
     });
 
-    grunt.registerTask('check-version', function() {
+    grunt.registerTask('check-version', function () {
         if (!version) {
-            grunt.fail.fatal(
-                'No version given, please provide a target version'
-            );
+            grunt.fail.fatal('No version given, please provide a target version');
         }
     });
 
-    grunt.registerTask('clean', function() {
+    grunt.registerTask('clean', function () {
         rimraf.sync(outDir);
         grunt.log.ok('out directory deleted');
     });
 
-    grunt.registerTask('start-server', function() {
+    grunt.registerTask('start-server', function () {
         const done = this.async();
         liveServer.start(serverParams).on('listening', done);
     });
 
-    grunt.registerTask('start-repl', function() {
+    grunt.registerTask('start-repl', function () {
         const finRepl = require(path.join(outDir, 'repl', 'index.js'));
         const done = this.async();
         finRepl.startRepl();
     });
 
-    grunt.registerTask('webpack', function() {
+    grunt.registerTask('webpack', function () {
         const done = this.async();
         webpack(webpackConfig, (err, stats) => {
             if (err || stats.hasErrors()) {
@@ -126,11 +122,10 @@ module.exports = function(grunt) {
         });
     });
 
-    grunt.registerTask('kill-processes', function() {
-        ps.lookup(
-            {
-                command: 'openfin.exe'
-            },
+    grunt.registerTask('kill-processes', function () {
+        ps.lookup({
+            command: 'openfin.exe'
+        },
             (err, processList) => {
                 if (err) {
                     throw new Error(err);
@@ -141,9 +136,8 @@ module.exports = function(grunt) {
     });
 
     grunt.registerTask('publish-docs', () => {
-        exec(
-            `cd docs && git commit -am "committed new update for node-adapter documentation." && git push ${remote} master`,
-            function(err, stdout, stderr) {
+        exec(`cd docs && git commit -am "committed new update for node-adapter documentation." && git push ${remote} master`,
+            function (err, stdout, stderr) {
                 if (err) {
                     grunt.log.error(err);
                 } else {
