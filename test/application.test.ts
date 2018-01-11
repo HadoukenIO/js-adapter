@@ -1,6 +1,7 @@
 import { conn } from './connect';
 import { Fin, Application } from '../src/main';
 import * as assert from 'assert';
+import * as path from 'path';
 
 // tslint:disable-next-line
 describe('Application.', function() {
@@ -82,16 +83,36 @@ describe('Application.', function() {
         });
     });
 
-    describe('registerCustomData()', () => {
+    describe('getShortcuts()', () => {
 
-        const customData = {
-            userId: 'mockUser',
-            organization: 'mockOrg'
-        };
-
-        it('Fulfilled', () => testApp.registerCustomData(customData).then(data => assert(true)));
+        it('Fulfilled', () => fin.Application.createFromManifest(path.resolve('test/app.json'))
+            .then(app => {
+            return app.getShortcuts().then(data => {
+                assert(typeof(data.desktop) === 'boolean');
+                assert(typeof(data.startMenu) === 'boolean');
+                assert(typeof(data.systemStartup) === 'boolean');
+            });
+        }));
     });
 
+    describe('getTrayIconInfo()', () => {
+
+       it('Fulfilled', () => testApp.setTrayIcon('http://cdn.openfin.co/assets/testing/icons/circled-digit-one.png')
+            .then(() => {
+            return testApp.getTrayIconInfo().then(info => {
+                assert(typeof(info.x) === 'number');
+                assert(typeof(info.y) === 'number');
+                assert(typeof(info.bounds) === 'object');
+                assert(typeof(info.monitorInfo) === 'object');
+            });
+        }));
+    });
+    /*
+    describe('registerUser()', () => {
+
+        it('Fulfilled', () => testApp.registerUser('mockUser', 'myApp').then(() => assert(true)));
+    });
+    */
     describe('removeTrayIcon()', () => {
 
         it('Fulfilled', () => testApp.removeTrayIcon().then(data => assert(true)));
@@ -118,21 +139,19 @@ describe('Application.', function() {
         });
     });
 
-    /*
     describe('setShortcuts()', () => {
 
-        it('Fulfilled', (done) => {
-            testApp.setShortcuts({
-                desktop: true,
-                startMenu: false,
-                systemStartup: true
-            }).then(() => {
-                assert(true);
-                return done();
-            });
-        });
+        it('Fulfilled', () => fin.Application.createFromManifest(path.resolve('test/app.json'))
+            .then(app => {
+                app.setShortcuts({
+                    desktop: true,
+                    startMenu: false,
+                    systemStartup: true
+                }).then(() => {
+                    assert(true);
+                });
+        }));
     });
-    */
 
     describe('terminate()', () => {
 

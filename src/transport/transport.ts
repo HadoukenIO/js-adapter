@@ -31,7 +31,7 @@ class Transport extends EventEmitter {
     protected messageHandlers: MessageHandler[] = [];
     public me: Identity;
     protected wire: Wire;
-    protected environment: Environment;
+    public environment: Environment;
     public topicRefMap: Map<string, number> = new Map();
 
     constructor(wireType: WireConstructor, environment: Environment) {
