@@ -6,9 +6,9 @@ import { Fin } from '../src/main';
 describe('Notification', function () {
     let fin: Fin;
     let notification: any;
+    // tslint:disable-next-line
+    this.timeout(30000);
     before(() => {
-        // tslint:disable-next-line:no-invalid-this
-        this.timeout(30000);
         return conn().then(_fin => {
             fin = _fin;
             notification = fin.Notification.create({});

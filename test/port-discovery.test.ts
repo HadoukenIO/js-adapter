@@ -14,7 +14,7 @@ const appConfig = JSON.parse(fs.readFileSync('test/app.json').toString());
 describe('PortDiscovery.', function () {
     // do NOT use => function here for 'this' to be set properly
     // tslint:disable-next-line
-    this.timeout(120000);
+    this.timeout(30000);
     before(clean);
     let spawns = 0;
     function makeConfig(config: any = {}): ConnectConfig {
@@ -61,7 +61,8 @@ describe('PortDiscovery.', function () {
         }
     });
 
-    it('discovers in parrallel', async () => {
+    //tslint:disable-next-line
+    it.skip('discovers in parrallel', async () => {
         const r = await promiseMap([{}, {}, {}], quickConnect);
         assert(true);
         r.map(kill);

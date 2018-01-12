@@ -11,7 +11,7 @@ let uuidNum = 0;
 
 let runtimes: Array<RuntimeProcess> = [];
 
-export const DELAY_MS = 300;
+export const DELAY_MS = 100;
 export const TEST_TIMEOUT = 30 * 1000;
 
 export interface RuntimeProcess {
