@@ -14,6 +14,9 @@ describe('Launcher', () => {
         it('checks fuzzy match', async () => {
             assert(await testVersion('7.53.*.*', makeVersionCheck(2, 21)));
         });
+        it('checks fuzzy match', async () => {
+            assert(await testVersion('7.*', makeVersionCheck(1, 53)));
+        });
         it('checks for channels', async () => {
             assert(await testVersion('alpha', makeVersionCheck(0, 8)));
         });
