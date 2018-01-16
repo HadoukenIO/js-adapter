@@ -3,37 +3,40 @@ import { Fin, Application } from '../src/main';
 import * as assert from 'assert';
 import * as path from 'path';
 
-describe('Application.', () => {
+// tslint:disable-next-line
+describe('Application.', function() {
     let fin: Fin;
     let testApp: Application;
+    // tslint:disable-next-line
+    this.timeout(30000);
 
-    const appConfigTemplate = {
-        name: 'adapter-test-app',
-        url: 'about:blank',
-        uuid: 'adapter-test-app',
-        autoShow: true,
-        accelerator: {
-            devtools: true
-        }
-    };
+    let counter = 0;
+    before(() => conn().then((a: Fin) => {
 
-    before(() => conn().then((a: Fin) => fin = a));
+        fin = a;
+    }));
 
-    beforeEach(() => {
-        return fin.Application.create(appConfigTemplate).then(a => {
-            testApp = a;
-            return testApp.run();
+    beforeEach(async () => {
+        testApp = await fin.Application.create({
+            name: `adapter-test-app-${counter}`,
+            url: 'about:blank',
+            // tslint:disable-next-line
+            uuid: `adapter-application-test-app-${counter++}`,
+            autoShow: true,
+            accelerator: {
+                devtools: true
+            }
         });
+        await testApp.run();
     });
 
     afterEach(() => testApp.close());
 
     describe('isRunning()', () => {
 
-        it('Fulfilled', (done) => {
+        it('Fulfilled', () => {
             testApp.isRunning().then(data => {
                 assert(data === true);
-                return done();
             });
         });
     });
@@ -126,9 +129,7 @@ describe('Application.', () => {
 
         let appToClose: Application;
 
-        after((done) => {
-            appToClose.close().then(done);
-        });
+        after(() => appToClose.close());
 
         it('Fulfilled', () => {
             return fin.Application.create(appToCloseConfig).then(a => {

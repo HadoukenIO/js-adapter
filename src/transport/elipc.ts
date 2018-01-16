@@ -25,7 +25,7 @@ export default class ElIPCTransport extends EventEmitter implements Wire {
         });
     }
 
-    public connect = (address: string): Promise<any> =>  {
+    public connect = (address: string): Promise<any> => {
         throw new NotImplementedError('Not Implemented');
     }
 

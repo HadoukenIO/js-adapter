@@ -1,8 +1,8 @@
 import * as assert from 'assert';
 import { delayPromise } from './delay-promise';
-import { launchAndConnect, cleanOpenRuntimes, DELAY_MS, TEST_TIMEOUT } from './multi-runtime-utils';
+import { launchAndConnect, cleanOpenRuntimes, DELAY_MS, TEST_TIMEOUT, launchX } from './multi-runtime-utils';
 
-describe('Multi Runtime', () =>  {
+describe('Multi Runtime', () => {
 
     function getAppConfig() {
         const appConfigTemplate = {
@@ -30,25 +30,25 @@ describe('Multi Runtime', () =>  {
         describe('Launch then subscribe', () => {
             describe('System', () => {
                 // tslint:disable-next-line
-                it('should raise application closed events', function(done: Function) {
+                it('should raise application closed events', function (done: Function) {
                     // tslint:disable-next-line no-invalid-this
                     this.timeout(TEST_TIMEOUT * 2);
 
                     async function test() {
                         const appConfig = getAppConfig();
-                        const runtimeA = await launchAndConnect();
-                        const runtimeB = await launchAndConnect();
+                        const finA = await launchAndConnect();
+                        const finB = await launchAndConnect();
                         await delayPromise(DELAY_MS);
 
-                        const realApp = await runtimeB.fin.Application.create(appConfig);
+                        const realApp = await finB.Application.create(appConfig);
                         await realApp.run();
 
-                        runtimeA.fin.System.on('application-closed', (e: any) => {
+                        finA.System.on('application-closed', (e: any) => {
                             assert.equal(e.type, 'application-closed', 'Expected event type to match event');
                             done();
                         });
 
-                        await delayPromise(30);
+                        await delayPromise(DELAY_MS);
                         await realApp.close();
                         await delayPromise(1500);
                     }
@@ -56,28 +56,28 @@ describe('Multi Runtime', () =>  {
                     test();
                 });
 
-                it('should raise application created events', function(done: Function) {
+                it('should raise application created events', function (done: Function) {
                     // tslint:disable-next-line no-invalid-this
                     this.timeout(TEST_TIMEOUT * 2);
 
                     async function test() {
-                        const runtimeA = await launchAndConnect();
-                        const runtimeB = await launchAndConnect();
+                        const finA = await launchAndConnect();
+                        const finB = await launchAndConnect();
                         const appConfig = getAppConfig();
                         await delayPromise(DELAY_MS);
                         let realApp: any;
 
-                        runtimeA.fin.System.on('application-created', (e: any) => {
+                        finA.System.on('application-created', (e: any) => {
                             assert.equal(e.type, 'application-created', 'Expected event type to match event');
                             done();
                         });
 
-                        await delayPromise(30);
+                        await delayPromise(DELAY_MS);
 
-                        realApp = await runtimeB.fin.Application.create(appConfig);
+                        realApp = await finB.Application.create(appConfig);
                         await realApp.run();
                         await realApp.close();
-
+                        await delayPromise(DELAY_MS);
                     }
 
                     test();
@@ -88,53 +88,57 @@ describe('Multi Runtime', () =>  {
         describe('Launch then subscribe', () => {
             describe('application', () => {
                 // tslint:disable-next-line
-                it.skip('should raise closed events', function(done: Function) {
+                it.skip('should raise closed events', function (done: Function) {
                     // tslint:disable-next-line no-invalid-this
                     this.timeout(TEST_TIMEOUT);
 
                     async function test() {
                         const appConfig = getAppConfig();
-                        const runtimeA = await launchAndConnect();
-                        const runtimeB = await launchAndConnect();
+                        const conns = await launchX(2);
+                        const finA = conns[0];
+                        const finB = conns[1];
                         await delayPromise(DELAY_MS);
 
-                        const realApp = await runtimeB.fin.Application.create(appConfig.uuid);
+                        const realApp = await finB.Application.create(appConfig.uuid);
                         await realApp.run();
-                        const app = await runtimeA.fin.Application.wrap({ uuid: appConfig.uuid });
+                        const app = await finA.Application.wrap({ uuid: appConfig.uuid });
 
                         app.on('closed', (e: any) => {
                             assert.equal(e.type, 'closed', 'Expected event type to match event');
                             done();
                         });
 
-                        await delayPromise(30);
+                        await delayPromise(DELAY_MS);
                         await realApp.close();
+                        await delayPromise(DELAY_MS);
                     }
 
                     test();
                 });
 
-                it('should raise initialized events', function(done: Function) {
+                it('should raise initialized events', function (done: () => void) {
                     // tslint:disable-next-line no-invalid-this
                     this.timeout(TEST_TIMEOUT);
 
                     async function test() {
-                        const runtimeA = await launchAndConnect();
-                        const runtimeB = await launchAndConnect();
+                        const conns = await launchX(2);
+                        const finA = conns[0];
+                        const finB = conns[1];
                         const appConfig = getAppConfig();
                         await delayPromise(DELAY_MS);
 
-                        const realApp = await runtimeB.fin.Application.create(appConfig);
-                        const app = await runtimeA.fin.Application.wrap({ uuid: appConfig.uuid });
+                        const realApp = await finB.Application.create(appConfig);
+                        const app = await finA.Application.wrap({ uuid: appConfig.uuid });
 
                         app.on('initialized', (e: any) => {
                             assert.equal(e.type, 'initialized', 'Expected event type to match event');
                             app.close().then(done);
                         });
 
-                        await delayPromise(30);
+                        await delayPromise(DELAY_MS);
                         await realApp.run();
                         await realApp.close();
+                        await delayPromise(DELAY_MS);
                     }
 
                     test();
@@ -145,16 +149,17 @@ describe('Multi Runtime', () =>  {
         describe('Launch then subscribe', () => {
             describe('Window', () => {
 
-                it('should raise initialized', function(done: Function) {
+                it('should raise initialized', function (done: (value: void) => void) {
                     // tslint:disable-next-line no-invalid-this
                     this.timeout(TEST_TIMEOUT);
 
                     async function test() {
                         const appConfig = getAppConfig();
-                        const runtimeA = await launchAndConnect();
-                        const runtimeB = await launchAndConnect();
+                        const conns = await launchX(2);
+                        const finA = conns[0];
+                        const finB = conns[1];
                         await delayPromise(DELAY_MS);
-                        const app = await runtimeA.fin.Application.wrap({ uuid: appConfig.uuid });
+                        const app = await finA.Application.wrap({ uuid: appConfig.uuid });
                         const win = await app.getWindow();
 
                         win.on('initialized', (e: any) => {
@@ -162,9 +167,10 @@ describe('Multi Runtime', () =>  {
                             win.close().then(done);
                         });
 
-                        await delayPromise(30);
-                        const realApp = await runtimeB.fin.Application.create(appConfig);
+                        await delayPromise(DELAY_MS);
+                        const realApp = await finB.Application.create(appConfig);
                         await realApp.run();
+                        await delayPromise(DELAY_MS);
                     }
 
                     test();
@@ -177,24 +183,24 @@ describe('Multi Runtime', () =>  {
             describe('System', () => {
 
                 // tslint:disable-next-line
-                it('should raise application closed events', function(done: Function) {
+                it('should raise application closed events', function (done: Function) {
                     // tslint:disable-next-line no-invalid-this
                     this.timeout(TEST_TIMEOUT * 2);
 
                     async function test() {
                         const appConfig = getAppConfig();
-                        const runtimeA = await launchAndConnect();
+                        const finA = await launchAndConnect();
                         await delayPromise(DELAY_MS);
-                        runtimeA.fin.System.on('application-closed', (e: any) => {
+                        finA.System.on('application-closed', (e: any) => {
                             assert.equal(e.type, 'application-closed', 'Expected event type to match event');
                             done();
                         });
-                        const runtimeB = await launchAndConnect();
+                        const finB = await launchAndConnect();
                         await delayPromise(DELAY_MS);
-                        const realApp = await runtimeB.fin.Application.create(appConfig);
+                        const realApp = await finB.Application.create(appConfig);
                         await realApp.run();
 
-                        await delayPromise(30);
+                        await delayPromise(DELAY_MS);
                         await realApp.close();
                         await delayPromise(1500);
                     }
@@ -202,7 +208,7 @@ describe('Multi Runtime', () =>  {
                     test();
                 });
 
-                it('should raise application-started events', function(done: Function) {
+                it('should raise application-started events', function (done: (value: void) => void) {
                     // tslint:disable-next-line no-invalid-this
                     this.timeout(TEST_TIMEOUT * 2); //We need a bit more time for these tests.
 
@@ -214,23 +220,24 @@ describe('Multi Runtime', () =>  {
                             '--enable-multi-runtime',
                             '--v=1'
                         ];
-                        const runtimeA = await launchAndConnect(undefined, undefined, true, argsConnect);
+                        const finA = await launchAndConnect(undefined, undefined, 'supersecret', argsConnect);
                         await delayPromise(DELAY_MS);
 
-                        const app = await runtimeA.fin.Application.wrap({ uuid: appConfig.uuid });
+                        const app = await finA.Application.wrap({ uuid: appConfig.uuid });
 
-                        runtimeA.fin.System.on('application-created', (e: any) => {
+                        finA.System.on('application-created', (e: any) => {
                             assert.equal(e.type, 'application-created', 'Expected event type to match event');
                             app.close().then(done);
                         });
 
-                        const runtimeB = await launchAndConnect();
+                        const finB = await launchAndConnect();
                         await delayPromise(DELAY_MS);
-                        const realApp = await runtimeB.fin.Application.create(appConfig);
-                        await delayPromise(300);
+                        const realApp = await finB.Application.create(appConfig);
+                        await delayPromise(DELAY_MS);
                         await realApp.run();
-                        await delayPromise(300);
+                        await delayPromise(DELAY_MS);
                         await realApp.close();
+                        await delayPromise(DELAY_MS);
                     }
 
                     test();
@@ -245,60 +252,61 @@ describe('Multi Runtime', () =>  {
 
                 //Bug regarding Application/Window close events.
                 // tslint:disable-next-line
-                it.skip('should raise closed events', function(done: Function) {
+                it.skip('should raise closed events', function (done: Function) {
                     // tslint:disable-next-line no-invalid-this
                     this.timeout(TEST_TIMEOUT * 2);
 
                     async function test() {
                         const appConfig = getAppConfig();
-                        const runtimeA = await launchAndConnect();
+                        const finA = await launchAndConnect();
                         await delayPromise(DELAY_MS);
-                        const app = await runtimeA.fin.Application.wrap({ uuid: appConfig });
+                        const app = await finA.Application.wrap({ uuid: appConfig.uuid });
                         app.on('closed', (e: any) => {
                             assert.equal(e.type, 'closed', 'Expected event type to match event');
                             done();
                         });
-                        const runtimeB = await launchAndConnect();
+                        const finB = await launchAndConnect();
                         await delayPromise(DELAY_MS);
-                        const realApp = await runtimeB.fin.Application.create(appConfig);
+                        const realApp = await finB.Application.create(appConfig);
                         await realApp.run();
 
-                        await delayPromise(30);
+                        await delayPromise(DELAY_MS);
                         await realApp.close();
+                        await delayPromise(DELAY_MS);
                     }
 
                     test();
                 });
 
-                it('should raise initialized events', function(done: Function) {
+                it('should raise initialized events', function (done: (value: void) => void) {
                     // tslint:disable-next-line no-invalid-this
                     this.timeout(TEST_TIMEOUT * 2); //We need a bit more time for these tests.
 
                     async function test() {
                         const appConfig = getAppConfig();
                         const argsConnect = [
-                            '--security-realm=supersecret',
                             '--enable-mesh',
                             '--enable-multi-runtime',
                             '--v=1'
                         ];
-                        const runtimeA = await launchAndConnect(undefined, undefined, true, argsConnect);
+                        const finA = await launchAndConnect(undefined, undefined, 'supersecret', argsConnect);
                         await delayPromise(DELAY_MS);
 
-                        const app = await runtimeA.fin.Application.wrap({ uuid: appConfig.uuid });
+                        const app = await finA.Application.wrap({ uuid: appConfig.uuid });
 
                         app.on('initialized', (e: any) => {
                             assert.equal(e.type, 'initialized', 'Expected event type to match event');
                             app.close().then(done);
                         });
 
-                        const runtimeB = await launchAndConnect();
+                        const finB = await launchAndConnect();
                         await delayPromise(DELAY_MS);
-                        const realApp = await runtimeB.fin.Application.create(appConfig);
-                        await delayPromise(300);
+                        const realApp = await finB.Application.create(appConfig);
+                        await delayPromise(DELAY_MS);
                         await realApp.run();
-                        await delayPromise(300);
+                        await delayPromise(DELAY_MS);
                         await realApp.close();
+                        await delayPromise(DELAY_MS);
                     }
 
                     test();
@@ -310,15 +318,15 @@ describe('Multi Runtime', () =>  {
         describe('Subscribe then launch', () => {
             describe('Window', () => {
 
-                it('should raise bounds-changed', function(done: Function) {
+                it('should raise bounds-changed', function (done: (value: void) => void) {
                     // tslint:disable-next-line no-invalid-this
                     this.timeout(TEST_TIMEOUT * 2); //We need a bit more time for these tests.
 
                     async function test() {
                         const appConfig = getAppConfig();
-                        const runtimeA = await launchAndConnect();
+                        const finA = await launchAndConnect();
                         await delayPromise(DELAY_MS);
-                        const app = await runtimeA.fin.Application.wrap({ uuid: appConfig.uuid });
+                        const app = await finA.Application.wrap({ uuid: appConfig.uuid });
                         const win = await app.getWindow();
 
                         win.on('bounds-changed', (e: any) => {
@@ -326,27 +334,27 @@ describe('Multi Runtime', () =>  {
                             win.close().then(done);
                         });
 
-                        const runtimeB = await launchAndConnect();
+                        const finB = await launchAndConnect();
                         await delayPromise(DELAY_MS);
-                        const realApp = await runtimeB.fin.Application.create(appConfig);
+                        const realApp = await finB.Application.create(appConfig);
                         await realApp.run();
                         const realWindow = await realApp.getWindow();
-                        await delayPromise(300);
+                        await delayPromise(DELAY_MS);
                         await realWindow.moveBy(100, 100);
+                        await delayPromise(DELAY_MS);
                     }
 
                     test();
                 });
 
-                it('should raise hidden', function(done: Function) {
+                it('should raise hidden', function (done: (value: void) => void) {
                     // tslint:disable-next-line no-invalid-this
                     this.timeout(TEST_TIMEOUT * 2); //We need a bit more time for these tests.
 
                     async function test() {
                         const appConfig = getAppConfig();
-                        const runtimeA = await launchAndConnect();
-                        await delayPromise(DELAY_MS);
-                        const app = await runtimeA.fin.Application.wrap({ uuid: appConfig.uuid });
+                        const finA = await launchAndConnect();
+                        const app = await finA.Application.wrap({ uuid: appConfig.uuid });
                         const win = await app.getWindow();
 
                         win.on('hidden', (e: any) => {
@@ -354,13 +362,13 @@ describe('Multi Runtime', () =>  {
                             win.close().then(done);
                         });
 
-                        const runtimeB = await launchAndConnect();
-                        await delayPromise(DELAY_MS);
-                        const realApp = await runtimeB.fin.Application.create(appConfig);
+                        const finB = await launchAndConnect();
+                        const realApp = await finB.Application.create(appConfig);
                         await realApp.run();
                         const realWindow = await realApp.getWindow();
-                        await delayPromise(300);
+                        await delayPromise(DELAY_MS);
                         await realWindow.hide();
+                        await delayPromise(DELAY_MS);
                     }
 
                     test();

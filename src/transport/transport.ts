@@ -1,4 +1,12 @@
-import { Wire, WireConstructor, READY_STATE, ConnectConfig } from './wire';
+import {
+    Wire,
+    WireConstructor,
+    READY_STATE,
+    ConnectConfig,
+    isExistingConnectConfig,
+    isNewConnectConfig,
+    ExistingConnectConfig
+} from './wire';
 import { Identity } from '../identity';
 import { EventEmitter } from 'events';
 import { Environment } from '../environment/environment';
@@ -37,24 +45,25 @@ class Transport extends EventEmitter {
     }
 
     public connectSync = (config: ConnectConfig): any => {
-        const {uuid, name} = config;
+        const { uuid, name } = config;
         this.me = { uuid, name };
         this.wire.connectSync();
 
     }
 
     public async connect(config: ConnectConfig): Promise<string> {
-        if (config.address) {
+        if (isExistingConnectConfig(config)) {
             return this.connectByPort(config);
+        } else if (isNewConnectConfig(config)) {
+            const port = await this.environment.retreivePort(config);
+            return this.connectByPort(Object.assign({}, config, { address: `ws://localhost:${port}` }));
         } else {
-
-            const port = await this.environment.retrievePort(config);
-            return this.connectByPort(Object.assign({}, config, {address: `ws://localhost:${port}`}));
+            throw new Error('Invalid Config');
         }
     }
 
-    public async connectByPort(config: ConnectConfig): Promise<string> {
-        const {address, uuid, name} = config;
+    public async connectByPort(config: ExistingConnectConfig): Promise<string> {
+        const { address, uuid, name } = config;
         const reqAuthPayload = Object.assign({}, config, { type: 'file-token' });
 
         this.me = { uuid, name };

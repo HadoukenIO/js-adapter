@@ -1,0 +1,54 @@
+import * as os from 'os';
+import * as path from 'path';
+import winLaunch from './win-launch';
+import macLaunch, { OsConfig } from './nix-launch';
+import { ChildProcess } from 'child_process';
+import { NewConnectConfig } from '../transport/wire';
+
+export default class Launcher {
+    private os: string;
+    public OpenFin_Installer: string = 'OpenFinInstaller.exe';
+    public Installer_Work_Dir: string = path.join(os.tmpdir(), 'openfinnode');
+    public Security_Realm_Config_Key: string = '--security-realm=';
+
+    constructor() {
+        this.os = os.platform();
+    }
+
+    public launch(config: NewConnectConfig, manifestLocation: string, namedPipeName: string): Promise<ChildProcess> {
+        if (this.os === 'win32') {
+            return this.winLaunch(config, manifestLocation, namedPipeName);
+        } else if (this.os === 'darwin') {
+            const osConf: OsConfig = {
+                manifestLocation,
+                namedPipeName,
+                urlPath: 'mac/x64',
+                executablePath: 'OpenFin.app/Contents/MacOS/OpenFin'
+            };
+            return this.macLaunch(config, osConf);
+        } else if (this.os === 'linux') {
+            const osConf: OsConfig = {
+                manifestLocation,
+                namedPipeName,
+                urlPath: `linux/${os.arch()}`,
+                executablePath: 'openfin'
+            };
+            return this.macLaunch(config, osConf);
+        } else {
+            throw new Error(`Launching not supported on ${this.os}`);
+        }
+    }
+
+    public static IS_SUPPORTED(): boolean {
+        const platform = os.platform();
+        return platform === 'win32' || platform === 'darwin' || os.platform() === 'linux';
+    }
+
+    private macLaunch(config: NewConnectConfig, osConfig: OsConfig) {
+        return macLaunch(config, osConfig);
+    }
+
+    private winLaunch(config: NewConnectConfig, manifestLocation: string, namedPipeName: string) {
+        return winLaunch(config, manifestLocation, namedPipeName, this.Installer_Work_Dir);
+    }
+}

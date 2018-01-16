@@ -9,3 +9,7 @@
 TODO
 test/app.json
 /docs
+cache.dat
+/cache
+/runtime
+/apps

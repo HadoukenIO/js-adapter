@@ -1,7 +1,7 @@
-import { ConnectConfig } from '../transport/wire';
+import { NewConnectConfig } from '../transport/wire';
 
 export interface Environment {
     writeToken(path: string, token: string): Promise<string>;
-    retrievePort(config: ConnectConfig): Promise<number>;
+    retreivePort(config: NewConnectConfig): Promise<number>;
     getNextMessageId(): any;
 }

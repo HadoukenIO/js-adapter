@@ -79,7 +79,7 @@ export class Base extends Bare {
 
 }
 
-export class Reply<TOPIC extends string, TYPE extends string|void> implements Identity {
+export class Reply<TOPIC extends string, TYPE extends string | void> implements Identity {
     public topic: TOPIC;
     public type: TYPE;
     public uuid: string;

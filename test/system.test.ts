@@ -2,10 +2,12 @@ import { conn } from './connect';
 import { Fin } from '../src/main';
 import * as assert from 'assert';
 
-describe('System.', () => {
+describe('System.', function () {
     let fin: Fin;
+    // tslint:disable-next-line
+    this.timeout(30000);
 
-    before(() => {
+    beforeEach(() => {
         return conn().then((a: Fin) => fin = a);
     });
 
@@ -120,10 +122,10 @@ describe('System.', () => {
 
         it('Fulfilled', (done) => {
             fin.System.launchExternalProcess(processOptions)
-           .then(() => {
-                assert(true);
-                return done();
-            });
+                .then(() => {
+                    assert(true);
+                    return done();
+                });
         });
     });
 
@@ -184,7 +186,7 @@ describe('System.', () => {
         };
 
         it('Fulfilled', () => fin.System.showDeveloperTools(identity)
-           .then(() => assert(true)));
+            .then(() => assert(true)));
     });
 
     describe('updateProxySettings()', () => {
@@ -195,13 +197,13 @@ describe('System.', () => {
         };
 
         it('Fulfilled', () => fin.System.updateProxySettings(proxySettings)
-           .then(() => assert(true)));
+            .then(() => assert(true)));
     });
 
     describe('getAllExternalApplications()', () => {
 
         it('Fulfilled', () => fin.System.getAllExternalApplications()
-           .then(() => assert(true)));
+            .then(() => assert(true)));
     });
 
     describe('resolveUuid()', () => {

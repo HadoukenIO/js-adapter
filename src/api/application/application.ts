@@ -78,14 +78,14 @@ export class Application extends Base {
         this.on('removeListener', eventType => {
             this.deregisterEventListener(Object.assign({}, this.identity, {
                 type: eventType,
-                topic : this.topic
+                topic: this.topic
             }));
         });
 
         this.on('newListener', eventType => {
             this.registerEventListener(Object.assign({}, this.identity, {
                 type: eventType,
-                topic : this.topic
+                topic: this.topic
             }));
         });
     }
@@ -121,7 +121,7 @@ export class Application extends Base {
      * @return {Promise.<boolean>}
      */
     public close(force: boolean = false): Promise<void> {
-        return this.wire.sendAction('close-application', Object.assign({}, this.identity, {force})).then(() => undefined);
+        return this.wire.sendAction('close-application', Object.assign({}, this.identity, { force })).then(() => undefined);
     }
 
     /**
@@ -130,7 +130,7 @@ export class Application extends Base {
      */
     public getChildWindows(): Promise<Array<_Window>> {
         return this.wire.sendAction('get-child-windows', this.identity)
-            .then(({ payload }) =>  this.windowListFromNameList(payload.data));
+            .then(({ payload }) => this.windowListFromNameList(payload.data));
     }
 
     /**
@@ -200,6 +200,7 @@ export class Application extends Base {
     * @param { string } appName - app name to be passed to the RVM.
     * @return {Promise.<void>}
     */
+
     public registerUser(userName: string, appName: string): Promise<void> {
         return this.wire.sendAction('register-user', Object.assign({}, this.identity, {userName, appName})).then(() => undefined);
     }
@@ -300,6 +301,7 @@ export class Application extends Base {
 
 export interface Application {
     on(type: 'closed', listener: (data: Reply<'application', 'closed'>) => void): this;
+    on(type: 'initialized', listener: (data: Reply<'application', 'initialized'>) => void): this;
     on(type: 'connected', listener: (data: Reply<'application', 'connected'>) => void): this;
     on(type: 'crashed', listener: (data: Reply<'application', 'crashed'>) => void): this;
     on(type: 'error', listener: (data: Reply<'application', 'error'>) => void): this;

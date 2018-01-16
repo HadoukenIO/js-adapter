@@ -1,5 +1,5 @@
 import { Environment } from './environment';
-import { ConnectConfig } from '../transport/wire';
+import { NewConnectConfig } from '../transport/wire';
 import { NotImplementedError } from '../transport/transport-errors';
 
 declare var fin: any;
@@ -10,7 +10,7 @@ export default class OpenFinEnvironment implements Environment {
         throw new NotImplementedError('Not Implemented');
     }
 
-    public retrievePort = (config: ConnectConfig): Promise<number> => {
+    public retreivePort = (config: NewConnectConfig): Promise<number> => {
         throw new NotImplementedError('Not Implemented');
     }
 

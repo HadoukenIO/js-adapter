@@ -62,7 +62,7 @@ export class _Notification extends Base implements Notification {
     }
 
     private buildLocalPayload(rawPayload: any): NotificationCallback {
-        const { payload: { message}, type} = rawPayload;
+        const { payload: { message }, type } = rawPayload;
 
         const payload: NotificationCallback = {};
 
@@ -84,10 +84,10 @@ export class _Notification extends Base implements Notification {
     protected notificationId: number;
 
     protected onmessage = (message: any): boolean => {
-        const {action, payload: messagePayload} = message;
+        const { action, payload: messagePayload } = message;
 
         if (action === 'process-notification-event') {
-            const {payload : {notificationId}, type} = messagePayload;
+            const { payload: { notificationId }, type } = messagePayload;
 
             if (notificationId === this.notificationId) {
                 this.emit(type, this.buildLocalPayload(messagePayload));
@@ -195,6 +195,6 @@ export default class _NotificationModule extends Bare {
     public create(options: any): _Notification {
         const noteOptions = new NotificationOptions(options, this.me, this.genNoteId());
 
-        return new _Notification(this.wire,  noteOptions);
+        return new _Notification(this.wire, noteOptions);
     };
 }

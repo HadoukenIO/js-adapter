@@ -24,7 +24,7 @@ describe('Clipboard.', () => {
     describe('writeText()', () => {
 
         it('Fulfilled', () => fin.Clipboard.writeText(writeObj)
-           .then(() => assert(true)));
+            .then(() => assert(true)));
     });
 
     describe('readText()', () => {
@@ -32,13 +32,13 @@ describe('Clipboard.', () => {
         before(() => fin.Clipboard.writeText(writeObj));
 
         it('Fulfilled', () => fin.Clipboard.readText()
-           .then(data => assert(data === writeObj.data)));
+            .then(data => assert(data === writeObj.data)));
     });
 
     describe('writeHtml()', () => {
 
         it('Fulfilled', () => fin.Clipboard.writeHtml(writeObj)
-           .then(() => assert(true)));
+            .then(() => assert(true)));
     });
 
     describe('readHtml()', () => {
@@ -46,13 +46,13 @@ describe('Clipboard.', () => {
         before(() => fin.Clipboard.writeHtml(writeObj));
 
         it('Fulfilled', () => fin.Clipboard.readHtml()
-           .then(data => assert(data === writeObj.data)));
+            .then(data => assert(data === writeObj.data)));
     });
 
     describe('writeRtf()', () => {
 
         it('Fulfilled', () => fin.Clipboard.writeRtf(writeObj)
-           .then(() => assert(true)));
+            .then(() => assert(true)));
     });
 
     describe('readRtf()', () => {
@@ -60,13 +60,13 @@ describe('Clipboard.', () => {
         before(() => fin.Clipboard.writeRtf(writeObj));
 
         it('Fulfilled', () => fin.Clipboard.readRtf()
-           .then(data => assert(data === writeObj.data)));
+            .then(data => assert(data === writeObj.data)));
     });
 
     describe('write()', () => {
 
         it('Fulfilled', () => fin.Clipboard.write(writeAllObj)
-           .then(() => assert(true)));
+            .then(() => assert(true)));
     });
 
     describe('getAvailableFormats()', () => {
@@ -74,6 +74,6 @@ describe('Clipboard.', () => {
         before(() => fin.Clipboard.write(writeAllObj));
 
         it('Fulfilled', () => fin.Clipboard.getAvailableFormats()
-           .then(data => assert(data instanceof Array, `Expected ${typeof(data)} to be instance of Array`)));
+            .then(data => assert(data instanceof Array, `Expected ${typeof (data)} to be instance of Array`)));
     });
 });

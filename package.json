@@ -1,41 +1,44 @@
 {
-  "name": "hadouken-js-adapter",
-  "version": "0.1.4",
-  "license": "Apache-2.0",
-  "repository": "https://github.com/HadoukenIO/js-adapter",
-  "main": "./out/src/main.js",
-  "types": "./out/src/main.d.ts",
-  "scripts": {
-    "test": "grunt test",
-    "repl": "grunt repl",
-    "build": "grunt",
-    "prepublish": "npm run build",
-    "doc": "npm run build && jsdoc -c jsdoc-conf.json -t jsdoc-template -u tutorials out/src --verbose"
-  },
-  "devDependencies": {
-    "grunt": "~1.0.1",
-    "grunt-contrib-copy": "^1.0.0",
-    "grunt-mocha-test": "^0.13.3",
-    "grunt-openfin": "latest",
-    "grunt-ts": "^5.5.1",
-    "grunt-tslint": "^4.0.1",
-    "jsdoc": "^3.5.5",
-    "live-server": "^1.2.0",
-    "mocha": "~3.1.2",
-    "ps-node": "^0.1.6",
-    "rimraf": "^2.6.1",
-    "sinon": "~1.17.6",
-    "tslint": "^4.5.1",
-    "tslint-microsoft-contrib": "^4.0.1",
-    "@types/mocha": "^2.2.38",
-    "@types/node": "^6.0.52",
-    "@types/rimraf": "0.0.28",
-    "@types/sinon": "^1.16.34",
-    "@types/ws": "~0.0.36",
-    "typescript": "~2.2.0",
-    "webpack": "^3.8.1"
-  },
-  "dependencies": {
-    "ws": "~1.1.1"
-  }
+    "name": "hadouken-js-adapter",
+    "version": "0.1.4",
+    "license": "Apache-2.0",
+    "repository": "https://github.com/HadoukenIO/js-adapter",
+    "main": "./out/src/main.js",
+    "types": "./out/src/main.d.ts",
+    "scripts": {
+        "test": "grunt test",
+        "repl": "grunt repl",
+        "build": "grunt",
+        "ts": "tsc",
+        "path": "PATH",
+        "prepublish": "npm run build",
+        "doc": "npm run build && jsdoc -c jsdoc-conf.json -t jsdoc-template -u tutorials out/src --verbose"
+    },
+    "devDependencies": {
+        "@types/mocha": "^2.2.38",
+        "@types/node": "^6.0.52",
+        "@types/rimraf": "0.0.28",
+        "@types/sinon": "^1.16.34",
+        "@types/ws": "~0.0.36",
+        "asar": "^0.12.1",
+        "grunt": "~1.0.1",
+        "grunt-contrib-copy": "^1.0.0",
+        "grunt-mocha-test": "^0.13.3",
+        "grunt-openfin": "latest",
+        "grunt-shell": "^2.1.0",
+        "grunt-tslint": "^4.0.1",
+        "jsdoc": "^3.5.5",
+        "live-server": "^1.2.0",
+        "mocha": "~3.1.2",
+        "ps-node": "^0.1.6",
+        "rimraf": "^2.6.1",
+        "sinon": "~1.17.6",
+        "tslint": "^4.5.1",
+        "tslint-microsoft-contrib": "^4.0.1",
+        "typescript": "^2.6.0",
+        "webpack": "^3.8.1"
+    },
+    "dependencies": {
+        "ws": "~1.1.1"
+    }
 }
