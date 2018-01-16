@@ -4,7 +4,6 @@ import { ChildProcess, spawn } from 'child_process';
 import { NewConnectConfig } from '../transport/wire';
 import { promisify, resolveRuntimeVersion, rmDir, downloadFile, unzip, resolveDir, exists } from './util';
 
-const runtimeRoot = process.env.assetsUrl || 'https://cdn.openfin.co/release/runtime/';
 const mkdir = promisify(fs.mkdir);
 
 interface SharedDownloads {
@@ -12,8 +11,13 @@ interface SharedDownloads {
 }
 const downloads: SharedDownloads = {};
 
+export function getUrl(version: string, urlPath: string): string {
+    const runtimeRoot = process.env.assetsUrl || 'https://cdn.openfin.co/release/runtime/';
+    return `${runtimeRoot}${urlPath}/${version}`;
+}
+
 export async function download(version: string, folder: string, osConfig: OsConfig): Promise<string> {
-    const url = `${runtimeRoot}${osConfig.urlPath}/${version}`;
+    const url = getUrl(version, osConfig.urlPath);
     const tmp = 'tmp';
     await rmDir(folder, false);
     // tslint:disable-next-line:no-empty
