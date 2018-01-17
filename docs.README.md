@@ -8,7 +8,7 @@ The HadoukenIO node-adapter allows the use of the Hadouken API from Node.js appl
 
 $ `npm install -S HadoukenIO/node-adapter`
 
-## Usage
+### Usage
 
 Connecting to an already running runtime
 
