@@ -10,8 +10,10 @@ $ `npm install -S HadoukenIO/node-adapter`
 
 ### Usage
 
+Connecting to an already running runtime
+
 ```javascript
-const { connect, Identity } = require("node-adapter");
+const { connect, Identity } = require("hadouken-js-adapter");
 
 connect({
     address: "ws://localhost:9696",
@@ -21,7 +23,6 @@ connect({
 function logic(fin) {
 
     fin.System.getVersion().then(v => console.log("Connected to Hadouken version", v));
-
     let win;
     fin.Window.wrap({
         uuid: "remote-app-uuid",
@@ -32,8 +33,34 @@ function logic(fin) {
 
 function connError(err) {
 
-    console.log("Error triying to connect,", err.message);
+    console.log("Error trying to connect,", err.message);
 
     console.log(err.stack);
 }
 ```
+
+Launching a runtime and connecting
+
+```javascript
+const { connect, Identity } = require("hadouken-js-adapter");
+
+connect({
+    uuid: "my-uuid-123",
+    runtime: {
+        version: 'stable'
+    }
+}).then(logic).catch(connError);
+
+function logic(fin) {
+    // Logic goes here
+}
+
+function connError(err) {
+
+    console.log("Error trying to connect,", err.message);
+
+    console.log(err.stack);
+}
+```
+
+Note that either an address or a runtime object with version are required to connect
