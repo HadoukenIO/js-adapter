@@ -149,6 +149,12 @@ module.exports = function (grunt) {
         );
     });
 
+    grunt.registerTask('connectBeforeTests', done => connect({
+        runtime: { version: process.env.OF_VER, rvmDir: process.env.RVM_DIR },
+        // tslint:disable-next-line
+        uuid: 'example_uuid' + Math.random()
+    }).then(() => done()))
+
     grunt.loadNpmTasks('grunt-shell');
     grunt.loadNpmTasks('grunt-tslint');
     grunt.loadNpmTasks('grunt-mocha-test');
@@ -167,6 +173,7 @@ module.exports = function (grunt) {
         'check-version',
         'default',
         'start-server',
+        'connectBeforeTests',
         'mochaTest',
         'kill-processes'
     ]);
