@@ -89,7 +89,7 @@ function generateAppConfig(): any {
 }
 
 function winKill(port: string) {
-    if (os.platform().match('win')) {
+    if (os.platform().match(/^win/)) {
         try {
             const cmd = `for /f "tokens=5" %a in \
             ('netstat -aon ^| find ":${port}" ^| find "LISTENING"') \

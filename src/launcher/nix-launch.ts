@@ -4,7 +4,6 @@ import { ChildProcess, spawn } from 'child_process';
 import { NewConnectConfig } from '../transport/wire';
 import { promisify, resolveRuntimeVersion, rmDir, downloadFile, unzip, resolveDir, exists } from './util';
 
-const runtimeRoot = 'https://cdn.openfin.co/release/runtime/';
 const mkdir = promisify(fs.mkdir);
 
 interface SharedDownloads {
@@ -12,8 +11,13 @@ interface SharedDownloads {
 }
 const downloads: SharedDownloads = {};
 
+export function getUrl(version: string, urlPath: string): string {
+    const runtimeRoot = process.env.assetsUrl || 'https://cdn.openfin.co/release/runtime/';
+    return `${runtimeRoot}${urlPath}/${version}`;
+}
+
 export async function download(version: string, folder: string, osConfig: OsConfig): Promise<string> {
-    const url = `${runtimeRoot}${osConfig.urlPath}/${version}`;
+    const url = getUrl(version, osConfig.urlPath);
     const tmp = 'tmp';
     await rmDir(folder, false);
     // tslint:disable-next-line:no-empty
@@ -26,6 +30,9 @@ export async function download(version: string, folder: string, osConfig: OsConf
 }
 
 export async function getRuntimePath(version: string): Promise<string> {
+    if (process.env.runtimeDirectory) {
+        return resolveDir(process.env.runtimeDirectory, ['Runtime', version]);
+    }
     const versionPath = ['OpenFin', 'Runtime', version];
     const HOME = process.env.HOME;
     return resolveDir(HOME, versionPath);
@@ -72,6 +79,9 @@ export default async function launch(config: NewConnectConfig, osConfig: OsConfi
                 return Promise.reject(e);
             });
         const args = config.runtime.arguments ? config.runtime.arguments.split(' ') : [];
+        if (process.env.runtimeArgs) {
+            args.push(process.env.runtimeArgs.split(' '));
+        }
 
         args.unshift(`--startup-url=${osConfig.manifestLocation}`);
         args.push(`--version-keyword=${fb ? config.runtime.fallbackVersion : config.runtime.version}`);

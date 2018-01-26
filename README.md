@@ -67,6 +67,14 @@ function connError(err) {
 
 Note that either an address or a runtime object with version are required to connect
 
+## Mac and Linux Environment settings
+
+In order to configure system policies, the js adapter respects the following [group policy settings](https://openfin.co/group-policy/#toggle-id-1) when set as environment variables on Mac and Linux:
+
+- assetsUrl
+- runtimeArgs
+- runtimeDirectory
+
 ## Local build
 
 ```bash

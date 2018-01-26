@@ -3,7 +3,7 @@ import * as assert from 'assert';
 import * as os from 'os';
 import * as path from 'path';
 import Launcher from '../src/launcher/launcher';
-import { download, getRuntimePath, OsConfig } from '../src/launcher/nix-launch';
+import { download, getRuntimePath, OsConfig, getUrl } from '../src/launcher/nix-launch';
 import { resolveRuntimeVersion, rmDir, promiseMap } from '../src/launcher/util';
 
 describe('Launcher', () => {
@@ -13,6 +13,9 @@ describe('Launcher', () => {
         });
         it('checks fuzzy match', async () => {
             assert(await testVersion('7.53.*.*', makeVersionCheck(2, 21)));
+        });
+        it('checks fuzzy match', async () => {
+            assert(await testVersion('7.*', makeVersionCheck(1, 53)));
         });
         it('checks for channels', async () => {
             assert(await testVersion('alpha', makeVersionCheck(0, 8)));
@@ -57,14 +60,14 @@ describe('Launcher', () => {
     });
     if (os.platform() === 'darwin') {
         describe('Mac Launcher', async () => { //TODO mock this
-            it('downloads and unzips the version', async () => {
+            it.skip('downloads and unzips the version', async () => {
                 const version = await resolveRuntimeVersion(process.env.OF_VER);
                 const location = await getRuntimePath(version);
                 // tslint:disable-next-line:no-empty
                 await rmDir(location, false);
                 const mockConf: OsConfig = { urlPath: 'mac/x64', manifestLocation: '', namedPipeName: '', executablePath: '' };
                 await doesntThrowAsync(async () => await download(version, location, mockConf));
-            }).timeout(40000);
+            });
         });
     } else if (os.platform() === 'linux') {
         describe('Mac Launcher', async () => { //TODO mock this
@@ -78,6 +81,22 @@ describe('Launcher', () => {
             }).timeout(40000);
         });
     }
+});
+
+const gpTestFunc = os.platform() !== 'win32' ? describe : describe.skip;
+
+gpTestFunc('Launcher respects gp env on nix', () => {
+    it('applies assetsURl', () => {
+        process.env.assetsUrl = 'localhost:1337';
+        assert(getUrl('beta', '/test') === 'localhost:1337/test/beta');
+        process.env.assetsUrl = undefined;
+    });
+    it('applies runtimeDir', async () => {
+        process.env.runtimeDirectory = __dirname;
+        const rDir = await getRuntimePath('beta');
+        assert(rDir === path.join(__dirname, 'Runtime', 'beta'));
+        process.env.runtimeDirectory = undefined;
+    });
 });
 
 function makeVersionCheck(index: number, min: number) {
