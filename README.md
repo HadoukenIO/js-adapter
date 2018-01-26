@@ -11,6 +11,9 @@ Allows the use of the Hadouken API from node.js.
 $ `npm install -S hadouken-js-adapter`
 
 ## Usage
+
+Connecting to an already running runtime
+
 ```javascript
 const { connect, Identity } = require("hadouken-js-adapter");
 
@@ -37,6 +40,32 @@ function connError(err) {
     console.log(err.stack);
 }
 ```
+
+Launching a runtime and connecting
+
+```javascript
+const { connect, Identity } = require("hadouken-js-adapter");
+
+connect({
+    uuid: "my-uuid-123",
+    runtime: {
+        version: 'stable'
+    }
+}).then(logic).catch(connError);
+
+function logic(fin) {
+    // Logic goes here
+}
+
+function connError(err) {
+
+    console.log("Error trying to connect,", err.message);
+
+    console.log(err.stack);
+}
+```
+
+Note that either an address or a runtime object with version are required to connect
 
 ## Local build
 
