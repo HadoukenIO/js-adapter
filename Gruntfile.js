@@ -5,6 +5,7 @@ const ps = require('ps-node');
 const exec = require('child_process').exec;
 const rimraf = require('rimraf');
 const webpack = require('webpack');
+const connect = require('./out/src/main.js').connect;
 
 const outDir = path.resolve('out');
 const webpackConfig = {
