@@ -35,11 +35,12 @@ async function launchApp() {
     await app.run();
 }
 
-function connError(err) {
-
+launchApp().then(() => {
+    console.log("success");
+}).catch((err) => {
     console.log("Error trying to connect,", err.message);
     console.log(err.stack);
-}
+});
 ```
 
 Launching a runtime and connecting
