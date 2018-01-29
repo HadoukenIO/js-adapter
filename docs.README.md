@@ -20,15 +20,24 @@ connect({
     uuid: "my-uuid-123"
 }).then(logic).catch(connError);
 
-function logic(fin) {
+async function launchApp() {
+    const fin  = await connect({
+        address: "ws://localhost:9696",
+        uuid: "my-uuid-123"
+    });
 
-    fin.System.getVersion().then(v => console.log("Connected to Hadouken version", v));
-    let win;
-    fin.Window.wrap({
-        uuid: "remote-app-uuid",
-        name: "remote-window-name"
-    }).then(w => { win = w; win.moveBy(500, 0)).then(win.flash());
+    const version = await fin.System.getVersion();
+    console.log("Connected to Hadouken version", version);
 
+    const app = await fin.Application.create({
+	name: "adapter-test-app",
+	url: 'http://hadouken.io/',
+	uuid: "adapter-test-app",
+	autoShow: true,
+	nonPersistent : true
+    });
+
+    await app.run();
 }
 
 function connError(err) {
@@ -44,23 +53,35 @@ Launching a runtime and connecting
 ```javascript
 const { connect, Identity } = require("hadouken-js-adapter");
 
-connect({
-    uuid: "my-uuid-123",
-    runtime: {
-        version: 'stable'
-    }
-}).then(logic).catch(connError);
+async function launchApp() {
+    const fin  = await connect({
+        uuid: "my-uuid-123",
+        runtime: {
+            version: 'stable'
+        }
+    });
 
-function logic(fin) {
-    // Logic goes here
+    const version = await fin.System.getVersion();
+    console.log("Connected to Hadouken version", version);
+
+    const app = await fin.Application.create({
+	name: "adapter-test-app",
+	url: 'http://hadouken.io/',
+	uuid: "adapter-test-app",
+	autoShow: true,
+	nonPersistent : true
+    });
+
+    await app.run();
 }
 
-function connError(err) {
-
+launchApp().then(() => {
+    console.log("success");
+}).catch((err) => {
     console.log("Error trying to connect,", err.message);
-
     console.log(err.stack);
-}
+});
+
 ```
 
 Note that either an address or a runtime object with version are required to connect
