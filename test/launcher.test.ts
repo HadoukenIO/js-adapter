@@ -89,13 +89,13 @@ gpTestFunc('Launcher respects gp env on nix', () => {
     it('applies assetsURl', () => {
         process.env.assetsUrl = 'localhost:1337';
         assert(getUrl('beta', '/test') === 'localhost:1337/test/beta');
-        process.env.assetsUrl = undefined;
+        delete process.env.assetsUrl;
     });
     it('applies runtimeDir', async () => {
         process.env.runtimeDirectory = __dirname;
         const rDir = await getRuntimePath('beta');
         assert(rDir === path.join(__dirname, 'Runtime', 'beta'));
-        process.env.runtimeDirectory = undefined;
+        delete process.env.runtimeDirectory;
     });
 });
 
