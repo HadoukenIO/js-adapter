@@ -150,7 +150,7 @@ module.exports = function (grunt) {
         );
     });
 
-    grunt.registerTask('connectBeforeTests', function () {
+    grunt.registerTask('installBeforeTests', function () {
         if (os.platform() !== 'win32') {
             const done = this.async();
             const Launcher = require('./out/src/launcher/launcher').default;
@@ -182,7 +182,7 @@ module.exports = function (grunt) {
         'check-version',
         'default',
         'start-server',
-        'connectBeforeTests',
+        'installBeforeTests',
         'mochaTest',
         'kill-processes'
     ]);
