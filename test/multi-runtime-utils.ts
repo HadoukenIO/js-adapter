@@ -88,26 +88,29 @@ function generateAppConfig(): any {
     };
 }
 
-function winKill(port: string) {
-    if (os.platform().match(/^win/)) {
-        try {
+function killByPort(port: string) {
+    try {
+        if (os.platform().match(/^win/)) {
             const cmd = `for /f "tokens=5" %a in \
             ('netstat -aon ^| find ":${port}" ^| find "LISTENING"') \
             do taskkill /f /pid %a`;
             ChildProcess.execSync(cmd);
-            // tslint:disable-next-line:no-empty
-        } catch (e) {
+        } else {
+            const cmd = `lsof -n -i4TCP:${port} | grep LISTEN | awk '{ print $2 }' | xargs kill`;
+            ChildProcess.execSync(cmd);
         }
+    // tslint:disable-next-line:no-empty
+    } catch (e) {
     }
 }
 
 export function kill(fin: Fin) {
-    winKill(getPort(fin));
+    killByPort(getPort(fin));
 }
 
 async function closeAndClean(runtimeProcess: RuntimeProcess): Promise<void> {
     // await runtimfimProcess.fin.Application.terminate();
-    winKill(runtimeProcess.port);
+    killByPort(runtimeProcess.port);
     const cachePath = await realmCachePath(runtimeProcess.realm);
     rimraf.sync(cachePath);
 }
