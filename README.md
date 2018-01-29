@@ -67,11 +67,11 @@ async function launchApp() {
     console.log("Connected to Hadouken version", version);
 
     const app = await fin.Application.create({
-	name: "adapter-test-app",
-	url: 'http://hadouken.io/',
-	uuid: "adapter-test-app",
-	autoShow: true,
-	nonPersistent : true
+        name: "adapter-test-app",
+        url: 'http://hadouken.io/',
+        uuid: "adapter-test-app",
+        autoShow: true,
+        nonPersistent : true
     });
 
     await app.run();
