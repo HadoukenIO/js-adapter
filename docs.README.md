@@ -15,11 +15,6 @@ Connecting to an already running runtime
 ```javascript
 const { connect, Identity } = require("hadouken-js-adapter");
 
-connect({
-    address: "ws://localhost:9696",
-    uuid: "my-uuid-123"
-}).then(logic).catch(connError);
-
 async function launchApp() {
     const fin  = await connect({
         address: "ws://localhost:9696",
@@ -43,7 +38,6 @@ async function launchApp() {
 function connError(err) {
 
     console.log("Error trying to connect,", err.message);
-
     console.log(err.stack);
 }
 ```
