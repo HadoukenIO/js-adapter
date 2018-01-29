@@ -10,9 +10,25 @@ export default class Launcher {
     public OpenFin_Installer: string = 'OpenFinInstaller.exe';
     public Installer_Work_Dir: string = path.join(os.tmpdir(), 'openfinnode');
     public Security_Realm_Config_Key: string = '--security-realm=';
+    public nixConfig?: any;
 
     constructor() {
         this.os = os.platform();
+        if (this.os !== 'win32') {
+            if (this.os === 'darwin') {
+                this.nixConfig = {
+                    urlPath: 'mac/x64',
+                    executablePath: 'OpenFin.app/Contents/MacOS/OpenFin'
+                };
+            } else if (this.os === 'linux') {
+                this.nixConfig = {
+                    urlPath: `linux/${os.arch()}`,
+                    executablePath: 'openfin'
+                };
+            } else {
+                throw new Error(`Launching not supported on ${this.os}`);
+            }
+        }
     }
 
     public launch(config: NewConnectConfig, manifestLocation: string, namedPipeName: string): Promise<ChildProcess> {
@@ -22,8 +38,7 @@ export default class Launcher {
             const osConf: OsConfig = {
                 manifestLocation,
                 namedPipeName,
-                urlPath: 'mac/x64',
-                executablePath: 'OpenFin.app/Contents/MacOS/OpenFin'
+                ...this.nixConfig
             };
             return this.macLaunch(config, osConf);
         } else if (this.os === 'linux') {
@@ -31,7 +46,8 @@ export default class Launcher {
                 manifestLocation,
                 namedPipeName,
                 urlPath: `linux/${os.arch()}`,
-                executablePath: 'openfin'
+                executablePath: 'openfin',
+                ...this.nixConfig
             };
             return this.macLaunch(config, osConf);
         } else {
