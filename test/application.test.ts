@@ -85,7 +85,7 @@ describe('Application.', function() {
 
     describe('getShortcuts()', () => {
 
-        it('Fulfilled', () => fin.Application.createFromManifest(path.resolve('test/app.json'))
+        it('Fulfilled', () => fin.Application.createFromManifest('file:///' + path.resolve('test/app.json'))
             .then(app => {
             return app.getShortcuts().then(data => {
                 assert(typeof(data.desktop) === 'boolean');
@@ -141,7 +141,7 @@ describe('Application.', function() {
 
     describe('setShortcuts()', () => {
 
-        it('Fulfilled', () => fin.Application.createFromManifest(path.resolve('test/app.json'))
+        it('Fulfilled', () => fin.Application.createFromManifest('file:///' + path.resolve('test/app.json'))
             .then(app => {
                 app.setShortcuts({
                     desktop: true,
