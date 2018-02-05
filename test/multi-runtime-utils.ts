@@ -63,12 +63,16 @@ async function spawnRealm(version: string, realm?: string, args?: Array<string>)
 }
 
 async function realmCachePath(realm: string): Promise<string> {
-    return resolveDir(os.tmpdir(), ['OpenFin', 'cache', realm]);
+    if (os.platform() === 'win32') {
+        return resolveDir(process.env.LOCALAPPDATA, ['OpenFin', 'cache', realm]);
+    } else {
+        return resolveDir(os.tmpdir(), ['OpenFin', 'cache', realm]);
+    }
 }
 
 export function getPort(fin: Fin): string {
     // @ts-ignore: TODO get current connection from fin
-    return fin.wire.wire.wire.url.split(':').slice(-1);
+    return fin.wire.wire.wire.url.split(':').slice(-1)[0];
 }
 
 function generateAppConfig(): any {
