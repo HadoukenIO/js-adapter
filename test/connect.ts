@@ -1,7 +1,9 @@
 import { connect, Fin } from '../src/main';
 import { kill } from './multi-runtime-utils';
 
+const MAX_TRY_NUMBER = 5;
 let c: Promise<Fin>;
+let count = 0;
 export function conn() {
     if (!c) {
         c = connect({
@@ -10,8 +12,13 @@ export function conn() {
             uuid: 'example_uuid' + Math.random()
         }).catch(() => {
             c = null;
-            console.warn('Failed to connect, retrying');
-            return conn();
+            if (count < MAX_TRY_NUMBER) {
+                count += 1;
+                console.warn('Failed to connect, retrying ' + count);
+                return conn();
+            } else {
+                throw new Error('Could not connect');
+            }
         });
     }
 
