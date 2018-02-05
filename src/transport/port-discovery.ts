@@ -1,10 +1,9 @@
 import * as crypto from 'crypto';
 import * as fs from 'fs';
-import * as http from 'http';
 import * as net from 'net';
 import * as path from 'path';
 import * as os from 'os';
-import { NewConnectConfig } from './wire';
+import { NewConnectConfig, PortDiscoveryConfig, isExternalConfig } from './wire';
 import Launcher from '../launcher/launcher';
 import Timer = NodeJS.Timer;
 import { setTimeout } from 'timers';
@@ -58,7 +57,7 @@ interface PortDiscoveryMessageEnvolope {
     payload: PortDiscoveryMessage;
 }
 
-function matchRuntimeInstance(config: NewConnectConfig, message: PortDiscoveryMessage): Boolean {
+function matchRuntimeInstance(config: PortDiscoveryConfig, message: PortDiscoveryMessage): Boolean {
     if (config.runtime.version && config.runtime.securityRealm) {
         return config.runtime.version === message.requestedVersion &&
             config.runtime.securityRealm === message.securityRealm;
@@ -178,7 +177,7 @@ function writeUint32(data: Buffer, value: number, offset: number): void {
 }
 
 export class PortDiscovery {
-    private savedConfig: NewConnectConfig;
+    private savedConfig: PortDiscoveryConfig;
     private namedPipeName: string;
     private manifestLocation: string;
     private discoverState: DiscoverState;
@@ -186,7 +185,7 @@ export class PortDiscovery {
     private pipeConnection: net.Socket; // created by Runtime. only one allowed
     private timeoutTimer: Timer;
 
-    constructor(config: NewConnectConfig) {
+    constructor(config: PortDiscoveryConfig) {
         this.savedConfig = Object.assign({}, config);
     }
 
@@ -274,44 +273,9 @@ export class PortDiscovery {
 
     private createManifest(): Promise<string> {
         return new Promise((resolve, reject) => {
-            if (this.savedConfig.manifestUrl) {
-                http.get(this.savedConfig.manifestUrl, res => {
-                    if (res.statusCode !== 200) {
-                        reject(new Error(`Error getting ${this.savedConfig.manifestUrl} status ${res.statusCode}`));
-                    } else {
-                        res.setEncoding('utf8');
-                        let rawData = '';
-                        res.on('data', (chunk) => { rawData += chunk; });
-                        res.on('end', () => {
-                            try {
-                                const parsed = JSON.parse(rawData);
-                                // Installer needs assetsUrl if set
-                                Object.assign(this.savedConfig, { assetsUrl: parsed.assetsUrl });
-                                if (parsed.runtime) {
-                                    this.savedConfig.runtime = Object.assign({}, { version: parsed.runtime.version });
-                                    if (parsed.runtime.arguments) {
-                                        const index: number = parsed.runtime.arguments.indexOf(launcher.Security_Realm_Config_Key);
-                                        if (index > 0) {
-                                            parsed.runtime.arguments.split(' ').forEach((value: string) => {
-                                                if (value.startsWith(launcher.Security_Realm_Config_Key)) {
-                                                    const realm = value.substring(launcher.Security_Realm_Config_Key.length);
-                                                    this.savedConfig.runtime.securityRealm = realm;
-                                                }
-                                            });
-                                        }
-                                    }
-                                }
-                                this.manifestLocation = this.savedConfig.manifestUrl;
-                                resolve();
-                            } catch (e) {
-                                reject(new Error(`Error parsing remote manifest ${e.message}`));
-                            }
-                        });
-                        res.on('error', e => {
-                            reject(new Error(`Error getting ${this.savedConfig.manifestUrl} error ${e.message}`));
-                        });
-                    }
-                });
+            if (isExternalConfig(this.savedConfig)) {
+                this.manifestLocation = this.savedConfig.manifestUrl;
+                resolve();
             } else {
                 const manifestFileName = 'NodeAdapter-' + this.savedConfig.uuid.replace(/ /g, '-') + '.json';
                 try {

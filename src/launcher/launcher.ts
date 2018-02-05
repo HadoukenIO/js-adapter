@@ -3,7 +3,7 @@ import * as path from 'path';
 import winLaunch from './win-launch';
 import macLaunch, { OsConfig } from './nix-launch';
 import { ChildProcess } from 'child_process';
-import { NewConnectConfig } from '../transport/wire';
+import { ConfigWithRuntime } from '../transport/wire';
 
 export default class Launcher {
     private os: string;
@@ -31,7 +31,7 @@ export default class Launcher {
         }
     }
 
-    public launch(config: NewConnectConfig, manifestLocation: string, namedPipeName: string): Promise<ChildProcess> {
+    public launch(config: ConfigWithRuntime, manifestLocation: string, namedPipeName: string): Promise<ChildProcess> {
         if (this.os === 'win32') {
             return this.winLaunch(config, manifestLocation, namedPipeName);
         } else if (this.os === 'darwin') {
@@ -60,11 +60,11 @@ export default class Launcher {
         return platform === 'win32' || platform === 'darwin' || os.platform() === 'linux';
     }
 
-    private macLaunch(config: NewConnectConfig, osConfig: OsConfig) {
+    private macLaunch(config: ConfigWithRuntime, osConfig: OsConfig) {
         return macLaunch(config, osConfig);
     }
 
-    private winLaunch(config: NewConnectConfig, manifestLocation: string, namedPipeName: string) {
+    private winLaunch(config: ConfigWithRuntime, manifestLocation: string, namedPipeName: string) {
         return winLaunch(config, manifestLocation, namedPipeName, this.Installer_Work_Dir);
     }
 }
