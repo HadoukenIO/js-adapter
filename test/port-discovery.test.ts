@@ -20,7 +20,7 @@ describe('PortDiscovery.', function () {
     let spawns = 0;
     function makeConfig(config: any = {}): ConnectConfig {
         const defaultRconfig = {
-            version: 'community',
+            version: process.env.OF_VER,
             verboseLogging: false,
             rvmDir: process.env.RVM_DIR,
             securityRealm: 'adapter-test-port-discovery-' + spawns
