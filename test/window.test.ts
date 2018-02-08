@@ -1,6 +1,7 @@
 import { conn } from './connect';
 import * as assert from 'assert';
 import { connect as rawConnect, Fin, Application, Window } from '../src/main';
+import { delayPromise } from './delay-promise';
 
 describe('Window.', function() {
     let fin: Fin;
@@ -353,9 +354,13 @@ describe('Window.', function() {
     describe('setZoomLevel()', () => {
 
         const zoomLevel = 1;
+        it('Fulfilled', async () => {
 
-        it('Fulfilled', () => testWindow.setZoomLevel(zoomLevel)
-            .then(() => testWindow.getZoomLevel()).then(data => assert(data === zoomLevel)));
+            await testWindow.setZoomLevel(zoomLevel);
+            await delayPromise(100);
+            const newZoomLevel = await testWindow.getZoomLevel();
+            assert(newZoomLevel === zoomLevel);
+        });
     });
 
     describe('navigate()', () => {
