@@ -5,6 +5,8 @@ import * as path from 'path';
 import * as ChildProcess from 'child_process';
 import { connect as rawConnect, Fin } from '../src/main';
 import { resolveDir, promisify, first, serial, promiseMap } from '../src/launcher/util';
+import { delayPromise } from './delay-promise';
+
 const appConfig = JSON.parse(fs.readFileSync(path.resolve('test/app.json')).toString());
 
 let uuidNum = 0;
@@ -113,8 +115,9 @@ export function kill(fin: Fin) {
 }
 
 async function closeAndClean(runtimeProcess: RuntimeProcess): Promise<void> {
-    // await runtimfimProcess.fin.Application.terminate();
     killByPort(runtimeProcess.port);
+    // give some time for rvm process to be killed
+    await delayPromise(DELAY_MS);
     const cachePath = await realmCachePath(runtimeProcess.realm);
     rimraf.sync(cachePath);
 }
