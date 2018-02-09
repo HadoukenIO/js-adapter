@@ -21,7 +21,7 @@ export interface RuntimeConfig {
 
 }
 export interface BaseConfig {
-    uuid: string;
+    uuid?: string;
     address?: string;
     name?: string;
     nonPersistent?: boolean;
@@ -47,26 +47,58 @@ export interface BaseConfig {
     timeout?: number; // in seconds
 }
 
-export interface ExistingConnectConfig extends BaseConfig {
+export interface ConfigWithUuid extends BaseConfig {
+    uuid: string;
+}
+
+export interface ExistingConnectConfig extends ConfigWithUuid {
     address: string;
 }
 
-export interface NewConnectConfig extends BaseConfig {
+export interface ConfigWithRuntime extends BaseConfig {
     runtime: RuntimeConfig;
 }
 
-export type ConnectConfig = ExistingConnectConfig | NewConnectConfig;
+export interface ExternalConfig extends BaseConfig {
+    manifestUrl: string;
+}
 
-export function isExistingConnectConfig(config: ConnectConfig): config is ExistingConnectConfig {
-    if (typeof config.address === 'string') {
+export type NewConnectConfig = ConfigWithUuid & ConfigWithRuntime;
+
+export type PortDiscoveryConfig = (ExternalConfig & ConfigWithRuntime) | NewConnectConfig;
+
+export type ConnectConfig = ExistingConnectConfig | NewConnectConfig | ExternalConfig;
+
+export type InternalConnectConfig = ExistingConnectConfig | NewConnectConfig;
+
+export function isExternalConfig(config: ConnectConfig): config is ExternalConfig {
+    if (typeof config.manifestUrl === 'string') {
         return true;
     }
 }
 
-export function isNewConnectConfig(config: ConnectConfig): config is NewConnectConfig {
-    if (config.runtime && typeof config.runtime.version === 'string') {
-        return true;
-    }
+export function isExistingConnectConfig(config: any): config is ExistingConnectConfig {
+    return hasUuid(config) && typeof config.address === 'string';
+}
+
+function hasUuid(config: any): config is ConfigWithUuid {
+    return typeof config.uuid === 'string';
+}
+
+function hasRuntimeVersion (config: any): config is ConfigWithRuntime {
+    return config.runtime && typeof config.runtime.version === 'string';
+}
+
+export function isNewConnectConfig(config: any): config is NewConnectConfig {
+    return hasUuid(config) && hasRuntimeVersion(config);
+}
+
+export function isPortDiscoveryConfig(config: any): config is PortDiscoveryConfig {
+    return (isExternalConfig(config) && hasRuntimeVersion(config)) || isNewConnectConfig(config);
+}
+
+export function isInternalConnectConfig (config: any): config is InternalConnectConfig {
+   return isExistingConnectConfig(config) || isNewConnectConfig(config);
 }
 
 export enum READY_STATE { // https://github.com/websockets/ws/blob/master/doc/ws.md#ready-state-constants

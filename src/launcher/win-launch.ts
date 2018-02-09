@@ -3,7 +3,7 @@ import * as os from 'os';
 import * as path from 'path';
 import { ChildProcess, spawn } from 'child_process';
 import { exists, resolveDir } from './util';
-import { NewConnectConfig } from '../transport/wire';
+import { ConfigWithRuntime } from '../transport/wire';
 const OpenFin_Installer: string = 'OpenFinInstaller.exe';
 
 function copyInstaller(Installer_Work_Dir: string): Promise<string> {
@@ -19,7 +19,7 @@ function copyInstaller(Installer_Work_Dir: string): Promise<string> {
         rd.pipe(wr);
     });
 }
-async function checkRVMAsync(config: NewConnectConfig, Installer_Work_Dir: string, manifestLocation: string): Promise<string> {
+async function checkRVMAsync(config: ConfigWithRuntime, Installer_Work_Dir: string, manifestLocation: string): Promise<string> {
     const rvmPath: string = path.resolve(process.env.LOCALAPPDATA, 'OpenFin', 'OpenFinRVM.exe');
     if (! await exists(rvmPath)) {
         await new Promise(async (resolve, reject) => {
@@ -37,7 +37,7 @@ async function checkRVMAsync(config: NewConnectConfig, Installer_Work_Dir: strin
     return rvmPath;
 }
 
-function launchRVM(config: NewConnectConfig, manifestLocation: string, namedPipeName: string, rvm: string): ChildProcess {
+function launchRVM(config: ConfigWithRuntime, manifestLocation: string, namedPipeName: string, rvm: string): ChildProcess {
     const runtimeArgs = `--runtime-arguments=--runtime-information-channel-v6=${namedPipeName}`;
     const rvmArgs: Array<string> = [];
     if (config.installerUI !== true) {
@@ -56,7 +56,7 @@ function launchRVM(config: NewConnectConfig, manifestLocation: string, namedPipe
 const checkRVM = makeQueued(checkRVMAsync);
 
 // tslint:disable-next-line:max-line-length
-export default async function launch(config: NewConnectConfig, manifestLocation: string, namedPipeName: string, Installer_Work_Dir: string): Promise<ChildProcess> {
+export default async function launch(config: ConfigWithRuntime, manifestLocation: string, namedPipeName: string, Installer_Work_Dir: string): Promise<ChildProcess> {
     const rvmPath = await checkRVM(config, Installer_Work_Dir, manifestLocation);
     return await launchRVM(config, manifestLocation, namedPipeName, rvmPath);
 }

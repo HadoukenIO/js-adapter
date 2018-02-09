@@ -1,7 +1,7 @@
 import * as fs from 'fs';
 import * as path from 'path';
 import { ChildProcess, spawn } from 'child_process';
-import { NewConnectConfig } from '../transport/wire';
+import { ConfigWithRuntime } from '../transport/wire';
 import { promisify, resolveRuntimeVersion, rmDir, downloadFile, unzip, resolveDir, exists } from './util';
 
 const mkdir = promisify(fs.mkdir);
@@ -65,7 +65,7 @@ export interface OsConfig {
     manifestLocation: string; namedPipeName: string; urlPath: string; executablePath: string;
 }
 
-export default async function launch(config: NewConnectConfig, osConfig: OsConfig): Promise<ChildProcess> {
+export default async function launch(config: ConfigWithRuntime, osConfig: OsConfig): Promise<ChildProcess> {
     try {
         let fb = false;
         const runtimePath = await install(config.runtime.version, osConfig)

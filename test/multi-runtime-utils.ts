@@ -68,7 +68,7 @@ async function realmCachePath(realm: string): Promise<string> {
 
 export function getPort(fin: Fin): string {
     // @ts-ignore: TODO get current connection from fin
-    return fin.wire.wire.wire.url.split(':').slice(-1);
+    return fin.wire.wire.wire.url.split(':').slice(-1)[0];
 }
 
 function generateAppConfig(): any {
@@ -88,7 +88,7 @@ function generateAppConfig(): any {
     };
 }
 
-function killByPort(port: string) {
+export function killByPort(port: string | number) {
     try {
         if (os.platform().match(/^win/)) {
             const cmd = `for /f "tokens=5" %a in \
