@@ -36,8 +36,9 @@ describe('Multi Runtime', () => {
 
                     async function test() {
                         const appConfig = getAppConfig();
-                        const finA = await launchAndConnect();
-                        const finB = await launchAndConnect();
+                        const conns = await launchX(2);
+                        const finA = conns[0];
+                        const finB = conns[1];
                         await delayPromise(DELAY_MS);
 
                         const realApp = await finB.Application.create(appConfig);
@@ -61,8 +62,9 @@ describe('Multi Runtime', () => {
                     this.timeout(TEST_TIMEOUT * 2);
 
                     async function test() {
-                        const finA = await launchAndConnect();
-                        const finB = await launchAndConnect();
+                        const conns = await launchX(2);
+                        const finA = conns[0];
+                        const finB = conns[1];
                         const appConfig = getAppConfig();
                         await delayPromise(DELAY_MS);
                         let realApp: any;

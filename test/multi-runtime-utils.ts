@@ -5,6 +5,8 @@ import * as path from 'path';
 import * as ChildProcess from 'child_process';
 import { connect as rawConnect, Fin } from '../src/main';
 import { resolveDir, promisify, first, serial, promiseMap } from '../src/launcher/util';
+import { delayPromise } from './delay-promise';
+
 const appConfig = JSON.parse(fs.readFileSync(path.resolve('test/app.json')).toString());
 
 let uuidNum = 0;
@@ -63,7 +65,11 @@ async function spawnRealm(version: string, realm?: string, args?: Array<string>)
 }
 
 async function realmCachePath(realm: string): Promise<string> {
-    return resolveDir(os.tmpdir(), ['OpenFin', 'cache', realm]);
+    if (os.platform() === 'win32') {
+        return resolveDir(process.env.LOCALAPPDATA, ['OpenFin', 'cache', realm]);
+    } else {
+        return resolveDir(os.tmpdir(), ['OpenFin', 'cache', realm]);
+    }
 }
 
 export function getPort(fin: Fin): string {
@@ -109,8 +115,9 @@ export function kill(fin: Fin) {
 }
 
 async function closeAndClean(runtimeProcess: RuntimeProcess): Promise<void> {
-    // await runtimfimProcess.fin.Application.terminate();
     killByPort(runtimeProcess.port);
+    // give some time for rvm process to be killed
+    await delayPromise(DELAY_MS);
     const cachePath = await realmCachePath(runtimeProcess.realm);
     rimraf.sync(cachePath);
 }

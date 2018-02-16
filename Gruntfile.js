@@ -29,7 +29,8 @@ module.exports = function (grunt) {
     const args = '--enable-multi-runtime --debug=5858';
     process.env.OF_VER = version;
     process.env.TEST_SERVER_PORT = serverParams.port;
-    process.env.RVM_DIR = rvmDir || process.env.localAppData;
+
+    process.env.RVM_DIR = rvmDir || path.resolve('' + process.env.localAppData, 'OpenFin');
 
     grunt.initConfig({
         shell: {
@@ -63,7 +64,7 @@ module.exports = function (grunt) {
                     create: true,
                     options: {
                         runtime: {
-                            //arguments: args,
+                            arguments: args,
                             version
                         },
                         startup_app: {
