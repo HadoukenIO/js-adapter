@@ -1,6 +1,7 @@
 import { conn } from './connect';
 import { Fin, Application, connect as rawConnect } from '../src/main';
 import * as assert from 'assert';
+import * as path from 'path';
 
 // tslint:disable-next-line
 describe('Application.', function() {
@@ -89,8 +90,8 @@ describe('Application.', function() {
         before(async () => {
             localFin = await rawConnect({
                 uuid: 'test-getshortcuts',
-                manifestUrl: 'https://demoappdirectory.openf.in/desktop/config/apps/OpenFin/HelloOpenFin/app.json'});
-            localApp = await localFin.Application.wrap({uuid: 'OpenFinHelloWorld'});
+                manifestUrl: path.resolve('test/app.json')});
+            localApp = await localFin.Application.wrap({uuid: 'testapp'});
         });
 
         after(() => localApp.close());
@@ -155,8 +156,8 @@ describe('Application.', function() {
         before(async () => {
             localFin = await rawConnect({
                 uuid: 'test-setshortcuts',
-                manifestUrl: 'https://demoappdirectory.openf.in/desktop/config/apps/OpenFin/HelloOpenFin/app.json'});
-                localApp = await localFin.Application.wrap({uuid: 'OpenFinHelloWorld'});
+                manifestUrl: path.resolve('test/app.json')});
+            localApp = await localFin.Application.wrap({uuid: 'testapp'});
         });
 
         after(() => localApp.close());
