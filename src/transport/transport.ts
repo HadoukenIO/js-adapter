@@ -55,7 +55,7 @@ class Transport extends EventEmitter {
         if (isExistingConnectConfig(config)) {
             return this.connectByPort(config);
         } else if (isNewConnectConfig(config)) {
-            const port = await this.environment.retreivePort(config);
+            const port = await this.environment.retrievePort(config);
             return this.connectByPort(Object.assign({}, config, { address: `ws://localhost:${port}` }));
         }
     }

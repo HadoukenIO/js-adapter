@@ -10,7 +10,7 @@ export default class OpenFinEnvironment implements Environment {
         throw new NotImplementedError('Not Implemented');
     }
 
-    public retreivePort = (config: NewConnectConfig): Promise<number> => {
+    public retrievePort = (config: NewConnectConfig): Promise<number> => {
         throw new NotImplementedError('Not Implemented');
     }
 
