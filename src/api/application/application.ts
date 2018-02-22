@@ -96,13 +96,13 @@ export class Application extends Base {
 
     private windowListFromNameList(nameList: Array<string>): Array<_Window> {
         const windowList: Array<_Window> = [];
-        // tslint:disable-next-line
-        for (let i = 0; i < nameList.length; i++) {
+        nameList.forEach(name => {
             windowList.push(new _Window(this.wire, {
                 uuid: <string>this.identity.uuid,
-                name: nameList[i]
+                name: name
             }));
-        }
+        });
+
         return windowList;
     }
 
@@ -142,10 +142,9 @@ export class Application extends Base {
         const winGroups: Array<Array<_Window>> = <Array<Array<_Window>>>[];
         return this.wire.sendAction('get-application-groups', this.identity)
             .then(({ payload }) => {
-                // tslint:disable-next-line
-                for (let i = 0; i < payload.data.length; i++) {
-                    winGroups[i] = this.windowListFromNameList(payload.data[i]);
-                }
+                payload.data.forEach((list: string[], index: number) => {
+                    winGroups[index] = this.windowListFromNameList(list);
+                });
 
                 return winGroups;
             });

@@ -462,14 +462,13 @@ export class _Window extends Base {
     private windowListFromNameList(nameList: Array<string>): Array<_Window> {
         const windowList: Array<_Window> = [];
 
-        // tslint:disable-next-line
-        for (let i = 0; i < nameList.length; i++) {
+        nameList.forEach(name => {
             windowList.push(new _Window(this.wire, {
                 // tslint:disable-next-line
                 uuid: this.identity.uuid as string,
-                name: nameList[i]
+                name: name
             }));
-        }
+        });
         return windowList;
     }
 
@@ -623,10 +622,10 @@ export class _Window extends Base {
         return this.wire.sendAction('get-window-group', this.identity).then(({ payload }) => {
             // tslint:disable-next-line
             let winGroups: Array<Array<_Window>> = [] as Array<Array<_Window>>;
-            // tslint:disable-next-line
-            for (let i = 0; i < payload.data.length; i++) {
-                winGroups[i] = this.windowListFromNameList(payload.data[i]);
-            }
+
+            payload.data.forEach((list: string[], index: number) => {
+                winGroups[index] = this.windowListFromNameList(list);
+            });
 
             return winGroups;
         });
