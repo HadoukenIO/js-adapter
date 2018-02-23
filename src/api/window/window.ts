@@ -523,7 +523,7 @@ export class _Window extends Base {
 
     /**
      * Closes the window
-     * @param { boolean } interrupt assigns the value to flase
+     * @param { boolean } interrupt assigns the value to false
      * @return {Animation}
      */
     public animationBuilder(interrupt: boolean = false): Animation {
@@ -541,7 +541,8 @@ export class _Window extends Base {
 
     /**
      * closes the window application
-     * @param { boolean } force A boolean that is assign to flase
+     * @param { boolean } [force = false] Close will be prevented from closing when force is false and
+     *  ‘close-requested’ has been subscribed to for application’s main window.
      * @return {Promise.<void>}
      * @tutorial Window.close
     */
@@ -844,7 +845,8 @@ export class _Window extends Base {
 
     /**
      * Shows the window if it is hidden.
-     * @param { boolean } force assign the value to flase
+     * @param { boolean } [force = false] Show will be prevented from showing when force is false and
+     *  ‘show-requested’ has been subscribed to for application’s main window.
      * @tutorial Window.show
      * @return {Promise.<void>}
      */

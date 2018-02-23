@@ -117,7 +117,8 @@ export class Application extends Base {
 
     /**
      * Closes the application and any child windows created by the application.
-     * @param { boolean } [force = false] force assigns the value to false
+     * @param { boolean } [force = false] Close will be prevented from closing when force is false and
+     *  ‘close-requested’ has been subscribed to for application’s main window.
      * @return {Promise.<boolean>}
      */
     public close(force: boolean = false): Promise<void> {
@@ -250,6 +251,9 @@ export class Application extends Base {
     /**
      * Sets new application's shortcut configuration.
      * @param { Object } config New application's shortcut configuration.
+     * @param {Boolean} [config.desktop] - Enable/disable desktop shortcut.
+     * @param {Boolean} [config.startMenu] - Enable/disable start menu shortcut.
+     * @param {Boolean} [config.systemStartup] - Enable/disable system startup shortcut.
      * @return {Promise.<void>}
      * @tutorial Application.setShortcuts
      */
