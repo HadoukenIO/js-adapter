@@ -1,7 +1,7 @@
 import { conn } from './connect';
-import { Fin, Application } from '../src/main';
+import { Fin, Application, connect as rawConnect } from '../src/main';
 import * as assert from 'assert';
-//import * as path from 'path';
+import * as path from 'path';
 
 // tslint:disable-next-line
 describe('Application.', function() {
@@ -83,19 +83,28 @@ describe('Application.', function() {
         });
     });
 
-    /*  todo: local file is not working now. will enable it after port-discovery code updates
     describe('getShortcuts()', () => {
+        // need to create an application using manifest url
+        let localApp: Application;
+        let localFin: Fin;
+        before(async () => {
+            localFin = await rawConnect({
+                uuid: 'test-getshortcuts',
+                manifestUrl: path.resolve('test/app.json')});
+            localApp = await localFin.Application.wrap({uuid: 'testapp'});
+        });
 
-        it('Fulfilled', () => fin.Application.createFromManifest('file:///' + path.resolve('test/app.json'))
-            .then(app => {
-            return app.getShortcuts().then(data => {
+        after(() => localApp.close());
+
+        it('Fulfilled', () => localApp.isRunning()
+        .then(() => localApp.getShortcuts())
+            .then(data => {
                 assert(typeof(data.desktop) === 'boolean');
                 assert(typeof(data.startMenu) === 'boolean');
                 assert(typeof(data.systemStartup) === 'boolean');
-            });
-        }));
+            }));
     });
-    */
+
     describe('getTrayIconInfo()', () => {
 
        it('Fulfilled', () => testApp.setTrayIcon('http://cdn.openfin.co/assets/testing/icons/circled-digit-one.png')
@@ -140,12 +149,22 @@ describe('Application.', function() {
         });
     });
 
-    /* todo: local file is not working now. will enable it after port-discovery code updates
     describe('setShortcuts()', () => {
+        // need to create an application using manifest url
+        let localApp: Application;
+        let localFin: Fin;
+        before(async () => {
+            localFin = await rawConnect({
+                uuid: 'test-setshortcuts',
+                manifestUrl: path.resolve('test/app.json')});
+            localApp = await localFin.Application.wrap({uuid: 'testapp'});
+        });
 
-        it('Fulfilled', () => fin.Application.createFromManifest('file:///' + path.resolve('test/app.json'))
-            .then(app => {
-                app.setShortcuts({
+        after(() => localApp.close());
+
+        it('Fulfilled', () => localApp.isRunning()
+            .then(() => {
+                localApp.setShortcuts({
                     desktop: true,
                     startMenu: false,
                     systemStartup: true
@@ -153,7 +172,7 @@ describe('Application.', function() {
                     assert(true);
                 });
         }));
-    });*/
+    });
 
     describe('terminate()', () => {
 
