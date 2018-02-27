@@ -462,14 +462,13 @@ export class _Window extends Base {
     private windowListFromNameList(nameList: Array<string>): Array<_Window> {
         const windowList: Array<_Window> = [];
 
-        // tslint:disable-next-line
-        for (let i = 0; i < nameList.length; i++) {
+        nameList.forEach(name => {
             windowList.push(new _Window(this.wire, {
                 // tslint:disable-next-line
                 uuid: this.identity.uuid as string,
-                name: nameList[i]
+                name: name
             }));
-        }
+        });
         return windowList;
     }
 
@@ -524,7 +523,7 @@ export class _Window extends Base {
 
     /**
      * Closes the window
-     * @param { boolean } interrupt assigns the value to flase
+     * @param { boolean } interrupt assigns the value to false
      * @return {Animation}
      */
     public animationBuilder(interrupt: boolean = false): Animation {
@@ -542,7 +541,8 @@ export class _Window extends Base {
 
     /**
      * closes the window application
-     * @param { boolean } force A boolean that is assign to flase
+     * @param { boolean } [force = false] Close will be prevented from closing when force is false and
+     *  ‘close-requested’ has been subscribed to for application’s main window.
      * @return {Promise.<void>}
      * @tutorial Window.close
     */
@@ -623,10 +623,10 @@ export class _Window extends Base {
         return this.wire.sendAction('get-window-group', this.identity).then(({ payload }) => {
             // tslint:disable-next-line
             let winGroups: Array<Array<_Window>> = [] as Array<Array<_Window>>;
-            // tslint:disable-next-line
-            for (let i = 0; i < payload.data.length; i++) {
-                winGroups[i] = this.windowListFromNameList(payload.data[i]);
-            }
+
+            payload.data.forEach((list: string[], index: number) => {
+                winGroups[index] = this.windowListFromNameList(list);
+            });
 
             return winGroups;
         });
@@ -845,7 +845,8 @@ export class _Window extends Base {
 
     /**
      * Shows the window if it is hidden.
-     * @param { boolean } force assign the value to flase
+     * @param { boolean } [force = false] Show will be prevented from showing when force is false and
+     *  ‘show-requested’ has been subscribed to for application’s main window.
      * @tutorial Window.show
      * @return {Promise.<void>}
      */

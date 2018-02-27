@@ -96,13 +96,13 @@ export class Application extends Base {
 
     private windowListFromNameList(nameList: Array<string>): Array<_Window> {
         const windowList: Array<_Window> = [];
-        // tslint:disable-next-line
-        for (let i = 0; i < nameList.length; i++) {
+        nameList.forEach(name => {
             windowList.push(new _Window(this.wire, {
                 uuid: <string>this.identity.uuid,
-                name: nameList[i]
+                name: name
             }));
-        }
+        });
+
         return windowList;
     }
 
@@ -117,7 +117,8 @@ export class Application extends Base {
 
     /**
      * Closes the application and any child windows created by the application.
-     * @param { boolean } [force = false] force assigns the value to false
+     * @param { boolean } [force = false] Close will be prevented from closing when force is false and
+     *  ‘close-requested’ has been subscribed to for application’s main window.
      * @return {Promise.<boolean>}
      */
     public close(force: boolean = false): Promise<void> {
@@ -142,10 +143,9 @@ export class Application extends Base {
         const winGroups: Array<Array<_Window>> = <Array<Array<_Window>>>[];
         return this.wire.sendAction('get-application-groups', this.identity)
             .then(({ payload }) => {
-                // tslint:disable-next-line
-                for (let i = 0; i < payload.data.length; i++) {
-                    winGroups[i] = this.windowListFromNameList(payload.data[i]);
-                }
+                payload.data.forEach((list: string[], index: number) => {
+                    winGroups[index] = this.windowListFromNameList(list);
+                });
 
                 return winGroups;
             });
@@ -251,6 +251,9 @@ export class Application extends Base {
     /**
      * Sets new application's shortcut configuration.
      * @param { Object } config New application's shortcut configuration.
+     * @param {Boolean} [config.desktop] - Enable/disable desktop shortcut.
+     * @param {Boolean} [config.startMenu] - Enable/disable start menu shortcut.
+     * @param {Boolean} [config.systemStartup] - Enable/disable system startup shortcut.
      * @return {Promise.<void>}
      * @tutorial Application.setShortcuts
      */
