@@ -5,6 +5,8 @@ import BoundsChangedReply from './bounds-changed';
 import Animation from './animation';
 import { Application } from '../application/application';
 import Transport from '../../transport/transport';
+//import { initialOptions, windowExists, createChildWindow } from '../../environment/openfin-renderer-api';
+//import { windowExists } from '../../environment/openfin-renderer-api';
 import * as _ from 'underscore';
 
 declare var fin: any;
@@ -27,10 +29,13 @@ export default class _WindowModule extends Bare {
      * @return {Promise.<_Window>}
      */
     public create(options: any): Promise<_Window> {
+        const identity = fin.__internal_.initialOptions;
+        const me: _Window = new _Window(this.wire, {uuid: identity.uuid, name: options.name});
+
         return new Promise((resolve, reject) => {
-            // tslint:disable-next-line
-            const me: any = this;
-            const identity = fin.__internal_.initialOptions;
+            console.log('======');
+            console.log('fin=' + fin);
+
             const opt = _.clone(options); // replace deepCopy
             const ABOUT_BLANK = 'about:blank';
             const CONSTRUCTOR_CB_TOPIC = 'fire-constructor-callback';
@@ -56,6 +61,7 @@ export default class _WindowModule extends Bare {
                         console.warn('child window uuid must match the parent window\'s uuid: ' + identity.uuid);
                         opt.uuid = identity.uuid;
                         me.uuid = opt.uuid;
+                        //me.identity.uuid = opt.uuid;
                         me.app_uuid = opt.uuid;
                     }
 
@@ -75,7 +81,7 @@ export default class _WindowModule extends Bare {
 
                     const pageResponse = new Promise((resolve) => {
                         // tslint:disable-next-line
-                        me.addEventListener(CONSTRUCTOR_CB_TOPIC, function fireConstructor(response: any) {
+                        me.on(CONSTRUCTOR_CB_TOPIC, function fireConstructor(response: any) {
                             let cbPayload;
                             const success = response.success;
                             const responseData = response.data;
@@ -87,7 +93,7 @@ export default class _WindowModule extends Bare {
                                 cbPayload = _.pick(responseData, 'message', 'networkErrorCode', 'stack');
                             }
 
-                            me.removeEventListener(CONSTRUCTOR_CB_TOPIC, fireConstructor);
+                            me.removeListener(CONSTRUCTOR_CB_TOPIC, fireConstructor);
                             resolve({
                                 message: message,
                                 cbPayload: cbPayload,
@@ -102,7 +108,7 @@ export default class _WindowModule extends Bare {
                             fin.__internal_.createChildWindow(opt, (childWin: any) => {
                                 me.nativeWindow = childWin.nativeWindow;
                                 me.contentWindow = me.nativeWindow;
-                                //opt.uuid = components.applicationUuid; // todo: nee to get application uuid
+                                opt.uuid = identity.uuid;  //components.applicationUuid;
                                 me.uuid = opt.uuid;
                                 me.app_uuid = opt.uuid;
 
@@ -110,7 +116,7 @@ export default class _WindowModule extends Bare {
                                 this.windowList[me.name] = me.contentWindow;
 
                                 //make sure we clean up all references.
-                                me.addEventListener('closed', function() {
+                                me.on('closed', function() {
                                     delete this.windowList[me.name];
                                     delete me.contentWindow;
                                     delete me.nativeWindow;
@@ -128,7 +134,9 @@ export default class _WindowModule extends Bare {
                         const success = pageResolve.success;
 
                         if (success) {
-                            resolve(cbPayload);
+                            //resolve.call(me, cbPayload);
+                            me.cbPayload = cbPayload;
+                            resolve(me);
                         } else {
                             //errorCallback.call(me, message, cbPayload);
                             reject(message);
@@ -145,8 +153,23 @@ export default class _WindowModule extends Bare {
                         }
                     });
 
+                } else {
+                    if (!opt._nocontentwindow) {
+                        me.contentWindow = window;
+                    }
+                    if (me.name === window.name) {
+                        me.contentWindow = window;
+                    } else {
+                        me.contentWindow = this.windowList[me.name];
+                    }
+                    //make sure the nativeWindow is set for backwards compatibility.
+                    me.nativeWindow = me.contentWindow;
+                    if (resolve) {
+                        setTimeout(() => {
+                            resolve(me);
+                        }, 0);
+                    }
                 }
-                resolve(new _Window(this.wire, this.wire.me));
             }
         });
     }
@@ -198,6 +221,13 @@ export interface FrameInfo {
 // The window.Window name is taken
 // tslint:disable-next-line
 export class _Window extends Base {
+    public uuid: string;
+    public name: string;
+    public app_uuid: string;
+    public connected: boolean;
+    public nativeWindow: any;
+    public contentWindow: any;
+    public cbPayload: any;
 
     /**
      * Raised when a window within this application requires credentials from the user.
@@ -1087,4 +1117,5 @@ export interface _Window {
     on(type: 'removeListener', listener: (eventType: string) => void): this;
     on(type: 'newListener', listener: (eventType: string) => void): this;
     on(type: 'closed', listener: (eventType: CloseEventShape) => void): this;
+    on(type: 'fire-constructor-callback', listener: Function): this;
 }
