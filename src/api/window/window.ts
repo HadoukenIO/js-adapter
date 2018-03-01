@@ -29,149 +29,125 @@ export default class _WindowModule extends Bare {
      * @return {Promise.<_Window>}
      */
     public create(options: any): Promise<_Window> {
-        const identity = fin.__internal_.initialOptions;
-        const me: _Window = new _Window(this.wire, {uuid: identity.uuid, name: options.name});
-
         return new Promise((resolve, reject) => {
-            console.log('======');
-            console.log('fin=' + fin);
-
-            const opt = _.clone(options); // replace deepCopy
+            const initialOptions = fin.__internal_.initialOptions;
+            const { uuid } = initialOptions;
+            const me: _Window = new _Window(this.wire, {uuid, name: options.name});
+            const opt = _.clone(options);
             const ABOUT_BLANK = 'about:blank';
             const CONSTRUCTOR_CB_TOPIC = 'fire-constructor-callback';
 
-            if (!opt.name || typeof opt.name !== 'string') {
+            if (!name || typeof name !== 'string') {
                 reject('Error: window must have a name');
 
-                // todo: need to consider preloadscript valid
-                /*if (!components.isPreloadScriptsOptionValid(options, errorCallback)) {
-                    return;
-                }*/
-            }else {
-                opt.uuid = opt.uuid || identity.uuid;
-                opt.url = opt.url || ABOUT_BLANK;
-
-                me.connected = true;
-                me.name = opt.name;
-                me.uuid = opt.uuid;
-                me.app_uuid = opt.uuid;
-
-                if (!opt._noregister) {
-                    if (opt.uuid !== identity.uuid) {
-                        console.warn('child window uuid must match the parent window\'s uuid: ' + identity.uuid);
-                        opt.uuid = identity.uuid;
-                        me.uuid = opt.uuid;
-                        //me.identity.uuid = opt.uuid;
-                        me.app_uuid = opt.uuid;
-                    }
-
-                    if (fin.__internal_.windowExists(opt.uuid, opt.name)) {
-                        // todo: do we need to send this error message?
-                        console.warn('Error: trying to create a window that already exists');
-                        return this.wrap({uuid: me.uuid, name: me.name});
-                    }
-                    /* todo: need to check later
-                    if (opt.url !== ABOUT_BLANK) {
-                        opt.url = components.resolveUrl(opt.url);
-                    }*/
-
-                    // child windows default to (100,100) and app windows default to (10,10)
-                    opt.defaultTop = Math.floor(typeof opt.defaultTop === 'number' ? opt.defaultTop : 100);
-                    opt.defaultLeft = Math.floor(typeof opt.defaultLeft === 'number' ? opt.defaultLeft : 100);
-
-                    const pageResponse = new Promise((resolve) => {
-                        // tslint:disable-next-line
-                        me.on(CONSTRUCTOR_CB_TOPIC, function fireConstructor(response: any) {
-                            let cbPayload;
-                            const success = response.success;
-                            const responseData = response.data;
-                            const message = responseData.message;
-
-                            if (success) {
-                                cbPayload = _.pick(response.data, 'httpResponseCode', 'apiInjected');
-                            } else {  // remove errorCallback check
-                                cbPayload = _.pick(responseData, 'message', 'networkErrorCode', 'stack');
-                            }
-
-                            me.removeListener(CONSTRUCTOR_CB_TOPIC, fireConstructor);
-                            resolve({
-                                message: message,
-                                cbPayload: cbPayload,
-                                success: success
-                            });
-                        });
-                    });
-
-                    const windowCreation = new Promise((resolve) => {
-                        // TODO revisit why / if this needs to be timed out
-                        setTimeout(() => {
-                            fin.__internal_.createChildWindow(opt, (childWin: any) => {
-                                me.nativeWindow = childWin.nativeWindow;
-                                me.contentWindow = me.nativeWindow;
-                                opt.uuid = identity.uuid;  //components.applicationUuid;
-                                me.uuid = opt.uuid;
-                                me.app_uuid = opt.uuid;
-
-                                //TODO:content window assignment goes here. also below the else.
-                                this.windowList[me.name] = me.contentWindow;
-
-                                //make sure we clean up all references.
-                                me.on('closed', function() {
-                                    delete this.windowList[me.name];
-                                    delete me.contentWindow;
-                                    delete me.nativeWindow;
-                                });
-
-                                resolve();
-                            });
-                        }, 0);
-                    });
-
-                    Promise.all([pageResponse, windowCreation]).then((resolvedArr: any) => {
-                        const pageResolve = resolvedArr[0];
-                        const message = pageResolve.message;
-                        const cbPayload = pageResolve.cbPayload;
-                        const success = pageResolve.success;
-
-                        if (success) {
-                            //resolve.call(me, cbPayload);
-                            me.cbPayload = cbPayload;
-                            resolve(me);
-                        } else {
-                            //errorCallback.call(me, message, cbPayload);
-                            reject(message);
-                        }
-
-                        try {
-                            // this is to enforce a 5.0 contract that the child's main function
-                            // will not fire before the parent's success callback on creation.
-                            // if the child window is not accessible (CORS) this contract does
-                            // not hold.
-                            me.nativeWindow.fin.__internal_.openerSuccessCBCalled();
-                        } catch (e) {
-                            console.warn(e);
-                        }
-                    });
-
-                } else {
-                    if (!opt._nocontentwindow) {
-                        me.contentWindow = window;
-                    }
-                    if (me.name === window.name) {
-                        me.contentWindow = window;
-                    } else {
-                        me.contentWindow = this.windowList[me.name];
-                    }
-                    //make sure the nativeWindow is set for backwards compatibility.
-                    me.nativeWindow = me.contentWindow;
-                    if (resolve) {
-                        setTimeout(() => {
-                            resolve(me);
-                        }, 0);
-                    }
-                }
             }
-        });
+
+            opt.uuid = opt.uuid || uuid;
+            opt.url = opt.url || ABOUT_BLANK;
+
+            me.connected = true;
+            //me.name = opt.name;
+            //me.uuid = opt.uuid;
+            me.identity = {uuid: opt.uuid, name: opt.name};
+            me.app_uuid = opt.uuid;
+
+            if (opt.uuid !== uuid) {
+                console.warn('child window uuid must match the parent window\'s uuid: ' + uuid);
+                opt.uuid = uuid;
+                //me.uuid = opt.uuid;
+                me.identity.uuid = opt.uuid;
+                me.app_uuid = opt.uuid;
+            }
+
+            if (fin.__internal_.windowExists(opt.uuid, opt.name)) {
+                reject('Error: trying to create a window that already exists');
+            }
+
+            if (opt.url !== ABOUT_BLANK) {
+                opt.url = this.resolveUrl(opt.url);
+            }
+
+            const pageResponse = new Promise((resolve) => {
+                // tslint:disable-next-line
+                me.on(CONSTRUCTOR_CB_TOPIC, function fireConstructor(response: any) {
+                    let cbPayload;
+                    const success = response.success;
+                    const responseData = response.data;
+                    const message = responseData.message;
+
+                    if (success) {
+                        cbPayload = _.pick(response.data, 'httpResponseCode', 'apiInjected');
+                    } else {  // remove errorCallback check
+                        cbPayload = _.pick(responseData, 'message', 'networkErrorCode', 'stack');
+                    }
+
+                    me.removeListener(CONSTRUCTOR_CB_TOPIC, fireConstructor);
+                    resolve({
+                        message: message,
+                        cbPayload: cbPayload,
+                        success: success
+                    });
+                });
+            });
+
+            const windowCreation = new Promise((resolve) => {
+                // TODO revisit why / if this needs to be timed out
+                setTimeout(() => {
+                    fin.__internal_.createChildWindow(opt, (childWin: any) => {
+                        me.nativeWindow = childWin.nativeWindow;
+                        me.contentWindow = me.nativeWindow;
+                        //opt.uuid = initialOptions.uuid;  //components.applicationUuid;
+                        //me.uuid = opt.uuid;
+                        //me.app_uuid = opt.uuid;
+
+                        //TODO:content window assignment goes here. also below the else.
+                        this.windowList[me.identity.name] = me.contentWindow;
+
+                        //make sure we clean up all references.
+                        me.on('closed', function() {
+                            delete this.windowList[me.identity.name];
+                            delete me.contentWindow;
+                            delete me.nativeWindow;
+                        });
+
+                        resolve();
+                    });
+                }, 0);
+            });
+
+            Promise.all([pageResponse, windowCreation]).then((resolvedArr: any) => {
+                console.log(resolvedArr);
+                const pageResolve = resolvedArr[0];
+                const message = pageResolve.message;
+                const cbPayload = pageResolve.cbPayload;
+                const success = pageResolve.success;
+
+                if (success) {
+                    //resolve.call(win, cbPayload);
+                    me.cbPayload = cbPayload;
+                    resolve(me);
+                } else {
+                    //errorCallback.call(me, message, cbPayload);
+                    reject(message);
+                }
+
+                try {
+                    // this is to enforce a 5.0 contract that the child's main function
+                    // will not fire before the parent's success callback on creation.
+                    // if the child window is not accessible (CORS) this contract does
+                    // not hold.
+                    me.nativeWindow.fin.__internal_.openerSuccessCBCalled();
+                } catch (e) {
+                    console.warn(e);
+                }
+            });
+
+         });
+    }
+
+    private resolveUrl(url: string): string {
+        const newUrl = new URL(url, location.href);
+        return newUrl.href;
     }
 }
 
@@ -221,8 +197,6 @@ export interface FrameInfo {
 // The window.Window name is taken
 // tslint:disable-next-line
 export class _Window extends Base {
-    public uuid: string;
-    public name: string;
     public app_uuid: string;
     public connected: boolean;
     public nativeWindow: any;
