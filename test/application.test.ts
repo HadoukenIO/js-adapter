@@ -22,6 +22,7 @@ describe('Application.', function() {
             url: 'about:blank',
             // tslint:disable-next-line
             uuid: `adapter-application-test-app-${counter++}`,
+            nonPersistent: true,
             autoShow: true,
             accelerator: {
                 devtools: true
@@ -46,7 +47,8 @@ describe('Application.', function() {
             name: 'adapter-test-app-to-close',
             url: 'about:blank',
             uuid: 'adapter-test-app-to-close',
-            autoShow: true
+            autoShow: true,
+            nonPersistent: true
         };
         let appToClose: Application;
 
@@ -83,7 +85,7 @@ describe('Application.', function() {
         });
     });
 
-    describe('getShortcuts()', () => {
+    describe.skip('getShortcuts()', () => {
         // need to create an application using manifest url
         let localApp: Application;
         let localFin: Fin;
@@ -149,7 +151,7 @@ describe('Application.', function() {
         });
     });
 
-    describe('setShortcuts()', () => {
+    describe.skip('setShortcuts()', () => {
         // need to create an application using manifest url
         let localApp: Application;
         let localFin: Fin;

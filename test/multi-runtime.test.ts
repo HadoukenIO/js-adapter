@@ -17,20 +17,18 @@ describe('Multi Runtime', () => {
     describe('Connections', () => {
         it('should respect the enable-mesh flag for security realms', async function() {
             const argsConnect = [
-                '--enable-mesh',
-                '--enable-multi-runtime'
+                '--security-realm=superSecret'
             ];
 
             // tslint:disable-next-line no-invalid-this
             this.timeout(TEST_TIMEOUT);
             const conns = await serial([() => launchAndConnect(),
-            () => launchAndConnect(undefined, undefined, 'super-secret-realm', []),
-            () => launchAndConnect(undefined, undefined, undefined, argsConnect)]);
+            () => launchAndConnect(undefined, undefined, undefined, argsConnect),
+            () => launchAndConnect()]);
             const finA = conns[0];
             const finB = conns[1];
             const finC = conns[2];
             await delayPromise(DELAY_MS);
-
             const apps = await finA.System.getAllExternalApplications();
             const uuidList = apps.map((a: any) => { return a.uuid; });
             assert.ok(!uuidList.includes(uuidFromConnection(finB)),

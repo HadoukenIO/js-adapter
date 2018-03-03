@@ -12,7 +12,7 @@ import * as path from 'path';
 // tslint:disable-next-line
 const appConfig = JSON.parse(fs.readFileSync('test/app.json').toString());
 
-describe('PortDiscovery.', function () {
+describe.skip('PortDiscovery.', function () {
     // do NOT use => function here for 'this' to be set properly
     // tslint:disable-next-line
     this.timeout(60000);
