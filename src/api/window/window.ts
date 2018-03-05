@@ -13,7 +13,6 @@ declare var fin: any;
 
 // tslint:disable-next-line
 export default class _WindowModule extends Bare {
-    private windowList: any = {};
     /**
      * Returns a window object that represents an existing window.
      * @param { Identity } indentity
@@ -30,118 +29,33 @@ export default class _WindowModule extends Bare {
      */
     public create(options: any): Promise<_Window> {
         return new Promise((resolve, reject) => {
-            const initialOptions = fin.__internal_.initialOptions;
-            const { uuid } = initialOptions;
-            const me: _Window = new _Window(this.wire, {uuid, name: options.name});
+            const { uuid: parentUuid } = fin.__internal_.initialOptions;
             const opt = _.clone(options);
             const ABOUT_BLANK = 'about:blank';
-            const CONSTRUCTOR_CB_TOPIC = 'fire-constructor-callback';
 
             if (!name || typeof name !== 'string') {
-                reject('Error: window must have a name');
-
+                return reject(new Error('Window must have a name'));
             }
 
-            opt.uuid = opt.uuid || uuid;
+            opt.uuid = opt.uuid || parentUuid;
             opt.url = opt.url || ABOUT_BLANK;
 
-            me.connected = true;
-            //me.name = opt.name;
-            //me.uuid = opt.uuid;
-            me.identity = {uuid: opt.uuid, name: opt.name};
-            me.app_uuid = opt.uuid;
-
-            if (opt.uuid !== uuid) {
-                console.warn('child window uuid must match the parent window\'s uuid: ' + uuid);
-                opt.uuid = uuid;
-                //me.uuid = opt.uuid;
-                me.identity.uuid = opt.uuid;
-                me.app_uuid = opt.uuid;
+            if (opt.uuid !== parentUuid) {
+                return reject(new Error('Child window uuid must match the parent window\'s uuid: ' + parentUuid));
             }
 
             if (fin.__internal_.windowExists(opt.uuid, opt.name)) {
-                reject('Error: trying to create a window that already exists');
+                return reject(new Error('Trying to create a window that already exists'));
             }
 
             if (opt.url !== ABOUT_BLANK) {
                 opt.url = this.resolveUrl(opt.url);
             }
 
-            const pageResponse = new Promise((resolve) => {
-                // tslint:disable-next-line
-                me.on(CONSTRUCTOR_CB_TOPIC, function fireConstructor(response: any) {
-                    let cbPayload;
-                    const success = response.success;
-                    const responseData = response.data;
-                    const message = responseData.message;
-
-                    if (success) {
-                        cbPayload = _.pick(response.data, 'httpResponseCode', 'apiInjected');
-                    } else {  // remove errorCallback check
-                        cbPayload = _.pick(responseData, 'message', 'networkErrorCode', 'stack');
-                    }
-
-                    me.removeListener(CONSTRUCTOR_CB_TOPIC, fireConstructor);
-                    resolve({
-                        message: message,
-                        cbPayload: cbPayload,
-                        success: success
-                    });
-                });
+            fin.__internal_.createChildWindow(opt, (childWin: any) => {
+                const win = new _Window(this.wire, {uuid: opt.uuid, name: opt.name});
+                return resolve(win);
             });
-
-            const windowCreation = new Promise((resolve) => {
-                // TODO revisit why / if this needs to be timed out
-                setTimeout(() => {
-                    fin.__internal_.createChildWindow(opt, (childWin: any) => {
-                        me.nativeWindow = childWin.nativeWindow;
-                        me.contentWindow = me.nativeWindow;
-                        //opt.uuid = initialOptions.uuid;  //components.applicationUuid;
-                        //me.uuid = opt.uuid;
-                        //me.app_uuid = opt.uuid;
-
-                        //TODO:content window assignment goes here. also below the else.
-                        this.windowList[me.identity.name] = me.contentWindow;
-
-                        //make sure we clean up all references.
-                        me.on('closed', function() {
-                            delete this.windowList[me.identity.name];
-                            delete me.contentWindow;
-                            delete me.nativeWindow;
-                        });
-
-                        resolve();
-                    });
-                }, 0);
-            });
-
-            Promise.all([pageResponse, windowCreation]).then((resolvedArr: any) => {
-                console.log(resolvedArr);
-                const pageResolve = resolvedArr[0];
-                const message = pageResolve.message;
-                const cbPayload = pageResolve.cbPayload;
-                const success = pageResolve.success;
-
-                if (success) {
-                    //resolve.call(win, cbPayload);
-                    me.cbPayload = cbPayload;
-                    resolve(me);
-                } else {
-                    //errorCallback.call(me, message, cbPayload);
-                    reject(message);
-                }
-
-                try {
-                    // this is to enforce a 5.0 contract that the child's main function
-                    // will not fire before the parent's success callback on creation.
-                    // if the child window is not accessible (CORS) this contract does
-                    // not hold.
-                    me.nativeWindow.fin.__internal_.openerSuccessCBCalled();
-                } catch (e) {
-                    console.warn(e);
-                }
-            });
-
          });
     }
 
@@ -197,12 +111,6 @@ export interface FrameInfo {
 // The window.Window name is taken
 // tslint:disable-next-line
 export class _Window extends Base {
-    public app_uuid: string;
-    public connected: boolean;
-    public nativeWindow: any;
-    public contentWindow: any;
-    public cbPayload: any;
-
     /**
      * Raised when a window within this application requires credentials from the user.
      *
