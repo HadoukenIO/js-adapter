@@ -21,6 +21,7 @@ export default class _WindowModule extends Bare {
      * Returns a Window object that represents the current window
      * @param { Identity } indentity
      * @return {Promise.<Window>}
+     * @tutorial window.getCurrent
      */
     public getCurrent(): Promise<_Window> {
         return this.wrap(this.wire.me);

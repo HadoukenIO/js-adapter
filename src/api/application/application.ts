@@ -57,6 +57,7 @@ export default class ApplicationModule extends Bare {
      * Returns an Application object that represents the current application
      * @param { Identity } indentity
      * @return {Promise.<Application>}
+     * @tutorial application.getCurrent
      */
     public getCurrent(): Promise<Application> {
         return this.wrap(this.wire.me);
