@@ -159,11 +159,11 @@ module.exports = function (grunt) {
             const {install} = require('./out/src/launcher/nix-launch');
             install(version, launcher.nixConfig)
             .then(path => {
-                console.log('runtime at ' + path)
-                done()
-            })
+                console.log('runtime at ' + path);
+                done();
+            });
         }
-    })
+    });
 
     grunt.loadNpmTasks('grunt-shell');
     grunt.loadNpmTasks('grunt-tslint');
