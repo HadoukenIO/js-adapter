@@ -54,6 +54,15 @@ export default class ApplicationModule extends Bare {
     }
 
     /**
+     * Returns an Application object that represents the current application
+     * @return {Promise.<Application>}
+     * @tutorial application.getCurrent
+     */
+    public getCurrent(): Promise<Application> {
+        return this.wrap(this.wire.me);
+    }
+
+    /**
      * Retrieves application's manifest and returns a wrapped application.
      * @param {string} manifestUrl - The URL of app's manifest.
      * @return {Promise.<Application>}
