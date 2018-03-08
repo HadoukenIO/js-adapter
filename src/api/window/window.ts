@@ -793,7 +793,7 @@ export class _Window extends Base {
      * @return {Promise.<void>}
      */
     public mergeGroups(target: _Window): Promise<void> {
-        return this.wire.sendAction('join-window-group', Object.assign({}, this.identity, {
+        return this.wire.sendAction('merge-window-groups', Object.assign({}, this.identity, {
             groupingUuid: target.identity.uuid,
             groupingWindowName: target.identity.name
         })).then(() => undefined);
