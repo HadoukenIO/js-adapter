@@ -673,12 +673,12 @@ export class _Window extends Base {
     public getGroup(): Promise<Array<_Window>> {
         return this.wire.sendAction('get-window-group', this.identity).then(({ payload }) => {
             // tslint:disable-next-line
-            let winGroups: Array<_Window> = [] as Array<_Window>;
+            let winGroup: Array<_Window> = [] as Array<_Window>;
 
             if (payload.data.length) {
-                winGroups = this.windowListFromNameList(payload.data);
+                winGroup = this.windowListFromNameList(payload.data);
             }
-            return winGroups;
+            return winGroup;
         });
     }
 
