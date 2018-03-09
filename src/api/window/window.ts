@@ -32,6 +32,7 @@ export default class _WindowModule extends Bare {
             const { uuid: parentUuid } = fin.__internal_.initialOptions;
             const opt = _.clone(options);
             const ABOUT_BLANK = 'about:blank';
+            const CONSTRUCTOR_CB_TOPIC = 'fire-constructor-callback';
 
             if (!name || typeof name !== 'string') {
                 return reject(new Error('Window must have a name'));
@@ -52,9 +53,45 @@ export default class _WindowModule extends Bare {
                 opt.url = this.resolveUrl(opt.url);
             }
 
-            fin.__internal_.createChildWindow(opt, (childWin: any) => {
-                const win = new _Window(this.wire, {uuid: opt.uuid, name: opt.name});
-                return resolve(win);
+            // need to call pageResponse, otherwise when a window is created, page is not loaded
+            const win = new _Window(this.wire, {uuid: opt.uuid, name: opt.name});
+            const pageResponse = new Promise((resolve) => {
+                // tslint:disable-next-line
+                win.on(CONSTRUCTOR_CB_TOPIC, function fireConstructor(response: any) {
+                    let cbPayload;
+                    const success = response.success;
+                    const responseData = response.data;
+                    const message = responseData.message;
+
+                    if (success) {
+                        cbPayload = _.pick(responseData, 'httpResponseCode', 'apiInjected');
+                    } else {
+                        cbPayload = _.pick(responseData, 'message', 'networkErrorCode', 'stack');
+                    }
+
+                    win.removeListener(CONSTRUCTOR_CB_TOPIC, fireConstructor);
+                    resolve({
+                        message: message,
+                        cbPayload: cbPayload,
+                        success: success
+                    });
+                });
+            });
+
+            const windowCreation = new Promise((resolve) => {
+                fin.__internal_.createChildWindow(opt, (childWin: any) => {
+                    resolve();
+                });
+            });
+
+            Promise.all([pageResponse, windowCreation]).then((resolvedArr: any[]) => {
+                const pageResolve = resolvedArr[0];
+
+                if (pageResolve.success) {
+                    resolve(win);
+                } else {
+                    reject(pageResolve.message);
+                }
             });
          });
     }
@@ -998,4 +1035,5 @@ export interface _Window {
     on(type: 'removeListener', listener: (eventType: string) => void): this;
     on(type: 'newListener', listener: (eventType: string) => void): this;
     on(type: 'closed', listener: (eventType: CloseEventShape) => void): this;
+    on(type: 'fire-constructor-callback', listener: Function): this;
 }
