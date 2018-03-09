@@ -888,6 +888,15 @@ export class _Window extends Base {
     }
 
     /**
+     * Shows the Chromium Developer Tools
+     * @return {Promise.<void>}
+     * @tutorial Window.showDeveloperTools
+     */
+    public showDeveloperTools(): Promise<void> {
+        return this.wire.sendAction('show-developer-tools', this.identity).then(() => undefined);
+    }
+
+    /**
      * Updates the window using the passed options
      * @param {*} options Changes a window's options that were defined upon creation. See tutorial
      * @return {Promise.<void>}

@@ -78,7 +78,7 @@ export default async function launch(config: ConfigWithRuntime, osConfig: OsConf
                 }
                 return Promise.reject(e);
             });
-        const args = config.runtime.arguments ? config.runtime.arguments.split(' ') : [];
+        const args: any = config.runtime.arguments ? config.runtime.arguments.split(' ') : [];
         if (process.env.runtimeArgs) {
             args.push(process.env.runtimeArgs.split(' '));
         }

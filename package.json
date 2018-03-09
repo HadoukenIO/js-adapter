@@ -4,7 +4,7 @@
     "license": "Apache-2.0",
     "repository": "https://github.com/HadoukenIO/js-adapter",
     "main": "./out/src/main.js",
-    "types": "./out/src/main.d.ts",
+    "types": "./out/types/src/main.d.ts",
     "scripts": {
         "test": "grunt test",
         "repl": "grunt repl",
@@ -16,7 +16,6 @@
     },
     "devDependencies": {
         "@types/mocha": "^2.2.38",
-        "@types/node": "^6.0.52",
         "@types/rimraf": "0.0.28",
         "@types/sinon": "^1.16.34",
         "@types/ws": "~0.0.36",
@@ -39,6 +38,7 @@
         "webpack": "^3.8.1"
     },
     "dependencies": {
-        "ws": "~1.1.1"
+        "ws": "~1.1.1",
+        "@types/node": "^9.4.6"
     }
 }

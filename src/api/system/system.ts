@@ -15,6 +15,7 @@ import { ExternalProcessRequestType , TerminateExternalRequestType, ExternalConn
 import Transport from '../../transport/transport';
 import { CookieInfo, CookieOption } from './cookie';
 import { RegistryInfo } from './registry-info';
+import { DownloadPreloadOption, DownloadPreloadInfo } from './download-preload';
 
 /**
  * AppAssetInfo interface
@@ -137,6 +138,22 @@ import { RegistryInfo } from './registry-info';
  * @property { string } uuid The uuid of the running application
  * @property { number } timeout Time out period before the running application terminates
  * @property { boolean } killtree Value to terminate the running application
+ */
+
+/**
+ * DownloadPreloadOption interface
+ * @typedef { Object } DownloadPreloadOption
+ * @desc These are the options object required by the downloadPreloadScripts function
+ * @property { string } url url to the preload script
+ */
+
+/**
+ * DownloadPreloadInfo interface
+ * @typedef { Object } DownloadPreloadInfo
+ * @desc downloadPreloadScripts function return value
+ * @property { string } url url to the preload script
+ * @property { string } error error during preload script acquisition
+ * @property { boolean } succeess download operation success
  */
 
 /**
@@ -483,6 +500,16 @@ export default class System extends Base {
         };
 
         return this.wire.sendAction('download-runtime', data).then(() => undefined);
+    }
+
+    /**
+    * Download preload scripts from given URLs
+    * @param {DownloadPreloadOption[]} scripts - URLs of preload scripts. See tutorial for more details.
+    * @return {Promise.Array<DownloadPreloadInfo>}
+     * @tutorial system.downloadPreloadScripts
+    */
+    public downloadPreloadScripts(scripts: Array<DownloadPreloadOption>): Promise<Array<DownloadPreloadInfo>> {
+        return this.wire.sendAction('download-preload-scripts', { scripts }).then(({ payload }) => payload.data);
     }
 
     /**
