@@ -966,7 +966,7 @@ export class _Window extends Base {
      * @return {Promise.<void>}
      */
     public updateOptions(options: any): Promise<void> {
-        return this.wire.sendAction('show-window', Object.assign({}, this.identity, { options })).then(() => undefined);
+        return this.wire.sendAction('update-window-options', Object.assign({}, this.identity, { options })).then(() => undefined);
     }
 
     /**
