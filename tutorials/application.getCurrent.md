@@ -4,7 +4,6 @@ Returns an Application object that represents the current application
 ```js
 async function isCurrentAppRunning () {
     const app = await fin.Application.getCurrent();
-    app.whatever();
     return app.isRunning();
 }
 
