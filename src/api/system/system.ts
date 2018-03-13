@@ -224,6 +224,15 @@ export default class System extends Base {
     }
 
     /**
+     * Writes any unwritten cookies data to disk.
+     * @return {Promise.<void>}
+     * @tutorial System.flushCookieStore
+     */
+    public flushCookieStore(): Promise<void> {
+        return this.wire.sendAction('flush-cookie-store').then(() => undefined);
+    }
+
+    /**
      * Retrieves an array of data (name, ids, bounds) for all application windows.
      * @return {Promise.Array.<WindowInfo>}
      * @tutorial System.getAllWindows

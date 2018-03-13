@@ -59,6 +59,10 @@ describe('System.', function () {
         });
     });
 
+    describe('flushCookieStore', () => {
+        it('Fulfilled', () => fin.System.flushCookieStore().then(() => assert(true)));
+    });
+
     describe('getAllWindows()', () => {
 
         it('Fulfilled', () => fin.System.getAllWindows().then(() => assert(true)));
