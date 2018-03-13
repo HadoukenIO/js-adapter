@@ -25,8 +25,8 @@ export default class _WindowModule extends Bare {
     public create(options: any): Promise<_Window> {
         return this.wire.environment.createChildWindow(this.wire, options);
     }
-  
-   /**
+
+    /**
      * Returns a Window object that represents the current window
      * @return {Promise.<Window>}
      * @tutorial window.getCurrent
