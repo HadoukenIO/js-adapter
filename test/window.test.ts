@@ -34,6 +34,23 @@ describe('Window.', function() {
         return testApp.close();
     });
 
+    describe('animate()', () => {
+        it('Fulfilled', () => {
+            const transitions = {
+                opacity: {
+                    opacity: 1,
+                    duration: 100
+                }
+            };
+            const options = {
+                interrupt: true,
+                tween: 'linear'
+            };
+
+            return testWindow.animate(transitions, options).then(() => assert(true));
+        });
+    });
+
     describe('getBounds()', () => {
 
         const bounds = {

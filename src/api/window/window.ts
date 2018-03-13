@@ -2,7 +2,7 @@ import { Bare, Base, RuntimeEvent } from '../base';
 import { Identity } from '../../identity';
 import Bounds from './bounds';
 import BoundsChangedReply from './bounds-changed';
-import Animation from './animation';
+import { Transition, TransitionOptions } from './transition';
 import { Application } from '../application/application';
 import Transport from '../../transport/transport';
 
@@ -536,12 +536,17 @@ export class _Window extends Base {
     }
 
     /**
-     * Closes the window
-     * @param { boolean } interrupt assigns the value to false
-     * @return {Animation}
+     * Performs the specified window transitions.
+     * @param {object} transitions - Describes the animations to preform. See the tutorial.
+     * @param {object} options - Options for the animation. See the tutorial.
+     * @return {Promise.<void>}
+     * @tutorial Window.animate
      */
-    public animationBuilder(interrupt: boolean = false): Animation {
-        return new Animation(this.wire, this.identity, interrupt);
+    public animate(transitions: Transition, options: TransitionOptions ): Promise<void> {
+        return this.wire.sendAction('animate-window', Object.assign({}, this.identity, {
+           transitions,
+           options
+        })).then(() => undefined);
     }
 
     /**
