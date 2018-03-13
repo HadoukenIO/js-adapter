@@ -16,7 +16,6 @@ type tween = 'linear' |
     'ease-out-elastic' |
     'ease-in-out-elastic';
 
-//Change this to transition.
 export interface TransitionBase {
     duration: number;
     relative?: boolean;
