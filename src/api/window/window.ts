@@ -9,7 +9,7 @@ import Transport from '../../transport/transport';
 // tslint:disable-next-line
 export default class _WindowModule extends Bare {
     /**
-     * Returns a window object that represents an existing window.
+     * Returns a Window object that represents an existing window.
      * @param { Identity } indentity
      * @return {Promise.<_Window>}
      */
@@ -24,6 +24,15 @@ export default class _WindowModule extends Bare {
      */
     public create(options: any): Promise<_Window> {
         return this.wire.environment.createChildWindow(this.wire, options);
+    }
+  
+   /**
+     * Returns a Window object that represents the current window
+     * @return {Promise.<Window>}
+     * @tutorial window.getCurrent
+     */
+    public getCurrent(): Promise<_Window> {
+        return this.wrap(this.wire.me);
     }
 }
 

@@ -25,7 +25,7 @@ describe('Launcher', () => {
         });
     });
     describe('Launcher', () => {
-        it('runs stable', async () => {
+        it.skip('runs stable', async () => {
             if (Launcher.IS_SUPPORTED() && os.platform() !== 'win32') {
                 const launcher = new Launcher();
                 const of = await launcher.launch({
