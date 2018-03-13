@@ -5,11 +5,6 @@ import BoundsChangedReply from './bounds-changed';
 import Animation from './animation';
 import { Application } from '../application/application';
 import Transport from '../../transport/transport';
-//import { initialOptions, windowExists, createChildWindow } from '../../environment/openfin-renderer-api';
-//import { windowExists } from '../../environment/openfin-renderer-api';
-import * as _ from 'underscore';
-
-declare var fin: any;
 
 // tslint:disable-next-line
 export default class _WindowModule extends Bare {
@@ -28,77 +23,7 @@ export default class _WindowModule extends Bare {
      * @return {Promise.<_Window>}
      */
     public create(options: any): Promise<_Window> {
-        return new Promise((resolve, reject) => {
-            const { uuid: parentUuid } = fin.__internal_.initialOptions;
-            const opt = _.clone(options);
-            const ABOUT_BLANK = 'about:blank';
-            const CONSTRUCTOR_CB_TOPIC = 'fire-constructor-callback';
-
-            if (!name || typeof name !== 'string') {
-                return reject(new Error('Window must have a name'));
-            }
-
-            opt.uuid = opt.uuid || parentUuid;
-            opt.url = opt.url || ABOUT_BLANK;
-
-            if (opt.uuid !== parentUuid) {
-                return reject(new Error('Child window uuid must match the parent window\'s uuid: ' + parentUuid));
-            }
-
-            if (fin.__internal_.windowExists(opt.uuid, opt.name)) {
-                return reject(new Error('Trying to create a window that already exists'));
-            }
-
-            if (opt.url !== ABOUT_BLANK) {
-                opt.url = this.resolveUrl(opt.url);
-            }
-
-            // need to call pageResponse, otherwise when a window is created, page is not loaded
-            const win = new _Window(this.wire, {uuid: opt.uuid, name: opt.name});
-            const pageResponse = new Promise((resolve) => {
-                // tslint:disable-next-line
-                win.on(CONSTRUCTOR_CB_TOPIC, function fireConstructor(response: any) {
-                    let cbPayload;
-                    const success = response.success;
-                    const responseData = response.data;
-                    const message = responseData.message;
-
-                    if (success) {
-                        cbPayload = _.pick(responseData, 'httpResponseCode', 'apiInjected');
-                    } else {
-                        cbPayload = _.pick(responseData, 'message', 'networkErrorCode', 'stack');
-                    }
-
-                    win.removeListener(CONSTRUCTOR_CB_TOPIC, fireConstructor);
-                    resolve({
-                        message: message,
-                        cbPayload: cbPayload,
-                        success: success
-                    });
-                });
-            });
-
-            const windowCreation = new Promise((resolve) => {
-                fin.__internal_.createChildWindow(opt, (childWin: any) => {
-                    resolve();
-                });
-            });
-
-            Promise.all([pageResponse, windowCreation]).then((resolvedArr: any[]) => {
-                const pageResolve = resolvedArr[0];
-
-                if (pageResolve.success) {
-                    resolve(win);
-                } else {
-                    reject(pageResolve.message);
-                }
-            });
-         });
-    }
-
-    private resolveUrl(url: string): string {
-        const newUrl = new URL(url, location.href);
-        return newUrl.href;
+        return this.wire.environment.createChildWindow(this.wire, options);
     }
 }
 
