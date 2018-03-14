@@ -53,8 +53,8 @@ export interface FrameInfo {
 /**
  * @typedef {object} Transition
  * @property {Opacity} opacity - The Opacity transition
-* @property {Position} position - The Position transition
-* @property {Size} size - The Size transition
+ * @property {Position} position - The Position transition
+ * @property {Size} size - The Size transition
 */
 
 /**
@@ -574,7 +574,7 @@ export class _Window extends Base {
 
     /**
      * Performs the specified window transitions.
-     * @param {Transition} transitions - Describes the animations to preform. See the tutorial.
+     * @param {Transition} transitions - Describes the animations to perform. See the tutorial.
      * @param {TransitionOptions} options - Options for the animation. See the tutorial.
      * @return {Promise.<void>}
      * @tutorial Window.animate
