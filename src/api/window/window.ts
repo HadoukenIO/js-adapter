@@ -23,7 +23,51 @@ export default class _WindowModule extends Bare {
      * @return {Promise.<_Window>}
      */
     public create(options: any): Promise<_Window> {
-        return this.wire.environment.createChildWindow(this.wire, options);
+        return new Promise((resolve, reject) => {
+            const CONSTRUCTOR_CB_TOPIC = 'fire-constructor-callback';
+            const win = new _Window(this.wire, {uuid: this.me.uuid, name: options.name});
+            // need to call pageResponse, otherwise when a child window is created, page is not loaded
+            const pageResponse = new Promise((resolve) => {
+                // tslint:disable-next-line
+                win.on(CONSTRUCTOR_CB_TOPIC, function fireConstructor(response: any) {
+                    let cbPayload;
+                    const success = response.success;
+                    const responseData = response.data;
+                    const message = responseData.message;
+
+                    if (success) {
+                        cbPayload = {
+                            httpResponseCode: responseData.httpResponseCode,
+                            apiInjected: responseData.apiInjected
+                        };
+                    } else {
+                        cbPayload = {
+                            message: responseData.message,
+                            networkErrorCode: responseData.networkErrorCode,
+                            stack: responseData.stack
+                        };
+                    }
+
+                    win.removeListener(CONSTRUCTOR_CB_TOPIC, fireConstructor);
+                    resolve({
+                        message: message,
+                        cbPayload: cbPayload,
+                        success: success
+                    });
+                });
+            });
+
+            const windowCreation = this.wire.environment.createChildWindow(options);
+            Promise.all([pageResponse, windowCreation]).then((resolvedArr: any[]) => {
+                const pageResolve = resolvedArr[0];
+                if (pageResolve.success) {
+                    resolve(win);
+                } else {
+                    reject(pageResolve.message);
+                }
+            });
+
+        });
     }
 
     /**

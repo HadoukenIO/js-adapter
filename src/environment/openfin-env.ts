@@ -1,8 +1,6 @@
 import { Environment } from './environment';
 import { NewConnectConfig } from '../transport/wire';
 import { NotImplementedError } from '../transport/transport-errors';
-import { _Window } from '../api/window/window';
-import Transport from '../transport/transport';
 
 declare var fin: any;
 
@@ -20,12 +18,11 @@ export default class OpenFinEnvironment implements Environment {
         return fin.desktop.getUuid();
     }
 
-    public createChildWindow = (wire: Transport, options: any): Promise<_Window> => {
+    public createChildWindow = (options: any): Promise<any> => {
         return new Promise((resolve, reject) => {
             const { uuid: parentUuid } = fin.__internal_.initialOptions;
             const opt = JSON.parse(JSON.stringify(options));
             const ABOUT_BLANK = 'about:blank';
-            const CONSTRUCTOR_CB_TOPIC = 'fire-constructor-callback';
 
             if (!name || typeof name !== 'string') {
                 return reject(new Error('Window must have a name'));
@@ -46,53 +43,10 @@ export default class OpenFinEnvironment implements Environment {
                 opt.url = this.resolveUrl(opt.url);
             }
 
-            // need to call pageResponse, otherwise when a window is created, page is not loaded
-            const win = new _Window(wire, {uuid: opt.uuid, name: opt.name});
-            const pageResponse = new Promise((resolve) => {
-                // tslint:disable-next-line
-                win.on(CONSTRUCTOR_CB_TOPIC, function fireConstructor(response: any) {
-                    let cbPayload;
-                    const success = response.success;
-                    const responseData = response.data;
-                    const message = responseData.message;
-
-                    if (success) {
-                        cbPayload = {
-                            httpResponseCode: responseData.httpResponseCode,
-                            apiInjected: responseData.apiInjected
-                        };
-                    } else {
-                        cbPayload = {
-                            message: responseData.message,
-                            networkErrorCode: responseData.networkErrorCode,
-                            stack: responseData.stack
-                        };
-                    }
-
-                    win.removeListener(CONSTRUCTOR_CB_TOPIC, fireConstructor);
-                    resolve({
-                        message: message,
-                        cbPayload: cbPayload,
-                        success: success
-                    });
-                });
+            fin.__internal_.createChildWindow(opt, (childWin: any) => {
+                resolve(childWin);
             });
 
-            const windowCreation = new Promise((resolve) => {
-                fin.__internal_.createChildWindow(opt, (childWin: any) => {
-                    resolve();
-                });
-            });
-
-            Promise.all([pageResponse, windowCreation]).then((resolvedArr: any[]) => {
-                const pageResolve = resolvedArr[0];
-
-                if (pageResolve.success) {
-                    resolve(win);
-                } else {
-                    reject(pageResolve.message);
-                }
-            });
          });
     }
 

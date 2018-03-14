@@ -2,8 +2,6 @@ import { writeFile } from 'fs';
 import { Environment } from './environment';
 import { PortDiscovery } from '../transport/port-discovery';
 import { NewConnectConfig } from '../transport/wire';
-import { _Window } from '../api/window/window';
-import Transport from '../transport/transport';
 import { NotImplementedError } from '../transport/transport-errors';
 
 export default class NodeEnvironment implements Environment {
@@ -25,7 +23,7 @@ export default class NodeEnvironment implements Environment {
         return this.messageCounter++;
     }
 
-    public createChildWindow = (wire: Transport, options: any): Promise<_Window> => {
+    public createChildWindow = (options: any): Promise<any> => {
         throw new NotImplementedError('Not Implemented');
     }
 }
