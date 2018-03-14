@@ -15,6 +15,7 @@ import { ExternalProcessRequestType , TerminateExternalRequestType, ExternalConn
 import Transport from '../../transport/transport';
 import { CookieInfo, CookieOption } from './cookie';
 import { RegistryInfo } from './registry-info';
+import { DownloadPreloadOption, DownloadPreloadInfo } from './download-preload';
 
 /**
  * AppAssetInfo interface
@@ -140,6 +141,22 @@ import { RegistryInfo } from './registry-info';
  */
 
 /**
+ * DownloadPreloadOption interface
+ * @typedef { Object } DownloadPreloadOption
+ * @desc These are the options object required by the downloadPreloadScripts function
+ * @property { string } url url to the preload script
+ */
+
+/**
+ * DownloadPreloadInfo interface
+ * @typedef { Object } DownloadPreloadInfo
+ * @desc downloadPreloadScripts function return value
+ * @property { string } url url to the preload script
+ * @property { string } error error during preload script acquisition
+ * @property { boolean } succeess download operation success
+ */
+
+/**
  * An object representing the core of OpenFin Runtime. Allows the developer
  * to perform system-level actions, such as accessing logs, viewing processes,
  * clearing the cache and exiting the runtime.
@@ -204,6 +221,15 @@ export default class System extends Base {
      */
     public exit(): Promise<void> {
         return this.wire.sendAction('exit-desktop').then(() => undefined);
+    }
+
+    /**
+     * Writes any unwritten cookies data to disk.
+     * @return {Promise.<void>}
+     * @tutorial System.flushCookieStore
+     */
+    public flushCookieStore(): Promise<void> {
+        return this.wire.sendAction('flush-cookie-store').then(() => undefined);
     }
 
     /**
@@ -483,6 +509,16 @@ export default class System extends Base {
         };
 
         return this.wire.sendAction('download-runtime', data).then(() => undefined);
+    }
+
+    /**
+    * Download preload scripts from given URLs
+    * @param {DownloadPreloadOption[]} scripts - URLs of preload scripts. See tutorial for more details.
+    * @return {Promise.Array<DownloadPreloadInfo>}
+     * @tutorial system.downloadPreloadScripts
+    */
+    public downloadPreloadScripts(scripts: Array<DownloadPreloadOption>): Promise<Array<DownloadPreloadInfo>> {
+        return this.wire.sendAction('download-preload-scripts', { scripts }).then(({ payload }) => payload.data);
     }
 
     /**

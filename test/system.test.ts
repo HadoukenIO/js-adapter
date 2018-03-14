@@ -26,6 +26,43 @@ describe('System.', function () {
         it('Fulfilled', () => fin.System.deleteCacheOnExit().then(() => assert(true)));
     });
 
+    describe('downloadPreloadScripts()', () => {
+        it('should download code from github', async () => {
+            const downloadOptions = {
+                url: 'http://localhost:8689/download.js'
+            };
+
+            const expected = {
+                url: downloadOptions.url,
+                success: true
+            };
+
+            return fin.System.downloadPreloadScripts([downloadOptions]).then(result => {
+                return assert.deepEqual(result[0], expected, 'Expected objects to match');
+            });
+        });
+
+        it('should fail if given a bad url', async () => {
+            const downloadOptions = {
+                url: 'http://localhost:8689/download.bad.js'
+            };
+
+            const expected = {
+                url: downloadOptions.url,
+                success: false,
+                error: 'Error: Failed to download resource. Status code: 404'
+            };
+
+            return fin.System.downloadPreloadScripts([downloadOptions]).then(result => {
+                return assert.deepEqual(result[0], expected, 'Expected objects to match');
+            });
+        });
+    });
+
+    describe('flushCookieStore', () => {
+        it('Fulfilled', () => fin.System.flushCookieStore().then(() => assert(true)));
+    });
+
     describe('getAllWindows()', () => {
 
         it('Fulfilled', () => fin.System.getAllWindows().then(() => assert(true)));
