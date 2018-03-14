@@ -336,6 +336,13 @@ describe('Window.', function() {
         it('Fulfilled', () => testWindow.show().then(() => assert(true)));
     });
 
+    describe('showDeveloperTools()', () => {
+
+        it('Fulfilled', async () => {
+            return testWindow.showDeveloperTools().then(() => assert(true));
+        });
+    });
+
     describe('showAt()', () => {
 
         it('Fulfilled', () => {

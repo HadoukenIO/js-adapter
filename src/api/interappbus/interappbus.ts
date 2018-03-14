@@ -73,7 +73,7 @@ export default class InterApplicationBus extends Bare {
      * @return {Promise.<void>}
      * @tutorial InterApplicationBus.subcribe
      */
-    public subscribe(source: Identity, topic: string, listener: Function): Promise<void> {
+    public subscribe(source: Identity, topic: string, listener: any): Promise<void> {
         const subKey = this.createSubscriptionKey(source.uuid, source.name || '*', topic);
         const sendSubscription = () => {
             return this.wire.sendAction('subscribe', {
@@ -101,7 +101,7 @@ export default class InterApplicationBus extends Bare {
      * @return {Promise.<void>}
      * @tutorial InterApplicationBus.unsubscribe
      */
-    public unsubscribe(source: Identity, topic: string, listener: Function): Promise<void> {
+    public unsubscribe(source: Identity, topic: string, listener: any): Promise<void> {
         const subKey = this.createSubscriptionKey(source.uuid, source.name || '*', topic);
         const sendUnsubscription = () => {
             return this.wire.sendAction('unsubscribe', {
