@@ -51,6 +51,43 @@ export interface FrameInfo {
 }
 
 /**
+ * @typedef {object} Transition
+ * @property {Opacity} opacity - The Opacity transition
+* @property {Position} position - The Position transition
+* @property {Size} size - The Size transition
+*/
+
+/**
+ * @typedef {object} TransitionOptions
+ * @property {boolean} interrupt - This option interrupts the current animation. When false it pushes
+this animation onto the end of the animation queue.
+ * @property {boolean} relative - Treat 'opacity' as absolute or as a delta. Defaults to false.
+ */
+
+/**
+ * @typedef {object} Size
+ * @property {number} duration - The total time in milliseconds this transition should take.
+ * @property {boolean} relative - Treat 'opacity' as absolute or as a delta. Defaults to false.
+ * @property {number} width - Optional if height is present. Defaults to the window's current width.
+ * @property {number} height - Optional if width is present. Defaults to the window's current height.
+ */
+
+/**
+ * @typedef {object} Position
+ * @property {number} duration - The total time in milliseconds this transition should take.
+ * @property {boolean} relative - Treat 'opacity' as absolute or as a delta. Defaults to false.
+ * @property {number} left - Defaults to the window's current left position in virtual screen coordinates.
+ * @property {number} top - Defaults to the window's current top position in virtual screen coordinates.
+ */
+
+/**
+ * @typedef {object} Opacity
+ * @property {number} duration - The total time in milliseconds this transition should take.
+ * @property {boolean} relative - Treat 'opacity' as absolute or as a delta. Defaults to false.
+ * @property {number} opacity - This value is clamped from 0.0 to 1.0.
+*/
+
+/**
  * Bounds is a interface that has the properties of height,
  * width, left, top which are all numbers
  * @typedef { Object } Bounds
@@ -537,8 +574,8 @@ export class _Window extends Base {
 
     /**
      * Performs the specified window transitions.
-     * @param {object} transitions - Describes the animations to preform. See the tutorial.
-     * @param {object} options - Options for the animation. See the tutorial.
+     * @param {Transition} transitions - Describes the animations to preform. See the tutorial.
+     * @param {TransitionOptions} options - Options for the animation. See the tutorial.
      * @return {Promise.<void>}
      * @tutorial Window.animate
      */
