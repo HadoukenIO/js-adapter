@@ -18,6 +18,59 @@ export default class _WindowModule extends Bare {
     }
 
     /**
+     * Creates a new Window.
+     * @param { * } options - Window creation options
+     * @return {Promise.<_Window>}
+     */
+    public create(options: any): Promise<_Window> {
+        return new Promise((resolve, reject) => {
+            const CONSTRUCTOR_CB_TOPIC = 'fire-constructor-callback';
+            const win = new _Window(this.wire, {uuid: this.me.uuid, name: options.name});
+            // need to call pageResponse, otherwise when a child window is created, page is not loaded
+            const pageResponse = new Promise((resolve) => {
+                // tslint:disable-next-line
+                win.on(CONSTRUCTOR_CB_TOPIC, function fireConstructor(response: any) {
+                    let cbPayload;
+                    const success = response.success;
+                    const responseData = response.data;
+                    const message = responseData.message;
+
+                    if (success) {
+                        cbPayload = {
+                            httpResponseCode: responseData.httpResponseCode,
+                            apiInjected: responseData.apiInjected
+                        };
+                    } else {
+                        cbPayload = {
+                            message: responseData.message,
+                            networkErrorCode: responseData.networkErrorCode,
+                            stack: responseData.stack
+                        };
+                    }
+
+                    win.removeListener(CONSTRUCTOR_CB_TOPIC, fireConstructor);
+                    resolve({
+                        message: message,
+                        cbPayload: cbPayload,
+                        success: success
+                    });
+                });
+            });
+
+            const windowCreation = this.wire.environment.createChildWindow(options);
+            Promise.all([pageResponse, windowCreation]).then((resolvedArr: any[]) => {
+                const pageResolve = resolvedArr[0];
+                if (pageResolve.success) {
+                    resolve(win);
+                } else {
+                    reject(pageResolve.message);
+                }
+            });
+
+        });
+    }
+
+    /**
      * Returns a Window object that represents the current window
      * @return {Promise.<Window>}
      * @tutorial window.getCurrent
@@ -73,7 +126,6 @@ export interface FrameInfo {
 // The window.Window name is taken
 // tslint:disable-next-line
 export class _Window extends Base {
-
     /**
      * Raised when a window within this application requires credentials from the user.
      *
@@ -630,19 +682,18 @@ export class _Window extends Base {
      * Retrieves an array containing wrapped fin.desktop.Windows that are grouped with this
      * window. If a window is not in a group an empty array is returned. Please note that
      * calling window is included in the result array.
-     * @return {Promise.Array.Array.<_Window>}
+     * @return {Promise.<Array<_Window>>}
      * @tutorial Window.getGroup
      */
-    public getGroup(): Promise<Array<Array<_Window>>> {
+    public getGroup(): Promise<Array<_Window>> {
         return this.wire.sendAction('get-window-group', this.identity).then(({ payload }) => {
             // tslint:disable-next-line
-            let winGroups: Array<Array<_Window>> = [] as Array<Array<_Window>>;
+            let winGroup: Array<_Window> = [] as Array<_Window>;
 
-            payload.data.forEach((list: string[], index: number) => {
-                winGroups[index] = this.windowListFromNameList(list);
-            });
-
-            return winGroups;
+            if (payload.data.length) {
+                winGroup = this.windowListFromNameList(payload.data);
+            }
+            return winGroup;
         });
     }
 
@@ -757,7 +808,7 @@ export class _Window extends Base {
      * @return {Promise.<void>}
      */
     public mergeGroups(target: _Window): Promise<void> {
-        return this.wire.sendAction('join-window-group', Object.assign({}, this.identity, {
+        return this.wire.sendAction('merge-window-groups', Object.assign({}, this.identity, {
             groupingUuid: target.identity.uuid,
             groupingWindowName: target.identity.name
         })).then(() => undefined);
@@ -902,7 +953,7 @@ export class _Window extends Base {
      * @return {Promise.<void>}
      */
     public updateOptions(options: any): Promise<void> {
-        return this.wire.sendAction('show-window', Object.assign({}, this.identity, { options })).then(() => undefined);
+        return this.wire.sendAction('update-window-options', Object.assign({}, this.identity, { options })).then(() => undefined);
     }
 
     /**
@@ -971,4 +1022,5 @@ export interface _Window {
     on(type: 'removeListener', listener: (eventType: string) => void): this;
     on(type: 'newListener', listener: (eventType: string) => void): this;
     on(type: 'closed', listener: (eventType: CloseEventShape) => void): this;
+    on(type: 'fire-constructor-callback', listener: Function): this;
 }
