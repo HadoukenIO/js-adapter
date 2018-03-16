@@ -14,8 +14,6 @@ export class DuplicateCorrelationError extends Error { }
 
 export class NoAckError extends Error { }
 
-export class NoCorrelationError extends Error { }
-
 export class NotImplementedError extends Error { }
 
 export class RuntimeError extends Error {
