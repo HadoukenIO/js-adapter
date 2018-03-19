@@ -21,7 +21,7 @@ describe('Notification', function () {
         });
 
         it('should have a close method', () => {
-            assert(typeof (notification.sendMessage) === 'function');
+            assert(typeof (notification.close) === 'function');
         });
     });
 
