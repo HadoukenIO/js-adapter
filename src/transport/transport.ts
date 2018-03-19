@@ -15,7 +15,6 @@ import {
     UnexpectedActionError,
     DuplicateCorrelationError,
     NoAckError,
-    NoCorrelationError,
     RuntimeError
 } from './transport-errors';
 
@@ -165,8 +164,7 @@ class Transport extends EventEmitter {
             // tslint:disable-next-line
             this.uncorrelatedListener = () => { };
         } else if (!(id in this.wireListeners)) {
-            throw new NoCorrelationError(String(id));
-            // Return false?
+            return false;
         } else {
             const { resolve, reject } = this.wireListeners[id];
             if (data.action !== 'ack') {
