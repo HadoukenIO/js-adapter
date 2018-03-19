@@ -119,13 +119,13 @@ export class _Notification extends Base {
      * @return {Promise.<void>}
      * @tutorial Notification.show
      */
-    public show(): Promise<void> {
+    public async show(): Promise<void> {
 
         if (!this.url) {
             throw new Error('Notifications require a url');
         }
 
-        return this.wire.sendAction('send-action-to-notifications-center', {
+        await this.wire.sendAction('send-action-to-notifications-center', {
             action: 'create-notification',
             payload: {
                 url: this.url,
@@ -135,7 +135,7 @@ export class _Notification extends Base {
                 },
                 timeout: this.timeout
             }
-        }).then(() => undefined);
+        });
     }
 
     /**
@@ -147,9 +147,9 @@ export class _Notification extends Base {
      * @return {Promise.<void>}
      * @tutorial Notification.sendMessage
      */
-    public sendMessage(message: any): Promise<void> {
+    public async sendMessage(message: any): Promise<void> {
 
-        return this.wire.sendAction('send-action-to-notifications-center', {
+        await this.wire.sendAction('send-action-to-notifications-center', {
             action: 'send-notification-message',
             payload: {
                 notificationId: this.options.notificationId,
@@ -157,7 +157,7 @@ export class _Notification extends Base {
                     message
                 }
             }
-        }).then(() => undefined);
+        });
     }
 
     /**
@@ -165,14 +165,14 @@ export class _Notification extends Base {
      * @return {Promise.<void>}
      * @tutorial Notification.close
      */
-    public close(): Promise<void> {
+    public async close(): Promise<void> {
 
-        return this.wire.sendAction('send-action-to-notifications-center', {
+        await this.wire.sendAction('send-action-to-notifications-center', {
             action: 'close-notification',
             payload: {
                 notificationId: this.options.notificationId
             }
-        }).then(() => undefined);
+        });
     }
 }
 
