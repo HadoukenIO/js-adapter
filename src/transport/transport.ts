@@ -67,7 +67,7 @@ class Transport extends EventEmitter {
 
         await this.wire.connect(address);
 
-        const requestExtAuthRet = await this.sendAction('request-external-authorization', {
+        const requestExtAuthRet = await this.sendAction<void, any, AuthorizationPayload>('request-external-authorization', {
             uuid,
             type: 'file-token'
         }, true);
@@ -78,7 +78,7 @@ class Transport extends EventEmitter {
 
         const token: string = requestExtAuthRet.payload.token;
         await this.environment.writeToken(requestExtAuthRet.payload.file, requestExtAuthRet.payload.token);
-        const requestAuthRet = await this.sendAction('request-authorization', reqAuthPayload, true);
+        const requestAuthRet = await this.sendAction<void, any, AuthorizationPayload>('request-authorization', reqAuthPayload, true);
 
         if (requestAuthRet.action !== 'authorization-response') {
             throw new UnexpectedActionError(requestAuthRet.action);
@@ -104,7 +104,13 @@ class Transport extends EventEmitter {
      */
     public READY_STATE = READY_STATE;
 
-    public sendAction(action: string, payload: any = {}, uncorrelated: boolean = false): Promise<Message<any>> {
+    public sendAction<TResData,
+                      TSendData = Identity,
+                      TPayloadType = Payload<TResData>>
+                      (action: string,
+                       payload: TSendData = <TSendData>{},
+                       uncorrelated: boolean = false
+                    ): Promise<Message<TResData, TPayloadType>> {
         return new Promise((resolve, reject) => {
             const id = this.environment.getNextMessageId();
             const msg = {
@@ -148,14 +154,14 @@ class Transport extends EventEmitter {
     }
 
     // This method executes message handlers until the _one_ that handles the message (returns truthy) has run
-    protected onmessage(data: Message<Payload>): void {
+    protected onmessage<T>(data: Message<Payload<T>>): void {
 
         for (const h of this.messageHandlers) {
             h.call(null, data);
         }
     }
 
-    protected handleMessage(data: Message<Payload>): boolean {
+    protected handleMessage<T>(data: Message<Payload<T>>): boolean {
         // tslint:disable-next-line
         const id: number = data.correlationId || NaN;
 
@@ -186,20 +192,20 @@ export default Transport;
 
 interface Transport {
     sendAction(action: 'request-external-authorization', payload: {}, uncorrelated: true): Promise<Message<AuthorizationPayload>>;
-    sendAction(action: string, payload: {}, uncorrelated: boolean): Promise<Message<Payload>>;
+    sendAction<T, U>(action: string, payload: T, uncorrelated: boolean): Promise<Message<U>>;
     topicRefMap: Map<string, number>;
 }
 
-export class Message<T> {
+export class Message<T, U = Payload<T>> {
     public action: string;
-    public payload: T;
+    public payload: U;
     public correlationId?: number;
 }
-export class Payload {
+export class Payload<T> {
     public success: boolean;
-    public data: any;
+    public data: T;
 }
-export class AuthorizationPayload {
+export class AuthorizationPayload extends Payload<void> {
     public token: string;
     public file: string;
 }

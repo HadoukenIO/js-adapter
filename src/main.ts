@@ -29,5 +29,5 @@ export async function launch(config: ConnectConfig): Promise<number> {
    return pd.retrievePort();
 }
 
-export { Identity } from './identity'
+export { Identity } from './identity';
 export { Fin, Application, Window, System , Frame};

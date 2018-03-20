@@ -190,7 +190,7 @@ export default class System extends Base {
      * @tutorial System.getVersion
      */
     public getVersion(): Promise<string> {
-        return this.wire.sendAction('get-version')
+        return this.wire.sendAction<string>('get-version')
             .then(({ payload }) => payload.data);
     }
 
@@ -202,7 +202,7 @@ export default class System extends Base {
      * @tutorial System.clearCache
      */
     public clearCache(): Promise<void> {
-        return this.wire.sendAction('clear-cache').then(() => undefined);
+        return this.wire.sendAction<void>('clear-cache').then(() => undefined);
     }
 
     /**
@@ -211,7 +211,7 @@ export default class System extends Base {
      * @tutorial System.deleteCacheOnExit
      */
     public deleteCacheOnExit(): Promise<void> {
-        return this.wire.sendAction('delete-cache-request').then(() => undefined);
+        return this.wire.sendAction<void>('delete-cache-request').then(() => undefined);
     }
 
     /**
@@ -220,7 +220,7 @@ export default class System extends Base {
      * @tutorial System.exit
      */
     public exit(): Promise<void> {
-        return this.wire.sendAction('exit-desktop').then(() => undefined);
+        return this.wire.sendAction<void>('exit-desktop').then(() => undefined);
     }
 
     /**
@@ -229,7 +229,7 @@ export default class System extends Base {
      * @tutorial System.flushCookieStore
      */
     public flushCookieStore(): Promise<void> {
-        return this.wire.sendAction('flush-cookie-store').then(() => undefined);
+        return this.wire.sendAction<void>('flush-cookie-store').then(() => undefined);
     }
 
     /**
@@ -238,7 +238,7 @@ export default class System extends Base {
      * @tutorial System.getAllWindows
      */
     public getAllWindows(): Promise<Array<WindowInfo>> {
-        return this.wire.sendAction('get-all-windows')
+        return this.wire.sendAction<WindowInfo[]>('get-all-windows')
             .then(({ payload }) => payload.data);
     }
 
@@ -248,7 +248,7 @@ export default class System extends Base {
      * @tutorial System.getAllApplications
      */
     public getAllApplications(): Promise<Array<ApplicationInfo>> {
-        return this.wire.sendAction('get-all-applications')
+        return this.wire.sendAction<ApplicationInfo[]>('get-all-applications')
             .then(({ payload }) => payload.data);
     }
 
@@ -258,7 +258,7 @@ export default class System extends Base {
      * @tutorial System.getCommandLineArguments
      */
     public getCommandLineArguments(): Promise<string> {
-        return this.wire.sendAction('get-command-line-arguments')
+        return this.wire.sendAction<string>('get-command-line-arguments')
             .then(({ payload }) => payload.data);
     }
 
@@ -268,7 +268,7 @@ export default class System extends Base {
      * @tutorial System.getDeviceId
      */
     public getDeviceId(): Promise<string> {
-        return this.wire.sendAction('get-device-id').then(({ payload }) => payload.data);
+        return this.wire.sendAction<string>('get-device-id').then(({ payload }) => payload.data);
     }
 
     /**
@@ -277,7 +277,7 @@ export default class System extends Base {
      * @tutorial System.getDeviceUserId
      */
     public getDeviceUserId(): Promise<string> {
-        return this.wire.sendAction('get-device-user-id').then(({ payload }) => payload.data);
+        return this.wire.sendAction<string>('get-device-user-id').then(({ payload }) => payload.data);
     }
 
     /**
@@ -288,7 +288,7 @@ export default class System extends Base {
      * @tutorial System.getEntityInfo
      */
     public getEntityInfo(uuid: string, name: string): Promise<EntityInfo> {
-        return this.wire.sendAction('get-entity-info', { uuid, name }).then(({ payload }) => payload.data);
+        return this.wire.sendAction<EntityInfo>('get-entity-info', { uuid, name }).then(({ payload }) => payload.data);
     }
 
     /**
@@ -297,7 +297,7 @@ export default class System extends Base {
      * @tutorial System.getEnvironmentVariable
      */
     public getEnvironmentVariable(envName: string): Promise<string> {
-        return this.wire.sendAction('get-environment-variable', {
+        return this.wire.sendAction<string, {environmentVariables: string}>('get-environment-variable', {
             environmentVariables: envName
         })
             .then(({ payload }) => payload.data);
@@ -309,7 +309,7 @@ export default class System extends Base {
      * @tutorial System.getFocusedWindow
      */
     public getFocusedWindow(): Promise<WindowInfo> {
-        return this.wire.sendAction('get-focused-window').then(({ payload }) => payload.data);
+        return this.wire.sendAction<WindowInfo>('get-focused-window').then(({ payload }) => payload.data);
     }
 
     /**
@@ -319,7 +319,7 @@ export default class System extends Base {
      * @tutorial System.getLog
      */
     public getLog(options: GetLogRequestType): Promise<string> {
-        return this.wire.sendAction('view-log', options)
+        return this.wire.sendAction<string, GetLogRequestType>('view-log', options)
             .then(({ payload }) => payload.data);
     }
 
@@ -329,7 +329,7 @@ export default class System extends Base {
      * @tutorial System.getMinLogLevel
      */
     public getMinLogLevel(): Promise<LogLevel> {
-        return this.wire.sendAction('get-min-log-level').then(({ payload }) => payload.data);
+        return this.wire.sendAction<LogLevel>('get-min-log-level').then(({ payload }) => payload.data);
     }
 
     /**
@@ -338,7 +338,7 @@ export default class System extends Base {
      * @tutorial System.getLogList
      */
     public getLogList(): Promise<Array<LogInfo>> {
-        return this.wire.sendAction('list-logs')
+        return this.wire.sendAction<LogInfo[]>('list-logs')
             .then(({ payload }) => payload.data);
     }
 
@@ -349,7 +349,7 @@ export default class System extends Base {
      * @tutorial System.getMonitorInfo
      */
     public getMonitorInfo(): Promise<MonitorInfo> {
-        return this.wire.sendAction('get-monitor-info')
+        return this.wire.sendAction<MonitorInfo>('get-monitor-info')
             .then(({ payload }) => payload.data);
     }
 
@@ -359,7 +359,7 @@ export default class System extends Base {
      * @tutorial System.getMousePosition
      */
     public getMousePosition(): Promise<PointTopLeft> {
-        return this.wire.sendAction('get-mouse-position')
+        return this.wire.sendAction<PointTopLeft>('get-mouse-position')
             .then(({ payload }) => payload.data);
     }
 
@@ -371,7 +371,7 @@ export default class System extends Base {
      * @tutorial System.getProcessList
      */
     public getProcessList(): Promise<Array<ProcessInfo>> {
-        return this.wire.sendAction('process-snapshot')
+        return this.wire.sendAction<ProcessInfo[]>('process-snapshot')
             .then(({ payload }) => payload.data);
     }
 
@@ -381,7 +381,7 @@ export default class System extends Base {
      * @tutorial System.getProxySettings
      */
     public getProxySettings(): Promise<ProxyInfo> {
-        return this.wire.sendAction('get-proxy-settings')
+        return this.wire.sendAction<ProxyInfo>('get-proxy-settings')
             .then(({ payload }) => payload.data);
     }
 
@@ -392,7 +392,7 @@ export default class System extends Base {
      */
     // incompatible with standalone node process.
     public getRvmInfo(): Promise<RVMInfo> {
-        return this.wire.sendAction('get-rvm-info')
+        return this.wire.sendAction<RVMInfo>('get-rvm-info')
             .then(({ payload }) => payload.data);
     }
 
@@ -402,7 +402,7 @@ export default class System extends Base {
      * @tutorial System.getHostSpecs
      */
     public getHostSpecs(): Promise<HostSpecs> {
-        return this.wire.sendAction('get-host-specs').then(({ payload }) => payload.data);
+        return this.wire.sendAction<HostSpecs>('get-host-specs').then(({ payload }) => payload.data);
     }
 
     /**
@@ -411,7 +411,7 @@ export default class System extends Base {
      * @return {Promise.<RVMInfo>}
      */
     public launchExternalProcess(options: ExternalProcessRequestType): Promise<RVMInfo> {
-        return this.wire.sendAction('launch-external-process', options)
+        return this.wire.sendAction<RVMInfo, ExternalProcessRequestType>('launch-external-process', options)
             .then(({ payload }) => payload.data);
     }
 
@@ -421,7 +421,7 @@ export default class System extends Base {
      * @return {Promise.<Identity>}
      */
     public monitorExternalProcess(pid: number): Promise<Identity> {
-        return this.wire.sendAction('monitor-external-process', { pid })
+        return this.wire.sendAction<Identity, {pid: number}>('monitor-external-process', { pid })
             .then(({ payload }) => payload.data);
     }
 
@@ -432,7 +432,7 @@ export default class System extends Base {
      * @return {Promise.<void>}
      */
     public log(level: string, message: string): Promise<void> {
-        return this.wire.sendAction('write-to-log', { level, message }).then(() => undefined);
+        return this.wire.sendAction<void, { level: string; message: string; }>('write-to-log', { level, message }).then(() => undefined);
     }
 
     /**
@@ -442,7 +442,7 @@ export default class System extends Base {
      * @tutorial System.openUrlWithBrowser
      */
     public openUrlWithBrowser(url: string): Promise<void> {
-        return this.wire.sendAction('open-url-with-browser', { url }).then(() => undefined);
+        return this.wire.sendAction<any, {url: string}>('open-url-with-browser', { url }).then(() => undefined);
     }
     /**
      * Removes the process entry for the passed UUID obtained from a prior call
@@ -451,7 +451,7 @@ export default class System extends Base {
      * @return {Promise.<void>}
      */
     public releaseExternalProcess(uuid: string): Promise<void> {
-        return this.wire.sendAction('release-external-process', { uuid }).then(() => undefined);
+        return this.wire.sendAction<void>('release-external-process', { uuid }).then(() => undefined);
     }
 
     /**
@@ -460,7 +460,7 @@ export default class System extends Base {
      * @return {Promise.<void>}
      */
     public showDeveloperTools(identity: Identity): Promise<void> {
-        return this.wire.sendAction('show-developer-tools', identity).then(() => undefined);
+        return this.wire.sendAction<void>('show-developer-tools', identity).then(() => undefined);
     }
 
     /**
@@ -470,7 +470,7 @@ export default class System extends Base {
      * @return {Promise.<void>}
      */
     public terminateExternalProcess(options: TerminateExternalRequestType): Promise<void> {
-        return this.wire.sendAction('terminate-external-process', options)
+        return this.wire.sendAction<void>('terminate-external-process', options)
             .then(() => undefined);
     }
 
@@ -480,7 +480,7 @@ export default class System extends Base {
      * @return {Promise.<void>}
      */
     public updateProxySettings(options: ProxyConfig): Promise<void> {
-        return this.wire.sendAction('update-proxy', options).then(() => undefined);
+        return this.wire.sendAction<any, ProxyConfig>('update-proxy', options).then(() => undefined);
     }
 
     /**
@@ -490,7 +490,7 @@ export default class System extends Base {
      */
     // incompatible with standalone node process.
     public downloadAsset(appAsset: AppAssetInfo): Promise<void> {
-        return this.wire.sendAction('download-asset', appAsset).then(() => undefined);
+        return this.wire.sendAction<any, AppAssetInfo>('download-asset', appAsset).then(() => undefined);
     }
 
     /**
@@ -508,7 +508,7 @@ export default class System extends Base {
             downloadId: downloadId
         };
 
-        return this.wire.sendAction('download-runtime', data).then(() => undefined);
+        return this.wire.sendAction<any, any>('download-runtime', data).then(() => undefined);
     }
 
     /**
@@ -518,7 +518,8 @@ export default class System extends Base {
      * @tutorial system.downloadPreloadScripts
     */
     public downloadPreloadScripts(scripts: Array<DownloadPreloadOption>): Promise<Array<DownloadPreloadInfo>> {
-        return this.wire.sendAction('download-preload-scripts', { scripts }).then(({ payload }) => payload.data);
+        return this.wire.sendAction<DownloadPreloadInfo[], {scripts: Array<DownloadPreloadOption>}>('download-preload-scripts', { scripts })
+            .then(({ payload }) => payload.data);
     }
 
     /**
@@ -526,7 +527,7 @@ export default class System extends Base {
      * @return {Promise.Array.<Identity>}
      */
     public getAllExternalApplications(): Promise<Array<Identity>> {
-        return this.wire.sendAction('get-all-external-applications')
+        return this.wire.sendAction<Identity[]>('get-all-external-applications')
             .then(({ payload }) => payload.data);
     }
 
@@ -537,7 +538,7 @@ export default class System extends Base {
      * @tutorial System.getAppAssetInfo
      */
     public getAppAssetInfo(options: AppAssetRequest): Promise<AppAssetInfo> {
-        return this.wire.sendAction('get-app-asset-info', options).then(({ payload }) => payload.data);
+        return this.wire.sendAction<AppAssetInfo, AppAssetRequest>('get-app-asset-info', options).then(({ payload }) => payload.data);
     }
 
     /**
@@ -547,17 +548,17 @@ export default class System extends Base {
      * @tutorial System.getCookies
      */
     public getCookies(options: CookieOption): Promise<Array<CookieInfo>> {
-        return this.wire.sendAction('get-cookies', options).then(({ payload }) => payload.data);
+        return this.wire.sendAction<CookieInfo[], CookieOption>('get-cookies', options).then(({ payload }) => payload.data);
     }
 
-    /**
+    /**s
      * Set the minimum log level above which logs will be written to the OpenFin log
      * @param { LogLevel } The minimum level (inclusive) above which all calls to log will be written
      * @return {Promise.<void>}
      * @tutorial System.setMinLogLevel
      */
     public setMinLogLevel(level: LogLevel): Promise<void> {
-        return this.wire.sendAction('set-min-log-level', {level}).then(() => undefined);
+        return this.wire.sendAction<any, {level: LogLevel}>('set-min-log-level', {level}).then(() => undefined);
     }
 
     /**
@@ -566,7 +567,7 @@ export default class System extends Base {
      * @return {Promise.<Entity>}
      */
     public resolveUuid(uuid: string): Promise<Entity> {
-        return this.wire.sendAction('resolve-uuid', {
+        return this.wire.sendAction<Entity, {entityKey: string}>('resolve-uuid', {
             entityKey: uuid
         }).then(({ payload }) => payload.data);
     }
@@ -591,7 +592,11 @@ export default class System extends Base {
      * @tutorial System.readRegistryValue
      */
     public readRegistryValue(rootKey: string, subkey: string, value: string): Promise<RegistryInfo> {
-        return this.wire.sendAction('read-registry-value', {
+        return this.wire.sendAction<RegistryInfo, {
+            rootKey: string;
+            subkey: string;
+            value: string;
+        }>('read-registry-value', {
             rootKey: rootKey,
             subkey: subkey,
             value: value
@@ -606,6 +611,6 @@ export default class System extends Base {
      * @tutorial System.registerExternalConnection
      */
     public registerExternalConnection(uuid: string): Promise<ExternalConnection> {
-        return this.wire.sendAction('register-external-connection', {uuid}).then(({ payload }) => payload.data);
+        return this.wire.sendAction<ExternalConnection>('register-external-connection', {uuid}).then(({ payload }) => payload.data);
     }
 }

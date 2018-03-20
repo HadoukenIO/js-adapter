@@ -69,7 +69,7 @@ export default class ApplicationModule extends Bare {
      * @tutorial application.createFromManifest
      */
     public createFromManifest(manifestUrl: string): Promise<Application> {
-        return this.wire.sendAction('get-application-manifest', {manifestUrl})
+        return this.wire.sendAction<any, {manifestUrl: string}>('get-application-manifest', {manifestUrl})
             .then(({ payload }) => this.wrap({uuid: payload.data.startup_app.uuid}));
     }
 }
@@ -120,7 +120,7 @@ export class Application extends Base {
      * @return {Promise.<boolean>}
      */
     public isRunning(): Promise<boolean> {
-        return this.wire.sendAction('is-application-running', this.identity)
+        return this.wire.sendAction<boolean>('is-application-running', this.identity)
             .then(({ payload }) => payload.data);
     }
 
@@ -139,7 +139,7 @@ export class Application extends Base {
      * @return {Promise.Array.<_Window>}
      */
     public getChildWindows(): Promise<Array<_Window>> {
-        return this.wire.sendAction('get-child-windows', this.identity)
+        return this.wire.sendAction<string[]>('get-child-windows', this.identity)
             .then(({ payload }) => this.windowListFromNameList(payload.data));
     }
 
@@ -150,7 +150,7 @@ export class Application extends Base {
      */
     public getGroups(): Promise<Array<Array<_Window>>> {
         const winGroups: Array<Array<_Window>> = <Array<Array<_Window>>>[];
-        return this.wire.sendAction('get-application-groups', this.identity)
+        return this.wire.sendAction<string[][]>('get-application-groups', this.identity)
             .then(({ payload }) => {
                 payload.data.forEach((list: string[], index: number) => {
                     winGroups[index] = this.windowListFromNameList(list);
@@ -177,7 +177,7 @@ export class Application extends Base {
      * @return {Promise.<string>}
      */
     public getParentUuid(): Promise<string> {
-        return this.wire.sendAction('get-parent-application', this.identity)
+        return this.wire.sendAction<string>('get-parent-application', this.identity)
             .then(({ payload }) => payload.data);
     }
 
@@ -278,7 +278,7 @@ export class Application extends Base {
      * @tutorial application.getTrayIconInfo
      */
     public getTrayIconInfo(): Promise<TrayInfo> {
-        return this.wire.sendAction('get-tray-icon-info', this.identity)
+        return this.wire.sendAction<TrayInfo>('get-tray-icon-info', this.identity)
             .then(({ payload }) => payload.data);
     }
 
@@ -306,7 +306,7 @@ export class Application extends Base {
      * @return {Promise.<ApplicationInfo>}
      */
     public getInfo(): Promise<ApplicationInfo> {
-        return this.wire.sendAction('get-info', this.identity).then(({ payload }) => payload.data);
+        return this.wire.sendAction<ApplicationInfo>('get-info', this.identity).then(({ payload }) => payload.data);
     }
 
 }
