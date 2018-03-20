@@ -169,8 +169,10 @@ class Transport extends EventEmitter {
             const { resolve, reject } = this.wireListeners[id];
             if (data.action !== 'ack') {
                 reject(new NoAckError(data.action));
-            } else if (!('payload' in data) || !data.payload.success) {
+            } else if (!('payload' in data)) {
                 reject(new RuntimeError(data));
+            } else if (!data.payload.success) {
+                reject(new RuntimeError(data.payload));
             } else {
                 resolve.call(null, data);
             }
