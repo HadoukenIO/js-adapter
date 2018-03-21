@@ -160,7 +160,9 @@ class Transport extends EventEmitter {
         const id: number = data.correlationId || NaN;
 
         if (!('correlationId' in data)) {
-            this.uncorrelatedListener.call(null, data);
+            if (this.uncorrelatedListener) {
+                this.uncorrelatedListener.call(null, data);
+            }
             // tslint:disable-next-line
             this.uncorrelatedListener = () => { };
         } else if (!(id in this.wireListeners)) {

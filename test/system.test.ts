@@ -26,6 +26,26 @@ describe('System.', function () {
         it('Fulfilled', () => fin.System.deleteCacheOnExit().then(() => assert(true)));
     });
 
+    describe('downloadAsset()', () => {
+        it('should fail', async () => {
+            const appAsset = {
+                src: 'http://localhost:8698/assets.zip',
+                alias: 'dirApp',
+                version: '1.23.24',
+                target: 'assets/run.bat'
+            };
+            try {
+                // tslint:disable-next-line
+                await fin.System.downloadAsset(appAsset, () => {});
+            } catch (err) {
+                assert.ok(err instanceof Error, 'Expected error thrown to be an instance of Error');
+                assert.equal(err.message, 'downloadAsset only supported in an OpenFin Render process',
+                             'Expected error messages to match');
+            }
+
+        });
+    });
+
     describe('downloadPreloadScripts()', () => {
         it('should download code from github', async () => {
             const downloadOptions = {
@@ -56,6 +76,21 @@ describe('System.', function () {
             return fin.System.downloadPreloadScripts([downloadOptions]).then(result => {
                 return assert.deepEqual(result[0], expected, 'Expected objects to match');
             });
+        });
+    });
+
+    describe('downloadRuntime()', () => {
+        it('should fail', async () => {
+            const runtimeInfo = { version: '9.61.35.1' };
+
+            try {
+                // tslint:disable-next-line
+                await fin.System.downloadRuntime(runtimeInfo, () =>{});
+            } catch (err) {
+                assert.ok(err instanceof Error, 'Expected error thrown to be an instance of Error');
+                assert.equal(err.message, 'downloadRuntime only supported in an OpenFin Render process',
+                             'Expected error messages to match');
+            }
         });
     });
 

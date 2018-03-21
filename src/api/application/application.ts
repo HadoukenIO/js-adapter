@@ -59,7 +59,7 @@ export default class ApplicationModule extends Bare {
      * @tutorial application.getCurrent
      */
     public getCurrent(): Promise<Application> {
-        return this.wrap(this.wire.me);
+        return this.wrap({ uuid: this.wire.me.uuid });
     }
 
     /**

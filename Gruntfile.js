@@ -1,10 +1,9 @@
 const path = require('path');
 const testAppConfig = path.resolve('test', 'app.json');
-const liveServer = require('live-server');
+const httpServer = require('http-server');
 const ps = require('ps-node');
 const os = require('os');
 const exec = require('child_process').exec;
-const rimraf = require('rimraf');
 const webpack = require('webpack');
 
 const outDir = path.resolve('out');
@@ -18,13 +17,15 @@ const serverParams = {
     root: path.resolve('html'),
     open: false,
     logLevel: 0,
-    port: 8689
+    port: 8689,
+    ignore: path.resolve('html')
 };
 
 module.exports = function (grunt) {
     const version = grunt.option('ver');
     const remote = grunt.option('remote');
     const rvmDir = grunt.option('rvmDir');
+    const target = grunt.option('target');
     const uuid = 'testapp';
     const args = '--enable-multi-runtime --debug=5858';
     process.env.OF_VER = version;
@@ -95,19 +96,29 @@ module.exports = function (grunt) {
     });
 
     grunt.registerTask('clean', function () {
-        rimraf.sync(outDir);
+        grunt.file.delete(outDir);
         grunt.log.ok('out directory deleted');
     });
 
     grunt.registerTask('start-server', function () {
-        const done = this.async();
-        liveServer.start(serverParams).on('listening', done);
+        const server = httpServer.createServer(serverParams);
+        server.listen(serverParams.port);
     });
 
     grunt.registerTask('start-repl', function () {
         const finRepl = require(path.join(outDir, 'repl', 'index.js'));
         const done = this.async();
         finRepl.startRepl();
+    });
+
+    grunt.registerTask('deploy', function () {
+        if (!target) {
+            grunt.log.writeln('no deploy target specified, skipping deploy step');
+        } else {
+            const deployPath = path.join(target, 'js-adapter', 'js-adapter.js');
+            grunt.file.copy(webpackConfig.output.filename, deployPath);
+            grunt.log.ok(`deployed to ${ deployPath }`);
+        }
     });
 
     grunt.registerTask('webpack', function () {
@@ -172,13 +183,20 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks('grunt-contrib-copy');
 
     grunt.registerTask('lint', ['tslint']);
+
     grunt.registerTask('build', [
         'clean',
         'shell',
         'webpack',
         'copy:resources'
     ]);
-    grunt.registerTask('default', ['lint', 'build']);
+
+    grunt.registerTask('default', [
+        'lint',
+        'build',
+        'deploy'
+    ]);
+
     grunt.registerTask('test', [
         'check-version',
         'default',
@@ -187,6 +205,7 @@ module.exports = function (grunt) {
         'mochaTest',
         'kill-processes'
     ]);
+
     grunt.registerTask('repl', [
         'check-version',
         'default',
