@@ -451,7 +451,7 @@ export default class System extends Base {
      * @return {Promise.<void>}
      */
     public releaseExternalProcess(uuid: string): Promise<void> {
-        return this.wire.sendAction<void>('release-external-process', { uuid }).then(() => undefined);
+        return this.wire.sendAction<any>('release-external-process', { uuid }).then(() => undefined);
     }
 
     /**
@@ -460,7 +460,7 @@ export default class System extends Base {
      * @return {Promise.<void>}
      */
     public showDeveloperTools(identity: Identity): Promise<void> {
-        return this.wire.sendAction<void>('show-developer-tools', identity).then(() => undefined);
+        return this.wire.sendAction<any>('show-developer-tools', identity).then(() => undefined);
     }
 
     /**
@@ -470,7 +470,7 @@ export default class System extends Base {
      * @return {Promise.<void>}
      */
     public terminateExternalProcess(options: TerminateExternalRequestType): Promise<void> {
-        return this.wire.sendAction<void>('terminate-external-process', options)
+        return this.wire.sendAction<any, TerminateExternalRequestType>('terminate-external-process', options)
             .then(() => undefined);
     }
 
