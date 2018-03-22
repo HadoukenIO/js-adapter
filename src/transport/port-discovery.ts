@@ -1,4 +1,3 @@
-import * as crypto from 'crypto';
 import * as fs from 'fs';
 import * as net from 'net';
 import * as path from 'path';
@@ -7,6 +6,7 @@ import { NewConnectConfig, PortDiscoveryConfig, isExternalConfig } from './wire'
 import Launcher from '../launcher/launcher';
 import Timer = NodeJS.Timer;
 import { setTimeout } from 'timers';
+import { Environment } from '../environment/environment';
 
 const launcher = new Launcher();
 
@@ -184,9 +184,11 @@ export class PortDiscovery {
     private namedPipeServer: net.Server;
     private pipeConnection: net.Socket; // created by Runtime. only one allowed
     private timeoutTimer: Timer;
+    private environment: Environment;
 
-    constructor(config: PortDiscoveryConfig) {
+    constructor(config: PortDiscoveryConfig, environment: Environment) {
         this.savedConfig = Object.assign({}, config);
+        this.environment = environment;
     }
 
     // tslint:disable-next-line:no-unused-variable
@@ -224,7 +226,7 @@ export class PortDiscovery {
         return new Promise((resolve, reject) => {
             this.discoverState = DiscoverState.INIT;
             let unix = false;
-            const randomNum: string = crypto.randomBytes(16).toString('hex');
+            const randomNum: string = this.environment.getRandomId();
             this.namedPipeName = 'NodeAdapter.' + randomNum;
             this.namedPipeServer = net.createServer();
             const pipePath: string = os.platform() === 'win32'

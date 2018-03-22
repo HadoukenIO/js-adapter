@@ -11,7 +11,8 @@
             "out/src/api/application",
             "out/src/api/notification",
             "out/src/api/external-application",
-            "out/src/api/frame"
+            "out/src/api/frame",
+            "out/src/api/plugin"
         ]
     },
     "tags": {
