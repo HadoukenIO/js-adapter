@@ -582,7 +582,7 @@ export class _Window extends Base {
      * @tutorial Window.getAllFrames
      */
     public getAllFrames(): Promise<Array<FrameInfo>> {
-        return this.wire.sendAction('get-all-frames', this.identity).then(({ payload }) => payload.data);
+        return this.wire.sendAction<FrameInfo[]>('get-all-frames', this.identity).then(({ payload }) => payload.data);
     }
 
     /**
@@ -591,9 +591,8 @@ export class _Window extends Base {
      * @tutorial Window.getBounds
     */
     public getBounds(): Promise<Bounds> {
-        return this.wire.sendAction('get-window-bounds', this.identity)
-            // tslint:disable-next-line
-            .then(({ payload }) => payload.data as Bounds);
+        return this.wire.sendAction<Bounds>('get-window-bounds', this.identity)
+            .then(({ payload }) => payload.data);
     }
 
     /**
@@ -668,7 +667,7 @@ export class _Window extends Base {
      * @tutorial Window.getNativeId
      */
     public getNativeId(): Promise<string> {
-        return this.wire.sendAction('get-window-native-id', this.identity)
+        return this.wire.sendAction<string>('get-window-native-id', this.identity)
             .then(({ payload }) => payload.data);
     }
 
@@ -728,7 +727,7 @@ export class _Window extends Base {
      * @tutorial Window.getGroup
      */
     public getGroup(): Promise<Array<_Window>> {
-        return this.wire.sendAction('get-window-group', this.identity).then(({ payload }) => {
+        return this.wire.sendAction<string[]>('get-window-group', this.identity).then(({ payload }) => {
             // tslint:disable-next-line
             let winGroup: Array<_Window> = [] as Array<_Window>;
 
@@ -745,7 +744,7 @@ export class _Window extends Base {
      * @tutorial Window.getInfo
      */
     public getInfo():  Promise<WindowInfo> {
-        return this.wire.sendAction('get-window-info', this.identity).then(({ payload }) => payload.data);
+        return this.wire.sendAction<WindowInfo>('get-window-info', this.identity).then(({ payload }) => payload.data);
     }
 
     /**
@@ -781,7 +780,7 @@ export class _Window extends Base {
      * @tutorial Window.getSnapshot
      */
     public getSnapshot(): Promise<string> {
-        return this.wire.sendAction('get-window-snapshot', this.identity).then(({ payload }) => payload.data);
+        return this.wire.sendAction<string>('get-window-snapshot', this.identity).then(({ payload }) => payload.data);
     }
 
     /**
@@ -790,7 +789,7 @@ export class _Window extends Base {
      * @tutorial Window.getState
      */
     public getState(): Promise<string> {
-        return this.wire.sendAction('get-window-state', this.identity).then(({ payload }) => payload.data);
+        return this.wire.sendAction<string>('get-window-state', this.identity).then(({ payload }) => payload.data);
     }
 
     /**
@@ -799,7 +798,7 @@ export class _Window extends Base {
      * @tutorial Window.isShowing
      */
     public isShowing(): Promise<boolean> {
-        return this.wire.sendAction('is-window-showing', this.identity).then(({ payload }) => payload.data);
+        return this.wire.sendAction<boolean>('is-window-showing', this.identity).then(({ payload }) => payload.data);
     }
 
     /**
@@ -1014,7 +1013,7 @@ export class _Window extends Base {
      * @return {Promise.<number>}
      */
     public getZoomLevel(): Promise<number> {
-        return this.wire.sendAction('get-zoom-level', this.identity).then(({ payload }) => payload.data);
+        return this.wire.sendAction<number>('get-zoom-level', this.identity).then(({ payload }) => payload.data);
     }
 
     /**

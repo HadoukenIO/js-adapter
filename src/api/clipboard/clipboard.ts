@@ -31,7 +31,7 @@ export default class Clipboard extends Base {
      * @return {Promise.<string>}
     */
     public readText(type?: string): Promise<string> {
-        return this.wire.sendAction('clipboard-read-text', type)
+        return this.wire.sendAction<string, string>('clipboard-read-text', type)
             .then(({ payload }) => payload.data);
     }
 
@@ -52,7 +52,7 @@ export default class Clipboard extends Base {
      * @return {Promise.<string>}
     */
     public readHtml(type?: string): Promise<string> {
-        return this.wire.sendAction('clipboard-read-html', type)
+        return this.wire.sendAction<string, string>('clipboard-read-html', type)
             .then(({ payload }) => payload.data);
     }
 
@@ -71,7 +71,7 @@ export default class Clipboard extends Base {
      * @return {Promise.<string>}
     */
     public readRtf(type?: string): Promise<string> {
-        return this.wire.sendAction('clipboard-read-rtf', type)
+        return this.wire.sendAction<string, string>('clipboard-read-rtf', type)
             .then(({ payload }) => payload.data);
     }
 
@@ -90,7 +90,7 @@ export default class Clipboard extends Base {
      * @return {Promise.Array.<string>}
     */
     public getAvailableFormats(type?: string): Promise<Array<string>> {
-        return this.wire.sendAction('clipboard-read-formats', type)
+        return this.wire.sendAction<string[], string>('clipboard-read-formats', type)
             .then(({ payload }) => payload.data);
     }
 }

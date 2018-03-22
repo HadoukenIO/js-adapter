@@ -188,7 +188,7 @@ export default class _NotificationModule extends Bare {
     private genNoteId() {
         // tslint:disable-next-line
         return ++this.nextNoteId;
-    };
+    }
 
     public events = events;
 
@@ -196,5 +196,5 @@ export default class _NotificationModule extends Bare {
         const noteOptions = new NotificationOptions(options, this.me, this.genNoteId());
 
         return new _Notification(this.wire, noteOptions);
-    };
+    }
 }

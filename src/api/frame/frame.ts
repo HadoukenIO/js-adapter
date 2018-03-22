@@ -65,7 +65,7 @@ export class _Frame extends Base {
      * @tutorial Frame.getInfo
      */
     public getInfo(): Promise<FrameInfo> {
-        return this.wire.sendAction('get-frame-info', this.identity).then(({ payload }) => payload.data);
+        return this.wire.sendAction<FrameInfo>('get-frame-info', this.identity).then(({ payload }) => payload.data);
     }
 
     /**
@@ -75,7 +75,7 @@ export class _Frame extends Base {
      * @tutorial Frame.getParentWindow
      */
     public getParentWindow(): Promise<FrameInfo> {
-        return this.wire.sendAction('get-parent-window', this.identity).then(({ payload }) => payload.data);
+        return this.wire.sendAction<FrameInfo>('get-parent-window', this.identity).then(({ payload }) => payload.data);
     }
 
 }

@@ -7,6 +7,10 @@ export interface RuntimeEvent extends Identity {
     type: string;
 }
 
+export function isDesktopEvent(message: Message<any, any>): message is Message<void, RuntimeEvent> {
+    return message.action === 'process-desktop-event';
+}
+
 export class Bare extends EventEmitter {
     public wire: Transport;
     constructor(wire: Transport) {
@@ -35,12 +39,11 @@ export class Base extends Bare {
         return listener.topic === this.topic;
     }
 
-    protected onmessage = (message: Message<any>): boolean => {
-
-        if (message.action === 'process-desktop-event') {
+    protected onmessage = (message: Message<any, any>): boolean => {
+        if (isDesktopEvent(message)) {
             const payload = message.payload;
 
-            if (this.runtimeEventComparator(<RuntimeEvent>payload)) {
+            if (this.runtimeEventComparator(payload)) {
                 this.emit(payload.type, message.payload);
             }
             return true;

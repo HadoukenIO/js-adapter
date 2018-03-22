@@ -120,7 +120,7 @@ export default class InterApplicationBus extends Bare {
         return this.refCounter.actOnLast(subKey, sendUnsubscription, dontSendUnsubscription);
     }
 
-    private processMessage(message: Message<InterAppPayload>) {
+    private processMessage(message: Message<any, InterAppPayload>) {
         const { payload: { message: payloadMessage, sourceWindowName, sourceUuid, topic } } = message;
         const keys = [
             this.createSubscriptionKey(sourceUuid, sourceWindowName, topic),
@@ -149,7 +149,7 @@ export default class InterApplicationBus extends Bare {
         return createKey(uuid, n, topic);
     }
 
-    protected onmessage(message: Message<InterAppPayload>): boolean {
+    protected onmessage(message: Message<any, InterAppPayload>): boolean {
         const { action } = message;
 
         switch (action) {

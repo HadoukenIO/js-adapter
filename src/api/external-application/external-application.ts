@@ -49,7 +49,8 @@ export class ExternalApplication extends Base {
      * @tutorial ExternalApplication.getInfo
      */
     public getInfo(): Promise<ExternalApplicationInfo> {
-        return this.wire.sendAction('get-external-application-info', this.identity).then(({ payload }) => payload.data);
+        return this.wire.sendAction<ExternalApplicationInfo>('get-external-application-info', this.identity)
+            .then(({ payload }) => payload.data);
     }
 }
 
