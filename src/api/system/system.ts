@@ -503,7 +503,7 @@ export default class System extends Base {
             const dlErrorKey = `asset-download-error-${  downloadId }` ;
             const dlCompleteKey = `asset-download-complete-${ downloadId }`;
 
-            const dlProgress = (progress: any) => {
+            const dlProgress = (progress: RuntimeDownloadProgress) => {
                 const p: RuntimeDownloadProgress = {
                     downloadedBytes: progress.downloadedBytes,
                     totalBytes: progress.totalBytes
@@ -561,7 +561,7 @@ export default class System extends Base {
             const dlErrorKey = `runtime-download-error-${  downloadId }` ;
             const dlCompleteKey = `runtime-download-complete-${ downloadId }`;
 
-            const dlProgress = (progress: any) => {
+            const dlProgress = (progress: RuntimeDownloadProgress) => {
                 const p: RuntimeDownloadProgress = {
                     downloadedBytes: progress.downloadedBytes,
                     totalBytes: progress.totalBytes
