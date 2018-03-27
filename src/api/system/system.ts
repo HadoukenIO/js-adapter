@@ -7,7 +7,7 @@ import { PointTopLeft } from './point';
 import { GetLogRequestType, LogInfo, LogLevel } from './log';
 import { ProxyInfo, ProxyConfig } from './proxy';
 import { ProcessInfo } from './process';
-import { AppAssetInfo, AppAssetRequest, RuntimeDownloadOptions } from './download-asset';
+import { AppAssetInfo, AppAssetRequest, RuntimeDownloadOptions, RuntimeDownloadProgress } from './download-asset';
 import { RVMInfo } from './rvm';
 import { Entity, EntityInfo } from './entity';
 import { HostSpecs } from './host-specs';
@@ -16,6 +16,7 @@ import Transport from '../../transport/transport';
 import { CookieInfo, CookieOption } from './cookie';
 import { RegistryInfo } from './registry-info';
 import { DownloadPreloadOption, DownloadPreloadInfo } from './download-preload';
+import { RuntimeError, NotSupportedError } from '../../transport/transport-errors';
 
 /**
  * AppAssetInfo interface
@@ -489,26 +490,112 @@ export default class System extends Base {
      * @return {Promise.<void>}
      */
     // incompatible with standalone node process.
-    public downloadAsset(appAsset: AppAssetInfo): Promise<void> {
-        return this.wire.sendAction('download-asset', appAsset).then(() => undefined);
+    public downloadAsset(appAsset: AppAssetInfo, progressListener: (progress: RuntimeDownloadProgress) => void): Promise<void> {
+        return new Promise((resolve, reject) => {
+            //node.js environment not supported
+            if (this.wire.environment.constructor.name === 'NodeEnvironment') {
+                reject(new NotSupportedError('downloadAsset only supported in an OpenFin Render process'));
+                return;
+            }
+
+            const downloadId = this.wire.environment.getNextMessageId().toString();
+            const dlProgressKey = `asset-download-progress-${ downloadId }`;
+            const dlErrorKey = `asset-download-error-${  downloadId }` ;
+            const dlCompleteKey = `asset-download-complete-${ downloadId }`;
+
+            const dlProgress = (progress: RuntimeDownloadProgress) => {
+                const p: RuntimeDownloadProgress = {
+                    downloadedBytes: progress.downloadedBytes,
+                    totalBytes: progress.totalBytes
+                };
+
+                progressListener(p);
+            };
+
+            const cleanListeners = () => {
+                this.removeListener(dlProgressKey, dlProgress);
+            };
+
+            const dlError = (r: string, err: Error) => {
+                const error = err ? err : r;
+                cleanListeners();
+                reject(new RuntimeError(error));
+            };
+
+            const dlComplete = () => {
+                cleanListeners();
+                resolve();
+            };
+
+            this.on(dlProgressKey, dlProgress);
+            this.once(dlErrorKey, dlError);
+            this.once(dlCompleteKey, dlComplete);
+
+            const downloadOptions: any = Object.assign(appAsset, { downloadId });
+
+            this.wire.sendAction('download-asset', downloadOptions).catch((err: Error) => {
+                cleanListeners();
+                reject(err);
+            });
+
+        });
     }
 
     /**
     * Downloads a version of the runtime.
     * @param { RuntimeDownloadOptions } options - Download options.
+    * @param {Function} [progressListener] - called as the runtime is downloaded with progress information.
     * @return {Promise.<void>}
     * @tutorial System.downloadRuntime
     */
-    // standalone node process will not work if configUrl is empty.
-    public downloadRuntime(options: RuntimeDownloadOptions): Promise<void> {
-        //The expected downloadId in core to be a string.
-        const downloadId = this.wire.environment.getNextMessageId().toString();
-        const data: any = {
-            version: options.version,
-            downloadId: downloadId
-        };
+    public downloadRuntime(options: RuntimeDownloadOptions, progressListener: (progress: RuntimeDownloadProgress) => void): Promise<void> {
+        return new Promise((resolve, reject) => {
+            //node.js environment not supported
+            if (this.wire.environment.constructor.name === 'NodeEnvironment') {
+                reject(new NotSupportedError('downloadRuntime only supported in an OpenFin Render process'));
+                return;
+            }
 
-        return this.wire.sendAction('download-runtime', data).then(() => undefined);
+            const downloadId = this.wire.environment.getNextMessageId().toString();
+            const dlProgressKey = `runtime-download-progress-${ downloadId }`;
+            const dlErrorKey = `runtime-download-error-${  downloadId }` ;
+            const dlCompleteKey = `runtime-download-complete-${ downloadId }`;
+
+            const dlProgress = (progress: RuntimeDownloadProgress) => {
+                const p: RuntimeDownloadProgress = {
+                    downloadedBytes: progress.downloadedBytes,
+                    totalBytes: progress.totalBytes
+                };
+
+                progressListener(p);
+            };
+
+            const cleanListeners = () => {
+                this.removeListener(dlProgressKey, dlProgress);
+            };
+
+            const dlError = (r: string, err: Error) => {
+                const error = err ? err : r;
+                cleanListeners();
+                reject(new RuntimeError(error));
+            };
+
+            const dlComplete = () => {
+                cleanListeners();
+                resolve();
+            };
+
+            this.on(dlProgressKey, dlProgress);
+            this.once(dlErrorKey, dlError);
+            this.once(dlCompleteKey, dlComplete);
+
+            const downloadOptions: any = Object.assign(options, { downloadId });
+
+            this.wire.sendAction('download-runtime', downloadOptions).catch((err: Error) => {
+                cleanListeners();
+                reject(err);
+            });
+        });
     }
 
     /**

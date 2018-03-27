@@ -14,3 +14,8 @@ export interface RuntimeDownloadOptions {
 export interface AppAssetRequest {
     alias: string;
 }
+
+export interface RuntimeDownloadProgress {
+    downloadedBytes: number;
+    totalBytes: number;
+}

@@ -16,8 +16,11 @@ export class NoAckError extends Error { }
 
 export class NotImplementedError extends Error { }
 
+export class NotSupportedError extends Error {}
+
 export class RuntimeError extends Error {
-    constructor(payload: any) {
+constructor(data: any) {
+        const payload = data.payload || data;
         const { reason, err } = payload;
         super(reason);
         this.name = 'RuntimeError';

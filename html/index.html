@@ -9,27 +9,21 @@
     </head>
     <body>
         <div>
-            <h1>Hello, world!</h1>
-            <p>This is a template for an OpenFin application.</p>
             <p id="version-number-container">
-                Current version: <span id="of-version"></span>
+                Openfin version: <span id="of-version"></span>
             </p>
-            <p>
-                Command line Args: <span id="command-line-args"></span>
+            <p id="identity-container">
+                Window Identity: <span id="win-identity"></span>
             </p>
         </div>
         <script>
-            fin.desktop.main(() => {
+            document.addEventListener('DOMContentLoaded', async () => {
                 const ofVersion = document.querySelector('#of-version');
-                const commandLineArgs = document.querySelector('#command-line-args');
-                
-                fin.desktop.System.getVersion(function(version) {
-                    ofVersion.innerText = version;
-                });
+                const winIdentity = document.querySelector('#win-identity');
+                const [version, win] = await Promise.all([fin.System.getVersion(), fin.Window.getCurrent()]);
 
-                fin.desktop.System.getCommandLineArguments(function(commandLineArgs) {
-                    commandLineArgs.innerText = commandLineArgs;
-                });
+                ofVersion.innerText = version;
+                winIdentity.innerText = JSON.stringify(win.identity);
             });
         </script>
     </body>
