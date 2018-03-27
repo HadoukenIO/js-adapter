@@ -28,7 +28,6 @@ class Transport extends EventEmitter {
     protected wireListeners: { resolve: Function, reject: Function }[] = [];
     protected uncorrelatedListener: Function;
     protected messageHandlers: MessageHandler[] = [];
-    protected pendingActions: Set<(x: any) => void> = new Set(); // theses are reject functions
     public me: Identity;
     protected wire: Wire;
     public environment: Environment;
@@ -41,9 +40,11 @@ class Transport extends EventEmitter {
         this.registerMessageHandler(this.handleMessage.bind(this));
         this.wire.on('disconnected', () => {
 
-            for (const reject of this.pendingActions){
+            for (const { reject } of this.wireListeners){
                 reject('Remote connection has closed');
             }
+
+            this.wireListeners.length = 0;
             this.emit('disconnected');
         });
     }
@@ -127,23 +128,13 @@ class Transport extends EventEmitter {
     public ferryAction(data: any): Promise<Message<any>> {
         return new Promise((resolve, reject) => {
             const id = this.environment.getNextMessageId();
-
-            this.pendingActions.add(reject);
             data.messageId = id;
 
-            const resolver = (data: any) => {
-                this.pendingActions.delete(resolve);
-                resolve(data.payload);
-            };
-
-            const rejecter = (reason?: any) => {
-                this.pendingActions.delete(resolve);
-                reject(reason);
-            };
+            const resolver = (data: any) => { resolve(data.payload); };
 
             return this.wire.send(data)
-                .then(() => this.addWireListener(id, resolver, rejecter, false))
-                .catch(rejecter);
+                .then(() => this.addWireListener(id, resolver, reject, false))
+                .catch(reject);
         });
     }
 
