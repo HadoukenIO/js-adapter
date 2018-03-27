@@ -185,6 +185,13 @@ describe('System.', function () {
         it('Fulfilled', () => fin.System.getHostSpecs().then(specs => assert(true)));
     });
 
+    describe('getRuntimeInfo()', () => {
+
+        it('Fulfilled', () => fin.System.getRuntimeInfo().then(runtimeInfo => {
+            assert(typeof (runtimeInfo) === 'object');
+        }));
+    });
+
     describe('launchExternalProcess()', () => {
         const processOptions = {
             path: 'notepad',
