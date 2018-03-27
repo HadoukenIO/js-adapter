@@ -3,5 +3,5 @@ Invoked when the notification is shown
 ```js
 fin.Notification.create({
     url: 'https://www.openfin.co'
-}).show().then(() => true).catch(err => console.log(err));
+}).show().then(() => console.log('Notification shown')).catch(err => console.log(err));
 ```

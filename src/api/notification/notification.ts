@@ -1,6 +1,6 @@
 import { Bare, Base } from '../base';
 import { Identity } from '../../identity';
-import Transport, { Message } from '../../transport/transport';
+import Transport from '../../transport/transport';
 
 const events = {
     show: 'show',
@@ -9,11 +9,6 @@ const events = {
     click: 'click',
     message: 'message'
 };
-
-export interface Notification {
-    sendMessage(message: any): void;
-    close(): void;
-}
 
 export class NotificationOptions {
     public url: string;
@@ -50,7 +45,7 @@ export interface NotificationCallback {
  * @alias Notification
  */
 // tslint:disable-next-line
-export class _Notification extends Base implements Notification {
+export class _Notification extends Base {
     private listenerList: Array<string> = ['newListener'];
 
     private unhookAllListeners = () => {
@@ -121,16 +116,16 @@ export class _Notification extends Base implements Notification {
 
     /**
      * Invoked when the notification is shown
-     * @return {Promise.<Message>}
+     * @return {Promise.<void>}
      * @tutorial Notification.show
      */
-    public show(): Promise<Message<any>> {
+    public async show(): Promise<void> {
 
         if (!this.url) {
             throw new Error('Notifications require a url');
         }
 
-        return this.wire.sendAction('send-action-to-notifications-center', {
+        await this.wire.sendAction('send-action-to-notifications-center', {
             action: 'create-notification',
             payload: {
                 url: this.url,
@@ -152,9 +147,9 @@ export class _Notification extends Base implements Notification {
      * @return {Promise.<void>}
      * @tutorial Notification.sendMessage
      */
-    public sendMessage(message: any): Promise<Message<any>> {
+    public async sendMessage(message: any): Promise<void> {
 
-        return this.wire.sendAction('send-action-to-notifications-center', {
+        await this.wire.sendAction('send-action-to-notifications-center', {
             action: 'send-notification-message',
             payload: {
                 notificationId: this.options.notificationId,
@@ -167,12 +162,12 @@ export class _Notification extends Base implements Notification {
 
     /**
      * Closes the notification
-     * @return {Promise.<Messge>}
+     * @return {Promise.<void>}
      * @tutorial Notification.close
      */
-    public close(): Promise<Message<any>> {
+    public async close(): Promise<void> {
 
-        return this.wire.sendAction('send-action-to-notifications-center', {
+        await this.wire.sendAction('send-action-to-notifications-center', {
             action: 'close-notification',
             payload: {
                 notificationId: this.options.notificationId
