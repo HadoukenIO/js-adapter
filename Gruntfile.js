@@ -162,20 +162,6 @@ module.exports = function (grunt) {
         );
     });
 
-    grunt.registerTask('installBeforeTests', function () {
-        if (os.platform() !== 'win32') {
-            const done = this.async();
-            const Launcher = require('./out/src/launcher/launcher').default;
-            const launcher = new Launcher();
-            const {install} = require('./out/src/launcher/nix-launch');
-            install(version, launcher.nixConfig)
-            .then(path => {
-                console.log('runtime at ' + path);
-                done();
-            });
-        }
-    });
-
     grunt.loadNpmTasks('grunt-shell');
     grunt.loadNpmTasks('grunt-tslint');
     grunt.loadNpmTasks('grunt-mocha-test');
@@ -201,7 +187,7 @@ module.exports = function (grunt) {
         'check-version',
         'default',
         'start-server',
-        'installBeforeTests',
+        'openfin',
         'mochaTest',
         'kill-processes'
     ]);
