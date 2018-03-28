@@ -1,4 +1,5 @@
 import { writeFile } from 'fs';
+import { randomBytes } from 'crypto';
 import { Environment } from './environment';
 import { PortDiscovery } from '../transport/port-discovery';
 import { NewConnectConfig } from '../transport/wire';
@@ -14,7 +15,7 @@ export default class NodeEnvironment implements Environment {
     }
 
     public retrievePort = (config: NewConnectConfig): Promise<number> => {
-        const pd = new PortDiscovery(config);
+        const pd = new PortDiscovery(config, this);
         return pd.retrievePort();
     }
 
@@ -25,5 +26,9 @@ export default class NodeEnvironment implements Environment {
 
     public createChildWindow = (options: any): Promise<any> => {
         throw new NotImplementedError('Not Implemented');
+    }
+
+    public getRandomId = (): string => {
+        return randomBytes(16).toString('hex');
     }
 }
