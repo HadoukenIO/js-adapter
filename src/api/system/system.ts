@@ -9,6 +9,7 @@ import { ProxyInfo, ProxyConfig } from './proxy';
 import { ProcessInfo } from './process';
 import { AppAssetInfo, AppAssetRequest, RuntimeDownloadOptions, RuntimeDownloadProgress } from './download-asset';
 import { RVMInfo } from './rvm';
+import { RuntimeInfo } from './runtime-info';
 import { Entity, EntityInfo } from './entity';
 import { HostSpecs } from './host-specs';
 import { ExternalProcessRequestType , TerminateExternalRequestType, ExternalConnection } from './external-process';
@@ -384,6 +385,15 @@ export default class System extends Base {
     public getProxySettings(): Promise<ProxyInfo> {
         return this.wire.sendAction('get-proxy-settings')
             .then(({ payload }) => payload.data);
+    }
+
+    /**
+     * Returns information about the running Runtime in an object.
+     * @return {Promise.<RuntimeInfo>}
+     * @tutorial System.getRuntimeInfo
+     */
+    public getRuntimeInfo(): Promise<RuntimeInfo> {
+        return this.wire.sendAction('get-runtime-info').then(({ payload }) => payload.data);
     }
 
     /**
