@@ -26,7 +26,7 @@ export async function launch(config: ConnectConfig): Promise<number> {
    if (!isPortDiscoveryConfig(normalized)) {
        throw new Error('Invalid Config');
    }
-   const pd = new PortDiscovery(normalized);
+   const pd = new PortDiscovery(normalized, environment);
    return pd.retrievePort();
 }
 

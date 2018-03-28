@@ -50,6 +50,11 @@ export default class OpenFinEnvironment implements Environment {
          });
     }
 
+    public getRandomId = (): string => {
+        const intArray = new Uint32Array(1);
+        return (<any>window).crypto.getRandomValues(intArray)[0].toString(32);
+    }
+
     private resolveUrl(url: string): string {
         const newUrl = new URL(url, location.href);
         return newUrl.href;

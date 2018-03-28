@@ -4,5 +4,4 @@ export interface RuntimeInfo {
     port: number;
     securityRealm?: string;
     version: string;
-
 }

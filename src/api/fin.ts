@@ -8,6 +8,7 @@ import _NotificationModule from './notification/notification';
 import Clipbpard from './clipboard/clipboard';
 import ExternalApplication from './external-application/external-application';
 import _FrameModule from './frame/frame';
+import Plugin from './plugin/plugin';
 
 export default class Fin extends Bare {
     public System: System;
@@ -18,6 +19,7 @@ export default class Fin extends Bare {
     public Clipboard: Clipbpard;
     public ExternalApplication: ExternalApplication;
     public Frame: _FrameModule;
+    public Plugin: Plugin;
 
     constructor(wire: Transport, public token: string) {
         super(wire);
@@ -29,6 +31,7 @@ export default class Fin extends Bare {
         this.Clipboard = new Clipbpard(wire);
         this.ExternalApplication = new ExternalApplication(wire);
         this.Frame = new _FrameModule(wire);
+        this.Plugin = new Plugin(wire);
 
         //Handle disconnect events
         wire.on('disconnected', () => {

@@ -21,6 +21,14 @@ export class Bare extends EventEmitter {
     get me(): Identity {
         return this.wire.me;
     }
+
+    protected isNodeEnvironment = (): boolean => {
+        return this.wire.environment.constructor.name === 'NodeEnvironment';
+    }
+
+    protected isOpenFinEnvironment = (): boolean => {
+        return this.wire.environment.constructor.name === 'OpenFinEnvironment';
+    }
 }
 
 export class Base extends Bare {
