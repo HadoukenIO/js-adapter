@@ -17,10 +17,11 @@ describe('Plugin.', () => {
         it('Doesn\'t work in Node environment', async () => {
             try {
                 await fin.Plugin.import(plugin);
-                throw new Error('Expected to throw in Node');
             } catch (error) {
                 return true;
             }
+
+            throw new Error('Expected to throw in Node');
         });
 
     });
