@@ -73,7 +73,10 @@ module.exports = function (grunt) {
                             autoShow: true,
                             url: `http://localhost:${serverParams.port}/index.html`,
                             nonPersistent: true,
-                            saveWindowState: false
+                            saveWindowState: false,
+                            experimental: {
+                                v2Api: true
+                            }
                         }
                     }
                 }
