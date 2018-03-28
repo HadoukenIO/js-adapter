@@ -7,7 +7,7 @@ let count = 0;
 export function conn() {
     if (!c) {
         c = connect({
-            runtime: { version: process.env.OF_VER, rvmDir: process.env.RVM_DIR },
+            address: 'ws://localhost:9696',
             // tslint:disable-next-line
             uuid: 'example_uuid' + Math.random()
         }).catch(() => {
