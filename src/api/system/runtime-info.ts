@@ -1,7 +1,8 @@
 export interface RuntimeInfo {
+    architecture: string;
     manifestUrl: string;
     port: number;
-    securityRealm: string;
+    securityRealm?: string;
     version: string;
-    architecture: string;
+
 }
