@@ -39,6 +39,12 @@ class Transport extends EventEmitter {
         this.environment = environment;
         this.registerMessageHandler(this.handleMessage.bind(this));
         this.wire.on('disconnected', () => {
+
+            for (const { reject } of this.wireListeners){
+                reject('Remote connection has closed');
+            }
+
+            this.wireListeners.length = 0;
             this.emit('disconnected');
         });
     }
