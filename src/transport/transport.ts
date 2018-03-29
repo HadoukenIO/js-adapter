@@ -25,7 +25,7 @@ export interface MessageHandler {
 }
 
 class Transport extends EventEmitter {
-    protected wireListeners: { resolve: Function, reject: Function }[] = [];
+    protected wireListeners: Map<number, { resolve: Function, reject: Function }> = new Map();
     protected uncorrelatedListener: Function;
     protected messageHandlers: MessageHandler[] = [];
     public me: Identity;
@@ -40,11 +40,11 @@ class Transport extends EventEmitter {
         this.registerMessageHandler(this.handleMessage.bind(this));
         this.wire.on('disconnected', () => {
 
-            for (const { reject } of this.wireListeners){
+            for (const [, { reject }] of this.wireListeners){
                 reject('Remote connection has closed');
             }
 
-            this.wireListeners.length = 0;
+            this.wireListeners.clear();
             this.emit('disconnected');
         });
     }
@@ -145,10 +145,10 @@ class Transport extends EventEmitter {
     protected addWireListener(id: number, resolve: Function, reject: Function, uncorrelated: boolean): void {
         if (uncorrelated) {
             this.uncorrelatedListener = resolve;
-        } else if (id in this.wireListeners) {
+        } else if (this.wireListeners.has(id)) {
             reject(new DuplicateCorrelationError(String(id)));
         } else {
-            this.wireListeners[id] = { resolve, reject };
+            this.wireListeners.set(id, { resolve, reject });
         }
         // Timeout and reject()?
     }
@@ -171,10 +171,10 @@ class Transport extends EventEmitter {
             }
             // tslint:disable-next-line
             this.uncorrelatedListener = () => { };
-        } else if (!(id in this.wireListeners)) {
+        } else if (!this.wireListeners.has(id)) {
             return false;
         } else {
-            const { resolve, reject } = this.wireListeners[id];
+            const { resolve, reject } = this.wireListeners.get(id);
             if (data.action !== 'ack') {
                 reject(new NoAckError(data.action));
             } else if (!('payload' in data)) {
@@ -185,7 +185,7 @@ class Transport extends EventEmitter {
                 resolve.call(null, data);
             }
 
-            delete this.wireListeners[id];
+            this.wireListeners.delete(id);
         }
         return true;
     }
