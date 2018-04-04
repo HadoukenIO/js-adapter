@@ -125,7 +125,8 @@ function generateAppConfig(): any {
             name: uuid,
             autoShow: true,
             url: appConfig.startup_app.url,
-            saveWindowState: false
+            saveWindowState: false,
+            experimental: appConfig.startup_app.experimental
         }
     };
 }
