@@ -12,7 +12,6 @@ export interface PluginBare {
  * @namespace
 */
 export default class Plugin extends Base {
-    private idBase: string;
     private pluginsImportBaseKey: string; // unique plugins key for window
     private noEsmSupportErrorMsg: string;
     private importId: number;
@@ -21,8 +20,7 @@ export default class Plugin extends Base {
         super(wire);
 
         this.importId = 0;
-        this.idBase = wire.environment.getRandomId();
-        this.pluginsImportBaseKey = `__plugins_${this.idBase}_import_`;
+        this.pluginsImportBaseKey = '__plugins_import_';
         this.noEsmSupportErrorMsg = 'ES modules are not supported in this version of OpenFin.';
     }
 
