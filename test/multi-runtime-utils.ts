@@ -32,9 +32,10 @@ async function spawnRealm(version: string, realm?: string, args?: Array<string>)
         // tslint:disable-next-line no-function-expression
         resolveOpenFinVersion(version).then(async function(returnedVersion: string) {
             try {
+                const realmArg = args && args.find(str => str.indexOf('security-realm') > -1);
+                const realmValue = realmArg && realmArg.split('=')[1];
                 // tslint:disable-next-line
-                const realm = `test_realm_${ Math.random() }`;
-                //const cacheDir = await realmCachePath(realm);
+                const realm = realmValue ? realmValue : `test_realm_${ Math.random() }`;
                 const ofCacheFolder = path.resolve(process.env.LOCALAPPDATA, 'OpenFin', 'cache');
                 const cacheDir = path.resolve(ofCacheFolder, realm);
                 const appConfig = generateAppConfig();
