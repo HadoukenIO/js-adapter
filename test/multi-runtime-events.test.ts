@@ -22,7 +22,7 @@ describe('Multi Runtime', () => {
     }
 
     afterEach(async () => {
-        return await cleanOpenRuntimes();
+        await cleanOpenRuntimes();
     });
 
     describe('Events', () => {
@@ -77,9 +77,6 @@ describe('Multi Runtime', () => {
                         await delayPromise(DELAY_MS);
 
                         realApp = await finB.Application.create(appConfig);
-                        await realApp.run();
-                        await realApp.close();
-                        await delayPromise(DELAY_MS);
                     }
 
                     test();
@@ -139,8 +136,6 @@ describe('Multi Runtime', () => {
 
                         await delayPromise(DELAY_MS);
                         await realApp.run();
-                        await realApp.close();
-                        await delayPromise(DELAY_MS);
                     }
 
                     test();
@@ -216,13 +211,7 @@ describe('Multi Runtime', () => {
 
                     async function test() {
                         const appConfig = getAppConfig();
-                        const argsConnect = [
-                            '--security-realm=supersecret',
-                            '--enable-mesh',
-                            '--enable-multi-runtime',
-                            '--v=1'
-                        ];
-                        const finA = await launchAndConnect(undefined, undefined, 'supersecret', argsConnect);
+                        const finA = await launchAndConnect();
                         await delayPromise(DELAY_MS);
 
                         const app = await finA.Application.wrap({ uuid: appConfig.uuid });
@@ -237,8 +226,6 @@ describe('Multi Runtime', () => {
                         const realApp = await finB.Application.create(appConfig);
                         await delayPromise(DELAY_MS);
                         await realApp.run();
-                        await delayPromise(DELAY_MS);
-                        await realApp.close();
                         await delayPromise(DELAY_MS);
                     }
 
@@ -286,12 +273,7 @@ describe('Multi Runtime', () => {
 
                     async function test() {
                         const appConfig = getAppConfig();
-                        const argsConnect = [
-                            '--enable-mesh',
-                            '--enable-multi-runtime',
-                            '--v=1'
-                        ];
-                        const finA = await launchAndConnect(undefined, undefined, 'supersecret', argsConnect);
+                        const finA = await launchAndConnect();
                         await delayPromise(DELAY_MS);
 
                         const app = await finA.Application.wrap({ uuid: appConfig.uuid });
@@ -304,10 +286,7 @@ describe('Multi Runtime', () => {
                         const finB = await launchAndConnect();
                         await delayPromise(DELAY_MS);
                         const realApp = await finB.Application.create(appConfig);
-                        await delayPromise(DELAY_MS);
                         await realApp.run();
-                        await delayPromise(DELAY_MS);
-                        await realApp.close();
                         await delayPromise(DELAY_MS);
                     }
 
