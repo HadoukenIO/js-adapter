@@ -6,7 +6,7 @@ import { serial } from '../src/launcher/util';
 describe('Multi Runtime', () => {
 
     afterEach(async () => {
-        return await cleanOpenRuntimes;
+        return await cleanOpenRuntimes();
     });
 
     function uuidFromConnection(conn: any) {

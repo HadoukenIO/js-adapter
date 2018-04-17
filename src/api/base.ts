@@ -55,7 +55,7 @@ export class Base extends Bare {
         }
     }
 
-    protected registerEventListener = (listener: RuntimeEvent): Promise<any> => {
+    protected registerEventListener = (listener: RuntimeEvent): Promise<void | Message<void>> => {
         const key = createKey(listener);
         const refCount = this.wire.topicRefMap.get(key);
 
@@ -68,7 +68,7 @@ export class Base extends Bare {
         }
     }
 
-    protected deregisterEventListener = (listener: RuntimeEvent): Promise<any> => {
+    protected deregisterEventListener = (listener: RuntimeEvent): Promise<void | Message<void>> => {
         const key = createKey(listener);
         const refCount = this.wire.topicRefMap.get(key);
 

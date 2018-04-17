@@ -32,7 +32,7 @@ describe('Multi Runtime', () => {
         });
 
         afterEach(async () => {
-            return await cleanOpenRuntimes;
+            return await cleanOpenRuntimes();
         });
 
         describe('getInfo', () => {
