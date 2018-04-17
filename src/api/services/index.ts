@@ -60,14 +60,10 @@ export class Service extends Base {
     }
 
     public async register(): Promise<Provider> {
-        try {
-            const { payload: { data: serviceIdentity } } = await this.wire.sendAction('register-service', {});
-            const channel = new Provider(this.wire.sendAction.bind(this.wire));
-            this.serviceMap.set(serviceIdentity.uuid, channel);
-            return channel;
-        } catch (e) {
-            throw e;
-        }
+        const { payload: { data: serviceIdentity } } = await this.wire.sendAction('register-service', {});
+        const channel = new Provider(this.wire.sendAction.bind(this.wire));
+        this.serviceMap.set(serviceIdentity.uuid, channel);
+        return channel;
     }
     public onmessage = (msg: ServiceMessage) => {
       if (msg.action === 'process-service-action') {

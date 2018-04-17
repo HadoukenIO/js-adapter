@@ -50,11 +50,11 @@ export class ServiceChannel {
             const mainAction = this.subscriptions.has(action)
                 ? this.subscriptions.get(action)
                 : (payload: any, id: ServiceIdentity) => this.defaultAction(action, payload, id);
-            const a = this.preAction ? await this.preAction(action, payload, senderIdentity) : payload;
-            const b = await mainAction(a, senderIdentity);
+            const preActionProcessed = this.preAction ? await this.preAction(action, payload, senderIdentity) : payload;
+            const actionProcessed = await mainAction(preActionProcessed, senderIdentity);
             return this.postAction
-                ? await this.postAction(action, b, senderIdentity)
-                : b;
+                ? await this.postAction(action, actionProcessed, senderIdentity)
+                : actionProcessed;
         } catch (e) {
             if (this.errorMiddleware) {
                 return this.errorMiddleware(action, e, senderIdentity);
@@ -97,7 +97,6 @@ export class ServiceChannel {
     }
 
     public register(topic: string, listener: Action) {
-        //TODO create map of subscriptions
         if (this.subscriptions.has(topic)) {
             throw new Error(`Subscription already registered for action: ${topic}. Unsubscribe before adding new subscription`);
         } else {
