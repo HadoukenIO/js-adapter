@@ -25,7 +25,7 @@ describe('Multi Runtime', () => {
         appConfigTemplate = getAppConfig();
     });
     afterEach(async () => {
-        await cleanOpenRuntimes();
+        return await cleanOpenRuntimes;
     });
 
     describe('Window', () => {

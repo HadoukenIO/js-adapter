@@ -5,7 +5,7 @@ import { cleanOpenRuntimes, DELAY_MS, TEST_TIMEOUT, launchX } from './multi-runt
 describe('Multi Runtime', function () {
 
     afterEach(async () => {
-        await cleanOpenRuntimes();
+        return await cleanOpenRuntimes;
     });
 
     describe('InterApplicationBus', () => {
