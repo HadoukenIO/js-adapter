@@ -69,12 +69,10 @@ describe('Multi Runtime', () => {
                         await delayPromise(DELAY_MS);
                         let realApp: any;
 
-                        finA.System.on('application-created', (e: any) => {
+                        await finA.System.on('application-created', (e: any) => {
                             assert.equal(e.type, 'application-created', 'Expected event type to match event');
                             done();
                         });
-
-                        await delayPromise(DELAY_MS);
 
                         realApp = await finB.Application.create(appConfig);
                     }
@@ -102,12 +100,11 @@ describe('Multi Runtime', () => {
                         await realApp.run();
                         const app = await finA.Application.wrap({ uuid: appConfig.uuid });
 
-                        app.on('closed', (e: any) => {
+                        await app.on('closed', (e: any) => {
                             assert.equal(e.type, 'closed', 'Expected event type to match event');
                             done();
                         });
 
-                        await delayPromise(DELAY_MS);
                         await realApp.close();
                         await delayPromise(DELAY_MS);
                     }
@@ -129,12 +126,11 @@ describe('Multi Runtime', () => {
                         const realApp = await finB.Application.create(appConfig);
                         const app = await finA.Application.wrap({ uuid: appConfig.uuid });
 
-                        app.on('initialized', (e: any) => {
+                        await app.on('initialized', (e: any) => {
                             assert.equal(e.type, 'initialized', 'Expected event type to match event');
                             app.close().then(done);
                         });
 
-                        await delayPromise(DELAY_MS);
                         await realApp.run();
                     }
 
@@ -159,12 +155,11 @@ describe('Multi Runtime', () => {
                         const app = await finA.Application.wrap({ uuid: appConfig.uuid });
                         const win = await app.getWindow();
 
-                        win.on('initialized', (e: any) => {
+                        await win.on('initialized', (e: any) => {
                             assert.equal(e.type, 'initialized', 'Expected event type to match event');
                             win.close().then(done);
                         });
 
-                        await delayPromise(DELAY_MS);
                         const realApp = await finB.Application.create(appConfig);
                         await realApp.run();
                         await delayPromise(DELAY_MS);
@@ -216,7 +211,7 @@ describe('Multi Runtime', () => {
 
                         const app = await finA.Application.wrap({ uuid: appConfig.uuid });
 
-                        finA.System.on('application-created', (e: any) => {
+                        await finA.System.on('application-created', (e: any) => {
                             assert.equal(e.type, 'application-created', 'Expected event type to match event');
                             app.close().then(done);
                         });
