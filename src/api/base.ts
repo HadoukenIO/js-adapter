@@ -1,10 +1,11 @@
 import Transport, { Message } from '../transport/transport';
 import { Identity } from '../identity';
 import { EventEmitter } from 'events';
+import { promiseMap } from '../launcher/util';
 
 export interface RuntimeEvent extends Identity {
     topic: string;
-    type: string;
+    type: string|symbol;
 }
 
 export class Bare extends EventEmitter {
@@ -82,7 +83,6 @@ export class Base extends Bare {
             }
             return new Promise(res => res());
         }
-
     }
 
 }
@@ -138,21 +138,37 @@ export class NamedBase extends Base {
             topic: this.topic
         })).then(() => undefined);
     }
-    // @ts-ignore: return types incompatible with EventEmitter (this)
-    public removeAllListeners(eventType: string): Promise<void> {
-        let count = super.listenerCount(eventType);
-        super.removeAllListeners(eventType);
-        while (count > 1) {
-            this.deregisterEventListener(Object.assign({}, this.identity, {
-                type: eventType,
-                topic: this.topic
-            }));
-            count = count - 1;
-        }
-        return this.deregisterEventListener(Object.assign({}, this.identity, {
+
+    protected deregisterAllListeners = (eventType: string|symbol): Promise<void | Message<void>> => {
+        const runtimeEvent = Object.assign({}, this.identity, {
             type: eventType,
             topic: this.topic
-        })).then(() => undefined);
+        });
+        const key = createKey(runtimeEvent);
+        const refCount = this.wire.topicRefMap.get(key);
+
+        if (refCount) {
+            this.wire.topicRefMap.delete(key);
+            return this.wire.sendAction('unsubscribe-to-desktop-event', runtimeEvent);
+        } else {
+            return new Promise(res => res());
+        }
+
+    }
+    // @ts-ignore: return types incompatible with EventEmitter (this)
+    public async removeAllListeners(eventType?: string): Promise<void> {
+
+        const removeByEvent = (event: string|symbol): Promise<void> => {
+            super.removeAllListeners(eventType);
+            return this.deregisterAllListeners(event).then(() => undefined);
+        };
+
+        if (eventType) {
+            return removeByEvent(eventType);
+        } else {
+            const events = super.eventNames();
+            await promiseMap(events, removeByEvent);
+        }
     }
 }
 
