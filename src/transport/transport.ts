@@ -36,7 +36,7 @@ class Transport extends EventEmitter {
         super();
         this.wire = new wireType(this.onmessage.bind(this));
         this.environment = environment;
-        this.sendRaw = this.wire.send;
+        this.sendRaw = this.wire.send.bind(this.wire);
         this.registerMessageHandler(this.handleMessage.bind(this));
         this.wire.on('disconnected', () => {
 
