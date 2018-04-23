@@ -132,6 +132,13 @@ export class NamedBase extends Base {
     // @ts-ignore: return types incompatible with EventEmitter (this)
     public prependOnceListener(eventType: string, listener: (...args: any[]) => void): Promise<void> {
         super.prependOnceListener(eventType, listener);
+        const deregister =  () => {
+            this.deregisterEventListener(Object.assign({}, this.identity, {
+                type: eventType,
+                topic: this.topic
+            }));
+        };
+        super.once(eventType, deregister);
         return this.registerEventListener(Object.assign({}, this.identity, {
             type: eventType,
             topic: this.topic
