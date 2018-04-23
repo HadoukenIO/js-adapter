@@ -5,7 +5,7 @@ import * as assert from 'assert';
 import { Fin } from '../src/main';
 
 // tslint:disable-next-line:no-function-expression
-describe('Window1.', function() {
+describe('Window.', function() {
     // tslint:disable-next-line
     this.timeout(30000);
     describe('addEventListener()', () => {
