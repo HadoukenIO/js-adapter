@@ -90,6 +90,9 @@ export class Base extends Bare {
 // @ts-ignore: return types incompatible with EventEmitter (this)
 export class NamedBase extends Base {
     protected identity: Identity;
+    constructor(wire: Transport) {
+        super(wire);
+    }
     // @ts-ignore: return types incompatible with EventEmitter (this)
     public on(eventType: string, listener: (...args: any[]) => void): Promise<void> {
         super.on(eventType, listener);
@@ -98,17 +101,24 @@ export class NamedBase extends Base {
             topic: this.topic
         })).then(() => undefined);
     }
-    // @ts-ignore: return types incompatible with EventEmitter (this)
-    public addListener(eventType: string, listener: (...args: any[]) => void): Promise<void> {
-        super.addListener(eventType, listener);
+    //@ts-ignore: return types incompatible with EventEmitter (this)
+    public once(eventType: string, listener: (...args: any[]) => void): Promise<void> {
+        super.once(eventType, listener);
+        const deregister =  () => {
+            this.deregisterEventListener(Object.assign({}, this.identity, {
+                type: eventType,
+                topic: this.topic
+            }));
+        };
+        super.once(eventType, deregister);
         return this.registerEventListener(Object.assign({}, this.identity, {
             type: eventType,
             topic: this.topic
         })).then(() => undefined);
     }
     // @ts-ignore: return types incompatible with EventEmitter (this)
-    public once(eventType: string, listener: (...args: any[]) => void): Promise<void> {
-        super.once(eventType, listener);
+    public addListener(eventType: string, listener: (...args: any[]) => void): Promise<void> {
+        super.addListener(eventType, listener);
         return this.registerEventListener(Object.assign({}, this.identity, {
             type: eventType,
             topic: this.topic
@@ -153,7 +163,6 @@ export class NamedBase extends Base {
         } else {
             return new Promise(res => res());
         }
-
     }
     // @ts-ignore: return types incompatible with EventEmitter (this)
     public async removeAllListeners(eventType?: string): Promise<void> {
