@@ -54,8 +54,8 @@ describe ('Event Emitter Methods', () => {
             await win.moveBy(1, 1);
             await win.removeAllListeners('bounds-changed');
             await win.moveBy(1, 1);
-            await win.close();
             const eventNames = win.eventNames();
+            await win.close();
             assert(eventNames.length === 1, `Expected ${eventNames} to be closed and only closed`);
             assert(boundsSpy.calledOnce);
             assert(closedSpy.calledOnce);
@@ -69,11 +69,11 @@ describe ('Event Emitter Methods', () => {
             await win.moveBy(1, 1);
             await win.removeAllListeners();
             await win.moveBy(1, 1);
-            await win.close();
             const eventNames = win.eventNames();
-            assert(eventNames.length === 0, `Expected ${eventNames} events to not exist`);
+            await win.close();
             assert(boundsSpy.calledOnce);
             assert(closedSpy.notCalled);
+            assert(eventNames.length === 0, `Expected ${eventNames} events to not exist`);
         });
     });
 

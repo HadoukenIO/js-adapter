@@ -5,7 +5,7 @@ import * as assert from 'assert';
 import { Fin } from '../src/main';
 
 // tslint:disable-next-line:no-function-expression
-describe('Window.', function() {
+describe('Window1.', function() {
     // tslint:disable-next-line
     this.timeout(30000);
     describe('addEventListener()', () => {
@@ -33,7 +33,6 @@ describe('Window.', function() {
                 const spy = sinon.spy();
 
                 return fin.Application.wrap({ uuid: 'adapter-test-app' }).then(app => app.getWindow()).then(win => {
-
                     win.on('closed', spy);
 
                     return win.close()

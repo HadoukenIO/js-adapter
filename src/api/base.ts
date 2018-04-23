@@ -90,9 +90,6 @@ export class Base extends Bare {
 // @ts-ignore: return types incompatible with EventEmitter (this)
 export class NamedBase extends Base {
     protected identity: Identity;
-    constructor(wire: Transport) {
-        super(wire);
-    }
     // @ts-ignore: return types incompatible with EventEmitter (this)
     public on(eventType: string, listener: (...args: any[]) => void): Promise<void> {
         super.on(eventType, listener);
@@ -168,14 +165,14 @@ export class NamedBase extends Base {
     public async removeAllListeners(eventType?: string): Promise<void> {
 
         const removeByEvent = (event: string|symbol): Promise<void> => {
-            super.removeAllListeners(eventType);
+            super.removeAllListeners(event);
             return this.deregisterAllListeners(event).then(() => undefined);
         };
 
         if (eventType) {
             return removeByEvent(eventType);
         } else {
-            const events = super.eventNames();
+            const events = this.eventNames();
             await promiseMap(events, removeByEvent);
         }
     }
