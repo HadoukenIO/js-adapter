@@ -68,12 +68,16 @@ describe ('Event Emitter Methods', () => {
             await win.addListener('closed', closedSpy);
             await win.moveBy(1, 1);
             await win.removeAllListeners();
+            const noEvents = win.eventNames();
             await win.moveBy(1, 1);
+            await win.addListener('bounds-changed', boundsSpy);
             const eventNames = win.eventNames();
+            await win.moveBy(1, 1);
             await win.close();
-            assert(boundsSpy.calledOnce);
+            assert(boundsSpy.calledTwice);
             assert(closedSpy.notCalled);
-            assert(eventNames.length === 0, `Expected ${eventNames} events to not exist`);
+            assert(eventNames.length === 1, `Expected ${eventNames} to be bounds-changed and only bounds-changed`);
+            assert(noEvents.length === 0, `Expected ${eventNames} event to not exist`);
         });
     });
 
