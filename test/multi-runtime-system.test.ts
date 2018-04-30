@@ -1,8 +1,13 @@
+/* tslint:disable:no-invalid-this no-function-expression insecure-random mocha-no-side-effect-code no-empty */
 import * as assert from 'assert';
 import { delayPromise } from './delay-promise';
-import { launchX, cleanOpenRuntimes, DELAY_MS, TEST_TIMEOUT, getRuntimeProcessInfo } from './multi-runtime-utils';
+import { launchAndConnect, cleanOpenRuntimes, DELAY_MS, TEST_TIMEOUT, getRuntimeProcessInfo } from './multi-runtime-utils';
 
-describe('Multi Runtime', () => {
+describe('Multi Runtime', function () {
+
+    this.retries(2);
+    this.slow(TEST_TIMEOUT / 2 );
+    this.timeout(TEST_TIMEOUT);
 
     function getAppConfig() {
         const appConfigTemplate = {
@@ -16,31 +21,27 @@ describe('Multi Runtime', () => {
             }
         };
 
-        // tslint:disable-next-line
         appConfigTemplate.uuid += Math.floor(Math.random() * 10000);
         return appConfigTemplate;
     }
 
-    afterEach(async () => {
+    beforeEach(async function () {
         return await cleanOpenRuntimes();
     });
 
-    describe('System', () => {
+    describe('System', function () {
 
-        describe('getAllApplications', () => {
+        describe('getAllApplications', function () {
             it('should return the application information from all runtimes', async function() {
-                // tslint:disable-next-line no-invalid-this
                 this.timeout(TEST_TIMEOUT);
 
                 const appConfigA = getAppConfig();
                 const appConfigB = getAppConfig();
                 const appConfigC = getAppConfig();
                 const appConfigD = getAppConfig();
-                const conns = await launchX(3);
-                // Why delay here?
-                await delayPromise(DELAY_MS);
 
-                const [finA, finB, finC] = conns;
+                const [finA, finB, finC] = await Promise.all([launchAndConnect(), launchAndConnect(), launchAndConnect()]);
+                await delayPromise(DELAY_MS);
 
                 const [appA, appB, appC, appD] = await Promise.all([finA.Application.create(appConfigA),
                 finB.Application.create(appConfigB),
@@ -61,15 +62,14 @@ describe('Multi Runtime', () => {
             });
         });
 
-        describe('getAllExternalApplications', () => {
+        describe('getAllExternalApplications', function () {
             it('should return the external application information from all runtimes', async function() {
-                // tslint:disable-next-line no-invalid-this
                 this.timeout(TEST_TIMEOUT);
 
-                const conns = await launchX(3);
+                const conns = await Promise.all([launchAndConnect(), launchAndConnect(), launchAndConnect()]);
+                const finA = conns[0];
                 await delayPromise(DELAY_MS);
 
-                const [finA] = conns;
                 const connStrings = conns.map(f => {
                     const conn = getRuntimeProcessInfo(f);
                     return `${conn.version}/${conn.port}/${conn.realm}`;
@@ -87,20 +87,16 @@ describe('Multi Runtime', () => {
             });
         });
 
-        describe('getAllWindows', () => {
+        describe('getAllWindows', function () {
             it('should return the window information from all runtimes', async function() {
-                // tslint:disable-next-line no-invalid-this
                 this.timeout(TEST_TIMEOUT);
 
                 const appConfigA = getAppConfig();
                 const appConfigB = getAppConfig();
                 const appConfigC = getAppConfig();
                 const appConfigD = getAppConfig();
-                const conns = await launchX(3);
-                // Why delay here?
+                const [finA, finB, finC] = await Promise.all([launchAndConnect(), launchAndConnect(), launchAndConnect()]);
                 await delayPromise(DELAY_MS);
-
-                const [finA, finB, finC] = conns;
 
                 const [appA, appB, appC, appD] = await Promise.all([finA.Application.create(appConfigA),
                 finB.Application.create(appConfigB),
@@ -128,20 +124,16 @@ describe('Multi Runtime', () => {
             });
         });
 
-        describe('getProcessList', () => {
+        describe('getProcessList', function () {
             it('should return the process information from all runtimes', async function() {
-                // tslint:disable-next-line no-invalid-this
                 this.timeout(TEST_TIMEOUT);
 
                 const appConfigA = getAppConfig();
                 const appConfigB = getAppConfig();
                 const appConfigC = getAppConfig();
                 const appConfigD = getAppConfig();
-                const conns = await launchX(3);
-                // Why delay here?
+                const [finA, finB, finC] = await Promise.all([launchAndConnect(), launchAndConnect(), launchAndConnect()]);
                 await delayPromise(DELAY_MS);
-
-                const [finA, finB, finC] = conns;
 
                 const [appA, appB, appC, appD] = await Promise.all([finA.Application.create(appConfigA),
                 finB.Application.create(appConfigB),

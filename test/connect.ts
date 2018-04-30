@@ -1,5 +1,4 @@
 import { connect, Fin } from '../src/main';
-import { kill } from './multi-runtime-utils';
 
 const MAX_TRY_NUMBER = 5;
 let c: Promise<Fin>;
@@ -23,12 +22,4 @@ export function conn() {
     }
 
     return c;
-}
-
-export async function clean() {
-    if (c) {
-        const f = await c;
-        kill(f);
-        c = null;
-    }
 }

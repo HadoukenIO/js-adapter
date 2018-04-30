@@ -1,8 +1,14 @@
+/* tslint:disable:no-invalid-this no-function-expression insecure-random mocha-no-side-effect-code no-empty */
 import * as assert from 'assert';
 import { delayPromise } from './delay-promise';
-import { launchX, cleanOpenRuntimes, DELAY_MS, TEST_TIMEOUT } from './multi-runtime-utils';
+import { launchAndConnect, cleanOpenRuntimes, DELAY_MS, TEST_TIMEOUT } from './multi-runtime-utils';
 
-describe('Multi Runtime', () => {
+describe('Multi Runtime', function () {
+
+    this.retries(2);
+    this.slow(TEST_TIMEOUT / 2 );
+    this.timeout(TEST_TIMEOUT);
+
     let appConfigTemplate: any;
     function getAppConfig() {
         const appConfigTemplate = {
@@ -16,28 +22,22 @@ describe('Multi Runtime', () => {
             }
         };
 
-        // tslint:disable-next-line
         appConfigTemplate.uuid += Math.floor(Math.random() * 10000);
         return appConfigTemplate;
     }
 
-    beforeEach(() => {
+    beforeEach(async function () {
         appConfigTemplate = getAppConfig();
-    });
-    afterEach(async () => {
         return await cleanOpenRuntimes();
     });
 
-    describe('Window', () => {
+    describe('Window', function () {
 
-        describe('moveBy', () => {
+        describe('moveBy', function () {
             it('should move the Window by the given values', async function() {
-                // tslint:disable-next-line no-invalid-this
                 this.timeout(TEST_TIMEOUT);
 
-                const conns = await launchX(2);
-                const finA = conns[0];
-                const finB = conns[1];
+                const [finA, finB] = await Promise.all([launchAndConnect(), launchAndConnect()]);
                 await delayPromise(DELAY_MS);
                 const realApp = await finB.Application.create(appConfigTemplate);
                 await realApp.run();
@@ -53,20 +53,16 @@ describe('Multi Runtime', () => {
             });
         });
 
-        describe('resizeTo', () => {
+        describe('resizeTo', function () {
             it('should resize the Window by the given values', async function() {
-                // tslint:disable-next-line no-invalid-this
                 this.timeout(TEST_TIMEOUT);
 
                 const resizeToVal = 200;
-                const conns = await launchX(2);
-                const finA = conns[0];
-                const finB = conns[1];
+                const [finA, finB] = await Promise.all([launchAndConnect(), launchAndConnect()]);
                 await delayPromise(DELAY_MS);
                 const realApp = await finB.Application.create(appConfigTemplate);
                 await realApp.run();
-                const app = await finA.Application.wrap({ uuid: appConfigTemplate.uuid });
-                const win = await app.getWindow();
+                const win = await finA.Window.wrap({ uuid: appConfigTemplate.uuid, name: appConfigTemplate.uuid});
                 const bounds = await win.getBounds();
                 await win.resizeTo(resizeToVal, resizeToVal, 'top-left');
                 const postResizeBounds = await win.getBounds();
@@ -82,19 +78,15 @@ describe('Multi Runtime', () => {
         });
     });
 
-    describe('getState', () => {
+    describe('getState', function () {
         it('should return the state of the Window', async function() {
-            // tslint:disable-next-line no-invalid-this
             this.timeout(TEST_TIMEOUT);
 
-            const conns = await launchX(2);
-            const finA = conns[0];
-            const finB = conns[1];
+            const [finA, finB] = await Promise.all([launchAndConnect(), launchAndConnect()]);
             await delayPromise(DELAY_MS);
             const realApp = await finB.Application.create(appConfigTemplate);
             await realApp.run();
-            const app = await finA.Application.wrap({ uuid: appConfigTemplate.uuid });
-            const win = await app.getWindow();
+            const win = await finA.Window.wrap({ uuid: appConfigTemplate.uuid, name: appConfigTemplate.uuid });
             const state = await win.getState();
             const expectedState = 'normal';
 
@@ -105,12 +97,9 @@ describe('Multi Runtime', () => {
         });
 
         it('should return the state of the Window post a minimize action', async function() {
-            // tslint:disable-next-line no-invalid-this
             this.timeout(TEST_TIMEOUT);
 
-            const conns = await launchX(2);
-            const finA = conns[0];
-            const finB = conns[1];
+            const [finA, finB] = await Promise.all([launchAndConnect(), launchAndConnect()]);
             await delayPromise(DELAY_MS);
             const realApp = await finB.Application.create(appConfigTemplate);
             await realApp.run();

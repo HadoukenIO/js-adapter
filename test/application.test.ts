@@ -1,5 +1,6 @@
 import { conn } from './connect';
 import { Fin, Application, connect as rawConnect } from '../src/main';
+import { cleanOpenRuntimes } from './multi-runtime-utils';
 import * as assert from 'assert';
 import * as path from 'path';
 
@@ -11,10 +12,12 @@ describe('Application.', function() {
     this.timeout(30000);
 
     let counter = 0;
-    before(() => conn().then((a: Fin) => {
-
-        fin = a;
-    }));
+    before(async () => {
+        await conn().then((a: Fin) => {
+            fin = a;
+        });
+        await cleanOpenRuntimes();
+    });
 
     beforeEach(async () => {
         testApp = await fin.Application.create({

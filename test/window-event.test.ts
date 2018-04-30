@@ -3,6 +3,7 @@ import { conn } from './connect';
 import { delayPromise } from './delay-promise';
 import * as assert from 'assert';
 import { Fin } from '../src/main';
+import { cleanOpenRuntimes } from './multi-runtime-utils';
 
 // tslint:disable-next-line:no-function-expression
 describe('Window.', function() {
@@ -21,7 +22,8 @@ describe('Window.', function() {
             }
         };
 
-        before(() => {
+        before(async () => {
+            await cleanOpenRuntimes();
             return conn().then(a => fin = a);
         });
 
