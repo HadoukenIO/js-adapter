@@ -1,13 +1,22 @@
 /* tslint:disable:no-invalid-this no-function-expression insecure-random mocha-no-side-effect-code no-empty */
+import { conn } from './connect';
+import { Fin } from '../src/main';
 import * as assert from 'assert';
 import { delayPromise } from './delay-promise';
 import { cleanOpenRuntimes, DELAY_MS, getRuntimeProcessInfo, launchAndConnect, TEST_TIMEOUT } from './multi-runtime-utils';
 
 describe('Multi Runtime', function() {
+    let fin: Fin;
 
     this.retries(2);
     this.slow(TEST_TIMEOUT);
     this.timeout(TEST_TIMEOUT);
+
+    before(async () => {
+        await conn().then((a: Fin) => {
+            fin = a;
+        });
+    });
 
     beforeEach(async function() {
         return await cleanOpenRuntimes();

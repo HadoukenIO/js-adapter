@@ -1,13 +1,22 @@
 /* tslint:disable:no-invalid-this no-function-expression insecure-random mocha-no-side-effect-code no-empty */
+import { conn } from './connect';
+import { Fin } from '../src/main';
 import * as assert from 'assert';
 import { delayPromise } from './delay-promise';
 import { cleanOpenRuntimes, DELAY_MS, TEST_TIMEOUT, launchAndConnect } from './multi-runtime-utils';
 
 describe('Multi Runtime', function () {
+    let fin: Fin;
 
     this.retries(2);
     this.slow(TEST_TIMEOUT / 2 );
     this.timeout(TEST_TIMEOUT);
+
+    before(async () => {
+            await conn().then((a: Fin) => {
+                fin = a;
+            });
+    });
 
     beforeEach(async function () {
         return await cleanOpenRuntimes();
@@ -20,6 +29,8 @@ describe('Multi Runtime', function () {
                 const [finA, finB] = await Promise.all([launchAndConnect(), launchAndConnect()]);
                 const topic = 'my-topic';
                 const data = 'hello';
+
+                await delayPromise(DELAY_MS);
 
                 await finA.InterApplicationBus.subscribe({ uuid: '*' }, topic, (message: any, source: any) => {
                     assert.equal(finB.wire.me.uuid, source.uuid, 'Expected source to be runtimeB');
@@ -41,6 +52,9 @@ describe('Multi Runtime', function () {
                 const [finA, finB] = await Promise.all([launchAndConnect(), launchAndConnect()]);
                 const topic = 'my-topic';
                 const data = 'hello';
+
+                await delayPromise(DELAY_MS);
+
                 await finA.InterApplicationBus
                     .subscribe({ uuid: finB.wire.me.uuid }, topic, (message: any, source: any) => {
                         assert.equal(finB.wire.me.uuid, source.uuid, 'Expected source to be runtimeB');
@@ -63,6 +77,8 @@ describe('Multi Runtime', function () {
                 const topic = 'my-topic';
                 const data = 'hello';
 
+                await delayPromise(DELAY_MS);
+
                 await finA.InterApplicationBus.subscribe({ uuid: '*' }, topic, (message: any, source: any) => {
                     assert.equal(finB.wire.me.uuid, source.uuid, 'Expected source to be runtimeB');
                     assert.equal(data, message, 'Expected message to be the data sent');
@@ -84,6 +100,8 @@ describe('Multi Runtime', function () {
                 const [finA, finB] = await Promise.all([launchAndConnect(), launchAndConnect()]);
                 const topic = 'my-topic';
                 const data = 'hello';
+
+                await delayPromise(DELAY_MS);
 
                 await finA.InterApplicationBus.subscribe({ uuid: finB.wire.me.uuid },
                     topic, (message: any, source: any) => {
@@ -109,6 +127,8 @@ describe('Multi Runtime', function () {
                 const topic = 'my-topic';
                 const expectedUuid = finB.wire.me.uuid;
 
+                await delayPromise(DELAY_MS);
+
                 await finA.InterApplicationBus.on('subscriber-added', (sub: any, b: any) => {
                     assert.equal(expectedUuid, sub.uuid, 'Expected UUIDs to match');
                     assert.equal(sub.topic, topic, 'Expected topics to match');
@@ -129,6 +149,8 @@ describe('Multi Runtime', function () {
                 const [finA, finB] = await Promise.all([launchAndConnect(), launchAndConnect()]);
                 const topic = 'my-topic';
                 const expectedUuid = finB.wire.me.uuid;
+
+                await delayPromise(DELAY_MS);
 
                 await finA.InterApplicationBus.on('subscriber-removed', (sub: any, b: any) => {
                     assert.equal(expectedUuid, sub.uuid, 'Expected UUIDs to match');

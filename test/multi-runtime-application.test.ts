@@ -1,10 +1,13 @@
 /* tslint:disable:no-invalid-this no-function-expression insecure-random mocha-no-side-effect-code */
+import { conn } from './connect';
+import { Fin } from '../src/main';
 import * as assert from 'assert';
 import { delayPromise } from './delay-promise';
 import { cleanOpenRuntimes, DELAY_MS, TEST_TIMEOUT, launchAndConnect } from './multi-runtime-utils';
 
 describe('Multi Runtime', function () {
     let appConfigTemplate: any;
+    let fin: Fin;
 
     describe('Application', function () {
 
@@ -26,6 +29,12 @@ describe('Multi Runtime', function () {
             appConfigTemplate.uuid += Math.floor(Math.random() * 10000);
             return appConfigTemplate;
         }
+
+        before(async () => {
+            await conn().then((a: Fin) => {
+                fin = a;
+            });
+        });
 
         beforeEach(async function () {
             appConfigTemplate = getAppConfig();
