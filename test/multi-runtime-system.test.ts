@@ -47,11 +47,7 @@ describe('Multi Runtime', () => {
                 finB.Application.create(appConfigC),
                 finC.Application.create(appConfigD)]);
 
-                await delayPromise(DELAY_MS);
-
                 await Promise.all([appA.run(), appB.run(), appC.run(), appD.run()]);
-
-                await delayPromise(DELAY_MS);
 
                 const allApplications = await finA.System.getAllApplications();
                 const allUuids = allApplications.map((app: any) => app.uuid);

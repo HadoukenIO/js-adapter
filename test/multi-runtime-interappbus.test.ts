@@ -15,7 +15,6 @@ describe('Multi Runtime', function () {
 
             async function test() {
                 const conns = await launchX(2);
-                await delayPromise(DELAY_MS);
                 const finA = conns[0];
                 const finB = conns[1];
                 const topic = 'my-topic';
@@ -75,6 +74,7 @@ describe('Multi Runtime', function () {
                 });
                 await delayPromise(DELAY_MS);
                 return await finB.InterApplicationBus.send({ uuid: finA.wire.me.uuid }, topic, data);
+
             }
 
             test();

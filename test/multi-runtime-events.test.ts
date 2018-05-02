@@ -69,12 +69,17 @@ describe('Multi Runtime', () => {
                         await delayPromise(DELAY_MS);
                         let realApp: any;
 
-                        await finA.System.on('application-created', (e: any) => {
+                        finA.System.on('application-created', (e: any) => {
                             assert.equal(e.type, 'application-created', 'Expected event type to match event');
                             done();
                         });
 
+                        await delayPromise(DELAY_MS);
+
                         realApp = await finB.Application.create(appConfig);
+                        await realApp.run();
+                        await realApp.close();
+                        await delayPromise(DELAY_MS);
                     }
 
                     test();
@@ -100,11 +105,12 @@ describe('Multi Runtime', () => {
                         await realApp.run();
                         const app = await finA.Application.wrap({ uuid: appConfig.uuid });
 
-                        await app.on('closed', (e: any) => {
+                        app.on('closed', (e: any) => {
                             assert.equal(e.type, 'closed', 'Expected event type to match event');
                             done();
                         });
 
+                        await delayPromise(DELAY_MS);
                         await realApp.close();
                         await delayPromise(DELAY_MS);
                     }
@@ -126,12 +132,15 @@ describe('Multi Runtime', () => {
                         const realApp = await finB.Application.create(appConfig);
                         const app = await finA.Application.wrap({ uuid: appConfig.uuid });
 
-                        await app.on('initialized', (e: any) => {
+                        app.on('initialized', (e: any) => {
                             assert.equal(e.type, 'initialized', 'Expected event type to match event');
                             app.close().then(done);
                         });
 
+                        await delayPromise(DELAY_MS);
                         await realApp.run();
+                        await realApp.close();
+                        await delayPromise(DELAY_MS);
                     }
 
                     test();
@@ -155,11 +164,12 @@ describe('Multi Runtime', () => {
                         const app = await finA.Application.wrap({ uuid: appConfig.uuid });
                         const win = await app.getWindow();
 
-                        await win.on('initialized', (e: any) => {
+                        win.on('initialized', (e: any) => {
                             assert.equal(e.type, 'initialized', 'Expected event type to match event');
                             win.close().then(done);
                         });
 
+                        await delayPromise(DELAY_MS);
                         const realApp = await finB.Application.create(appConfig);
                         await realApp.run();
                         await delayPromise(DELAY_MS);
@@ -206,12 +216,18 @@ describe('Multi Runtime', () => {
 
                     async function test() {
                         const appConfig = getAppConfig();
-                        const finA = await launchAndConnect();
+                        const argsConnect = [
+                            '--security-realm=supersecret',
+                            '--enable-mesh',
+                            '--enable-multi-runtime',
+                            '--v=1'
+                        ];
+                        const finA = await launchAndConnect(undefined, undefined, 'supersecret', argsConnect);
                         await delayPromise(DELAY_MS);
 
                         const app = await finA.Application.wrap({ uuid: appConfig.uuid });
 
-                        await finA.System.on('application-created', (e: any) => {
+                        finA.System.on('application-created', (e: any) => {
                             assert.equal(e.type, 'application-created', 'Expected event type to match event');
                             app.close().then(done);
                         });
@@ -221,6 +237,8 @@ describe('Multi Runtime', () => {
                         const realApp = await finB.Application.create(appConfig);
                         await delayPromise(DELAY_MS);
                         await realApp.run();
+                        await delayPromise(DELAY_MS);
+                        await realApp.close();
                         await delayPromise(DELAY_MS);
                     }
 
@@ -268,7 +286,12 @@ describe('Multi Runtime', () => {
 
                     async function test() {
                         const appConfig = getAppConfig();
-                        const finA = await launchAndConnect();
+                        const argsConnect = [
+                            '--enable-mesh',
+                            '--enable-multi-runtime',
+                            '--v=1'
+                        ];
+                        const finA = await launchAndConnect(undefined, undefined, 'supersecret', argsConnect);
                         await delayPromise(DELAY_MS);
 
                         const app = await finA.Application.wrap({ uuid: appConfig.uuid });
@@ -281,7 +304,10 @@ describe('Multi Runtime', () => {
                         const finB = await launchAndConnect();
                         await delayPromise(DELAY_MS);
                         const realApp = await finB.Application.create(appConfig);
+                        await delayPromise(DELAY_MS);
                         await realApp.run();
+                        await delayPromise(DELAY_MS);
+                        await realApp.close();
                         await delayPromise(DELAY_MS);
                     }
 

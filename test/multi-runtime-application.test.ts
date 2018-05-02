@@ -45,7 +45,6 @@ describe('Multi Runtime', () => {
                 const finB = conns[1];
                 const realApp = await finB.Application.create(appConfigTemplate);
                 await realApp.run();
-                await delayPromise(DELAY_MS);
                 const app = await finA.Application.wrap({ uuid: appConfigTemplate.uuid });
                 const info = await app.getInfo();
                 assert.equal(info.launchMode, expectedLaunchMode, `Expected launchMode to be "${expectedLaunchMode}"`);
@@ -65,7 +64,6 @@ describe('Multi Runtime', () => {
                 await delayPromise(DELAY_MS);
                 const realApp = await finB.Application.create(appConfigTemplate);
                 await realApp.run();
-                await delayPromise(DELAY_MS);
                 const app = await finA.Application.wrap({ uuid: appConfigTemplate.uuid });
                 const parentUuid = await app.getParentUuid();
 
@@ -85,7 +83,6 @@ describe('Multi Runtime', () => {
                 await delayPromise(DELAY_MS);
                 const realApp = await finB.Application.create(appConfigTemplate);
                 await realApp.run();
-                await delayPromise(DELAY_MS);
                 const app = await finA.Application.wrap({ uuid: appConfigTemplate.uuid });
                 const isRunning = await app.isRunning();
 
