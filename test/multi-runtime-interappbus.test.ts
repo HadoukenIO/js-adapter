@@ -13,9 +13,7 @@ describe('Multi Runtime', function () {
     this.timeout(TEST_TIMEOUT);
 
     before(async () => {
-            await conn().then((a: Fin) => {
-                fin = a;
-            });
+        fin = await conn();
     });
 
     beforeEach(async function () {

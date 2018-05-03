@@ -31,9 +31,7 @@ describe('Multi Runtime', function() {
     }
 
     before(async () => {
-        await conn().then((a: Fin) => {
-            fin = a;
-        });
+        fin = await conn();
     });
 
     beforeEach(async function() {
@@ -104,8 +102,8 @@ describe('Multi Runtime', function() {
                         const app = await finA.Application.wrap({ uuid: appConfig.uuid });
                         await delayPromise(DELAY_MS);
 
-                        app.on('initialized', async (e: any) => {
-                            assert.equal(e.type, 'initialized', 'Expected event type to match event');
+                        app.on('started', async (e: any) => {
+                            assert.equal(e.type, 'started', 'Expected event type to match event');
                             await app.close();
 
                             done();
@@ -177,7 +175,7 @@ describe('Multi Runtime', function() {
 
             describe('System', function() {
 
-                it('should raise application closed events', function (done: Function) {
+                it('should raise application started events', function (done: Function) {
                     this.timeout(TEST_TIMEOUT * 2);
 
                     async function test() {
@@ -201,7 +199,7 @@ describe('Multi Runtime', function() {
                     test().catch(() => cleanOpenRuntimes());
                 });
 
-                it('should raise application-started events', function (done: (value: void) => void) {
+                it('should raise application-created events', function (done: (value: void) => void) {
                     this.timeout(TEST_TIMEOUT * 2); //We need a bit more time for these tests.
 
                     async function test() {
@@ -236,8 +234,7 @@ describe('Multi Runtime', function() {
 
             describe('Application', function() {
 
-                //Bug regarding Application/Window close events.
-                it.skip('should raise closed events', function (done: Function) {
+                it('should raise started events', function (done: Function) {
                     this.timeout(TEST_TIMEOUT * 2);
 
                     async function test() {
@@ -245,8 +242,9 @@ describe('Multi Runtime', function() {
                         const finA = await launchAndConnect();
                         await delayPromise(DELAY_MS);
                         const app = await finA.Application.wrap({ uuid: appConfig.uuid });
-                        app.on('closed', (e: any) => {
-                            assert.equal(e.type, 'closed', 'Expected event type to match event');
+                        app.on('started', async (e: any) => {
+                            assert.equal(e.type, 'started', 'Expected event type to match event');
+                            await app.close();
                             done();
                         });
                         const finB = await launchAndConnect();
@@ -254,8 +252,6 @@ describe('Multi Runtime', function() {
                         const realApp = await finB.Application.create(appConfig);
                         await realApp.run();
 
-                        await delayPromise(DELAY_MS);
-                        await realApp.close();
                         await delayPromise(DELAY_MS);
                     }
 
