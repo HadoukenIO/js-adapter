@@ -1,4 +1,4 @@
-import { Bare, Base, RuntimeEvent } from '../base';
+import { Bare, EmitterBase, RuntimeEvent } from '../base';
 import { Identity } from '../../identity';
 import Bounds from './bounds';
 import BoundsChangedReply from './bounds-changed';
@@ -161,8 +161,9 @@ this animation onto the end of the animation queue.
  * @alias Window
 */
 // The window.Window name is taken
+// @ts-ignore: return types incompatible with EventEmitter (this)
 // tslint:disable-next-line
-export class _Window extends Base {
+export class _Window extends EmitterBase {
     /**
      * Raised when a window within this application requires credentials from the user.
      *
@@ -541,20 +542,6 @@ export class _Window extends Base {
      */
     constructor(wire: Transport, public identity: Identity) {
         super(wire);
-
-        this.on('removeListener', eventType => {
-            this.deregisterEventListener(Object.assign({}, this.identity, {
-                type: eventType,
-                topic: this.topic
-            }));
-        });
-
-        this.on('newListener', eventType => {
-            this.registerEventListener(Object.assign({}, this.identity, {
-                type: eventType,
-                topic: this.topic
-            }));
-        });
     }
 
     protected runtimeEventComparator = (listener: RuntimeEvent): boolean => {
@@ -1054,15 +1041,15 @@ export class _Window extends Base {
     }
 
 }
-
+// @ts-ignore: "on" return types incompatible with EventEmitter (this)
 // tslint:disable-next-line
 export interface _Window {
-    on(type: 'focused', listener: Function): this;
-    on(type: 'initialized', listener: Function): this;
-    on(type: 'bounds-changed', listener: (data: BoundsChangedReply) => void): this;
-    on(type: 'hidden', listener: Function): this;
-    on(type: 'removeListener', listener: (eventType: string) => void): this;
-    on(type: 'newListener', listener: (eventType: string) => void): this;
-    on(type: 'closed', listener: (eventType: CloseEventShape) => void): this;
-    on(type: 'fire-constructor-callback', listener: Function): this;
+    on(type: 'focused', listener: Function): Promise<void>;
+    on(type: 'initialized', listener: Function):  Promise<void>;
+    on(type: 'bounds-changed', listener: (data: BoundsChangedReply) => void):  Promise<void>;
+    on(type: 'hidden', listener: Function):  Promise<void>;
+    on(type: 'removeListener', listener: (eventType: string | symbol) => void):  Promise<void>;
+    on(type: 'newListener', listener: (eventType: string | symbol) => void):  Promise<void>;
+    on(type: 'closed', listener: (eventType: CloseEventShape) => void):  Promise<void>;
+    on(type: 'fire-constructor-callback', listener: Function):  Promise<void>;
 }
