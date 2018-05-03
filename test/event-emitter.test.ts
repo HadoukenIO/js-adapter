@@ -36,7 +36,7 @@ describe ('Event Emitter Methods', () => {
         await app.close();
     });
 
-    describe('once', () => {
+    describe('once', function() {
         it('should only get called once then removed', async function() {
             const spy = sinon.spy();
             await win.once('bounds-changed', spy);
@@ -46,7 +46,7 @@ describe ('Event Emitter Methods', () => {
         });
     });
 
-    describe('removeAllListeners', () => {
+    describe('removeAllListeners', function() {
         it('should remove listeners for a given event', async function() {
             const boundsSpy = sinon.spy();
             const closedSpy = sinon.spy();
