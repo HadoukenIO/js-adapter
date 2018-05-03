@@ -1,8 +1,8 @@
 import * as assert from 'assert';
 import { conn } from './connect';
-// import { delayPromise } from './delay-promise';
 import { Fin } from '../src/main';
 import * as sinon from 'sinon';
+import { cleanOpenRuntimes } from './multi-runtime-utils';
 
 describe ('Event Emitter Methods', () => {
     let fin: Fin;
@@ -22,6 +22,7 @@ describe ('Event Emitter Methods', () => {
     before(() => {
         return conn().then(async a => {
             fin = a;
+            await cleanOpenRuntimes();
         });
     });
 
@@ -36,7 +37,7 @@ describe ('Event Emitter Methods', () => {
     });
 
     describe('once', () => {
-        it('should only get called once then removed', async () => {
+        it('should only get called once then removed', async function() {
             const spy = sinon.spy();
             await win.once('bounds-changed', spy);
             await win.moveBy(1, 1);
@@ -46,7 +47,7 @@ describe ('Event Emitter Methods', () => {
     });
 
     describe('removeAllListeners', () => {
-        it('should remove listeners for a given event', async () => {
+        it('should remove listeners for a given event', async function() {
             const boundsSpy = sinon.spy();
             const closedSpy = sinon.spy();
             await win.addListener('bounds-changed', boundsSpy);
@@ -61,7 +62,7 @@ describe ('Event Emitter Methods', () => {
             assert(closedSpy.calledOnce);
         });
 
-        it('should remove listeners for all events', async () => {
+        it('should remove listeners for all events', async function() {
             const boundsSpy = sinon.spy();
             const closedSpy = sinon.spy();
             await win.addListener('bounds-changed', boundsSpy);
