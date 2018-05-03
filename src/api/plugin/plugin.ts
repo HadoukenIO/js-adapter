@@ -2,11 +2,6 @@ import { Base } from '../base';
 import Transport from '../../transport/transport';
 import { notImplementedEnvErrorMsg } from '../../environment/environment';
 
-export interface PluginBare {
-    name: string;
-    version: string;
-}
-
 /**
  * The Plugin API allows importing OpenFin plugins
  * @namespace
@@ -32,13 +27,11 @@ export default class Plugin extends Base {
      * **Important**: If you set HTTP Content-Security-Policy's `script-src` directive
      * you must allow `unsafe-inline` for `blob:` for this API to work.
      *
-     * @param {Object} plugin - Plugin to import. Specified plugin must be listed in app's manifest.
-     * @param {string} plugin.name - plugin name
-     * @param {string} plugin.version - plugin version
+     * @param {string} name - Plugin to import. Specified plugin must be listed in app's manifest.
      * @return {Promise<any>}
      * @tutorial Plugin.import
      */
-    public async import(plugin: PluginBare): Promise<any> {
+    public async import(name: string): Promise<any> {
         if (!this.isOpenFinEnvironment()) {
             throw new Error(notImplementedEnvErrorMsg);
         }
@@ -47,10 +40,10 @@ export default class Plugin extends Base {
             throw new Error(this.noEsmSupportErrorMsg);
         }
 
-        const { payload } = await this.wire.sendAction('get-plugin-module', { plugin });
-        const { data: { _content } } = payload;
+        const { payload } = await this.wire.sendAction('get-plugin-module', name);
+        const { data: content } = payload;
 
-        return this.importModule(_content);
+        return this.importModule(content);
     }
 
     // ESM is supported in OF v9+

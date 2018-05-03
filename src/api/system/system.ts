@@ -1,4 +1,4 @@
-import { Base } from '../base';
+import { EmitterBase } from '../base';
 import { ApplicationInfo } from './application';
 import { WindowInfo } from './window';
 import { Identity } from '../../identity';
@@ -164,25 +164,11 @@ import { RuntimeError, NotSupportedError } from '../../transport/transport-error
  * clearing the cache and exiting the runtime.
  * @namespace
  */
-export default class System extends Base {
+// @ts-ignore: return types incompatible with EventEmitter (this)
+export default class System extends EmitterBase {
 
     constructor(wire: Transport) {
         super(wire);
-
-        this.on('removeListener', (eventType: string) => {
-            this.deregisterEventListener(Object.assign({}, this.identity, {
-                type: eventType,
-                topic: this.topic
-            }));
-        });
-
-        this.on('newListener', (eventType: string) => {
-            this.registerEventListener(Object.assign({}, this.identity, {
-                type: eventType,
-                topic: this.topic
-            }));
-        });
-
     }
 
     /**

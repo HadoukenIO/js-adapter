@@ -3,10 +3,6 @@ import { Fin } from '../src/main';
 
 describe('Plugin.', () => {
     let fin: Fin;
-    const plugin = {
-        name: 'plugin_1',
-        version: '0.0.1'
-    };
 
     before(() => {
         return conn().then((res) => fin = res);
@@ -16,7 +12,7 @@ describe('Plugin.', () => {
 
         it('Doesn\'t work in Node environment', async () => {
             try {
-                await fin.Plugin.import(plugin);
+                await fin.Plugin.import('plugin_1');
             } catch (error) {
                 return true;
             }

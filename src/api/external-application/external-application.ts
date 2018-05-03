@@ -1,4 +1,4 @@
-import { Bare, Base, Reply } from '../base';
+import { Bare, EmitterBase, Reply } from '../base';
 import { Identity } from '../../identity';
 import Transport from '../../transport/transport';
 
@@ -23,24 +23,11 @@ export default class ExternalApplicationModule extends Bare {
  * well as listen to application events.
  * @class
  */
-export class ExternalApplication extends Base {
+// @ts-ignore: return types incompatible with EventEmitter (this)
+export class ExternalApplication extends EmitterBase {
 
     constructor(wire: Transport, public identity: Identity) {
         super(wire);
-
-        this.on('removeListener', eventType => {
-            this.deregisterEventListener(Object.assign({}, this.identity, {
-                type: eventType,
-                topic : this.topic
-            }));
-        });
-
-        this.on('newListener', eventType => {
-            this.registerEventListener(Object.assign({}, this.identity, {
-                type: eventType,
-                topic : this.topic
-            }));
-        });
     }
 
     /**
@@ -53,9 +40,10 @@ export class ExternalApplication extends Base {
     }
 }
 
+// @ts-ignore: return types incompatible with EventEmitter (this)
 export interface ExternalApplication {
-    on(type: 'connected', listener: (data: Reply<'externalapplication', 'connected'>) => void): this;
-    on(type: 'disconnected', listener: (data: Reply<'externalapplication', 'disconnected'>) => void): this;
-    on(type: 'removeListener', listener: (eventType: string) => void): this;
-    on(type: 'newListener', listener: (eventType: string) => void): this;
+    on(type: 'connected', listener: (data: Reply<'externalapplication', 'connected'>) => void): Promise<void>;
+    on(type: 'disconnected', listener: (data: Reply<'externalapplication', 'disconnected'>) => void): Promise<void>;
+    on(type: 'removeListener', listener: (eventType: string) => void): Promise<void>;
+    on(type: 'newListener', listener: (eventType: string) => void): Promise<void>;
 }
