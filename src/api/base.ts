@@ -65,7 +65,7 @@ export class Base extends Bare {
             return this.wire.sendAction('subscribe-to-desktop-event', listener);
         } else {
             this.wire.topicRefMap.set(key, refCount + 1);
-            return new Promise(res => res());
+            return Promise.resolve();
         }
     }
 
@@ -81,14 +81,14 @@ export class Base extends Bare {
             if (newRefCount === 0) {
                 return this.wire.sendAction('unsubscribe-to-desktop-event', listener);
             }
-            return new Promise(res => res());
+            return Promise.resolve();
         }
     }
 
 }
 
 // @ts-ignore: return types incompatible with EventEmitter (this)
-export class NamedBase extends Base {
+export class EmitterBase extends Base {
     protected identity: Identity;
     // @ts-ignore: return types incompatible with EventEmitter (this)
     public on(eventType: string, listener: (...args: any[]) => void): Promise<void> {
@@ -98,6 +98,8 @@ export class NamedBase extends Base {
             topic: this.topic
         })).then(() => undefined);
     }
+    // @ts-ignore: return types incompatible with EventEmitter (this)
+    public addListener = this.on;
     //@ts-ignore: return types incompatible with EventEmitter (this)
     public once(eventType: string, listener: (...args: any[]) => void): Promise<void> {
         super.once(eventType, listener);
@@ -108,14 +110,6 @@ export class NamedBase extends Base {
             }));
         };
         super.once(eventType, deregister);
-        return this.registerEventListener(Object.assign({}, this.identity, {
-            type: eventType,
-            topic: this.topic
-        })).then(() => undefined);
-    }
-    // @ts-ignore: return types incompatible with EventEmitter (this)
-    public addListener(eventType: string, listener: (...args: any[]) => void): Promise<void> {
-        super.addListener(eventType, listener);
         return this.registerEventListener(Object.assign({}, this.identity, {
             type: eventType,
             topic: this.topic
@@ -165,7 +159,7 @@ export class NamedBase extends Base {
             this.wire.topicRefMap.delete(key);
             return this.wire.sendAction('unsubscribe-to-desktop-event', runtimeEvent);
         } else {
-            return new Promise(res => res());
+            return Promise.resolve();
         }
     }
     // @ts-ignore: return types incompatible with EventEmitter (this)

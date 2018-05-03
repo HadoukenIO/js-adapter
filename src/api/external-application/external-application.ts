@@ -1,4 +1,4 @@
-import { Bare, NamedBase, Reply } from '../base';
+import { Bare, EmitterBase, Reply } from '../base';
 import { Identity } from '../../identity';
 import Transport from '../../transport/transport';
 
@@ -24,7 +24,7 @@ export default class ExternalApplicationModule extends Bare {
  * @class
  */
 // @ts-ignore: return types incompatible with EventEmitter (this)
-export class ExternalApplication extends NamedBase {
+export class ExternalApplication extends EmitterBase {
 
     constructor(wire: Transport, public identity: Identity) {
         super(wire);

@@ -1,4 +1,4 @@
-import { Bare, NamedBase } from '../base';
+import { Bare, EmitterBase } from '../base';
 import { Identity } from '../../identity';
 import Transport from '../../transport/transport';
 
@@ -40,7 +40,7 @@ export default class _FrameModule extends Bare {
  */
 // @ts-ignore: return types incompatible with EventEmitter (this)
 // tslint:disable-next-line
-export class _Frame extends NamedBase {
+export class _Frame extends EmitterBase {
 
     constructor(wire: Transport, public identity: Identity) {
         super(wire);

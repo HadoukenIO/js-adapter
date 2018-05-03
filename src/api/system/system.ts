@@ -1,4 +1,4 @@
-import { NamedBase } from '../base';
+import { EmitterBase } from '../base';
 import { ApplicationInfo } from './application';
 import { WindowInfo } from './window';
 import { Identity } from '../../identity';
@@ -165,7 +165,7 @@ import { RuntimeError, NotSupportedError } from '../../transport/transport-error
  * @namespace
  */
 // @ts-ignore: return types incompatible with EventEmitter (this)
-export default class System extends NamedBase {
+export default class System extends EmitterBase {
 
     constructor(wire: Transport) {
         super(wire);

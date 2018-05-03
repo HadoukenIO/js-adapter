@@ -65,12 +65,12 @@ describe ('Event Emitter Methods', () => {
             const boundsSpy = sinon.spy();
             const closedSpy = sinon.spy();
             await win.addListener('bounds-changed', boundsSpy);
-            await win.addListener('closed', closedSpy);
+            await win.on('closed', closedSpy);
             await win.moveBy(1, 1);
             await win.removeAllListeners();
             const noEvents = win.eventNames();
             await win.moveBy(1, 1);
-            await win.addListener('bounds-changed', boundsSpy);
+            await win.on('bounds-changed', boundsSpy);
             const eventNames = win.eventNames();
             await win.moveBy(1, 1);
             await win.close();

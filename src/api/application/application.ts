@@ -1,4 +1,4 @@
-import { NamedBase, Bare, Reply, RuntimeEvent } from '../base';
+import { EmitterBase, Bare, Reply, RuntimeEvent } from '../base';
 import { Identity } from '../../identity';
 import { _Window } from '../window/window';
 import { Point } from '../system/point';
@@ -80,7 +80,7 @@ export default class ApplicationModule extends Bare {
  * @class
  */
  // @ts-ignore: return types incompatible with EventEmitter (this)
-export class Application extends NamedBase {
+export class Application extends EmitterBase {
 
     constructor(wire: Transport, public identity: Identity) {
         super(wire);

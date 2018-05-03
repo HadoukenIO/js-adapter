@@ -1,4 +1,4 @@
-import { Bare, NamedBase, RuntimeEvent } from '../base';
+import { Bare, EmitterBase, RuntimeEvent } from '../base';
 import { Identity } from '../../identity';
 import Bounds from './bounds';
 import BoundsChangedReply from './bounds-changed';
@@ -163,7 +163,7 @@ this animation onto the end of the animation queue.
 // The window.Window name is taken
 // @ts-ignore: return types incompatible with EventEmitter (this)
 // tslint:disable-next-line
-export class _Window extends NamedBase {
+export class _Window extends EmitterBase {
     /**
      * Raised when a window within this application requires credentials from the user.
      *
