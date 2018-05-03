@@ -8,9 +8,9 @@ describe('System.', function () {
     // tslint:disable-next-line
     this.timeout(30000);
 
-    beforeEach(async () => {
+    before(async () => {
         await cleanOpenRuntimes();
-        return conn().then((a: Fin) => fin = a);
+        return fin = await conn();
     });
 
     describe('getVersion()', () => {

@@ -9,7 +9,7 @@ describe('Frame.', () => {
 
     before(async () => {
         await cleanOpenRuntimes();
-        return await conn().then((a: Fin) => fin = a);
+        return fin = await conn();
     });
 
     beforeEach(() => {

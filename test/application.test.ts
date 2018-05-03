@@ -13,10 +13,8 @@ describe('Application.', function() {
 
     let counter = 0;
     before(async () => {
-        await conn().then((a: Fin) => {
-            fin = a;
-        });
         await cleanOpenRuntimes();
+        return fin = await conn();
     });
 
     beforeEach(async () => {

@@ -24,7 +24,7 @@ describe('Window.', function() {
 
         before(async () => {
             await cleanOpenRuntimes();
-            return conn().then(a => fin = a);
+            return fin = await conn();
         });
 
         describe('"closed"', () => {

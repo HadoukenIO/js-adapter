@@ -1,11 +1,13 @@
 import { conn } from './connect';
 import { Fin } from '../src/main';
+import { cleanOpenRuntimes } from './multi-runtime-utils';
 
 describe('Plugin.', () => {
     let fin: Fin;
 
-    before(() => {
-        return conn().then((res) => fin = res);
+    before(async () => {
+        await cleanOpenRuntimes();
+        return fin = await conn();
     });
 
     describe('import()', () => {
