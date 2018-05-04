@@ -7,7 +7,7 @@ export class Client extends ServiceChannel {
         super(send);
     }
 
-    public async dispatch(action: string, payload: any): Promise<any> {
+    public async dispatch(action: string, payload?: any): Promise<any> {
         return this.send(this.identity, action, payload);
     }
 

@@ -1,10 +1,10 @@
 import * as assert from 'assert';
 import { conn } from './connect';
 import { Fin } from '../src/main';
-import * as sinon from 'sinon';
+// import * as sinon from 'sinon';
 import { cleanOpenRuntimes } from './multi-runtime-utils';
 
-describe ('Event Emitter Methods', () => {
+describe ('tommy', () => {
     let fin: Fin;
     let app: any;
     let win: any;
@@ -36,4 +36,10 @@ describe ('Event Emitter Methods', () => {
         await app.close();
     });
 
-    describe('External Services')
+    describe('External Services',  () => {
+        it('Should be able to connect as Provider', async () => {
+            const provider = await fin.Service.register();
+            assert(provider);
+        });
+    });
+});
