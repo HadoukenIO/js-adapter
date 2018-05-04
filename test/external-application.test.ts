@@ -1,10 +1,14 @@
 import { conn } from './connect';
 import { Fin } from '../src/main';
 import * as assert from 'assert';
+import { cleanOpenRuntimes } from './multi-runtime-utils';
 
 describe('ExternalApplication.', () => {
     let fin: Fin;
-    before(() => conn().then((a: Fin) => fin = a));
+    before(async () => {
+        await cleanOpenRuntimes();
+        fin = await conn();
+    });
 
     describe('getInfo()', () => {
         it('Fulfilled', () => fin.System.getAllExternalApplications().

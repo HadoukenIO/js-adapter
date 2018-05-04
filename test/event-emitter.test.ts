@@ -19,11 +19,9 @@ describe ('Event Emitter Methods', () => {
         }
     };
 
-    before(() => {
-        return conn().then(async a => {
-            fin = a;
-            await cleanOpenRuntimes();
-        });
+    before(async () => {
+        await cleanOpenRuntimes();
+        fin = await conn();
     });
 
     beforeEach(async () => {

@@ -1,13 +1,15 @@
 import { conn } from './connect';
 import * as assert from 'assert';
 import { Fin, Frame } from '../src/main';
+import { cleanOpenRuntimes } from './multi-runtime-utils';
 
 describe('Frame.', () => {
     let fin: Fin;
     let testFrame: Frame;
 
-    before(() => {
-        return conn().then(a => fin = a);
+    before(async () => {
+        await cleanOpenRuntimes();
+        fin = await conn();
     });
 
     beforeEach(() => {
