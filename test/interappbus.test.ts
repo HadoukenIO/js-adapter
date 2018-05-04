@@ -20,8 +20,8 @@ describe('InterApplicationBus.', () => {
         await cleanOpenRuntimes();
     });
 
-    beforeEach(() => {
-        return conn().then((a: Fin) => fin = a);
+    beforeEach(async () => {
+        fin = await conn();
     });
 
     it('subscribe()', (done) => {

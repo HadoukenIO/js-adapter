@@ -7,7 +7,7 @@ describe('connect()', () => {
     let fin: Fin;
     before(async () => {
         await cleanOpenRuntimes();
-        return fin = await conn();
+        fin = await conn();
     });
     it('authentication', () => {
         assert(fin.System !== undefined);

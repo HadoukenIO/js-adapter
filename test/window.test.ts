@@ -22,7 +22,7 @@ describe('Window.', function() {
 
     before(async () => {
         await cleanOpenRuntimes();
-        return fin = await conn();
+        fin = await conn();
     });
 
     beforeEach(() => {

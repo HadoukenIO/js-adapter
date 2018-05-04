@@ -7,7 +7,7 @@ describe('ExternalApplication.', () => {
     let fin: Fin;
     before(async () => {
         await cleanOpenRuntimes();
-        return fin = await conn();
+        fin = await conn();
     });
 
     describe('getInfo()', () => {
