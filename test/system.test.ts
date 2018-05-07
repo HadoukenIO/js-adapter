@@ -1,14 +1,16 @@
 import { conn } from './connect';
 import { Fin } from '../src/main';
 import * as assert from 'assert';
+import { cleanOpenRuntimes } from './multi-runtime-utils';
 
 describe('System.', function () {
     let fin: Fin;
     // tslint:disable-next-line
     this.timeout(30000);
 
-    beforeEach(() => {
-        return conn().then((a: Fin) => fin = a);
+    before(async () => {
+        await cleanOpenRuntimes();
+        fin = await conn();
     });
 
     describe('getVersion()', () => {

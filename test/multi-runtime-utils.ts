@@ -1,3 +1,4 @@
+/* tslint:disable:no-invalid-this no-function-expression insecure-random mocha-no-side-effect-code no-empty */
 import * as https from 'https';
 import * as os from 'os';
 import * as rimraf from 'rimraf';
@@ -14,6 +15,7 @@ let uuidNum = 0;
 
 let runtimes: Array<RuntimeProcess> = [];
 
+let ws_port = 8690;
 export const DELAY_MS = 1000;
 export const TEST_TIMEOUT = 30 * 1000;
 
@@ -23,23 +25,23 @@ export interface RuntimeProcess {
     port: string;
     version: string;
     fin?: Fin;
+    runtime: any;
 }
 
 async function spawnRealm(version: string, realm?: string, args?: Array<string>): Promise<any> {
 
-    // tslint:disable-next-line
     return new Promise((resolve, reject) => {
-        // tslint:disable-next-line no-function-expression
         resolveOpenFinVersion(version).then(async function(returnedVersion: string) {
             try {
                 const realmArg = args && args.find(str => str.indexOf('security-realm') > -1);
                 const realmValue = realmArg && realmArg.split('=')[1];
-                // tslint:disable-next-line
                 const realm = realmValue ? realmValue : `test_realm_${ Math.random() }`;
                 const ofCacheFolder = path.resolve(process.env.LOCALAPPDATA, 'OpenFin', 'cache');
                 const cacheDir = path.resolve(ofCacheFolder, realm);
                 const appConfig = generateAppConfig();
-                const configLocation = path.resolve(cacheDir, `${appConfig.startup_app.uuid}.json`);
+                const configLocation = path.resolve(cacheDir, `${appConfig._startup_app.uuid}.json`);
+                // tslint:disable-next-line
+                const port = ++ws_port;
 
                 args = args || [
                     '--enable-multi-runtime',
@@ -52,36 +54,28 @@ async function spawnRealm(version: string, realm?: string, args?: Array<string>)
 
                 args.push(`--startup-url=${configLocation}`);
                 fs.mkdirSync(cacheDir);
-
+                appConfig.websocket_port = port;
                 fs.writeFileSync(configLocation, JSON.stringify(appConfig));
 
                 const ofEXElocation = versionPath(returnedVersion);
+                const opts = {
+                    env: {
+                        ELECTRON_NO_ATTACH_CONSOLE: 1
+                    },
+                    detached: true
 
-                const runtime = ChildProcess.spawn(ofEXElocation, args);
-
-                runtime.on('error', reject);
-
-                // tslint:disable-next-line no-function-expression
-                const portSniffer = function(data: any) {
-                    const sData = '' + data;
-                    const matched = /^Opened on (\d+)/.exec(sData);
-
-                    if (matched && matched.length > 1 ) {
-                        const port = matched[1];
-
-                        runtime.stdout.removeListener('data', portSniffer);
-
-                        resolve({
-                            appConfig,
-                            port,
-                            runtime,
-                            realm,
-                            version: returnedVersion
-                        });
-                    }
                 };
+                const runtime = ChildProcess.spawn(ofEXElocation, args, opts);
 
-                runtime.stdout.on('data', portSniffer);
+                await delayPromise(DELAY_MS);
+
+                resolve({
+                    appConfig,
+                    port,
+                    runtime,
+                    realm,
+                    version: returnedVersion
+                });
 
             } catch (e) {
                 reject(e);
@@ -120,19 +114,18 @@ function generateAppConfig(): any {
 
     return {
         uuid,
-        // tslint:disable-next-line
-        startup_app: {
+        _startup_app: {
             uuid,
             name: uuid,
             autoShow: true,
             url: appConfig.startup_app.url,
             saveWindowState: false,
-            experimental: appConfig.startup_app.experimental
+            experimental: appConfig.startup_app.experimental,
+            nonPersistent: true
         }
     };
 }
 function resolveOpenFinVersion(version: string): Promise<string> {
-    // tslint:disable-next-line
     return new Promise ((resolve, reject) => {
 
         // match point version eg. 6.29.17.14, fail on channels
@@ -184,7 +177,6 @@ do taskkill /f /pid %a`;
             const cmd = `lsof -n -i4TCP:${port} | grep LISTEN | awk '{ print $2 }' | xargs kill`;
             ChildProcess.execSync(cmd);
         }
-        // tslint:disable-next-line:no-empty
     } catch (e) {
     }
 }
@@ -193,8 +185,12 @@ export function kill(fin: Fin) {
     killByPort(getPort(fin));
 }
 
+export function killByruntime(runtimeProcess: RuntimeProcess) {
+    runtimeProcess.runtime.kill();
+}
+
 async function closeAndClean(runtimeProcess: RuntimeProcess): Promise<void> {
-    killByPort(runtimeProcess.port);
+    killByruntime(runtimeProcess);
     // give some time for rvm process to be killed
     await delayPromise(DELAY_MS);
     const cachePath = await realmCachePath(runtimeProcess.realm);
@@ -202,7 +198,6 @@ async function closeAndClean(runtimeProcess: RuntimeProcess): Promise<void> {
 }
 
 export async function launchAndConnect(version: string = process.env.OF_VER,
-                                       // tslint:disable-next-line
                                        uuid: string = `my-uuid ${appConfig.startup_app.uuid} ${Math.floor(Math.random() * 1000)}`,
                                        realm?: string, args?: Array<string>): Promise<Fin> {
 

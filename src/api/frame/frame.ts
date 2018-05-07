@@ -1,4 +1,4 @@
-import { Bare, Base } from '../base';
+import { Bare, EmitterBase } from '../base';
 import { Identity } from '../../identity';
 import Transport from '../../transport/transport';
 
@@ -38,25 +38,12 @@ export default class _FrameModule extends Bare {
  * @class
  * @alias Frame
  */
+// @ts-ignore: return types incompatible with EventEmitter (this)
 // tslint:disable-next-line
-export class _Frame extends Base {
+export class _Frame extends EmitterBase {
 
     constructor(wire: Transport, public identity: Identity) {
         super(wire);
-
-        this.on('removeListener', eventType => {
-            this.deregisterEventListener(Object.assign({}, this.identity, {
-                type: eventType,
-                topic : this.topic
-            }));
-        });
-
-        this.on('newListener', eventType => {
-            this.registerEventListener(Object.assign({}, this.identity, {
-                type: eventType,
-                topic : this.topic
-            }));
-        });
     }
 
     /**
@@ -80,8 +67,9 @@ export class _Frame extends Base {
 
 }
 
+// @ts-ignore: return types incompatible with EventEmitter (this)
 // tslint:disable-next-line
 export interface _Frame {
-    on(type: 'removeListener', listener: (eventType: string) => void): this;
-    on(type: 'newListener', listener: (eventType: string) => void): this;
+    on(type: 'connected', listener: (eventType: string) => void): Promise<void>;
+    on(type: 'disconnected', listener: (eventType: string) => void): Promise<void>;
 }

@@ -1,11 +1,22 @@
+/* tslint:disable:no-invalid-this no-function-expression insecure-random mocha-no-side-effect-code no-empty */
+import { conn } from './connect';
+import { Fin } from '../src/main';
 import * as assert from 'assert';
 import { delayPromise } from './delay-promise';
 import { cleanOpenRuntimes, DELAY_MS, getRuntimeProcessInfo, launchAndConnect, TEST_TIMEOUT } from './multi-runtime-utils';
-import { serial } from '../src/launcher/util';
 
-describe('Multi Runtime', () => {
+describe('Multi Runtime', function() {
+    let fin: Fin;
 
-    afterEach(async () => {
+    this.retries(2);
+    this.slow(TEST_TIMEOUT);
+    this.timeout(TEST_TIMEOUT);
+
+    before(async () => {
+        fin = await conn();
+    });
+
+    beforeEach(async function() {
         return await cleanOpenRuntimes();
     });
 
@@ -14,20 +25,17 @@ describe('Multi Runtime', () => {
         return `${version}/${port}/${realm ? realm : ''}`;
     }
 
-    describe('Connections', () => {
+    describe('Connections', function() {
+
         it('should respect the enable-mesh flag for security realms', async function() {
             const argsConnect = [
-                '--security-realm=superSecret'
+                `--security-realm=super-secret-${Math.floor(Math.random() * 1000)}`
             ];
 
-            // tslint:disable-next-line no-invalid-this
-            this.timeout(TEST_TIMEOUT);
-            const conns = await serial([() => launchAndConnect(),
-            () => launchAndConnect(undefined, undefined, undefined, argsConnect),
-            () => launchAndConnect()]);
-            const finA = conns[0];
-            const finB = conns[1];
-            const finC = conns[2];
+            const [ finA, finB, finC ] = await Promise.all([launchAndConnect(),
+            launchAndConnect(undefined, undefined, undefined, argsConnect),
+                                                            launchAndConnect()]);
+
             await delayPromise(DELAY_MS);
             const apps = await finA.System.getAllExternalApplications();
             const uuidList = apps.map((a: any) => { return a.uuid; });

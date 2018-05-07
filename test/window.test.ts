@@ -2,6 +2,7 @@ import { conn } from './connect';
 import * as assert from 'assert';
 import { connect as rawConnect, Fin, Application, Window } from '../src/main';
 import { delayPromise } from './delay-promise';
+import { cleanOpenRuntimes } from './multi-runtime-utils';
 
 describe('Window.', function() {
     let fin: Fin;
@@ -19,8 +20,9 @@ describe('Window.', function() {
     // tslint:disable-next-line
     this.timeout(30000);
 
-    before(() => {
-        return conn().then(a => fin = a);
+    before(async () => {
+        await cleanOpenRuntimes();
+        fin = await conn();
     });
 
     beforeEach(() => {
