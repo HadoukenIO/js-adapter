@@ -2,7 +2,7 @@ import * as assert from 'assert';
 import { conn } from './connect';
 import { Fin, launch } from '../src/main';
 import * as path from 'path';
-import { cleanOpenRuntimes/* , killByPort */ } from './multi-runtime-utils';
+import { cleanOpenRuntimes } from './multi-runtime-utils';
 import { delayPromise } from './delay-promise';
 import * as sinon from 'sinon';
 import * as fs from 'fs';
