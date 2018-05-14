@@ -1,0 +1,24 @@
+<html>
+<head>
+    <title>Service Provider</title>
+</head>
+<body>
+
+<h3>Service Provider</h3>
+
+<div id="result"></div>
+
+<script>
+    fin.desktop.main(async () => {
+        const provider = await fin.desktop.Service.register();
+        provider.register('test', () => {
+            return 'return-test';
+        });    
+        provider.onConnection(c => {
+            console.log('connection', c);
+        });
+    });
+</script>
+
+</body>
+</html>

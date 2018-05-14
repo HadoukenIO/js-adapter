@@ -1,0 +1,23 @@
+<html>
+<head>
+    <title>Service Client</title>
+</head>
+<body>
+
+<h3>Service Client</h3>
+
+<div id="result"></div>
+
+<script>
+    fin.desktop.main(async () => {
+        fin.desktop.InterApplicationBus.subscribe("*", "start", async function(message, uuid, name) {
+            const client = await fin.desktop.Service.connect({uuid});
+            client.dispatch('test').then(res => {
+                fin.desktop.InterApplicationBus.publish("return", res);
+            })
+        });
+    });
+</script>
+
+</body>
+</html>
