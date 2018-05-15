@@ -6,7 +6,8 @@ import * as fs from 'fs';
 import * as path from 'path';
 import * as ChildProcess from 'child_process';
 import { connect as rawConnect, Fin } from '../src/main';
-import { resolveDir, first, serial, promiseMap } from '../src/launcher/util';
+import { resolveDir, first } from '../src/launcher/util';
+import { serial, promiseMap } from '../src/util/promises';
 import { delayPromise } from './delay-promise';
 
 const appConfig = JSON.parse(fs.readFileSync(path.resolve('test/app.json')).toString());
