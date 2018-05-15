@@ -132,14 +132,14 @@ module.exports = function (grunt) {
             if (err) {
                 const error = err ? err.message : 'webpack error';
                 if (err.details) {
-                    grunt.fail.fatal(err.details, [3]);
+                    grunt.fail.fatal(err.details, 3);
                 }
             } else if(stats.hasErrors()) {
                 const info = stats.toJson();
                 grunt.fail.fatal(info.errors, 3);
             } else if(stats.hasWarnings()) {
                 const info = stats.toJson();
-                grunt.fail.warn(info.warnings, [6]);
+                grunt.fail.warn(info.warnings, 6);
             } else {
                 grunt.log.ok('webpack task done');
                 done();
