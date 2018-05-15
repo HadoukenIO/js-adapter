@@ -2,7 +2,7 @@ import * as assert from 'assert';
 import { conn } from './connect';
 import { Fin, launch } from '../src/main';
 import * as path from 'path';
-import { cleanOpenRuntimes } from './multi-runtime-utils';
+import { cleanOpenRuntimes, killByPort, kill } from './multi-runtime-utils';
 import { delayPromise } from './delay-promise';
 import * as sinon from 'sinon';
 import * as fs from 'fs';
@@ -10,11 +10,21 @@ import * as fs from 'fs';
 describe ('External Services', () => {
     let fin: Fin;
     let appConfig: any;
+    const ports: number[] = [];
 
     beforeEach(async () => {
         await cleanOpenRuntimes();
         appConfig = JSON.parse(fs.readFileSync(path.resolve('test/app.json')).toString());
         fin = await conn();
+    });
+
+    after(async () => {
+        await cleanOpenRuntimes();
+        const apps = await fin.System.getAllApplications();
+        await Promise.all(apps.map(a => {
+            const { uuid } = a;
+            return fin.Application.wrap({uuid}).then(app => app.close());
+        }));
     });
 
     // tslint:disable-next-line
@@ -55,12 +65,13 @@ describe ('External Services', () => {
                 provider.onConnection(c => {
                     spy();
                 });
-                await launch({manifestUrl: path.resolve('test', 'client.json')});
+                const port = await launch({manifestUrl: path.resolve('test', 'client.json')});
+                ports.push(port);
                 await fin.InterApplicationBus.subscribe({uuid: 'service-client-test'}, 'return', (msg: any) => {
                     assert(spy.calledTwice && msg === 'return-test', 'Did not get IAB from dispatch');
                     done();
                 });
-                await delayPromise(1000);
+                await delayPromise(2000);
                 await fin.InterApplicationBus.publish('start', 'hi');
             }
             test();
@@ -97,11 +108,13 @@ describe ('External Services', () => {
             fs.writeFileSync(path.resolve('test/service.json'), JSON.stringify(serviceConfig));
 
             async function test() {
-                await launch({manifestUrl: path.resolve('test', 'service.json')});
+                const port = await launch({manifestUrl: path.resolve('test', 'service.json')});
+                ports.push(port);
                 const client = await fin.Service.connect({uuid: 'service-provider-test'});
                 client.dispatch('test').then(res => {
                     assert(res === 'return-test');
-                    done();
+                    fin.Application.wrap({uuid: 'service-provider-test'}).then(a => a.close()).then(() => done());
+                    // done();
                 });
             }
             test();
