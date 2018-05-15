@@ -17,6 +17,14 @@ describe ('External Services', () => {
         fin = await conn();
     });
 
+    after(async () => {
+        const apps = await fin.System.getAllApplications();
+        await Promise.all(apps.map(a => {
+            const { uuid } = a;
+            return fin.Application.wrap({uuid}).then(app => app.close());
+        }));
+    });
+
     // tslint:disable-next-line
     describe('External Provider', function () {
 
