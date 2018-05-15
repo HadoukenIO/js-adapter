@@ -2,7 +2,7 @@ import * as assert from 'assert';
 import { conn } from './connect';
 import { Fin, launch } from '../src/main';
 import * as path from 'path';
-import { cleanOpenRuntimes, killByPort, kill } from './multi-runtime-utils';
+import { cleanOpenRuntimes } from './multi-runtime-utils';
 import { delayPromise } from './delay-promise';
 import * as sinon from 'sinon';
 import * as fs from 'fs';
@@ -10,7 +10,6 @@ import * as fs from 'fs';
 describe ('External Services', () => {
     let fin: Fin;
     let appConfig: any;
-    const ports: number[] = [];
 
     beforeEach(async () => {
         await cleanOpenRuntimes();
@@ -19,7 +18,6 @@ describe ('External Services', () => {
     });
 
     after(async () => {
-        await cleanOpenRuntimes();
         const apps = await fin.System.getAllApplications();
         await Promise.all(apps.map(a => {
             const { uuid } = a;
@@ -65,13 +63,12 @@ describe ('External Services', () => {
                 provider.onConnection(c => {
                     spy();
                 });
-                const port = await launch({manifestUrl: path.resolve('test', 'client.json')});
-                ports.push(port);
+                await launch({manifestUrl: path.resolve('test', 'client.json')});
                 await fin.InterApplicationBus.subscribe({uuid: 'service-client-test'}, 'return', (msg: any) => {
                     assert(spy.calledTwice && msg === 'return-test', 'Did not get IAB from dispatch');
                     done();
                 });
-                await delayPromise(2000);
+                await delayPromise(1000);
                 await fin.InterApplicationBus.publish('start', 'hi');
             }
             test();
@@ -108,13 +105,11 @@ describe ('External Services', () => {
             fs.writeFileSync(path.resolve('test/service.json'), JSON.stringify(serviceConfig));
 
             async function test() {
-                const port = await launch({manifestUrl: path.resolve('test', 'service.json')});
-                ports.push(port);
+                await launch({manifestUrl: path.resolve('test', 'service.json')});
                 const client = await fin.Service.connect({uuid: 'service-provider-test'});
                 client.dispatch('test').then(res => {
                     assert(res === 'return-test');
-                    fin.Application.wrap({uuid: 'service-provider-test'}).then(a => a.close()).then(() => done());
-                    // done();
+                    done();
                 });
             }
             test();
