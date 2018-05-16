@@ -3,7 +3,7 @@ import Launcher from '../src/launcher/launcher';
 import * as assert from 'assert';
 import * as fs from 'fs';
 import { connect as rawConnect, launch } from '../src/main';
-import { promiseMap } from '../src/launcher/util';
+import { promiseMap } from '../src/util/promises';
 import { ConnectConfig } from '../src/transport/wire';
 import { kill, killByPort } from './multi-runtime-utils';
 import { delayPromise } from './delay-promise';

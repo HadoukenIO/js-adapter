@@ -1,7 +1,7 @@
 import Transport, { Message } from '../transport/transport';
 import { Identity } from '../identity';
 import { EventEmitter } from 'events';
-import { promiseMap } from '../launcher/util';
+import { promiseMap } from '../util/promises';
 
 export interface RuntimeEvent extends Identity {
     topic: string;

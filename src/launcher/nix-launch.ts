@@ -2,7 +2,8 @@ import * as fs from 'fs';
 import * as path from 'path';
 import { ChildProcess, spawn } from 'child_process';
 import { ConfigWithRuntime } from '../transport/wire';
-import { promisify, resolveRuntimeVersion, rmDir, downloadFile, unzip, resolveDir, exists } from './util';
+import { promisify } from '../util/promises';
+import { resolveRuntimeVersion, rmDir, downloadFile, unzip, resolveDir, exists } from './util';
 
 const mkdir = promisify(fs.mkdir);
 

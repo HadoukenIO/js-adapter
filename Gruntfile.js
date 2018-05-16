@@ -124,13 +124,22 @@ module.exports = function (grunt) {
         }
     });
 
+    //using the node webpack API: https://webpack.js.org/api/node/
+    //will use Task Error or Warning grunt codes based on webpack results: https://gruntjs.com/exit-codes
     grunt.registerTask('webpack', function () {
         const done = this.async();
         webpack(webpackConfig, (err, stats) => {
-            if (err || stats.hasErrors()) {
+            if (err) {
                 const error = err ? err.message : 'webpack error';
-                grunt.log.error(error);
-                done(err);
+                if (err.details) {
+                    grunt.fail.fatal(err.details, 3);
+                }
+            } else if(stats.hasErrors()) {
+                const info = stats.toJson();
+                grunt.fail.fatal(info.errors, 3);
+            } else if(stats.hasWarnings()) {
+                const info = stats.toJson();
+                grunt.fail.warn(info.warnings, 6);
             } else {
                 grunt.log.ok('webpack task done');
                 done();
