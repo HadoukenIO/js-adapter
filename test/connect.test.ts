@@ -1,11 +1,13 @@
 import { conn } from './connect';
 import * as assert from 'assert';
 import { connect as rawConnect, Fin } from '../src/main';
+import { cleanOpenRuntimes } from './multi-runtime-utils';
 
 describe('connect()', () => {
     let fin: Fin;
-    before(() => {
-        return conn().then((a: Fin) => fin = a);
+    before(async () => {
+        await cleanOpenRuntimes();
+        fin = await conn();
     });
     it('authentication', () => {
         assert(fin.System !== undefined);

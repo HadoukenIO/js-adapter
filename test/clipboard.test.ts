@@ -1,6 +1,7 @@
 import { conn } from './connect';
 import * as assert from 'assert';
 import { Fin } from '../src/main';
+import { cleanOpenRuntimes } from './multi-runtime-utils';
 
 describe('Clipboard.', () => {
     let fin: Fin;
@@ -17,8 +18,9 @@ describe('Clipboard.', () => {
         }
     };
 
-    before(() => {
-        return conn().then((a: Fin) => fin = a);
+    before(async () => {
+        await cleanOpenRuntimes();
+        fin = await conn();
     });
 
     describe('writeText()', () => {

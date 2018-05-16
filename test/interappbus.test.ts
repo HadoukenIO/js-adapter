@@ -1,6 +1,7 @@
 import { conn } from './connect';
 import * as assert from 'assert';
 import { connect as rawConnect, Fin } from '../src/main';
+import { cleanOpenRuntimes } from './multi-runtime-utils';
 
 const id = 'adapter-test-window';
 const topic = 'topic';
@@ -15,8 +16,12 @@ function noop() { }
 describe('InterApplicationBus.', () => {
     let fin: Fin;
 
-    beforeEach(() => {
-        return conn().then((a: Fin) => fin = a);
+    before(async () => {
+        await cleanOpenRuntimes();
+    });
+
+    beforeEach(async () => {
+        fin = await conn();
     });
 
     it('subscribe()', (done) => {

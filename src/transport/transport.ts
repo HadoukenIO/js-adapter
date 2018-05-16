@@ -20,9 +20,7 @@ import {
 
 declare var fin: any;
 
-export interface MessageHandler {
-    (data: Function): boolean;
-}
+export type MessageHandler = (data: any) => boolean;
 
 class Transport extends EventEmitter {
     protected wireListeners: Map<number, { resolve: Function, reject: Function }> = new Map();
@@ -32,11 +30,13 @@ class Transport extends EventEmitter {
     protected wire: Wire;
     public environment: Environment;
     public topicRefMap: Map<string, number> = new Map();
+    public sendRaw: Wire['send'];
 
     constructor(wireType: WireConstructor, environment: Environment) {
         super();
         this.wire = new wireType(this.onmessage.bind(this));
         this.environment = environment;
+        this.sendRaw = this.wire.send.bind(this.wire);
         this.registerMessageHandler(this.handleMessage.bind(this));
         this.wire.on('disconnected', () => {
 

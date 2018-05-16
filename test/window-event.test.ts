@@ -3,6 +3,7 @@ import { conn } from './connect';
 import { delayPromise } from './delay-promise';
 import * as assert from 'assert';
 import { Fin } from '../src/main';
+import { cleanOpenRuntimes } from './multi-runtime-utils';
 
 // tslint:disable-next-line:no-function-expression
 describe('Window.', function() {
@@ -21,8 +22,9 @@ describe('Window.', function() {
             }
         };
 
-        before(() => {
-            return conn().then(a => fin = a);
+        before(async () => {
+            await cleanOpenRuntimes();
+            fin = await conn();
         });
 
         describe('"closed"', () => {

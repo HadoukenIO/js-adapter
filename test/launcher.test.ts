@@ -4,7 +4,8 @@ import * as os from 'os';
 import * as path from 'path';
 import Launcher from '../src/launcher/launcher';
 import { download, getRuntimePath, OsConfig, getUrl } from '../src/launcher/nix-launch';
-import { resolveRuntimeVersion, rmDir, promiseMap } from '../src/launcher/util';
+import { resolveRuntimeVersion, rmDir } from '../src/launcher/util';
+import { promiseMap } from '../src/util/promises';
 
 describe('Launcher', () => {
     describe('Resolve Runtime', () => {

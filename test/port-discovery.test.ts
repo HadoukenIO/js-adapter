@@ -3,11 +3,11 @@ import Launcher from '../src/launcher/launcher';
 import * as assert from 'assert';
 import * as fs from 'fs';
 import { connect as rawConnect, launch } from '../src/main';
-import { promiseMap } from '../src/launcher/util';
+import { promiseMap } from '../src/util/promises';
 import { ConnectConfig } from '../src/transport/wire';
 import { kill, killByPort } from './multi-runtime-utils';
-import { clean } from './connect';
 import { delayPromise } from './delay-promise';
+import { cleanOpenRuntimes } from './multi-runtime-utils';
 import * as path from 'path';
 // tslint:disable-next-line
 const appConfig = JSON.parse(fs.readFileSync('test/app.json').toString());
@@ -16,7 +16,9 @@ describe.skip('PortDiscovery.', function () {
     // do NOT use => function here for 'this' to be set properly
     // tslint:disable-next-line
     this.timeout(60000);
-    before(clean);
+    before(async () => {
+        return  await cleanOpenRuntimes();
+    });
     let spawns = 0;
     function makeConfig(config: any = {}): ConnectConfig {
         const defaultRconfig = {

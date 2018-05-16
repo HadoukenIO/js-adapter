@@ -1,22 +1,30 @@
+/* tslint:disable:no-invalid-this no-function-expression insecure-random mocha-no-side-effect-code no-empty */
+import { conn } from './connect';
+import { Fin } from '../src/main';
 import * as assert from 'assert';
 import { delayPromise } from './delay-promise';
-import { cleanOpenRuntimes, DELAY_MS, TEST_TIMEOUT, launchX } from './multi-runtime-utils';
+import { cleanOpenRuntimes, DELAY_MS, TEST_TIMEOUT, launchAndConnect } from './multi-runtime-utils';
 
 describe('Multi Runtime', function () {
+    let fin: Fin;
 
-    afterEach(async () => {
+    this.retries(2);
+    this.slow(TEST_TIMEOUT / 2 );
+    this.timeout(TEST_TIMEOUT);
+
+    before(async () => {
+        fin = await conn();
+    });
+
+    beforeEach(async function () {
         return await cleanOpenRuntimes();
     });
 
-    describe('InterApplicationBus', () => {
-        it('should subscribe to * and publish', function (done: Function) {
-            // tslint:disable-next-line no-invalid-this
-            this.timeout(TEST_TIMEOUT);
+    describe('InterApplicationBus', function () {
+        it('should subscribe to * and publish', function (done: any) {
 
             async function test() {
-                const conns = await launchX(2);
-                const finA = conns[0];
-                const finB = conns[1];
+                const [finA, finB] = await Promise.all([launchAndConnect(), launchAndConnect()]);
                 const topic = 'my-topic';
                 const data = 'hello';
 
@@ -27,22 +35,24 @@ describe('Multi Runtime', function () {
                     assert.equal(data, message, 'Expected message to be the data sent');
                     done();
                 });
+                await delayPromise(DELAY_MS);
                 return await finB.InterApplicationBus.publish('my-topic', data);
             }
 
-            test();
+            test().catch(err => {
+                cleanOpenRuntimes().then(done(err));
+            });
         });
 
-        it('should subscribe to a uuid and publish', function (done: Function) {
-            // tslint:disable-next-line no-invalid-this
-            this.timeout(TEST_TIMEOUT);
+        it('should subscribe to a uuid and publish', function (done: any) {
 
             async function test() {
-                const conns = await launchX(2);
-                const finA = conns[0];
-                const finB = conns[1];
+                const [finA, finB] = await Promise.all([launchAndConnect(), launchAndConnect()]);
                 const topic = 'my-topic';
                 const data = 'hello';
+
+                await delayPromise(DELAY_MS);
+
                 await finA.InterApplicationBus
                     .subscribe({ uuid: finB.wire.me.uuid }, topic, (message: any, source: any) => {
                         assert.equal(finB.wire.me.uuid, source.uuid, 'Expected source to be runtimeB');
@@ -53,19 +63,19 @@ describe('Multi Runtime', function () {
                 await finB.InterApplicationBus.publish(topic, data);
             }
 
-            test();
+            test().catch(err => {
+                cleanOpenRuntimes().then(done(err));
+            });
         });
 
-        it('should subscribe to * and send', function (done: Function) {
-            // tslint:disable-next-line no-invalid-this
-            this.timeout(TEST_TIMEOUT);
+        it('should subscribe to * and send', function (done: any) {
 
             async function test() {
-                const conns = await launchX(2);
-                const finA = conns[0];
-                const finB = conns[1];
+                const [finA, finB] = await Promise.all([launchAndConnect(), launchAndConnect()]);
                 const topic = 'my-topic';
                 const data = 'hello';
+
+                await delayPromise(DELAY_MS);
 
                 await finA.InterApplicationBus.subscribe({ uuid: '*' }, topic, (message: any, source: any) => {
                     assert.equal(finB.wire.me.uuid, source.uuid, 'Expected source to be runtimeB');
@@ -77,19 +87,19 @@ describe('Multi Runtime', function () {
 
             }
 
-            test();
+            test().catch(err => {
+                cleanOpenRuntimes().then(done(err));
+            });
         });
 
-        it('should subscribe to uuid and send', function (done: Function) {
-            // tslint:disable-next-line no-invalid-this
-            this.timeout(TEST_TIMEOUT);
+        it('should subscribe to uuid and send', function (done: any) {
 
             async function test() {
-                const conns = await launchX(2);
-                const finA = conns[0];
-                const finB = conns[1];
+                const [finA, finB] = await Promise.all([launchAndConnect(), launchAndConnect()]);
                 const topic = 'my-topic';
                 const data = 'hello';
+
+                await delayPromise(DELAY_MS);
 
                 await finA.InterApplicationBus.subscribe({ uuid: finB.wire.me.uuid },
                     topic, (message: any, source: any) => {
@@ -103,19 +113,19 @@ describe('Multi Runtime', function () {
                 await finB.InterApplicationBus.send({ uuid: finA.wire.me.uuid }, topic, data);
             }
 
-            test();
+            test().catch(err => {
+                cleanOpenRuntimes().then(done(err));
+            });
         });
 
-        it('should get subscriberAdded Events', function (done: Function) {
-            // tslint:disable-next-line no-invalid-this
-            this.timeout(TEST_TIMEOUT);
+        it('should get subscriberAdded Events', function (done: any) {
 
             async function test() {
-                const conns = await launchX(2);
-                const finA = conns[0];
-                const finB = conns[1];
+                const [finA, finB] = await Promise.all([launchAndConnect(), launchAndConnect()]);
                 const topic = 'my-topic';
                 const expectedUuid = finB.wire.me.uuid;
+
+                await delayPromise(DELAY_MS);
 
                 await finA.InterApplicationBus.on('subscriber-added', (sub: any, b: any) => {
                     assert.equal(expectedUuid, sub.uuid, 'Expected UUIDs to match');
@@ -123,23 +133,22 @@ describe('Multi Runtime', function () {
                     done();
                 });
                 await delayPromise(DELAY_MS);
-                // tslint:disable-next-line
-                return await finB.InterApplicationBus.subscribe({ uuid: finA.wire.me.uuid }, 'my-topic', () => { });
+                return await finB.InterApplicationBus.subscribe({ uuid: finA.wire.me.uuid }, 'my-topic', function () { });
             }
 
-            test();
+            test().catch(err => {
+                cleanOpenRuntimes().then(done(err));
+            });
         });
 
-        it('should get subscriberRemoved Events', function (done: Function) {
-            // tslint:disable-next-line no-invalid-this
-            this.timeout(TEST_TIMEOUT);
+        it('should get subscriberRemoved Events', function (done: any) {
 
             async function test() {
-                const conns = await launchX(2);
-                const finA = conns[0];
-                const finB = conns[1];
+                const [finA, finB] = await Promise.all([launchAndConnect(), launchAndConnect()]);
                 const topic = 'my-topic';
                 const expectedUuid = finB.wire.me.uuid;
+
+                await delayPromise(DELAY_MS);
 
                 await finA.InterApplicationBus.on('subscriber-removed', (sub: any, b: any) => {
                     assert.equal(expectedUuid, sub.uuid, 'Expected UUIDs to match');
@@ -147,14 +156,15 @@ describe('Multi Runtime', function () {
                     done();
                 });
 
-                // tslint:disable-next-line
-                function listener() { };
+                function listener() { }
                 await finB.InterApplicationBus.subscribe({ uuid: finA.wire.me.uuid }, topic, listener);
                 await delayPromise(DELAY_MS);
                 await finB.InterApplicationBus.unsubscribe({ uuid: finA.wire.me.uuid }, topic, listener);
             }
 
-            test();
+            test().catch(err => {
+                cleanOpenRuntimes().then(done(err));
+            });
         });
     });
 

@@ -39,6 +39,10 @@ export default class OpenFinEnvironment implements Environment {
                 return reject(new Error('Trying to create a window that already exists'));
             }
 
+            // we should register the window name with the core asap to prevent
+            // multiple windows claiming the same uuid-name combo
+            fin.__internal_.registerWindowName(opt.uuid, opt.name);
+
             if (opt.url !== ABOUT_BLANK) {
                 opt.url = this.resolveUrl(opt.url);
             }
