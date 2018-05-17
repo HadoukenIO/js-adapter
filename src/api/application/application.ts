@@ -1,4 +1,4 @@
-import { EmitterBase, Bare, Reply, RuntimeEvent } from '../base';
+import { EmitterBase, Base, Reply, RuntimeEvent } from '../base';
 import { Identity } from '../../identity';
 import { _Window } from '../window/window';
 import { Point } from '../system/point';
@@ -33,7 +33,7 @@ export interface TrayInfo {
     y: number;
 }
 
-export default class ApplicationModule extends Bare {
+export default class ApplicationModule extends Base {
 
     /**
      * Returns an Application object that represents an existing application.

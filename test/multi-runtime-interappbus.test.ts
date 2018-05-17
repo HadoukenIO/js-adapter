@@ -31,7 +31,7 @@ describe('Multi Runtime', function () {
                 await delayPromise(DELAY_MS);
 
                 await finA.InterApplicationBus.subscribe({ uuid: '*' }, topic, (message: any, source: any) => {
-                    assert.equal(finB.wire.me.uuid, source.uuid, 'Expected source to be runtimeB');
+                    assert.equal(finB.me.uuid, source.uuid, 'Expected source to be runtimeB');
                     assert.equal(data, message, 'Expected message to be the data sent');
                     done();
                 });
@@ -54,8 +54,8 @@ describe('Multi Runtime', function () {
                 await delayPromise(DELAY_MS);
 
                 await finA.InterApplicationBus
-                    .subscribe({ uuid: finB.wire.me.uuid }, topic, (message: any, source: any) => {
-                        assert.equal(finB.wire.me.uuid, source.uuid, 'Expected source to be runtimeB');
+                    .subscribe({ uuid: finB.me.uuid }, topic, (message: any, source: any) => {
+                        assert.equal(finB.me.uuid, source.uuid, 'Expected source to be runtimeB');
                         assert.equal(data, message, 'Expected message to be the data sent');
                         done();
                     });
@@ -78,12 +78,12 @@ describe('Multi Runtime', function () {
                 await delayPromise(DELAY_MS);
 
                 await finA.InterApplicationBus.subscribe({ uuid: '*' }, topic, (message: any, source: any) => {
-                    assert.equal(finB.wire.me.uuid, source.uuid, 'Expected source to be runtimeB');
+                    assert.equal(finB.me.uuid, source.uuid, 'Expected source to be runtimeB');
                     assert.equal(data, message, 'Expected message to be the data sent');
                     done();
                 });
                 await delayPromise(DELAY_MS);
-                return await finB.InterApplicationBus.send({ uuid: finA.wire.me.uuid }, topic, data);
+                return await finB.InterApplicationBus.send({ uuid: finA.me.uuid }, topic, data);
 
             }
 
@@ -101,16 +101,16 @@ describe('Multi Runtime', function () {
 
                 await delayPromise(DELAY_MS);
 
-                await finA.InterApplicationBus.subscribe({ uuid: finB.wire.me.uuid },
+                await finA.InterApplicationBus.subscribe({ uuid: finB.me.uuid },
                     topic, (message: any, source: any) => {
-                        assert.equal(finB.wire.me.uuid, source.uuid, 'Expected source to be runtimeB');
+                        assert.equal(finB.me.uuid, source.uuid, 'Expected source to be runtimeB');
                         assert.equal(data, message, 'Expected message to be the data sent');
                         done();
                     });
 
                 await delayPromise(DELAY_MS);
 
-                await finB.InterApplicationBus.send({ uuid: finA.wire.me.uuid }, topic, data);
+                await finB.InterApplicationBus.send({ uuid: finA.me.uuid }, topic, data);
             }
 
             test().catch(err => {
@@ -123,7 +123,7 @@ describe('Multi Runtime', function () {
             async function test() {
                 const [finA, finB] = await Promise.all([launchAndConnect(), launchAndConnect()]);
                 const topic = 'my-topic';
-                const expectedUuid = finB.wire.me.uuid;
+                const expectedUuid = finB.me.uuid;
 
                 await delayPromise(DELAY_MS);
 
@@ -133,7 +133,7 @@ describe('Multi Runtime', function () {
                     done();
                 });
                 await delayPromise(DELAY_MS);
-                return await finB.InterApplicationBus.subscribe({ uuid: finA.wire.me.uuid }, 'my-topic', function () { });
+                return await finB.InterApplicationBus.subscribe({ uuid: finA.me.uuid }, 'my-topic', function () { });
             }
 
             test().catch(err => {
@@ -146,7 +146,7 @@ describe('Multi Runtime', function () {
             async function test() {
                 const [finA, finB] = await Promise.all([launchAndConnect(), launchAndConnect()]);
                 const topic = 'my-topic';
-                const expectedUuid = finB.wire.me.uuid;
+                const expectedUuid = finB.me.uuid;
 
                 await delayPromise(DELAY_MS);
 
@@ -157,9 +157,9 @@ describe('Multi Runtime', function () {
                 });
 
                 function listener() { }
-                await finB.InterApplicationBus.subscribe({ uuid: finA.wire.me.uuid }, topic, listener);
+                await finB.InterApplicationBus.subscribe({ uuid: finA.me.uuid }, topic, listener);
                 await delayPromise(DELAY_MS);
-                await finB.InterApplicationBus.unsubscribe({ uuid: finA.wire.me.uuid }, topic, listener);
+                await finB.InterApplicationBus.unsubscribe({ uuid: finA.me.uuid }, topic, listener);
             }
 
             test().catch(err => {

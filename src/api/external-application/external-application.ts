@@ -1,4 +1,4 @@
-import { Bare, EmitterBase, Reply } from '../base';
+import { Base, EmitterBase, Reply } from '../base';
 import { Identity } from '../../identity';
 import Transport from '../../transport/transport';
 
@@ -6,7 +6,7 @@ export interface ExternalApplicationInfo {
     parent: Identity;
 }
 
-export default class ExternalApplicationModule extends Bare {
+export default class ExternalApplicationModule extends Base {
     /**
      * Returns an External Application object that represents an existing external application.
      * @param {string} uuid The UUID of the external application to be wrapped

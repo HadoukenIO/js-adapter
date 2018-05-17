@@ -1,5 +1,5 @@
 import Transport from '../transport/transport';
-import { Bare } from './base';
+import { EventEmitter } from 'events';
 import System from './system/system';
 import _WindowModule from './window/window';
 import Application from './application/application';
@@ -10,8 +10,11 @@ import ExternalApplication from './external-application/external-application';
 import _FrameModule from './frame/frame';
 import Plugin from './plugin/plugin';
 import { Service } from './services';
+import { Identity } from '../identity';
 
-export default class Fin extends Bare {
+export default class Fin extends EventEmitter {
+    private  wire: Transport;
+
     public System: System;
     public Window: _WindowModule;
     public Application: Application;
@@ -23,8 +26,13 @@ export default class Fin extends Bare {
     public Plugin: Plugin;
     public Service: Service;
 
+    get me(): Identity {
+        return this.wire.me;
+    }
+
     constructor(wire: Transport, public token: string) {
-        super(wire);
+        super();
+        this.wire = wire;
         this.System = new System(wire);
         this.Window = new _WindowModule(wire);
         this.Application = new Application(wire);

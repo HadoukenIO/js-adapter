@@ -1,23 +1,31 @@
-import { Bare } from '../base';
+import { Base } from '../base';
 import { Identity } from '../../identity';
 import Transport, { Message } from '../../transport/transport';
 import RefCounter from '../../util/ref-counter';
+import { EventEmitter } from 'events';
 
 /**
  * A messaging bus that allows for pub/sub messaging between different applications.
  * @namespace
 */
-export default class InterApplicationBus extends Bare {
+export default class InterApplicationBus extends Base {
     public events = {
         subscriberAdded: 'subscriber-added',
         subscriberRemoved: 'subscriber-removed'
     };
 
     private refCounter = new RefCounter();
+    protected emitter: EventEmitter;
 
+    public on: any;
+    public removeAllListeners: any;
     constructor(wire: Transport) {
         super(wire);
+        this.emitter = new EventEmitter();
         wire.registerMessageHandler(this.onmessage.bind(this));
+
+        this.on = this.emitter.on.bind(this.emitter);
+        this.removeAllListeners = this.emitter.removeAllListeners.bind(this.emitter);
     }
 
     /**
@@ -88,7 +96,7 @@ export default class InterApplicationBus extends Bare {
             return new Promise(r => r).then(() => undefined);
         };
 
-        this.on(subKey, listener);
+        this.emitter.on(subKey, listener);
 
         return this.refCounter.actOnFirst(subKey, sendSubscription, alreadySubscribed);
     }
@@ -116,7 +124,7 @@ export default class InterApplicationBus extends Bare {
             return new Promise(r => r).then(() => undefined);
         };
 
-        this.removeListener(subKey, listener);
+        this.emitter.removeListener(subKey, listener);
         return this.refCounter.actOnLast(subKey, sendUnsubscription, dontSendUnsubscription);
     }
 
@@ -130,14 +138,15 @@ export default class InterApplicationBus extends Bare {
         const idOfSender = { uuid: sourceUuid, name: sourceWindowName };
 
         keys.forEach((key) => {
-            this.emit(key, payloadMessage, idOfSender);
+            this.emitter.emit(key, payloadMessage, idOfSender);
         });
     }
 
     private emitSubscriverEvent(type: string, message: any) {
         const { payload: { name, uuid, topic } } = message;
         const payload = { name, uuid, topic };
-        this.emit(type, payload);
+
+        this.emitter.emit(type, payload);
     }
 
     protected createSubscriptionKey(uuid: string, name: string, topic: string): string {
