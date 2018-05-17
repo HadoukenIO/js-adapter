@@ -59,7 +59,7 @@ describe('Multi Runtime', function () {
 
             it('should return the uuid of the parent adapter connection', async function () {
                 const [finA, finB] = await Promise.all([launchAndConnect(), launchAndConnect()]);
-                const expectedUuid = finB.wire.me.uuid;
+                const expectedUuid = finB.me.uuid;
 
                 await delayPromise(DELAY_MS);
                 const realApp = await finB.Application.create(appConfigTemplate);

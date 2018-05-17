@@ -1,4 +1,4 @@
-import { Bare, EmitterBase } from '../base';
+import { Base, EmitterBase } from '../base';
 import { Identity } from '../../identity';
 import Transport from '../../transport/transport';
 
@@ -12,7 +12,7 @@ export interface FrameInfo {
 }
 
 // tslint:disable-next-line
-export default class _FrameModule extends Bare {
+export default class _FrameModule extends Base {
     /**
      * Gets a reference to the specified frame. The frame does not have to exist
      * @param {string} uuid - uuid of the frame you want to wrap

@@ -1,4 +1,4 @@
-import { Bare, Base } from '../base';
+import { Base, EmitterBase } from '../base';
 import { Identity } from '../../identity';
 import Transport from '../../transport/transport';
 
@@ -45,7 +45,7 @@ export interface NotificationCallback {
  * @alias Notification
  */
 // tslint:disable-next-line
-export class _Notification extends Base {
+export class _Notification extends EmitterBase {
     private listenerList: Array<string> = ['newListener'];
 
     private unhookAllListeners = () => {
@@ -85,7 +85,7 @@ export class _Notification extends Base {
             const { payload: { notificationId }, type } = messagePayload;
 
             if (notificationId === this.notificationId) {
-                this.emit(type, this.buildLocalPayload(messagePayload));
+                this.emitter.emit(type, this.buildLocalPayload(messagePayload));
             }
         }
 
@@ -177,7 +177,7 @@ export class _Notification extends Base {
 }
 
 // tslint:disable-next-line
-export default class _NotificationModule extends Bare {
+export default class _NotificationModule extends Base {
 
     private nextNoteId = 0;
     private genNoteId() {

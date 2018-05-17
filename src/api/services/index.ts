@@ -1,7 +1,7 @@
 import { Client } from './client';
 import { Identity } from '../../identity';
 import { Provider } from './provider';
-import { Base } from '../base';
+import { EmitterBase } from '../base';
 import Transport, { Message, Payload } from '../../transport/transport';
 
 export interface Options {
@@ -20,7 +20,7 @@ export interface ServiceMessage extends Message<any> {
   connectAction: boolean;
 }
 
-export class Service extends Base {
+export class Service extends EmitterBase {
     private serviceMap: Map<string, Provider | Client>;
     constructor(wire: Transport) {
         super(wire);

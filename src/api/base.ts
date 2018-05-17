@@ -8,14 +8,15 @@ export interface RuntimeEvent extends Identity {
     type: string|symbol;
 }
 
-export class Bare extends EventEmitter {
+export class Base {
     public wire: Transport;
+
     constructor(wire: Transport) {
-        super();
         this.wire = wire;
     }
 
-    protected get topic(): string {
+    protected get topic()
+    : string {
         return this.constructor.name.replace('_', '').toLowerCase();
     }
 
@@ -30,16 +31,34 @@ export class Bare extends EventEmitter {
     protected isOpenFinEnvironment = (): boolean => {
         return this.wire.environment.constructor.name === 'OpenFinEnvironment';
     }
-}
-
-export class Base extends Bare {
-    constructor(wire: Transport) {
-        super(wire);
-        wire.registerMessageHandler(this.onmessage.bind(this));
-    }
 
     protected runtimeEventComparator = (listener: RuntimeEvent): boolean => {
         return listener.topic === this.topic;
+    }
+
+}
+
+export class EmitterBase extends Base {
+
+    protected identity: Identity;
+    protected emitter: EventEmitter;
+    public listeners: (event: string | symbol) => Function[];
+    public rawListeners: (event: string | symbol) =>  Function[];
+    public eventNames: () => Array<string | symbol>;
+    public listenerCount: (type: string | symbol) => number;
+
+    constructor(wire: Transport) {
+        super(wire);
+        this.emitter = new EventEmitter();
+        this.wire.registerMessageHandler(this.onmessage.bind(this));
+        this.listeners = this.emitter.listeners.bind(this.emitter);
+        this.rawListeners = this.emitter.rawListeners.bind(this.emitter);
+        this.eventNames = this.emitter.eventNames.bind(this.emitter);
+        this.listenerCount = this.emitter.listenerCount.bind(this.emitter);
+    }
+
+    public emit = (eventName: string| symbol, ...args: any[]) => {
+        this.emitter.emit(eventName, ...args);
     }
 
     protected onmessage = (message: Message<any>): boolean => {
@@ -48,7 +67,7 @@ export class Base extends Bare {
             const payload = message.payload;
 
             if (this.runtimeEventComparator(<RuntimeEvent>payload)) {
-                this.emit(payload.type, message.payload);
+                this.emitter.emit(payload.type, message.payload);
             }
             return true;
         } else {
@@ -85,62 +104,55 @@ export class Base extends Bare {
         }
     }
 
-}
-
-// @ts-ignore: return types incompatible with EventEmitter (this)
-export class EmitterBase extends Base {
-    protected identity: Identity;
-    // @ts-ignore: return types incompatible with EventEmitter (this)
     public on(eventType: string, listener: (...args: any[]) => void): Promise<void> {
-        super.on(eventType, listener);
+        this.emitter.on(eventType, listener);
         return this.registerEventListener(Object.assign({}, this.identity, {
             type: eventType,
             topic: this.topic
         })).then(() => undefined);
     }
-    // @ts-ignore: return types incompatible with EventEmitter (this)
+
     public addListener = this.on;
-    //@ts-ignore: return types incompatible with EventEmitter (this)
     public once(eventType: string, listener: (...args: any[]) => void): Promise<void> {
-        super.once(eventType, listener);
+        this.emitter.once(eventType, listener);
         const deregister =  () => {
             this.deregisterEventListener(Object.assign({}, this.identity, {
                 type: eventType,
                 topic: this.topic
             }));
         };
-        super.once(eventType, deregister);
+        this.emitter.once(eventType, deregister);
         return this.registerEventListener(Object.assign({}, this.identity, {
             type: eventType,
             topic: this.topic
         })).then(() => undefined);
     }
-    // @ts-ignore: return types incompatible with EventEmitter (this)
+
     public prependListener(eventType: string, listener: (...args: any[]) => void): Promise<void> {
-        super.prependListener(eventType, listener);
+        this.emitter.prependListener(eventType, listener);
         return this.registerEventListener(Object.assign({}, this.identity, {
             type: eventType,
             topic: this.topic
         })).then(() => undefined);
     }
-    // @ts-ignore: return types incompatible with EventEmitter (this)
+
     public prependOnceListener(eventType: string, listener: (...args: any[]) => void): Promise<void> {
-        super.prependOnceListener(eventType, listener);
+        this.emitter.prependOnceListener(eventType, listener);
         const deregister =  () => {
             this.deregisterEventListener(Object.assign({}, this.identity, {
                 type: eventType,
                 topic: this.topic
             }));
         };
-        super.once(eventType, deregister);
+        this.emitter.once(eventType, deregister);
         return this.registerEventListener(Object.assign({}, this.identity, {
             type: eventType,
             topic: this.topic
         })).then(() => undefined);
     }
-    // @ts-ignore: return types incompatible with EventEmitter (this)
+
     public removeListener(eventType: string, listener: (...args: any[]) => void): Promise<void> {
-        super.removeListener(eventType, listener);
+        this.emitter.removeListener(eventType, listener);
         return this.deregisterEventListener(Object.assign({}, this.identity, {
             type: eventType,
             topic: this.topic
@@ -162,18 +174,18 @@ export class EmitterBase extends Base {
             return Promise.resolve();
         }
     }
-    // @ts-ignore: return types incompatible with EventEmitter (this)
+
     public async removeAllListeners(eventType?: string): Promise<void> {
 
         const removeByEvent = (event: string|symbol): Promise<void> => {
-            super.removeAllListeners(event);
+            this.emitter.removeAllListeners(event);
             return this.deregisterAllListeners(event).then(() => undefined);
         };
 
         if (eventType) {
             return removeByEvent(eventType);
         } else {
-            const events = this.eventNames();
+            const events = this.emitter.eventNames();
             await promiseMap(events, removeByEvent);
         }
     }

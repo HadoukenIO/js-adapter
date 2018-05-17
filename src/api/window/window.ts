@@ -1,4 +1,4 @@
-import { Bare, EmitterBase, RuntimeEvent } from '../base';
+import { Base, EmitterBase, RuntimeEvent } from '../base';
 import { Identity } from '../../identity';
 import Bounds from './bounds';
 import BoundsChangedReply from './bounds-changed';
@@ -7,7 +7,7 @@ import { Application } from '../application/application';
 import Transport from '../../transport/transport';
 
 // tslint:disable-next-line
-export default class _WindowModule extends Bare {
+export default class _WindowModule extends Base {
     /**
      * Returns a Window object that represents an existing window.
      * @param { Identity } indentity
