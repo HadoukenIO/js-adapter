@@ -43,18 +43,14 @@ export class EmitterBase extends Base {
     protected identity: Identity;
     protected emitter: EventEmitter;
     public listeners: (event: string | symbol) => Function[];
-    public rawListeners: (event: string | symbol) =>  Function[];
-    public eventNames: () => Array<string | symbol>;
     public listenerCount: (type: string | symbol) => number;
 
     constructor(wire: Transport) {
         super(wire);
         this.emitter = new EventEmitter();
         this.wire.registerMessageHandler(this.onmessage.bind(this));
-        this.listeners = this.emitter.listeners.bind(this.emitter);
-        this.rawListeners = this.emitter.rawListeners.bind(this.emitter);
-        this.eventNames = this.emitter.eventNames.bind(this.emitter);
-        this.listenerCount = this.emitter.listenerCount.bind(this.emitter);
+        this.listeners = this.emitter.listeners ? this.emitter.listeners.bind(this.emitter) : void 0;
+        this.listenerCount = this.emitter.listenerCount ? this.emitter.listenerCount.bind(this.emitter) : void 0;
     }
 
     public emit = (eventName: string| symbol, ...args: any[]) => {
