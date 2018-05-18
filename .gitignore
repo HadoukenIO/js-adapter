@@ -8,6 +8,7 @@
 /src/.baseDir.ts
 TODO
 test/app.json
+test/service-app.json
 test/client.json
 test/service.json
 /docs
