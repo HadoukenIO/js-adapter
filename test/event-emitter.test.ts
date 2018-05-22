@@ -1,13 +1,15 @@
 import * as assert from 'assert';
 import { conn } from './connect';
 import { Fin } from '../src/main';
+import { _Window } from '../src/api/window/window';
+import { Application } from '../src/api/application/application';
 import * as sinon from 'sinon';
 import { cleanOpenRuntimes } from './multi-runtime-utils';
 
 describe ('Event Emitter Methods', () => {
     let fin: Fin;
-    let app: any;
-    let win: any;
+    let app: Application;
+    let win: _Window;
     const appConfigTemplate = {
         name: 'adapter-test-app',
         url: 'about:blank',
@@ -53,9 +55,9 @@ describe ('Event Emitter Methods', () => {
             await win.moveBy(1, 1);
             await win.removeAllListeners('bounds-changed');
             await win.moveBy(1, 1);
-            const eventNames = win.eventNames();
+            const boundsChangedCount = win.listenerCount('bounds-changed');
             await win.close();
-            assert(eventNames.length === 1, `Expected ${eventNames} to be closed and only closed`);
+            assert(boundsChangedCount === 0, 'Expected bounds-changed to be removed');
             assert(boundsSpy.calledOnce);
             assert(closedSpy.calledOnce);
         });
@@ -67,16 +69,16 @@ describe ('Event Emitter Methods', () => {
             await win.on('closed', closedSpy);
             await win.moveBy(1, 1);
             await win.removeAllListeners();
-            const noEvents = win.eventNames();
+            const noEvents = win.listenerCount('bounds-changed') + win.listenerCount('closed');
             await win.moveBy(1, 1);
             await win.on('bounds-changed', boundsSpy);
-            const eventNames = win.eventNames();
+            const oneEvent = win.listenerCount('bounds-changed');
             await win.moveBy(1, 1);
             await win.close();
             assert(boundsSpy.calledTwice);
             assert(closedSpy.notCalled);
-            assert(eventNames.length === 1, `Expected ${eventNames} to be bounds-changed and only bounds-changed`);
-            assert(noEvents.length === 0, `Expected ${eventNames} event to not exist`);
+            assert(oneEvent === 1, 'Expected bounds-changed to be bounds-changed and only bounds-changed');
+            assert(noEvents === 0, 'Expected bounds-changed event to not exist');
         });
     });
 
