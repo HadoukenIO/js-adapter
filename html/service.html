@@ -14,8 +14,9 @@
         provider.register('test', () => {
             return 'return-test';
         });    
-        provider.onConnection(c => {
-            console.log('connection', c);
+        provider.onConnection((id, payload) => {
+            console.log('connection', id);
+            provider.dispatch(id, 'multi-runtime-test', 'return-mrt');
         });
     });
 </script>

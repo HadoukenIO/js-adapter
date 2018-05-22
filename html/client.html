@@ -12,6 +12,9 @@
     fin.desktop.main(async () => {
         fin.desktop.InterApplicationBus.subscribe("*", "start", async function(message, uuid, name) {
             const client = await fin.desktop.Service.connect({uuid});
+            client.register('multi-runtime-test', res => {
+                fin.desktop.InterApplicationBus.publish("multi-runtime-test-return", res);
+            });
             client.dispatch('test').then(res => {
                 fin.desktop.InterApplicationBus.publish("return", res);
             })
