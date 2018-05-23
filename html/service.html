@@ -12,9 +12,7 @@
     fin.desktop.main(async () => {
         const provider = await fin.desktop.Service.register();
         provider.register('test', (payload, id) => {
-            console.log('111', id);
             provider.dispatch(id, 'multi-runtime-test', 'return-mrt');
-            console.log('222');            
             return 'return-test';
         });    
         provider.onConnection((id, payload) => {
