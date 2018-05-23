@@ -11,11 +11,14 @@
 <script>
     fin.desktop.main(async () => {
         fin.desktop.InterApplicationBus.subscribe("*", "start", async function(message, uuid, name) {
+            console.error('111', uuid);
             const client = await fin.desktop.Service.connect({uuid});
+            console.error('poo');
             client.register('multi-runtime-test', res => {
                 fin.desktop.InterApplicationBus.publish("multi-runtime-test-return", res);
             });
             client.dispatch('test').then(res => {
+                console.error('222');                
                 fin.desktop.InterApplicationBus.publish("return", res);
             })
         });
