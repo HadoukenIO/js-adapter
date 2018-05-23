@@ -61,12 +61,13 @@ describe ('External Services', () => {
                 await client.run();
                 const listener = (msg: any) => {
                     assert(spy.calledTwice && msg === 'return-test', 'Did not get IAB from dispatch');
+                    fin.InterApplicationBus.unsubscribe({uuid: 'service-client-test'}, 'return', listener);
                     done();
                 };
                 await fin.InterApplicationBus.subscribe({uuid: 'service-client-test'}, 'return', listener);
+                await delayPromise(1000);
                 await fin.InterApplicationBus.publish('start', 'hi');
                 await delayPromise(1000);
-                await fin.InterApplicationBus.unsubscribe({uuid: 'service-client-test'}, 'return', listener);
             }
             test();
         });
