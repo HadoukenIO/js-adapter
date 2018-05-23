@@ -1,5 +1,4 @@
 import * as assert from 'assert';
-import { Fin } from '../src/main';
 import * as path from 'path';
 import { cleanOpenRuntimes, launchAndConnect } from './multi-runtime-utils';
 import { delayPromise } from './delay-promise';
@@ -7,14 +6,11 @@ import * as sinon from 'sinon';
 import * as fs from 'fs';
 
 describe ('Multi Runtime Services', () => {
-    let fin: Fin;
-
     beforeEach(async () => {
         await cleanOpenRuntimes();
-        fin = await launchAndConnect();
     });
 
-    afterEach(async () => {
+    after(async () => {
         await cleanOpenRuntimes();
     });
 
@@ -42,7 +38,7 @@ describe ('Multi Runtime Services', () => {
 
             async function test () {
                 const spy = sinon.spy();
-                const finA = await launchAndConnect();
+                const [fin, finA] = await Promise.all([launchAndConnect(), launchAndConnect()]);
                 const provider = await finA.Service.register();
                 provider.register('test', () => {
                     spy();
@@ -88,7 +84,7 @@ describe ('Multi Runtime Services', () => {
             };
 
             async function test() {
-                const finA = await launchAndConnect();
+                const [fin, finA] = await Promise.all([launchAndConnect(), launchAndConnect()]);
                 const service = await fin.Application.create(serviceConfig);
                 await service.run();
                 await delayPromise(1000);
