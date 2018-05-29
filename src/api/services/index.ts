@@ -52,7 +52,8 @@ export class Service extends EmitterBase {
                 });
                 this.on('disconnected', listener);
             };
-            this.serviceMap.set(serviceIdentity.uuid, channel);
+            const key = serviceIdentity.channelId || serviceIdentity.uuid;
+            this.serviceMap.set(key, channel);
             return channel;
         } catch (e) {
             throw new Error(e.message);
@@ -61,8 +62,9 @@ export class Service extends EmitterBase {
 
     public async register(): Promise<Provider> {
         const { payload: { data: serviceIdentity } } = await this.wire.sendAction('register-service', {});
-        const channel = new Provider(this.wire.sendAction.bind(this.wire));
-        this.serviceMap.set(serviceIdentity.uuid, channel);
+        const channel = new Provider(serviceIdentity, this.wire.sendAction.bind(this.wire));
+        const key = serviceIdentity.channelId || serviceIdentity.uuid;
+        this.serviceMap.set(key, channel);
         return channel;
     }
     public onmessage = (msg: ServiceMessage) => {
@@ -74,7 +76,8 @@ export class Service extends EmitterBase {
     }
     private async processServiceMessage (msg: ServiceMessage) {
         const { senderIdentity, serviceIdentity, action, ackToSender, payload, connectAction} = msg.payload;
-        const bus = this.serviceMap.get(serviceIdentity.uuid);
+        const key = serviceIdentity.channelId || serviceIdentity.uuid;
+        const bus = this.serviceMap.get(key);
         try {
             let res;
             if (!bus) {
@@ -97,7 +100,6 @@ export class Service extends EmitterBase {
             this.wire.sendRaw(ackToSender);
         }
     }
-
 }
 
 interface PluginSubscribeSuccess {
