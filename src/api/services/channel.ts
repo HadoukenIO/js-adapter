@@ -34,6 +34,7 @@ export class ServiceChannel {
 
     constructor (serviceIdentity: ServiceIdentity, send: Transport['sendAction']) {
         this.defaultSet = false;
+        this.serviceIdentity = serviceIdentity;
         this.subscriptions = new Map<string, () => any>();
         this.defaultAction = () => {
             throw new Error('No action registered');
