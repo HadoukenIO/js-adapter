@@ -1,11 +1,15 @@
+/* tslint:disable:no-invalid-this no-function-expression insecure-random mocha-no-side-effect-code no-empty */
 import * as assert from 'assert';
-import * as path from 'path';
-import { cleanOpenRuntimes, launchAndConnect } from './multi-runtime-utils';
+import { cleanOpenRuntimes, launchAndConnect, TEST_TIMEOUT, DELAY_MS } from './multi-runtime-utils';
 import { delayPromise } from './delay-promise';
-import * as sinon from 'sinon';
 import * as fs from 'fs';
+import * as path from 'path';
+import * as sinon from 'sinon';
 
-describe ('Multi Runtime Services', () => {
+describe ('Multi Runtime Services', function() {
+    this.timeout(TEST_TIMEOUT / 4);
+    const appConfig = JSON.parse(fs.readFileSync(path.resolve('test/app.json')).toString());
+
     beforeEach(async () => {
         await cleanOpenRuntimes();
     });
@@ -14,13 +18,10 @@ describe ('Multi Runtime Services', () => {
         await cleanOpenRuntimes();
     });
 
-    // tslint:disable-next-line
     describe('Multi Runtime with External Provider', function () {
 
         it('Should work in multi runtime with an external Provider', function(done: any) {
             // tslint:disable-next-line no-invalid-this
-            this.timeout(8000);
-            const appConfig = JSON.parse(fs.readFileSync(path.resolve('test/app.json')).toString());
             const url = appConfig.startup_app.url;
             const newUrl = url.slice(0, url.lastIndexOf('/')) + '/client.html';
 
@@ -49,9 +50,10 @@ describe ('Multi Runtime Services', () => {
                 });
                 const client = await fin.Application.create(clientConfig);
                 await client.run();
-                await delayPromise(1000);
+                await delayPromise(DELAY_MS);
                 await fin.InterApplicationBus.subscribe({uuid: 'service-client-test'}, 'return', (msg: any) => {
-                    assert(spy.calledTwice && msg === 'return-test', 'Did not get IAB from dispatch');
+                    assert.ok(spy.calledTwice, 'Did not get IAB from dispatch');
+                    assert.equal(msg, 'return-test');
                     done();
                 });
                 await finA.InterApplicationBus.publish('start', 'hi');
@@ -61,13 +63,9 @@ describe ('Multi Runtime Services', () => {
 
     });
 
-    // tslint:disable-next-line
     describe('Multi Runtime with External Client', function () {
 
         it('Should work in multi runtime with an External Client', function(done: any) {
-            // tslint:disable-next-line no-invalid-this
-            this.timeout(8000);
-            const appConfig = JSON.parse(fs.readFileSync(path.resolve('test/app.json')).toString());
             const url = appConfig.startup_app.url;
             const newUrl = url.slice(0, url.lastIndexOf('/')) + '/service.html';
 
@@ -90,11 +88,11 @@ describe ('Multi Runtime Services', () => {
                 await delayPromise(1000);
                 const client = await finA.Service.connect({uuid: 'service-provider-test'});
                 client.register('multi-runtime-test', (r: string) => {
-                    assert(r === 'return-mrt', 'wrong payload sent from service');
+                    assert.equal(r, 'return-mrt', 'wrong payload sent from service');
                     done();
                 });
                 client.dispatch('test').then(res => {
-                    assert(res === 'return-test', 'wrong return payload from service');
+                    assert.equal(res, 'return-test', 'wrong return payload from service');
                 });
             }
             test();
