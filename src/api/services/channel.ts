@@ -30,8 +30,9 @@ export class ServiceChannel {
     private errorMiddleware: (...args: any[]) => any;
     private defaultSet: boolean;
     protected send: (to: Identity, action: string, payload: any) => Promise<Message<void>>;
+    protected serviceIdentity: ServiceIdentity;
 
-    constructor (protected serviceIdentity: ServiceIdentity, send: Transport['sendAction']) {
+    constructor (serviceIdentity: ServiceIdentity, send: Transport['sendAction']) {
         this.defaultSet = false;
         this.subscriptions = new Map<string, () => any>();
         this.defaultAction = () => {
