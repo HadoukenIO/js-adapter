@@ -90,7 +90,6 @@ export interface CloseEventShape {
 export interface WindowInfo {
     canNavigateBack: boolean;
     canNavigateForward: boolean;
-    plugins: Array<any>;
     preloadScripts: Array<any>;
     title: string;
     url: string;
@@ -404,28 +403,6 @@ export class _Window extends EmitterBase {
      * @type {object}
      * @property {string} name - Name of the window.
      * @property {string} uuid - UUID of the application that the window belongs to.
-     */
-
-    /**
-     * Raised after the execution of all plugin modules. Contains information about all
-     plugin modules' final states.
-     *
-     * @event Window#plugins-state-changed
-     * @type {object}
-     * @property {string} name - Name of the window.
-     * @property {string} uuid - UUID of the application that the window belongs to.
-     * @property {pluginModuleState[]} plugins - An array of all final plugin module states
-     */
-
-    /**
-     * Raised during the execution of a plugin module in a window.
-     Contains information about a single plugin module's state, for which the event has been raised.
-     *
-     * @event Window#plugins-state-changing
-     * @type {object}
-     * @property {string} name - Name of the window.
-     * @property {string} uuid - UUID of the application that the window belongs to.
-     * @property {pluginModuleState[]} plugins - An array of all final plugin module states
      */
 
     /**
