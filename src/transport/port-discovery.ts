@@ -58,9 +58,11 @@ interface PortDiscoveryMessageEnvolope {
 }
 
 function matchRuntimeInstance(config: PortDiscoveryConfig, message: PortDiscoveryMessage): Boolean {
-    if (config.runtime.version && config.runtime.securityRealm) {
+    const args = config.runtime.arguments || '';
+    const realm = config.runtime.securityRealm || (args.split('--security-realm=')[1] || '').split(' ')[0];
+    if (config.runtime.version && realm) {
         return config.runtime.version === message.requestedVersion &&
-            config.runtime.securityRealm === message.securityRealm;
+            realm === message.securityRealm;
     } else if (config.runtime.version) {
         return config.runtime.version === message.requestedVersion && !message.securityRealm;
     } else {
@@ -180,7 +182,6 @@ export class PortDiscovery {
     private savedConfig: PortDiscoveryConfig;
     private namedPipeName: string;
     private manifestLocation: string;
-    private discoverState: DiscoverState;
     private namedPipeServer: net.Server;
     private pipeConnection: net.Socket; // created by Runtime. only one allowed
     private timeoutTimer: Timer;
@@ -224,7 +225,6 @@ export class PortDiscovery {
 
     private createDiscoveryNamedPipe(): Promise<any> {
         return new Promise((resolve, reject) => {
-            this.discoverState = DiscoverState.INIT;
             let unix = false;
             const randomNum: string = this.environment.getRandomId();
             this.namedPipeName = 'NodeAdapter.' + randomNum;
@@ -251,23 +251,20 @@ export class PortDiscovery {
     private listenDiscoveryMessage(): Promise<PortDiscoveryMessage> {
         return new Promise((resolve, reject) => {
             this.namedPipeServer.on('connection', (conn: net.Socket) => {
-                if (!this.pipeConnection) {
-                    this.pipeConnection = conn;
+                    let discoverState = DiscoverState.INIT;
                     conn.on('data', (data: Buffer) => {
-                        if (this.discoverState === DiscoverState.INIT) {
+                        if (discoverState === DiscoverState.INIT) {
                             onRuntimeHello(data, conn);
-                            this.discoverState = DiscoverState.HELLO;
-                        } else if (this.discoverState === DiscoverState.HELLO) {
+                            discoverState = DiscoverState.HELLO;
+                        } else if (discoverState === DiscoverState.HELLO) {
                             const msg = onDiscoverMessage(data);
-                            if (msg) {
+                            if (msg && matchRuntimeInstance(this.savedConfig, msg)) {
                                 resolve(msg);
+                            } else {
+                                console.warn('Received Port Discovery message from unexpected runtime');
                             }
                         }
                     });
-                    conn.on('error', err => reject(err));
-                } else {
-                    conn.end();
-                }
             });
             this.namedPipeServer.on('error', err => reject(err));
         });
