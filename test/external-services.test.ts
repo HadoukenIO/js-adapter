@@ -1,19 +1,20 @@
+/* tslint:disable:no-invalid-this no-function-expression insecure-random mocha-no-side-effect-code no-empty */
 import * as assert from 'assert';
+import { cleanOpenRuntimes, DELAY_MS, TEST_TIMEOUT } from './multi-runtime-utils';
 import { conn } from './connect';
-import { Fin } from '../src/main';
-import * as path from 'path';
-import { cleanOpenRuntimes } from './multi-runtime-utils';
 import { delayPromise } from './delay-promise';
-import * as sinon from 'sinon';
+import { Fin } from '../src/main';
 import * as fs from 'fs';
+import * as path from 'path';
+import * as sinon from 'sinon';
 
-describe ('External Services', () => {
+describe ('External Services', function() {
     let fin: Fin;
-    let appConfig: any;
+    const appConfig = JSON.parse(fs.readFileSync(path.resolve('test/app.json')).toString());
+    this.timeout(TEST_TIMEOUT / 4);
 
     beforeEach(async () => {
         await cleanOpenRuntimes();
-        appConfig = JSON.parse(fs.readFileSync(path.resolve('test/app.json')).toString());
         fin = await conn();
     });
 
@@ -25,13 +26,9 @@ describe ('External Services', () => {
         }));
     });
 
-    // tslint:disable-next-line
     describe('External Provider', function () {
 
         it('Should be able to register as Provider', function(done: any) {
-            // tslint:disable-next-line no-invalid-this
-            this.timeout(8000);
-
             const url = appConfig.startup_app.url;
             const newUrl = url.slice(0, url.lastIndexOf('/')) + '/client.html';
 
@@ -65,21 +62,18 @@ describe ('External Services', () => {
                     done();
                 };
                 await fin.InterApplicationBus.subscribe({uuid: 'service-client-test'}, 'return', listener);
-                await delayPromise(1000);
+                await delayPromise(DELAY_MS);
                 await fin.InterApplicationBus.publish('start', 'hi');
-                await delayPromise(1000);
+                await delayPromise(DELAY_MS);
             }
             test();
         });
 
     });
 
-    // tslint:disable-next-line
     describe('External Client', function () {
 
         it('Should be able to connect as Client', function(done: any) {
-            // tslint:disable-next-line no-invalid-this
-            this.timeout(8000);
 
             const url = appConfig.startup_app.url;
             const newUrl = url.slice(0, url.lastIndexOf('/')) + '/service.html';
