@@ -10,7 +10,7 @@ Allows the use of the Hadouken API from node.js.
 
 $ `npm install -S hadouken-js-adapter`
 
-## Usage
+## Usage goes here:
 
 Connecting to an already running runtime
 
