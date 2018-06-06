@@ -11,11 +11,12 @@
 <script>
     fin.desktop.main(async () => {
         const provider = await fin.desktop.Service.register();
-        provider.register('test', () => {
+        provider.register('test', (payload, id) => {
+            provider.dispatch(id, 'multi-runtime-test', 'return-mrt');
             return 'return-test';
         });    
-        provider.onConnection(c => {
-            console.log('connection', c);
+        provider.onConnection((id, payload) => {
+            console.log('connection', id);
         });
     });
 </script>
