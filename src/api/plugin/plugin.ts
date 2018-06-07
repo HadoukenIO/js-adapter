@@ -4,7 +4,7 @@ import { notImplementedEnvErrorMsg } from '../../environment/environment';
 
 /**
  * The Plugin API allows importing OpenFin plugins
- * @namespace
+ * @ namespace
 */
 export default class Plugin extends Base {
     private pluginsImportBaseKey: string; // unique plugins key for window
