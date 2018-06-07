@@ -106,7 +106,7 @@ describe('GlobalHotkey.', function() {
             const spy = sinon.spy();
             await fin.GlobalHotkey.on('unregistered', async (evt) => {
                 assert.deepStrictEqual(evt.hotkey, hotkey, 'Expected hotkey from event to match');
-                await fin.GlobalHotkey.removeAllListeners('uregistered');
+                await fin.GlobalHotkey.removeAllListeners('unregistered');
                 done();
             });
             await fin.GlobalHotkey.register(hotkey, spy);
