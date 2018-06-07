@@ -7,8 +7,8 @@ export class Provider extends ServiceChannel {
     private connectListener: ConnectionListener;
     private connections: ServiceIdentity[];
 
-    constructor(send: Transport['sendAction']) {
-        super(send);
+    constructor(serviceIdentity: ServiceIdentity, send: Transport['sendAction']) {
+        super(serviceIdentity, send);
         this.connectListener = () => undefined;
         this.connections = [];
     }
