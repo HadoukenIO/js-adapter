@@ -1,12 +1,12 @@
 import { EmitterBase } from '../base';
 import Transport from '../../transport/transport';
 
-const apiActions = {
-    REGISTER: 'global-hotkey-register',
-    UNREGISTER: 'global-hotkey-unregister',
-    UNREGISTER_ALL: 'global-hotkey-unregister-all',
-    IS_REGISTERED: 'global-hotkey-is-registered'
-};
+const enum apiActions {
+    REGISTER = 'global-hotkey-register',
+    UNREGISTER = 'global-hotkey-unregister',
+    UNREGISTER_ALL = 'global-hotkey-unregister-all',
+    IS_REGISTERED = 'global-hotkey-is-registered'
+}
 
 /**
  * The GlobalHotkey module can register/unregister a global hotkeys.
