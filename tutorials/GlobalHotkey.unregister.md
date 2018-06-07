@@ -8,7 +8,7 @@ const hotkey = 'CommandOrControl+X';
 
 fin.GlobalHotkey.unregister(hotkey)
 .then(() => {
-    console.log('success');
+    console.log('Success');
 })
 .catch(err => {
     console.log('Error unregistering the hotkey', err);
