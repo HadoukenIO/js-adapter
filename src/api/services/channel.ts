@@ -30,15 +30,18 @@ export class ServiceChannel {
     private errorMiddleware: (...args: any[]) => any;
     private defaultSet: boolean;
     protected send: (to: Identity, action: string, payload: any) => Promise<Message<void>>;
+    protected serviceIdentity: ServiceIdentity;
 
-    constructor (send: Transport['sendAction']) {
+    constructor (serviceIdentity: ServiceIdentity, send: Transport['sendAction']) {
         this.defaultSet = false;
+        this.serviceIdentity = serviceIdentity;
         this.subscriptions = new Map<string, () => any>();
         this.defaultAction = () => {
             throw new Error('No action registered');
         };
         this.send = async (to: Identity, action: string, payload: any) => {
-            const raw = await send('send-service-message', { ...to, action, payload }).catch(reason => {
+            const raw = await send('send-service-message', { ...to, serviceIdentity: this.serviceIdentity, action, payload })
+            .catch(reason => {
                 throw new Error(reason.message);
             });
             return raw.payload.data.result;
