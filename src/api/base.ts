@@ -15,9 +15,13 @@ export class Base {
         this.wire = wire;
     }
 
-    protected get topic()
-    : string {
-        return this.constructor.name.replace('_', '').toLowerCase();
+    private _topic: string;
+    protected get topic() : string {
+        return this._topic || this.constructor.name.replace('_', '').toLowerCase();
+    }
+
+    protected set topic(t: string) {
+        this._topic = t;
     }
 
     get me(): Identity {
