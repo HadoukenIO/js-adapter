@@ -201,5 +201,5 @@ export class Reply<TOPIC extends string, TYPE extends string | void> implements 
 function createKey(listener: RuntimeEvent): string {
     const { name, uuid, topic, type } = listener;
 
-    return `${name}/${uuid}/${topic}/${type}`;
+    return `${name}/${uuid}/${topic}/${<string>type}`;
 }
