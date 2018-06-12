@@ -155,4 +155,32 @@ describe('GlobalHotkey.', function() {
             assert.equal(err.message, 'Error: Failed to register Hotkey: CommandOrControl+X, already registered');
         }
     });
+
+    it('should raise unregister as we unregister all hotkeys', async() => {
+        const spy = sinon.spy();
+        const spy2 = sinon.spy();
+        await fin.GlobalHotkey.on('unregistered', spy2);
+        await fin.GlobalHotkey.register(hotkey, spy);
+        await fin.GlobalHotkey.unregisterAll();
+
+        assert.ok(spy2.calledOnce, 'Expected the unregistered event to be called at least once');
+    });
+
+    it('should raise register after we unregister all hotkeys',  function(done: any) {
+        async function test() {
+            const spy = sinon.spy();
+            const spy2 = sinon.spy();
+
+            await fin.GlobalHotkey.register(hotkey, spy);
+            await fin.GlobalHotkey.on('registered',  async (evt) => {
+                assert.deepStrictEqual(evt.hotkey, hotkey, 'Expected hotkey from event to match');
+                await fin.GlobalHotkey.removeAllListeners('unregistered');
+                done();
+            });
+            await fin.GlobalHotkey.unregisterAll();
+            await fin.GlobalHotkey.register(hotkey, spy2);
+        }
+
+        test();
+    });
 });
