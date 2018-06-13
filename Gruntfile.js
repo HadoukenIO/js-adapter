@@ -1,5 +1,5 @@
 const path = require('path');
-const testAppConfig = path.resolve('test', 'app.json');
+const manifestPath = path.resolve('test', 'app.json');
 const httpServer = require('http-server');
 const ps = require('ps-node');
 const os = require('os');
@@ -54,35 +54,6 @@ module.exports = function (grunt) {
             default: {
                 src: 'out/test/**/*.js',
                 timeout: 30000
-            }
-        },
-        openfin: {
-            options: {
-                open: true,
-                configPath: path.resolve(testAppConfig),
-                config: {
-                    filePath: path.resolve(testAppConfig),
-                    create: true,
-                    options: {
-                        runtime: {
-                            arguments: args,
-                            version
-                        },
-                        startup_app: {
-                            uuid,
-                            autoShow: true,
-                            url: `http://localhost:${serverParams.port}/index.html`,
-                            nonPersistent: true,
-                            saveWindowState: false,
-                            experimental: {
-                                v2Api: true
-                            }
-                        }
-                    }
-                }
-            },
-            launch: {
-                open: true
             }
         },
         copy: {
@@ -174,14 +145,45 @@ module.exports = function (grunt) {
         );
     });
 
+    grunt.registerTask('launch-openfin', function() {
+        const { launch } = require(path.join(outDir, 'src', 'main.js'));
+        const done = this.async();
+        console.log(manifestPath);
+        launch( {
+            manifestUrl: manifestPath
+        }).then(done).catch(done);
+
+    });
+
+    grunt.registerTask('update-manifest', function() {
+        const manifest = {
+            runtime: {
+                arguments: args,
+                version
+            },
+            startup_app: {
+                uuid,
+                autoShow: true,
+                url: `http://localhost:${serverParams.port}/index.html`,
+                nonPersistent: true,
+                saveWindowState: false,
+                experimental: {
+                    v2Api: true
+                }
+            }
+        };
+
+        grunt.file.write(manifestPath, JSON.stringify(manifest));
+    });
+
     grunt.loadNpmTasks('grunt-shell');
     grunt.loadNpmTasks('grunt-tslint');
     grunt.loadNpmTasks('grunt-mocha-test');
-    grunt.loadNpmTasks('grunt-openfin');
     grunt.loadNpmTasks('grunt-contrib-copy');
 
     grunt.registerTask('lint', ['tslint']);
 
+    grunt.registerTask('openfin', ['update-manifest', 'launch-openfin']);
     grunt.registerTask('build', [
         'clean',
         'shell',
@@ -211,4 +213,5 @@ module.exports = function (grunt) {
         'openfin',
         'start-repl'
     ]);
+
 };
