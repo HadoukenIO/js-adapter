@@ -214,8 +214,4 @@ module.exports = function (grunt) {
         'start-repl'
     ]);
 
-    grunt.registerTask('ttest', [
-        'start-server',
-        'launch-openfin'
-    ]);
 };
