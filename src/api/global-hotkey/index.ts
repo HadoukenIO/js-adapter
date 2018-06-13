@@ -8,6 +8,11 @@ const enum apiActions {
     IS_REGISTERED = 'global-hotkey-is-registered'
 }
 
+const enum nonHotkeyEvents {
+    REGISTERED = 'registered',
+    UNREGISTERED = 'unregistered'
+}
+
 /**
  * The GlobalHotkey module can register/unregister a global hotkeys.
  * @namespace
@@ -47,7 +52,10 @@ export default class GlobalHotkey extends EmitterBase {
      * @tutorial GlobalHotkey.unregisterAll
      */
     public async unregisterAll(): Promise<void> {
-        this.emitter.removeAllListeners();
+        this.emitter.eventNames()
+            .filter((name: string) => !(name === nonHotkeyEvents.REGISTERED || name === nonHotkeyEvents.UNREGISTERED))
+            .forEach((name: string) => this.emitter.removeAllListeners(name));
+
         await this.wire.sendAction(apiActions.UNREGISTER_ALL, {});
         return void 0;
     }
