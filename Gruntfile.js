@@ -148,7 +148,7 @@ module.exports = function (grunt) {
     grunt.registerTask('launch-openfin', function() {
         const { launch } = require(path.join(outDir, 'src', 'main.js'));
         const done = this.async();
-        console.log(manifestPath);
+
         launch( {
             manifestUrl: manifestPath
         }).then(done).catch(done);

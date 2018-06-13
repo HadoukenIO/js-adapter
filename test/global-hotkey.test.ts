@@ -18,6 +18,8 @@ describe('GlobalHotkey.', function() {
 
     beforeEach(async () => {
         await fin.GlobalHotkey.unregisterAll();
+        await fin.GlobalHotkey.removeAllListeners('unregistered');
+        await fin.GlobalHotkey.removeAllListeners('registered');
     });
 
     it('should detect if a hotkey is registered', async() => {
@@ -92,7 +94,6 @@ describe('GlobalHotkey.', function() {
             const spy = sinon.spy();
             await fin.GlobalHotkey.on('registered', async (evt) => {
                 assert.deepStrictEqual(evt.hotkey, hotkey, 'Expected hotkey from event to match');
-                await fin.GlobalHotkey.removeAllListeners('registered');
                 done();
             });
             await fin.GlobalHotkey.register(hotkey, spy);
@@ -106,7 +107,6 @@ describe('GlobalHotkey.', function() {
             const spy = sinon.spy();
             await fin.GlobalHotkey.on('unregistered', async (evt) => {
                 assert.deepStrictEqual(evt.hotkey, hotkey, 'Expected hotkey from event to match');
-                await fin.GlobalHotkey.removeAllListeners('unregistered');
                 done();
             });
             await fin.GlobalHotkey.register(hotkey, spy);
@@ -174,7 +174,6 @@ describe('GlobalHotkey.', function() {
             await fin.GlobalHotkey.register(hotkey, spy);
             await fin.GlobalHotkey.on('registered',  async (evt) => {
                 assert.deepStrictEqual(evt.hotkey, hotkey, 'Expected hotkey from event to match');
-                await fin.GlobalHotkey.removeAllListeners('unregistered');
                 done();
             });
             await fin.GlobalHotkey.unregisterAll();
@@ -182,5 +181,28 @@ describe('GlobalHotkey.', function() {
         }
 
         test();
+    });
+
+    it('should fail if given an invalid hotkey', async() => {
+        const spy = sinon.spy();
+        const invalidHotkey = 'invalidHotkey';
+        try {
+            await fin.GlobalHotkey.register(invalidHotkey, spy);
+        } catch (err) {
+            assert.ok(err instanceof Error, 'Expected error thrown to be an instance of Error');
+            assert.equal(err.message,
+                         `Error: Error processing argument at index 0, conversion failure from ${invalidHotkey}`);
+        }
+    });
+
+    it('should not be case sensitive', async() => {
+        const spy = sinon.spy();
+
+        //register lowecase hotkey
+        await fin.GlobalHotkey.register(hotkey.toLowerCase(), spy);
+        //expect PascalCase hotkey query to return true
+        const expectTrue = await fin.GlobalHotkey.isRegistered(hotkey);
+
+        assert.deepStrictEqual(expectTrue, true, 'Expected hotkey to be registered');
     });
 });
