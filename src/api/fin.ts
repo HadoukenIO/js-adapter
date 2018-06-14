@@ -32,7 +32,7 @@ export default class Fin extends EventEmitter {
         return this.wire.me;
     }
 
-    constructor(wire: Transport, public token: string) {
+    constructor(wire: Transport) {
         super();
         this.wire = wire;
         this.System = new System(wire);
