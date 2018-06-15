@@ -6,6 +6,7 @@ import { cleanOpenRuntimes } from './multi-runtime-utils';
 const id = 'adapter-test-window';
 const topic = 'topic';
 const topic2 = 'topic2';
+const topic3 = 'topic3';
 
 // tslint:disable-next-line
 const m = Math.random().toString(36).slice(2);
@@ -24,10 +25,16 @@ describe('InterApplicationBus.', () => {
         fin = await conn();
     });
 
-    it('subscribe()', (done) => {
+    it('subscribe to * and publish', (done) => {
         fin.InterApplicationBus.subscribe({ uuid: '*' }, topic, (...got: any[]) => {
             done();
         }).then(() => fin.InterApplicationBus.publish(topic, m));
+    });
+
+    it('subscribe to a specified application and publish', (done) => {
+        fin.InterApplicationBus.subscribe(fin.me, topic3, (...got: any[]) => {
+            done();
+        }).then(() => fin.InterApplicationBus.publish(topic3, m));
     });
 
     it('subscriber added', done => {
