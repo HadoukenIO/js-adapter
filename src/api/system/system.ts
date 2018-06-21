@@ -484,6 +484,7 @@ export default class System extends EmitterBase {
      * Downloads the given application asset
      * @param { AppAssetInfo } appAsset App asset object
      * @return {Promise.<void>}
+     * @tutorial System.downloadAsset
      */
     // incompatible with standalone node process.
     public downloadAsset(appAsset: AppAssetInfo, progressListener: (progress: RuntimeDownloadProgress) => void): Promise<void> {
@@ -598,7 +599,7 @@ export default class System extends EmitterBase {
     * Download preload scripts from given URLs
     * @param {DownloadPreloadOption[]} scripts - URLs of preload scripts. See tutorial for more details.
     * @return {Promise.Array<DownloadPreloadInfo>}
-     * @tutorial system.downloadPreloadScripts
+    * @tutorial System.downloadPreloadScripts
     */
     public downloadPreloadScripts(scripts: Array<DownloadPreloadOption>): Promise<Array<DownloadPreloadInfo>> {
         return this.wire.sendAction('download-preload-scripts', { scripts }).then(({ payload }) => payload.data);
