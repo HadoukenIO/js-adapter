@@ -295,6 +295,7 @@ export class Application extends EmitterBase {
      * "not-responding" to allow the application to continue and to generate another "not-responding"
      * message after a certain period of time.
      * @return {Promise.<void>}
+     * @ignore
      */
     public wait(): Promise<void> {
         return this.wire.sendAction('wait-for-hung-application', this.identity).then(() => undefined);
