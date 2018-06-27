@@ -578,13 +578,7 @@ export class _Window extends EmitterBase {
         if (!this.isOpenFinEnvironment()) {
             throw new Error(notImplementedEnvErrorMsg);
         }
-        return new Promise((resolve, reject) => {
-            if (this._nativeWindow) {
-                resolve(this._nativeWindow);
-            } else {
-                reject(new Error('Error getting native window'));
-            }
-        });
+        return Promise.resolve(this._nativeWindow);
     }
 
     /**
