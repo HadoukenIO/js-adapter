@@ -5,6 +5,7 @@ import BoundsChangedReply from './bounds-changed';
 import { Transition, TransitionOptions } from './transition';
 import { Application } from '../application/application';
 import Transport from '../../transport/transport';
+import { notImplementedEnvErrorMsg } from '../../environment/environment';
 
 // tslint:disable-next-line
 export default class _WindowModule extends Base {
@@ -60,7 +61,9 @@ export default class _WindowModule extends Base {
             const windowCreation = this.wire.environment.createChildWindow(options);
             Promise.all([pageResponse, windowCreation]).then((resolvedArr: any[]) => {
                 const pageResolve = resolvedArr[0];
+                const childWin = resolvedArr[1];
                 if (pageResolve.success) {
+                    win.nativeWindow = childWin.nativeWindow;
                     resolve(win);
                 } else {
                     reject(pageResolve.message);
@@ -509,6 +512,8 @@ export class _Window extends EmitterBase {
      * @property {string} windowName - The name of this window entry.
      */
 
+     private _nativeWindow: any;
+
     /**
      * @typedef {object} preloadScriptState
      * @summary Object summary
@@ -519,6 +524,10 @@ export class _Window extends EmitterBase {
      */
     constructor(wire: Transport, public identity: Identity) {
         super(wire);
+    }
+
+    set nativeWindow(win: any) {
+        this._nativeWindow = win;
     }
 
     protected runtimeEventComparator = (listener: RuntimeEvent): boolean => {
@@ -558,6 +567,24 @@ export class _Window extends EmitterBase {
         return this.wire.sendAction('get-window-bounds', this.identity)
             // tslint:disable-next-line
             .then(({ payload }) => payload.data as Bounds);
+    }
+
+    /**
+    * Returns the native JavaScript "window" object for the window.
+    * @return {Promise.<any>}
+    * @tutorial Window.getNativeWindow
+    */
+    public getNativeWindow(): Promise<any> {
+        if (!this.isOpenFinEnvironment()) {
+            throw new Error(notImplementedEnvErrorMsg);
+        }
+        return new Promise((resolve, reject) => {
+            if (this._nativeWindow) {
+                resolve(this._nativeWindow);
+            } else {
+                reject(new Error('Error getting native window'));
+            }
+        });
     }
 
     /**
