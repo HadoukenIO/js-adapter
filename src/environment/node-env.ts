@@ -31,4 +31,8 @@ export default class NodeEnvironment implements Environment {
     public getRandomId = (): string => {
         return randomBytes(16).toString('hex');
     }
+
+    public isWindowExists = (uuid: string, name: string): boolean => {
+        throw new NotImplementedError('Not Implemented');
+    }
 }
