@@ -29,7 +29,8 @@ export default class _WindowModule extends Base {
      * @return {Promise.<_Window>}
      */
     public create(options: any): Promise<_Window> {
-        return Promise.resolve(new _Window(this.wire, {uuid: this.me.uuid, name: options.name}));
+       const win = new _Window(this.wire, {uuid: this.me.uuid, name: options.name});
+       return win.createWindow(options);
     }
 
     /**
@@ -471,9 +472,6 @@ export class _Window extends EmitterBase {
      * @property {string} windowName - The name of this window entry.
      */
 
-     private nativeWindow: any;
-     private windowList: Map<string, _Window> = new Map();
-
     /**
      * @typedef {object} preloadScriptState
      * @summary Object summary
@@ -482,20 +480,25 @@ export class _Window extends EmitterBase {
      * @property {string} state - The preload script state:
      "load-failed", "failed", "succeeded"
      */
-    constructor(wire: Transport, public identity: Identity, options: any = {}) {
+
+    private nativeWindow: any;
+
+    constructor(wire: Transport, public identity: Identity) {
         super(wire);
 
-        // if it's openfin environment, need to create a native window
+        // if it's openfin environment, need to add a native window to current window object
         if (this.isOpenFinEnvironment()) {
             if (this.wire.environment.isWindowExists(identity.uuid, identity.name)) {
                 if (identity.name === window.name) {
                     this.nativeWindow = window;
-                    return this;
-                } else {
-                    return this.windowList.get(identity.uuid);
                 }
             }
+        }
+    }
 
+    // create a new window
+    public createWindow(options: any): Promise<_Window> {
+        return new Promise((resolve, reject) => {
             const CONSTRUCTOR_CB_TOPIC = 'fire-constructor-callback';
             // need to call pageResponse, otherwise when a child window is created, page is not loaded
             const pageResponse = new Promise((resolve) => {
@@ -534,17 +537,17 @@ export class _Window extends EmitterBase {
                 const childWin = resolvedArr[1];
                 if (pageResolve.success) {
                     this.nativeWindow = childWin.nativeWindow;
-                    this.windowList.set(this.me.uuid, this);
+
                     //make sure we clean up all references when a window is closed.
                     this.on('closed', () => {
-                        this.windowList.delete(this.me.uuid);
                         delete this.nativeWindow;
                     });
+                    resolve(this);
                 } else {
-                    throw new Error(pageResolve.message);
+                    reject(pageResolve.message);
                 }
             });
-        }
+        });
     }
 
     protected runtimeEventComparator = (listener: RuntimeEvent): boolean => {
