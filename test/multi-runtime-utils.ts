@@ -37,7 +37,7 @@ async function spawnRealm(version: string, realm?: string, args?: Array<string>)
                 const realmArg = args && args.find(str => str.indexOf('security-realm') > -1);
                 const realmValue = realmArg && realmArg.split('=')[1];
                 const realm = realmValue ? realmValue : `test_realm_${ Math.random() }`;
-                const ofCacheFolder = path.resolve(process.env.LOCALAPPDATA, 'OpenFin', 'cache');
+                const ofCacheFolder = await cachePath();
                 const cacheDir = path.resolve(ofCacheFolder, realm);
                 const appConfig = generateAppConfig();
                 const configLocation = path.resolve(cacheDir, `${appConfig._startup_app.uuid}.json`);
@@ -88,10 +88,25 @@ async function spawnRealm(version: string, realm?: string, args?: Array<string>)
 }
 
 function versionPath (version: string): string {
-    const ofFolder = path.resolve(process.env.LOCALAPPDATA, 'OpenFin', 'runtime');
-    const exeLocation = path.join('OpenFin', 'openfin.exe');
+    if (os.platform() === 'win32') {
+        const ofFolder = path.resolve(process.env.LOCALAPPDATA, 'OpenFin', 'runtime');
+        const exeLocation = path.join('OpenFin', 'openfin.exe');
 
-    return path.resolve(ofFolder, version, exeLocation);
+        return path.resolve(ofFolder, version, exeLocation);
+    } else if (os.platform() === 'darwin') {
+        const ofFolder = path.resolve(process.env.HOME, 'OpenFin', 'runtime');
+        const exeLocation = path.join('OpenFin.app', 'Contents', 'MacOS', 'OpenFin');
+
+        return path.resolve(ofFolder, version, exeLocation);
+    }
+}
+
+async function cachePath(): Promise<string> {
+    if (os.platform() === 'win32') {
+        return resolveDir(process.env.LOCALAPPDATA, ['OpenFin', 'cache']);
+    } else if (os.platform() === 'darwin') {
+        return resolveDir(process.env.HOME, ['Library', 'Application Support', 'OpenFin', 'cache']);
+    }
 }
 
 async function realmCachePath(realm: string): Promise<string> {
@@ -99,8 +114,8 @@ async function realmCachePath(realm: string): Promise<string> {
         const ofCacheFolder = path.resolve(process.env.LOCALAPPDATA, 'OpenFin', 'cache');
         return path.resolve(ofCacheFolder, realm);
         //return resolveDir(process.env.LOCALAPPDATA, ['OpenFin', 'cache', realm]);
-    } else {
-        return resolveDir(os.tmpdir(), ['OpenFin', 'cache', realm]);
+    } else if (os.platform() === 'darwin') {
+        return resolveDir(process.env.HOME, ['Library', 'Application Support', 'OpenFin', 'cache', 'realm']);
     }
 }
 
