@@ -213,11 +213,12 @@ describe('Application.', function() {
     describe('createFromManifest()', () => {
 
         it('should create and run the app', () => {
-            const manifestUrl = path.resolve('test/app.json');
+            const manifestUrl = path.resolve('test/service-app.json');
             return fin.Application.createFromManifest(manifestUrl).then(app => {
-                app.run().then(() => {
-                    app.isRunning().then(data => {
-                        assert(data === true);
+                return app.run().then(() => {
+                    return app.isRunning().then(data => {
+                        app.close();
+                        return assert(data === true);
                     });
                 });
             });
