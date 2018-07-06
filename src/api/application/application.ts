@@ -69,8 +69,12 @@ export default class ApplicationModule extends Base {
      * @tutorial application.createFromManifest
      */
     public createFromManifest(manifestUrl: string): Promise<Application> {
-        return this.wire.sendAction('get-application-manifest', {manifestUrl})
-            .then(({ payload }) => this.wrap({uuid: payload.data.startup_app.uuid}));
+        return this.wire.sendAction('get-application-manifest', { manifestUrl })
+            .then(({ payload }) => this.wrap({ uuid: payload.data.startup_app.uuid })
+                .then(app => {
+                    app._manifestUrl = manifestUrl;
+                    return app;
+                }));
     }
 }
 
@@ -81,6 +85,7 @@ export default class ApplicationModule extends Base {
  */
  // @ts-ignore: return types incompatible with EventEmitter (this)
 export class Application extends EmitterBase {
+    public _manifestUrl?: string;
 
     constructor(wire: Transport, public identity: Identity) {
         super(wire);
@@ -222,7 +227,9 @@ export class Application extends EmitterBase {
      * @return {Promise.<void>}
      */
     public run(): Promise<void> {
-        return this.wire.sendAction('run-application', this.identity).then(() => undefined);
+        return this.wire.sendAction('run-application', Object.assign({}, this.identity, {
+            manifestUrl: this._manifestUrl
+        })).then(() => undefined);
     }
 
     /**
