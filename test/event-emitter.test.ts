@@ -6,14 +6,16 @@ import { Application } from '../src/api/application/application';
 import * as sinon from 'sinon';
 import { cleanOpenRuntimes } from './multi-runtime-utils';
 
+const uuid = 'adapter-test-app';
+
 describe ('Event Emitter Methods', () => {
     let fin: Fin;
     let app: Application;
     let win: _Window;
     const appConfigTemplate = {
-        name: 'adapter-test-app',
+        name: uuid,
         url: 'about:blank',
-        uuid: 'adapter-test-app',
+        uuid: uuid,
         autoShow: true,
         saveWindowState: false,
         accelerator: {
@@ -43,6 +45,15 @@ describe ('Event Emitter Methods', () => {
             await win.moveBy(1, 1);
             await win.moveBy(1, 1);
             assert(spy.calledOnce);
+        });
+    });
+
+    describe('on', () => {
+        it('should be able to include a call to wrap()', (done) => {
+           win.once('minimized', async () => {
+                await fin.Window.wrap({uuid, name: uuid});
+                done();
+            }).then(() => win.minimize());
         });
     });
 
