@@ -6,5 +6,8 @@ fin.System.launchExternalProcess({
     listener: function (result) {
         console.log("The exit code", result.exitCode);
     }
-}).then(identity => fin.System.terminateExternalProcess({uuid: identity.uuid, timeout:2000, killTree: false})).then(() => console.log('Terminate the process')).catch(err => console.log(err));
+})
+.then(identity => fin.System.terminateExternalProcess({uuid: identity.uuid, timeout:2000, killTree: false}))
+.then(() => console.log('Terminate the process'))
+.catch(err => console.log(err));
 ```

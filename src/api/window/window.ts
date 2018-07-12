@@ -12,7 +12,7 @@ export default class _WindowModule extends Base {
      * Returns a Window object that represents an existing window.
      * @param { Identity } indentity
      * @return {Promise.<_Window>}
-     * @tutorial window.wrap
+     * @tutorial Window.wrap
      */
     public wrap(identity: Identity): Promise<_Window> {
         return Promise.resolve(new _Window(this.wire, identity));
@@ -22,7 +22,7 @@ export default class _WindowModule extends Base {
      * Creates a new Window.
      * @param { * } options - Window creation options
      * @return {Promise.<_Window>}
-     * @tutorial window.create
+     * @tutorial Window.create
      */
     public create(options: any): Promise<_Window> {
         return new Promise((resolve, reject) => {

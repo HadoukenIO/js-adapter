@@ -11,5 +11,7 @@ async function createWin() {
     await app.run();
     return await app.getWindow();
 }
-createWin().then(() => fin.Window.wrap({ uuid: 'app-1', name: 'myApp' })).then(win => console.log('wrapped window')).catch(err => console.log(err));
+createWin().then(() => fin.Window.wrap({ uuid: 'app-1', name: 'myApp' }))
+.then(win => console.log('wrapped window'))
+.catch(err => console.log(err));
 ```

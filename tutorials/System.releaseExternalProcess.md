@@ -6,5 +6,8 @@ fin.System.launchExternalProcess({
     listener: function (result) {
         console.log("The exit code", result.exitCode);
     }
-}).then(identity => fin.System.releaseExternalProcess(identity.uuid)).then(() => console.log('Process has been unmapped!')).catch(err => console.log(err));
+})
+.then(identity => fin.System.releaseExternalProcess(identity.uuid))
+.then(() => console.log('Process has been unmapped!'))
+.catch(err => console.log(err));
 ```
