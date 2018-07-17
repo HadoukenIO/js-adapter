@@ -168,7 +168,6 @@ import { ClearCacheOption } from './clearCacheOption';
  * @property {boolean} cache browser data cache for html files and images
  * @property {boolean} cookies browser cookies
  * @property {boolean} localStorage browser data that can be used across sessions
- * @property {boolean} userData cache that stores the window positions for OpenFin applications
  */
 
 /**
@@ -196,7 +195,7 @@ export default class System extends EmitterBase {
     }
 
     /**
-     * Clears cached data containing window state/positions, application resource
+     * Clears cached data containing application resource
      * files (images, HTML, JavaScript files), cookies, and items stored in the
      * Local Storage.
      * @param { ClearCacheOption } options - See tutorial for more details.

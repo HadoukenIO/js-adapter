@@ -3,5 +3,4 @@ export interface ClearCacheOption {
     cache?: boolean;
     cookies?: boolean;
     localStorage?: boolean;
-    userData?: boolean;
 }
