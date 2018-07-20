@@ -165,9 +165,28 @@ describe('Window.', function() {
     });
 
     describe('getGroup()', () => {
+        const app2Config = {
+            name: 'app2',
+            url: 'about:blank',
+            uuid: 'app2',
+            autoShow: true,
+            nonPersistent: true
+        };
+        let app2: Application;
+        let app2Win: Window;
 
-        it('Fulfilled', () => testWindow.getGroup().then(data => assert(data instanceof Array,
-            `Expected ${typeof (data)} to be an instance of Array`)));
+        before(() => {
+            return fin.Application.create(app2Config).then(a => {
+                app2 = a;
+                return app2.run().then(() => app2.getWindow().then(w => app2Win = w));
+            });
+        });
+
+        it('Fulfilled', () => testWindow.joinGroup(app2Win).then(() => testWindow.getGroup()
+            .then(group => {
+                assert(group.length === 2);
+                assert(group[0].identity.uuid !== group[1].identity.uuid);
+            })));
     });
 
     describe('getOptions()', () => {
