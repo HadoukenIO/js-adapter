@@ -164,7 +164,7 @@ describe('Window.', function() {
         it('Fulfilled', () => testWindow.flash().then(() => assert(true)));
     });
 
-    describe('getGroup()', () => {
+    describe('getGroup() cross different applications', () => {
         const app2Config = {
             name: 'app2',
             url: 'about:blank',
@@ -172,14 +172,13 @@ describe('Window.', function() {
             autoShow: true,
             nonPersistent: true
         };
-        let app2: Application;
         let app2Win: Window;
 
-        before(() => {
-            return fin.Application.create(app2Config).then(a => {
-                app2 = a;
-                return app2.run().then(() => app2.getWindow().then(w => app2Win = w));
-            });
+        before(async () => {
+            // create a second app
+            const app2 = await fin.Application.create(app2Config);
+            await app2.run();
+            app2Win = await app2.getWindow();
         });
 
         it('Fulfilled', () => testWindow.joinGroup(app2Win).then(() => testWindow.getGroup()
@@ -187,6 +186,12 @@ describe('Window.', function() {
                 assert(group.length === 2);
                 assert(group[0].identity.uuid !== group[1].identity.uuid);
             })));
+    });
+
+    describe('getGroup()', () => {
+
+        it('Fulfilled', () => testWindow.getGroup().then(data => assert(data instanceof Array,
+            `Expected ${typeof (data)} to be an instance of Array`)));
     });
 
     describe('getOptions()', () => {
