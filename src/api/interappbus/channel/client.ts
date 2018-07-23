@@ -1,9 +1,9 @@
-import { ChannelBase, serviceIdentity } from './channel';
+import { ChannelBase, ServiceIdentity } from './channel';
 import Transport from '../../../transport/transport';
 
 export class ChannelClient extends ChannelBase {
     public onChannelDisconnect: (f: () => void) => void;
-    constructor(serviceIdentity: serviceIdentity, send: Transport['sendAction']) {
+    constructor(serviceIdentity: ServiceIdentity, send: Transport['sendAction']) {
         super(serviceIdentity, send);
     }
 

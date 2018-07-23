@@ -7,15 +7,15 @@ const idOrResult = (func: (...args: any[]) => any) => (...args: any[] ) => {
 };
 
 //tslint:disable-next-line
-export interface serviceIdentity extends Identity {}
+export interface ServiceIdentity extends Identity {}
 
 export type Action = (() => any)
     | ((payload: any) => any)
-    | ((payload: any, id: serviceIdentity) => any);
+    | ((payload: any, id: ServiceIdentity) => any);
 export type Middleware = (() => any)
     | ((action: string) => any)
     | ((action: string, payload: any) => any)
-    | ((action: string, payload: any, id: serviceIdentity) => any);
+    | ((action: string, payload: any, id: ServiceIdentity) => any);
 
 export interface ChannelMessagePayload extends Identity {
     action: string;
@@ -24,15 +24,15 @@ export interface ChannelMessagePayload extends Identity {
 
 export class ChannelBase {
     protected subscriptions: any;
-    public defaultAction: (action?: string, payload?: any, senderIdentity?: serviceIdentity) => any;
+    public defaultAction: (action?: string, payload?: any, senderIdentity?: ServiceIdentity) => any;
     private preAction: (...args: any[]) => any;
     private postAction: (...args: any[]) => any;
     private errorMiddleware: (...args: any[]) => any;
     private defaultSet: boolean;
     protected send: (to: Identity, action: string, payload: any) => Promise<Message<void>>;
-    protected serviceIdentity: serviceIdentity;
+    protected serviceIdentity: ServiceIdentity;
 
-    constructor (serviceIdentity: serviceIdentity, send: Transport['sendAction']) {
+    constructor (serviceIdentity: ServiceIdentity, send: Transport['sendAction']) {
         this.defaultSet = false;
         this.serviceIdentity = serviceIdentity;
         this.subscriptions = new Map<string, () => any>();
@@ -48,11 +48,11 @@ export class ChannelBase {
         };
     }
 
-    public async processAction(action: string, payload: any, senderIdentity: serviceIdentity) {
+    public async processAction(action: string, payload: any, senderIdentity: ServiceIdentity) {
         try {
             const mainAction = this.subscriptions.has(action)
                 ? this.subscriptions.get(action)
-                : (payload: any, id: serviceIdentity) => this.defaultAction(action, payload, id);
+                : (payload: any, id: ServiceIdentity) => this.defaultAction(action, payload, id);
             const preActionProcessed = this.preAction ? await this.preAction(action, payload, senderIdentity) : payload;
             const actionProcessed = await mainAction(preActionProcessed, senderIdentity);
             return this.postAction
@@ -90,7 +90,7 @@ export class ChannelBase {
         this.subscriptions.delete(action);
     }
 
-    public setDefaultAction(func: (action?: string, payload?: any, senderIdentity?: serviceIdentity) => any): void {
+    public setDefaultAction(func: (action?: string, payload?: any, senderIdentity?: ServiceIdentity) => any): void {
         if (this.defaultSet) {
             throw new Error('default action can only be set once');
         } else {

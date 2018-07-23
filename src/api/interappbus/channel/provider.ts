@@ -1,25 +1,25 @@
-import { ChannelBase, serviceIdentity } from './channel';
+import { ChannelBase, ServiceIdentity } from './channel';
 import Transport from '../../../transport/transport';
 
-export type ConnectionListener = (adapterIdentity: serviceIdentity, connectionMessage?: any) => any;
+export type ConnectionListener = (adapterIdentity: ServiceIdentity, connectionMessage?: any) => any;
 
 export class ChannelProvider extends ChannelBase {
     private connectListener: ConnectionListener;
     private disconnectListener: ConnectionListener;
-    private connections: serviceIdentity[];
+    private connections: ServiceIdentity[];
 
-    constructor(serviceIdentity: serviceIdentity, send: Transport['sendAction']) {
+    constructor(serviceIdentity: ServiceIdentity, send: Transport['sendAction']) {
         super(serviceIdentity, send);
         this.connectListener = () => undefined;
         this.disconnectListener = () => undefined;
         this.connections = [];
     }
 
-    public dispatch(to: serviceIdentity, action: string, payload: any): Promise<any> {
+    public dispatch(to: ServiceIdentity, action: string, payload: any): Promise<any> {
         return this.send(to, action, payload);
     }
 
-    public async processConnection(senderId: serviceIdentity, payload: any) {
+    public async processConnection(senderId: ServiceIdentity, payload: any) {
         this.connections.push(senderId);
         return this.connectListener(senderId, payload);
     }
