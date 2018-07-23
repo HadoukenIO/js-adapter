@@ -1,5 +1,5 @@
-import { Identity } from '../../identity';
-import Transport, { Message } from '../../transport/transport';
+import { Identity } from '../../../identity';
+import Transport, { Message } from '../../../transport/transport';
 
 const idOrResult = (func: (...args: any[]) => any) => (...args: any[] ) => {
     const res = func(...args);
@@ -7,32 +7,32 @@ const idOrResult = (func: (...args: any[]) => any) => (...args: any[] ) => {
 };
 
 //tslint:disable-next-line
-export interface ServiceIdentity extends Identity {}
+export interface serviceIdentity extends Identity {}
 
 export type Action = (() => any)
     | ((payload: any) => any)
-    | ((payload: any, id: ServiceIdentity) => any);
+    | ((payload: any, id: serviceIdentity) => any);
 export type Middleware = (() => any)
     | ((action: string) => any)
     | ((action: string, payload: any) => any)
-    | ((action: string, payload: any, id: ServiceIdentity) => any);
+    | ((action: string, payload: any, id: serviceIdentity) => any);
 
-export interface ServiceMessagePayload extends Identity {
+export interface ChannelMessagePayload extends Identity {
     action: string;
     payload: any;
 }
 
-export class ServiceChannel {
+export class ChannelBase {
     protected subscriptions: any;
-    public defaultAction: (action?: string, payload?: any, senderIdentity?: ServiceIdentity) => any;
+    public defaultAction: (action?: string, payload?: any, senderIdentity?: serviceIdentity) => any;
     private preAction: (...args: any[]) => any;
     private postAction: (...args: any[]) => any;
     private errorMiddleware: (...args: any[]) => any;
     private defaultSet: boolean;
     protected send: (to: Identity, action: string, payload: any) => Promise<Message<void>>;
-    protected serviceIdentity: ServiceIdentity;
+    protected serviceIdentity: serviceIdentity;
 
-    constructor (serviceIdentity: ServiceIdentity, send: Transport['sendAction']) {
+    constructor (serviceIdentity: serviceIdentity, send: Transport['sendAction']) {
         this.defaultSet = false;
         this.serviceIdentity = serviceIdentity;
         this.subscriptions = new Map<string, () => any>();
@@ -48,11 +48,11 @@ export class ServiceChannel {
         };
     }
 
-    public async processAction(action: string, payload: any, senderIdentity: ServiceIdentity) {
+    public async processAction(action: string, payload: any, senderIdentity: serviceIdentity) {
         try {
             const mainAction = this.subscriptions.has(action)
                 ? this.subscriptions.get(action)
-                : (payload: any, id: ServiceIdentity) => this.defaultAction(action, payload, id);
+                : (payload: any, id: serviceIdentity) => this.defaultAction(action, payload, id);
             const preActionProcessed = this.preAction ? await this.preAction(action, payload, senderIdentity) : payload;
             const actionProcessed = await mainAction(preActionProcessed, senderIdentity);
             return this.postAction
@@ -90,7 +90,7 @@ export class ServiceChannel {
         this.subscriptions.delete(action);
     }
 
-    public setDefaultAction(func: (action?: string, payload?: any, senderIdentity?: ServiceIdentity) => any): void {
+    public setDefaultAction(func: (action?: string, payload?: any, senderIdentity?: serviceIdentity) => any): void {
         if (this.defaultSet) {
             throw new Error('default action can only be set once');
         } else {

@@ -3,12 +3,15 @@ import { Identity } from '../../identity';
 import Transport, { Message } from '../../transport/transport';
 import RefCounter from '../../util/ref-counter';
 import { EventEmitter } from 'events';
+import { Channel } from './channel/index';
 
 /**
  * A messaging bus that allows for pub/sub messaging between different applications.
  * @namespace
 */
 export default class InterApplicationBus extends Base {
+    public Channel: Channel;
+
     public events = {
         subscriberAdded: 'subscriber-added',
         subscriberRemoved: 'subscriber-removed'
@@ -16,11 +19,11 @@ export default class InterApplicationBus extends Base {
 
     private refCounter = new RefCounter();
     protected emitter: EventEmitter;
-
     public on: any;
     public removeAllListeners: any;
     constructor(wire: Transport) {
         super(wire);
+        this.Channel = new Channel(wire);
         this.emitter = new EventEmitter();
         wire.registerMessageHandler(this.onmessage.bind(this));
 
