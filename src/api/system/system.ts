@@ -18,6 +18,7 @@ import { CookieInfo, CookieOption } from './cookie';
 import { RegistryInfo } from './registry-info';
 import { DownloadPreloadOption, DownloadPreloadInfo } from './download-preload';
 import { RuntimeError, NotSupportedError } from '../../transport/transport-errors';
+import { ClearCacheOption } from './clearCacheOption';
 
 /**
  * AppAssetInfo interface
@@ -159,6 +160,17 @@ import { RuntimeError, NotSupportedError } from '../../transport/transport-error
  */
 
 /**
+ * @typedef { Object } ClearCacheOption
+ * @summary Clear cache options.
+ * @desc These are the options required by the clearCache function.
+ *
+ * @property {boolean} appcache html5 application cache
+ * @property {boolean} cache browser data cache for html files and images
+ * @property {boolean} cookies browser cookies
+ * @property {boolean} localStorage browser data that can be used across sessions
+ */
+
+/**
  * An object representing the core of OpenFin Runtime. Allows the developer
  * to perform system-level actions, such as accessing logs, viewing processes,
  * clearing the cache and exiting the runtime.
@@ -183,14 +195,15 @@ export default class System extends EmitterBase {
     }
 
     /**
-     * Clears cached data containing window state/positions, application resource
+     * Clears cached data containing application resource
      * files (images, HTML, JavaScript files), cookies, and items stored in the
      * Local Storage.
+     * @param { ClearCacheOption } options - See tutorial for more details.
      * @return {Promise.<void>}
      * @tutorial System.clearCache
      */
-    public clearCache(): Promise<void> {
-        return this.wire.sendAction('clear-cache').then(() => undefined);
+    public clearCache(options: ClearCacheOption): Promise<void> {
+        return this.wire.sendAction('clear-cache', options).then(() => undefined);
     }
 
     /**
