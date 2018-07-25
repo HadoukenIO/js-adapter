@@ -405,9 +405,10 @@ export default class System extends EmitterBase {
     /**
      * Runs an executable or batch file.
      * @param { ExternalProcessRequestType } options A object that is defined in the ExternalProcessRequestType interface
-     * @return {Promise.<RVMInfo>}
+     * @return {Promise.<Identity>}
+     * @tutorial System.launchExternalProcess
      */
-    public launchExternalProcess(options: ExternalProcessRequestType): Promise<RVMInfo> {
+    public launchExternalProcess(options: ExternalProcessRequestType): Promise<Identity> {
         return this.wire.sendAction('launch-external-process', options)
             .then(({ payload }) => payload.data);
     }
@@ -416,6 +417,7 @@ export default class System extends EmitterBase {
      * Monitors a running process.
      * @param { number } pid See tutorial for more details
      * @return {Promise.<Identity>}
+     * @tutorial System.monitorExternalProcess
      */
     public monitorExternalProcess(pid: number): Promise<Identity> {
         return this.wire.sendAction('monitor-external-process', { pid })
@@ -427,6 +429,7 @@ export default class System extends EmitterBase {
      * @param { string } level The log level for the entry. Can be either "info", "warning" or "error"
      * @param { string } message The log message text
      * @return {Promise.<void>}
+     * @tutorial System.log
      */
     public log(level: string, message: string): Promise<void> {
         return this.wire.sendAction('write-to-log', { level, message }).then(() => undefined);
@@ -443,9 +446,10 @@ export default class System extends EmitterBase {
     }
     /**
      * Removes the process entry for the passed UUID obtained from a prior call
-     * of fin.desktop.System.launchExternalProcess().
+     * of fin.System.launchExternalProcess().
      * @param { string } uuid The UUID for a process obtained from a prior call to fin.desktop.System.launchExternalProcess()
      * @return {Promise.<void>}
+     * @tutorial System.releaseExternalProcess
      */
     public releaseExternalProcess(uuid: string): Promise<void> {
         return this.wire.sendAction('release-external-process', { uuid }).then(() => undefined);
@@ -455,6 +459,7 @@ export default class System extends EmitterBase {
      * Shows the Chromium Developer Tools for the specified window
      * @param { Identity } identity This is a object that is defined by the Identity interface
      * @return {Promise.<void>}
+     * @tutorial System.showDeveloperTools
      */
     public showDeveloperTools(identity: Identity): Promise<void> {
         return this.wire.sendAction('show-developer-tools', identity).then(() => undefined);
@@ -465,6 +470,7 @@ export default class System extends EmitterBase {
      * has not closed after the elapsed timeout in milliseconds.
      * @param { TerminateExternalRequestType } options A object defined in the TerminateExternalRequestType interface
      * @return {Promise.<void>}
+     * @tutorial System.terminateExternalProcess
      */
     public terminateExternalProcess(options: TerminateExternalRequestType): Promise<void> {
         return this.wire.sendAction('terminate-external-process', options)
@@ -475,6 +481,7 @@ export default class System extends EmitterBase {
      * Update the OpenFin Runtime Proxy settings.
      * @param { ProxyConfig } options A config object defined in the ProxyConfig interface
      * @return {Promise.<void>}
+     * @tutorial System.updateProxySettings
      */
     public updateProxySettings(options: ProxyConfig): Promise<void> {
         return this.wire.sendAction('update-proxy', options).then(() => undefined);
@@ -608,6 +615,7 @@ export default class System extends EmitterBase {
     /**
      * Retrieves an array of data (name, ids, bounds) for all application windows.
      * @return {Promise.Array.<Identity>}
+     * @tutorial System.getAllExternalApplications
      */
     public getAllExternalApplications(): Promise<Array<Identity>> {
         return this.wire.sendAction('get-all-external-applications')
@@ -648,6 +656,7 @@ export default class System extends EmitterBase {
      * Retrieves the UUID of the computer on which the runtime is installed
      * @param { string } uuid The uuid of the running application
      * @return {Promise.<Entity>}
+     * @tutorial System.resolveUuid
      */
     public resolveUuid(uuid: string): Promise<Entity> {
         return this.wire.sendAction('resolve-uuid', {
@@ -660,6 +669,7 @@ export default class System extends EmitterBase {
      * @param { Identity } requestingIdentity This object is described in the Identity typedef
      * @param { any } data Any data type to pass to the method
      * @return {Promise.<any>}
+     * @ignore
      */
     public executeOnRemote(requestingIdentity: Identity, data: any): Promise<any> {
         data.requestingIdentity = requestingIdentity;
