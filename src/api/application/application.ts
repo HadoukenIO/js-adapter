@@ -56,7 +56,7 @@ export default class ApplicationModule extends Base {
     /**
      * Returns an Application object that represents the current application
      * @return {Promise.<Application>}
-     * @tutorial application.getCurrent
+     * @tutorial Application.getCurrent
      */
     public getCurrent(): Promise<Application> {
         return this.wrap({ uuid: this.wire.me.uuid });
@@ -66,7 +66,7 @@ export default class ApplicationModule extends Base {
      * Retrieves application's manifest and returns a wrapped application.
      * @param {string} manifestUrl - The URL of app's manifest.
      * @return {Promise.<Application>}
-     * @tutorial application.createFromManifest
+     * @tutorial Application.createFromManifest
      */
     public createFromManifest(manifestUrl: string): Promise<Application> {
         return this.wire.sendAction('get-application-manifest', {manifestUrl})
@@ -160,8 +160,8 @@ export class Application extends EmitterBase {
     /**
      * Retrieves UUID of the application that launches this application. Invokes the error callback
      * if the application was created from a manifest.
-     * @tutorial Application.getParentUuid
      * @return {Promise.<string>}
+     * @tutorial Application.getParentUuid
      */
     public getParentUuid(): Promise<string> {
         return this.wire.sendAction('get-parent-application', this.identity)
@@ -170,8 +170,8 @@ export class Application extends EmitterBase {
 
     /**
      * Retrieves current application's shortcut configuration.
-     * @tutorial application.getShortcuts
      * @return {Promise.<ConfigInterface>}
+     * @tutorial Application.getShortcuts
      */
     public getShortcuts(): Promise<ConfigInterface> {
         return this.wire.sendAction('get-shortcuts', this.identity)
@@ -262,7 +262,7 @@ export class Application extends EmitterBase {
      * @summary Retrieves information about the system tray.
      * @desc The only information currently returned is the position and dimensions.
      * @return {Promise.<TrayInfo>}
-     * @tutorial application.getTrayIconInfo
+     * @tutorial Application.getTrayIconInfo
      */
     public getTrayIconInfo(): Promise<TrayInfo> {
         return this.wire.sendAction('get-tray-icon-info', this.identity)
