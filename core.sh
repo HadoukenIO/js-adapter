@@ -9,7 +9,7 @@ ADAPTER_DIR=$(pwd)
 if [ ! -z "$CORE_PATH" ]; then
     cd $CORE_PATH
 else
-    cd ..
+    rm core -rf
     git clone https://github.com/HadoukenIO/core.git
     cd core
     CORE_PATH=$(pwd)
@@ -22,4 +22,4 @@ npm install openfin-sign
 npm run build
 cd out
 echo Finished! .asar was created in $(pwd)
-$SHELL
+read -n 1 -s -r -p "Press any key to exit"

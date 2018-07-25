@@ -118,7 +118,7 @@ npm test -- --ver=alpha --invert --grep="System"
 ## Test with core
 
 ```bash
-CORE_PATH=*path to core* npm run core
+CORE_PATH=~/core npm run core
 ```
 
 or without specifying the core path (core will be cloned from GH into parent folder):
