@@ -87,16 +87,13 @@ describe ('Multi Runtime Services', function() {
                 await service.run();
                 await delayPromise(1000);
                 const client = await finA.InterApplicationBus.Channel.connect({uuid: 'channel-provider-test'});
-                console.error('client registered');
                 client.register('multi-runtime-test', (r: string) => {
                     assert.equal(r, 'return-mrt', 'wrong payload sent from service');
                     done();
                 });
                 client.dispatch('test').then(res => {
                     assert.equal(res, 'return-test', 'wrong return payload from service');
-                    console.error('client in test', res);
                 });
-                console.error('client dispatched');
 
             }
             test();

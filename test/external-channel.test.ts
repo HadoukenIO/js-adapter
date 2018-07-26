@@ -45,7 +45,6 @@ describe ('External Channel Provider', function() {
             };
 
             async function test () {
-                try {
                 const spy = sinon.spy();
                 const provider = await fin.InterApplicationBus.Channel.create('test');
                 provider.register('test', () => {
@@ -58,7 +57,6 @@ describe ('External Channel Provider', function() {
                 const client = await fin.Application.create(clientConfig);
                 await client.run();
                 const listener = (msg: any) => {
-                    console.error('here, fninish');
                     assert(spy.calledTwice && msg === 'return-test', 'Did not get IAB from dispatch');
                     fin.InterApplicationBus.unsubscribe({uuid: 'channel-client-test'}, 'return', listener);
                     done();
@@ -66,11 +64,8 @@ describe ('External Channel Provider', function() {
                 await fin.InterApplicationBus.subscribe({uuid: 'channel-client-test'}, 'return', listener);
                 await delayPromise(DELAY_MS);
                 await fin.InterApplicationBus.publish('start', 'hi');
-                console.error('sent start');
                 await delayPromise(DELAY_MS);
-            } catch (e) {
-                console.error(e);
-            }}
+            }
             test();
         });
 
