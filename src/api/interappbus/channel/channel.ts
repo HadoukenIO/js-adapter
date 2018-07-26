@@ -61,7 +61,8 @@ export class ChannelBase {
         } catch (e) {
             if (this.errorMiddleware) {
                 return this.errorMiddleware(action, e, senderIdentity);
-            } throw e;
+            }
+            throw e;
         }
     }
 

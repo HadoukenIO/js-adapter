@@ -26,9 +26,9 @@ describe ('Multi Runtime Services', function() {
             const newUrl = url.slice(0, url.lastIndexOf('/')) + '/client.html';
 
             const clientConfig = {
-                'name': 'service-client-test',
+                'name': 'channel-client-test',
                 'url': newUrl,
-                'uuid': 'service-client-test',
+                'uuid': 'channel-client-test',
                 'autoShow': true,
                 'saveWindowState': false,
                 'nonPersistent': true,
@@ -51,7 +51,7 @@ describe ('Multi Runtime Services', function() {
                 const client = await fin.Application.create(clientConfig);
                 await client.run();
                 await delayPromise(DELAY_MS);
-                await fin.InterApplicationBus.subscribe({uuid: 'service-client-test'}, 'return', (msg: any) => {
+                await fin.InterApplicationBus.subscribe({uuid: 'channel-client-test'}, 'return', (msg: any) => {
                     assert.ok(spy.calledTwice, 'Did not get IAB from dispatch');
                     assert.equal(msg, 'return-test');
                     done();
@@ -70,9 +70,9 @@ describe ('Multi Runtime Services', function() {
             const newUrl = url.slice(0, url.lastIndexOf('/')) + '/service.html';
 
             const serviceConfig = {
-                'name': 'service-provider-test',
+                'name': 'channel-provider-test',
                 'url': newUrl,
-                'uuid': 'service-provider-test',
+                'uuid': 'channel-provider-test',
                 'autoShow': true,
                 'saveWindowState': false,
                 'nonPersistent': true,
@@ -86,14 +86,18 @@ describe ('Multi Runtime Services', function() {
                 const service = await fin.Application.create(serviceConfig);
                 await service.run();
                 await delayPromise(1000);
-                const client = await finA.InterApplicationBus.Channel.connect({uuid: 'service-provider-test'});
+                const client = await finA.InterApplicationBus.Channel.connect({uuid: 'channel-provider-test'});
+                console.error('client registered');
                 client.register('multi-runtime-test', (r: string) => {
                     assert.equal(r, 'return-mrt', 'wrong payload sent from service');
                     done();
                 });
                 client.dispatch('test').then(res => {
                     assert.equal(res, 'return-test', 'wrong return payload from service');
+                    console.error('client in test', res);
                 });
+                console.error('client dispatched');
+
             }
             test();
         });
