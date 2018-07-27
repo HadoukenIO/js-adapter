@@ -94,7 +94,38 @@ describe ('Multi Runtime Services', function() {
                 client.dispatch('test').then(res => {
                     assert.equal(res, 'return-test', 'wrong return payload from service');
                 });
+            }
+            test();
+        });
+    });
 
+    describe('Multi Runtime getAllChannels', function () {
+
+        it('Should get all channels from across multiple runtimes', function(done: any) {
+            const url = appConfig.startup_app.url;
+            const newUrl = url.slice(0, url.lastIndexOf('/')) + '/service.html';
+
+            const serviceConfig = {
+                'name': 'channel-provider-test',
+                'url': newUrl,
+                'uuid': 'channel-provider-test',
+                'autoShow': true,
+                'saveWindowState': false,
+                'nonPersistent': true,
+                'experimental': {
+                    'v2Api': true
+                }
+            };
+
+            async function test() {
+                const [fin, finA] = await Promise.all([launchAndConnect(), launchAndConnect()]);
+                const service = await fin.Application.create(serviceConfig);
+                await service.run();
+                await delayPromise(1000);
+                await finA.InterApplicationBus.Channel.create('test-channel-multi-runtime');
+                const allChannels = await fin.InterApplicationBus.Channel.getAllChannels();
+                assert.equal(allChannels.length, 2, `expected 2 channels in allChannels: ${JSON.stringify(allChannels)}`);
+                done();
             }
             test();
         });

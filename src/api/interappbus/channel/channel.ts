@@ -7,7 +7,11 @@ const idOrResult = (func: (...args: any[]) => any) => (...args: any[] ) => {
 };
 
 //tslint:disable-next-line
-export interface ProviderIdentity extends Identity {}
+export interface ProviderIdentity extends Identity {
+    channelId: string;
+    isExternal?: boolean;
+    channelName: string;
+}
 
 export type Action = (() => any)
     | ((payload: any) => any)
