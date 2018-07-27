@@ -34,19 +34,21 @@ export interface TrayInfo {
 }
 
 export default class ApplicationModule extends Base {
-
     /**
      * Returns an Application object that represents an existing application.
      * @param { Identity } indentity
      * @return {Promise.<Application>}
+     * @tutorial Application.wrap
      */
     public wrap(identity: Identity): Promise<Application> {
         return Promise.resolve(new Application(this.wire, identity));
     }
 
     /**
+     * Creates a new Application.
      * @param {*} appOptions
      * @return {Promise.<Application>}
+     * @tutorial Application.create
      */
     public create(appOptions: any): Promise<Application> {
         return this.wire.sendAction('create-application', appOptions)
@@ -56,7 +58,7 @@ export default class ApplicationModule extends Base {
     /**
      * Returns an Application object that represents the current application
      * @return {Promise.<Application>}
-     * @tutorial application.getCurrent
+     * @tutorial Application.getCurrent
      */
     public getCurrent(): Promise<Application> {
         return this.wrap({ uuid: this.wire.me.uuid });
@@ -66,7 +68,7 @@ export default class ApplicationModule extends Base {
      * Retrieves application's manifest and returns a wrapped application.
      * @param {string} manifestUrl - The URL of app's manifest.
      * @return {Promise.<Application>}
-     * @tutorial application.createFromManifest
+     * @tutorial Application.createFromManifest
      */
     public createFromManifest(manifestUrl: string): Promise<Application> {
         return this.wire.sendAction('get-application-manifest', {manifestUrl})
@@ -105,6 +107,7 @@ export class Application extends EmitterBase {
     /**
      * Determines if the application is currently running.
      * @return {Promise.<boolean>}
+     * @tutorial Application.isRunning
      */
     public isRunning(): Promise<boolean> {
         return this.wire.sendAction('is-application-running', this.identity)
@@ -116,14 +119,16 @@ export class Application extends EmitterBase {
      * @param { boolean } [force = false] Close will be prevented from closing when force is false and
      *  ‘close-requested’ has been subscribed to for application’s main window.
      * @return {Promise.<boolean>}
+     * @tutorial Application.close
      */
     public close(force: boolean = false): Promise<void> {
         return this.wire.sendAction('close-application', Object.assign({}, this.identity, { force })).then(() => undefined);
     }
 
     /**
-     * Retrieves an array of wrapped fin.desktop.Windows for each of the application’s child windows.
+     * Retrieves an array of wrapped fin.Windows for each of the application’s child windows.
      * @return {Promise.Array.<_Window>}
+     * @tutorial Application.getChildWindows
      */
     public getChildWindows(): Promise<Array<_Window>> {
         return this.wire.sendAction('get-child-windows', this.identity)
@@ -132,8 +137,9 @@ export class Application extends EmitterBase {
 
     /**
      * Retrieves an array of active window groups for all of the application's windows. Each group is
-     * represented as an array of wrapped fin.desktop.Windows.
+     * represented as an array of wrapped fin.Windows.
      * @return {Promise.Array.Array.<_Window>}
+     * @tutorial Application.getGroups
      */
     public getGroups(): Promise<Array<Array<_Window>>> {
         const winGroups: Array<Array<_Window>> = <Array<Array<_Window>>>[];
@@ -151,6 +157,7 @@ export class Application extends EmitterBase {
      * Retrieves the JSON manifest that was used to create the application. Invokes the error callback
      * if the application was not created from a manifest.
      * @return {Promise.<any>}
+     * @tutorial Application.getManifest
      */
     public getManifest(): Promise<any> {
         return this.wire.sendAction('get-application-manifest', this.identity)
@@ -160,8 +167,8 @@ export class Application extends EmitterBase {
     /**
      * Retrieves UUID of the application that launches this application. Invokes the error callback
      * if the application was created from a manifest.
-     * @tutorial Application.getParentUuid
      * @return {Promise.<string>}
+     * @tutorial Application.getParentUuid
      */
     public getParentUuid(): Promise<string> {
         return this.wire.sendAction('get-parent-application', this.identity)
@@ -170,8 +177,8 @@ export class Application extends EmitterBase {
 
     /**
      * Retrieves current application's shortcut configuration.
-     * @tutorial application.getShortcuts
      * @return {Promise.<ConfigInterface>}
+     * @tutorial Application.getShortcuts
      */
     public getShortcuts(): Promise<ConfigInterface> {
         return this.wire.sendAction('get-shortcuts', this.identity)
@@ -180,8 +187,8 @@ export class Application extends EmitterBase {
 
     /**
      * Returns an instance of the main Window of the application
-     * @tutorial Application.getWindow
      * @return {Promise.<_Window>}
+     * @tutorial Application.getWindow
      */
     public getWindow(): Promise<_Window> {
         return Promise.resolve(new _Window(this.wire, {
@@ -195,8 +202,8 @@ export class Application extends EmitterBase {
     * @param { string } userName - username to be passed to the RVM.
     * @param { string } appName - app name to be passed to the RVM.
     * @return {Promise.<void>}
+    * @tutorial Application.registerUser
     */
-
     public registerUser(userName: string, appName: string): Promise<void> {
         return this.wire.sendAction('register-user', Object.assign({}, this.identity, {userName, appName})).then(() => undefined);
     }
@@ -204,6 +211,7 @@ export class Application extends EmitterBase {
     /**
      * Removes the application’s icon from the tray.
      * @return {Promise.<void>}
+     * @tutorial Application.removeTrayIcon
      */
     public removeTrayIcon(): Promise<void> {
         return this.wire.sendAction('remove-tray-icon', this.identity).then(() => undefined);
@@ -212,6 +220,7 @@ export class Application extends EmitterBase {
     /**
      * Restarts the application.
      * @return {Promise.<void>}
+     * @tutorial Application.restart
      */
     public restart(): Promise<void> {
         return this.wire.sendAction('restart-application', this.identity).then(() => undefined);
@@ -220,6 +229,7 @@ export class Application extends EmitterBase {
     /**
      * Runs the application. When the application is created, run must be called.
      * @return {Promise.<void>}
+     * @tutorial Application.run
      */
     public run(): Promise<void> {
         return this.wire.sendAction('run-application', this.identity).then(() => undefined);
@@ -228,6 +238,7 @@ export class Application extends EmitterBase {
     /**
      * Instructs the RVM to schedule one restart of the application.
      * @return {Promise.<void>}
+     * @tutorial Application.scheduleRestart
      */
     public scheduleRestart(): Promise<void> {
         return this.wire.sendAction('relaunch-on-close', this.identity).then(() => undefined);
@@ -237,6 +248,7 @@ export class Application extends EmitterBase {
      * Adds a customizable icon in the system tray and notifies the application when clicked.
      * @param { string } iconUrl Image URL to be used as the icon
      * @return {Promise.<void>}
+     * @tutorial Application.setTrayIcon
      */
     public setTrayIcon(iconUrl: string): Promise<void> {
         return this.wire.sendAction('set-tray-icon', Object.assign({}, this.identity, {
@@ -262,7 +274,7 @@ export class Application extends EmitterBase {
      * @summary Retrieves information about the system tray.
      * @desc The only information currently returned is the position and dimensions.
      * @return {Promise.<TrayInfo>}
-     * @tutorial application.getTrayIconInfo
+     * @tutorial Application.getTrayIconInfo
      */
     public getTrayIconInfo(): Promise<TrayInfo> {
         return this.wire.sendAction('get-tray-icon-info', this.identity)
@@ -272,6 +284,7 @@ export class Application extends EmitterBase {
     /**
      * Closes the application by terminating its process.
      * @return {Promise.<void>}
+     * @tutorial Application.terminate
      */
     public terminate(): Promise<void> {
         return this.wire.sendAction('terminate-application', this.identity).then(() => undefined);
@@ -282,6 +295,7 @@ export class Application extends EmitterBase {
      * "not-responding" to allow the application to continue and to generate another "not-responding"
      * message after a certain period of time.
      * @return {Promise.<void>}
+     * @ignore
      */
     public wait(): Promise<void> {
         return this.wire.sendAction('wait-for-hung-application', this.identity).then(() => undefined);
@@ -291,6 +305,7 @@ export class Application extends EmitterBase {
      * Retrieves information about the application.
      * message after a certain period of time.
      * @return {Promise.<ApplicationInfo>}
+     * @tutorial Application.getInfo
      */
     public getInfo(): Promise<ApplicationInfo> {
         return this.wire.sendAction('get-info', this.identity).then(({ payload }) => payload.data);

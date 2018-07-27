@@ -9,4 +9,4 @@ declare var window: any;
 const environment = new OpenFinEnvironment();
 const transport = new Transport(ElIPCTransport, environment);
 transport.connectSync(Object.assign({}, currentWindowIdentity));
-window.fin = Object.assign(window.fin, new Fin(transport, null));
+window.fin = Object.assign(window.fin, new Fin(transport));
