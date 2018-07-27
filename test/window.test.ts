@@ -176,6 +176,30 @@ describe('Window.', function() {
         it('Fulfilled', () => testWindow.flash().then(() => assert(true)));
     });
 
+    describe('getGroup() cross different applications', () => {
+        const app2Config = {
+            name: 'app2',
+            url: 'about:blank',
+            uuid: 'app2',
+            autoShow: true,
+            nonPersistent: true
+        };
+        let app2Win: Window;
+
+        before(async () => {
+            // create a second app
+            const app2 = await fin.Application.create(app2Config);
+            await app2.run();
+            app2Win = await app2.getWindow();
+        });
+
+        it('Fulfilled', () => testWindow.joinGroup(app2Win).then(() => testWindow.getGroup()
+            .then(group => {
+                assert(group.length === 2);
+                assert(group[0].identity.uuid !== group[1].identity.uuid);
+            })));
+    });
+
     describe('getGroup()', () => {
 
         it('Fulfilled', () => testWindow.getGroup().then(data => assert(data instanceof Array,

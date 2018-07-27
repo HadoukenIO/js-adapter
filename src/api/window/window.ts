@@ -557,14 +557,13 @@ export class _Window extends EmitterBase {
             listener.name === this.identity.name;
     }
 
-    private windowListFromNameList(nameList: Array<string>): Array<_Window> {
+    private windowListFromNameList(identityList: Array<Identity>): Array<_Window> {
         const windowList: Array<_Window> = [];
 
-        nameList.forEach(name => {
+        identityList.forEach(identity => {
             windowList.push(new _Window(this.wire, {
-                // tslint:disable-next-line
-                uuid: this.identity.uuid as string,
-                name: name
+                uuid: identity.uuid,
+                name: identity.name
             }));
         });
         return windowList;
@@ -735,7 +734,9 @@ export class _Window extends EmitterBase {
      * @tutorial Window.getGroup
      */
     public getGroup(): Promise<Array<_Window>> {
-        return this.wire.sendAction('get-window-group', this.identity).then(({ payload }) => {
+        return this.wire.sendAction('get-window-group', Object.assign({}, this.identity, {
+            crossApp: true // cross app group supported
+        })).then(({ payload }) => {
             // tslint:disable-next-line
             let winGroup: Array<_Window> = [] as Array<_Window>;
 
