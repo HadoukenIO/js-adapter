@@ -1,34 +1,41 @@
 /* tslint:disable:no-invalid-this no-function-expression insecure-random mocha-no-side-effect-code no-empty */
 import * as assert from 'assert';
-import { cleanOpenRuntimes, launchAndConnect, TEST_TIMEOUT, DELAY_MS } from './multi-runtime-utils';
+import { cleanOpenRuntimes, DELAY_MS, TEST_TIMEOUT } from './multi-runtime-utils';
+import { conn } from './connect';
 import { delayPromise } from './delay-promise';
+import { Fin } from '../src/main';
 import * as fs from 'fs';
 import * as path from 'path';
 import * as sinon from 'sinon';
 
-describe ('Multi Runtime Services', function() {
-    this.timeout(TEST_TIMEOUT / 4);
+describe ('External Channel Provider', function() {
+    let fin: Fin;
     const appConfig = JSON.parse(fs.readFileSync(path.resolve('test/app.json')).toString());
+    this.timeout(TEST_TIMEOUT / 4);
 
     beforeEach(async () => {
         await cleanOpenRuntimes();
+        fin = await conn();
     });
 
     after(async () => {
-        await cleanOpenRuntimes();
+        const apps = await fin.System.getAllApplications();
+        await Promise.all(apps.map(a => {
+            const { uuid } = a;
+            return fin.Application.wrap({uuid}).then(app => app.close());
+        }));
     });
 
-    describe('Multi Runtime with External Provider', function () {
+    describe('External Provider', function () {
 
-        it('Should work in multi runtime with an external Provider', function(done: any) {
-            // tslint:disable-next-line no-invalid-this
+        it('Should be able to register as Provider', function(done: any) {
             const url = appConfig.startup_app.url;
             const newUrl = url.slice(0, url.lastIndexOf('/')) + '/client.html';
 
             const clientConfig = {
-                'name': 'service-client-test',
+                'name': 'channel-client-test',
                 'url': newUrl,
-                'uuid': 'service-client-test',
+                'uuid': 'channel-client-test',
                 'autoShow': true,
                 'saveWindowState': false,
                 'nonPersistent': true,
@@ -39,8 +46,7 @@ describe ('Multi Runtime Services', function() {
 
             async function test () {
                 const spy = sinon.spy();
-                const [fin, finA] = await Promise.all([launchAndConnect(), launchAndConnect()]);
-                const provider = await finA.InterApplicationBus.Channel.create();
+                const provider = await fin.InterApplicationBus.Channel.create('test');
                 provider.register('test', () => {
                     spy();
                     return 'return-test';
@@ -50,29 +56,32 @@ describe ('Multi Runtime Services', function() {
                 });
                 const client = await fin.Application.create(clientConfig);
                 await client.run();
-                await delayPromise(DELAY_MS);
-                await fin.InterApplicationBus.subscribe({uuid: 'service-client-test'}, 'return', (msg: any) => {
-                    assert.ok(spy.calledTwice, 'Did not get IAB from dispatch');
-                    assert.equal(msg, 'return-test');
+                const listener = (msg: any) => {
+                    assert(spy.calledTwice && msg === 'return-test', 'Did not get IAB from dispatch');
+                    fin.InterApplicationBus.unsubscribe({uuid: 'channel-client-test'}, 'return', listener);
                     done();
-                });
-                await finA.InterApplicationBus.publish('start', 'hi');
+                };
+                await fin.InterApplicationBus.subscribe({uuid: 'channel-client-test'}, 'return', listener);
+                await delayPromise(DELAY_MS);
+                await fin.InterApplicationBus.publish('start', 'hi');
+                await delayPromise(DELAY_MS);
             }
             test();
         });
 
     });
 
-    describe('Multi Runtime with External Client', function () {
+    describe('External Client', function () {
 
-        it('Should work in multi runtime with an External Client', function(done: any) {
+        it('Should be able to connect as Client', function(done: any) {
+
             const url = appConfig.startup_app.url;
             const newUrl = url.slice(0, url.lastIndexOf('/')) + '/service.html';
 
             const serviceConfig = {
-                'name': 'service-provider-test',
+                'name': 'channel-provider-test',
                 'url': newUrl,
-                'uuid': 'service-provider-test',
+                'uuid': 'channel-provider-test',
                 'autoShow': true,
                 'saveWindowState': false,
                 'nonPersistent': true,
@@ -82,17 +91,13 @@ describe ('Multi Runtime Services', function() {
             };
 
             async function test() {
-                const [fin, finA] = await Promise.all([launchAndConnect(), launchAndConnect()]);
                 const service = await fin.Application.create(serviceConfig);
                 await service.run();
-                await delayPromise(1000);
-                const client = await finA.InterApplicationBus.Channel.connect({uuid: 'service-provider-test'});
-                client.register('multi-runtime-test', (r: string) => {
-                    assert.equal(r, 'return-mrt', 'wrong payload sent from service');
-                    done();
-                });
+                const providerIdentity = {uuid: 'channel-provider-test', name: 'channel-provider-test'};
+                const client = await fin.InterApplicationBus.Channel.connect(providerIdentity);
                 client.dispatch('test').then(res => {
-                    assert.equal(res, 'return-test', 'wrong return payload from service');
+                    assert(res === 'return-test');
+                    done();
                 });
             }
             test();

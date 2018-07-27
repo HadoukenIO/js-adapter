@@ -38,6 +38,7 @@ export class Channel extends EmitterBase {
             this.on('connected', listener);
     }
 
+    // DOCS - if want to send payload, put payload in options
     public async connect(options: Options): Promise<ChannelClient> {
         try {
             const { payload: { data: providerIdentity } } = await this.wire.sendAction('connect-to-channel', Object.assign({
@@ -68,35 +69,51 @@ export class Channel extends EmitterBase {
         return channel;
     }
     public onmessage = (msg: ChannelMessage) => {
-      if (msg.action === 'process-channel-message') {
-          this.processChannelMessage(msg);
-          return true;
-      }
-      return false;
+        if (msg.action === 'process-channel-message') {
+            this.processChannelMessage(msg);
+            return true;
+        } else if (msg.action === 'process-channel-connection') {
+            this.processChannelConnection(msg);
+            return true;
+        }
+        return false;
     }
     private async processChannelMessage (msg: ChannelMessage) {
-        const { senderIdentity, providerIdentity, action, ackToSender, payload, connectAction} = msg.payload;
-        const key = providerIdentity.channelId || providerIdentity.uuid;
+        const { senderIdentity, providerIdentity, action, ackToSender, payload } = msg.payload;
+        const key = providerIdentity.channelId;
         const bus = this.channelMap.get(key);
+        if (!bus) {
+            return;
+        }
         try {
-            let res;
-            if (!bus) {
-                return;
-            }
-            if (connectAction) {
-                if (!(bus instanceof ChannelProvider)) {
-                    throw Error('Cannot connect to a plugin');
-                }
-                res = await bus.processConnection(senderIdentity, payload);
-            } else {
-                res = await bus.processAction(action, payload, senderIdentity);
-            }
+            const res = await bus.processAction(action, payload, senderIdentity);
             ackToSender.payload.payload = ackToSender.payload.payload || {};
             ackToSender.payload.payload.result = res;
             this.wire.sendRaw(ackToSender);
         } catch (e) {
-            ackToSender.success = false;
-            ackToSender.reason = e.message;
+            ackToSender.payload.success = false;
+            ackToSender.payload.reason = e.message;
+            this.wire.sendRaw(ackToSender);
+        }
+    }
+    private async processChannelConnection (msg: ChannelMessage) {
+        const { clientIdentity, providerIdentity, ackToSender, payload } = msg.payload;
+        const key = providerIdentity.channelId;
+        const bus = this.channelMap.get(key);
+        if (!bus) {
+            return;
+        }
+        try {
+            if (!(bus instanceof ChannelProvider)) {
+                throw Error('Cannot connect to a channel client');
+            }
+            const res = await bus.processConnection(clientIdentity, payload);
+            ackToSender.payload.payload = ackToSender.payload.payload || {};
+            ackToSender.payload.payload.result = res;
+            this.wire.sendRaw(ackToSender);
+        } catch (e) {
+            ackToSender.payload.success = false;
+            ackToSender.payload.reason = e.message;
             this.wire.sendRaw(ackToSender);
         }
     }
