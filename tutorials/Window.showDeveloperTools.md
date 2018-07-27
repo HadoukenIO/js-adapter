@@ -1,5 +1,4 @@
 Shows the Chromium Developer Tools
-
 # Example
 ```js
 async function showDeveloperTools() {
@@ -8,6 +7,6 @@ async function showDeveloperTools() {
 }
 
 showDevelopertools()
-.then(() => console.log('Showing dev tools')
+.then(() => console.log('Showing dev tools'))
 .catch(err => console.error(err));
 ```

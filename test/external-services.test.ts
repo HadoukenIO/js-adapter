@@ -46,7 +46,7 @@ describe ('External Services', function() {
 
             async function test () {
                 const spy = sinon.spy();
-                const provider = await fin.Service.register();
+                const provider = await fin.InterApplicationBus.Channel.create();
                 provider.register('test', () => {
                     spy();
                     return 'return-test';
@@ -93,7 +93,7 @@ describe ('External Services', function() {
             async function test() {
                 const service = await fin.Application.create(serviceConfig);
                 await service.run();
-                const client = await fin.Service.connect({uuid: 'service-provider-test'});
+                const client = await fin.InterApplicationBus.Channel.connect({uuid: 'service-provider-test'});
                 client.dispatch('test').then(res => {
                     assert(res === 'return-test');
                     done();

@@ -17,8 +17,8 @@ const environment = new NodeEnvironment();
 export async function connect(config: ConnectConfig): Promise<Fin> {
     const wire: Transport = new Transport(WebSocketTransport, environment);
     const normalized = await validateConfig(config);
-    const token = await wire.connect(normalized);
-    return new Fin(wire, token);
+    await wire.connect(normalized);
+    return new Fin(wire);
 }
 
 export async function launch(config: ConnectConfig): Promise<number> {

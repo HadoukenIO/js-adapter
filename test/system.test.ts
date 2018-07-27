@@ -19,8 +19,13 @@ describe('System.', function () {
     });
 
     describe('clearCache()', () => {
-
-        it('Fulfilled', () => fin.System.clearCache().then(() => assert(true)));
+        const clearCacheOptions = {
+            appcache: true,
+            cache: true,
+            cookies: true,
+            localStorage: true
+        };
+        it('Fulfilled', () => fin.System.clearCache(clearCacheOptions).then(() => assert(true)));
     });
 
     describe('deleteCacheOnExit()', () => {

@@ -40,7 +40,7 @@ describe ('Multi Runtime Services', function() {
             async function test () {
                 const spy = sinon.spy();
                 const [fin, finA] = await Promise.all([launchAndConnect(), launchAndConnect()]);
-                const provider = await finA.Service.register();
+                const provider = await finA.InterApplicationBus.Channel.create();
                 provider.register('test', () => {
                     spy();
                     return 'return-test';
@@ -86,7 +86,7 @@ describe ('Multi Runtime Services', function() {
                 const service = await fin.Application.create(serviceConfig);
                 await service.run();
                 await delayPromise(1000);
-                const client = await finA.Service.connect({uuid: 'service-provider-test'});
+                const client = await finA.InterApplicationBus.Channel.connect({uuid: 'service-provider-test'});
                 client.register('multi-runtime-test', (r: string) => {
                     assert.equal(r, 'return-mrt', 'wrong payload sent from service');
                     done();

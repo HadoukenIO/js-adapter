@@ -5,69 +5,34 @@ import BoundsChangedReply from './bounds-changed';
 import { Transition, TransitionOptions } from './transition';
 import { Application } from '../application/application';
 import Transport from '../../transport/transport';
+import { notImplementedEnvErrorMsg } from '../../environment/environment';
 
 // tslint:disable-next-line
 export default class _WindowModule extends Base {
+    private instance: _Window;
+
     /**
      * Returns a Window object that represents an existing window.
      * @param { Identity } indentity
      * @return {Promise.<_Window>}
+     * @tutorial Window.wrap
      */
     public wrap(identity: Identity): Promise<_Window> {
-        return Promise.resolve(new _Window(this.wire, identity));
+        if (!this.instance) {
+            this.instance = new _Window(this.wire, identity);
+        }
+        return Promise.resolve(this.instance);
     }
 
     /**
      * Creates a new Window.
      * @param { * } options - Window creation options
      * @return {Promise.<_Window>}
+     * @tutorial Window.create
      */
     public create(options: any): Promise<_Window> {
-        return new Promise((resolve, reject) => {
-            const CONSTRUCTOR_CB_TOPIC = 'fire-constructor-callback';
-            const win = new _Window(this.wire, {uuid: this.me.uuid, name: options.name});
-            // need to call pageResponse, otherwise when a child window is created, page is not loaded
-            const pageResponse = new Promise((resolve) => {
-                // tslint:disable-next-line
-                win.on(CONSTRUCTOR_CB_TOPIC, function fireConstructor(response: any) {
-                    let cbPayload;
-                    const success = response.success;
-                    const responseData = response.data;
-                    const message = responseData.message;
-
-                    if (success) {
-                        cbPayload = {
-                            httpResponseCode: responseData.httpResponseCode,
-                            apiInjected: responseData.apiInjected
-                        };
-                    } else {
-                        cbPayload = {
-                            message: responseData.message,
-                            networkErrorCode: responseData.networkErrorCode,
-                            stack: responseData.stack
-                        };
-                    }
-
-                    win.removeListener(CONSTRUCTOR_CB_TOPIC, fireConstructor);
-                    resolve({
-                        message: message,
-                        cbPayload: cbPayload,
-                        success: success
-                    });
-                });
-            });
-
-            const windowCreation = this.wire.environment.createChildWindow(options);
-            Promise.all([pageResponse, windowCreation]).then((resolvedArr: any[]) => {
-                const pageResolve = resolvedArr[0];
-                if (pageResolve.success) {
-                    resolve(win);
-                } else {
-                    reject(pageResolve.message);
-                }
-            });
-
-        });
+       const win = new _Window(this.wire, {uuid: this.me.uuid, name: options.name});
+       return win.createWindow(options);
     }
 
     /**
@@ -517,8 +482,74 @@ export class _Window extends EmitterBase {
      * @property {string} state - The preload script state:
      "load-failed", "failed", "succeeded"
      */
+
+    private nativeWindow: any;
+
     constructor(wire: Transport, public identity: Identity) {
         super(wire);
+
+        // if it's openfin environment, need to add a native window to current window object
+        if (this.isOpenFinEnvironment()) {
+            if (this.wire.environment.isWindowExists(identity.uuid, identity.name)) {
+                if (identity.name === window.name) {
+                    this.nativeWindow = window;
+                }
+            }
+        }
+    }
+
+    // create a new window
+    public createWindow(options: any): Promise<_Window> {
+        return new Promise((resolve, reject) => {
+            const CONSTRUCTOR_CB_TOPIC = 'fire-constructor-callback';
+            // need to call pageResponse, otherwise when a child window is created, page is not loaded
+            const pageResponse = new Promise((resolve) => {
+                // tslint:disable-next-line
+                this.on(CONSTRUCTOR_CB_TOPIC, function fireConstructor(response: any) {
+                    let cbPayload;
+                    const success = response.success;
+                    const responseData = response.data;
+                    const message = responseData.message;
+
+                    if (success) {
+                        cbPayload = {
+                            httpResponseCode: responseData.httpResponseCode,
+                            apiInjected: responseData.apiInjected
+                        };
+                    } else {
+                        cbPayload = {
+                            message: responseData.message,
+                            networkErrorCode: responseData.networkErrorCode,
+                            stack: responseData.stack
+                        };
+                    }
+
+                    this.removeListener(CONSTRUCTOR_CB_TOPIC, fireConstructor);
+                    resolve({
+                        message: message,
+                        cbPayload: cbPayload,
+                        success: success
+                    });
+                });
+            });
+
+            const windowCreation = this.wire.environment.createChildWindow(options);
+            Promise.all([pageResponse, windowCreation]).then((resolvedArr: any[]) => {
+                const pageResolve = resolvedArr[0];
+                const childWin = resolvedArr[1];
+                if (pageResolve.success) {
+                    this.nativeWindow = childWin.nativeWindow;
+
+                    //make sure we clean up all references when a window is closed.
+                    this.on('closed', () => {
+                        delete this.nativeWindow;
+                    });
+                    resolve(this);
+                } else {
+                    reject(pageResolve.message);
+                }
+            });
+        });
     }
 
     protected runtimeEventComparator = (listener: RuntimeEvent): boolean => {
@@ -558,6 +589,18 @@ export class _Window extends EmitterBase {
         return this.wire.sendAction('get-window-bounds', this.identity)
             // tslint:disable-next-line
             .then(({ payload }) => payload.data as Bounds);
+    }
+
+    /**
+    * Returns the native JavaScript "window" object for the window.
+    * @return {Promise.<any>}
+    * @tutorial Window.getNativeWindow
+    */
+    public getNativeWindow(): Promise<any> {
+        if (!this.isOpenFinEnvironment()) {
+            throw new Error(notImplementedEnvErrorMsg);
+        }
+        return Promise.resolve(this.nativeWindow);
     }
 
     /**
@@ -812,6 +855,7 @@ export class _Window extends EmitterBase {
      * Merges the instance's window group with the same window group as the specified window
      * @param { class } target The window whose group is to be merged with
      * @return {Promise.<void>}
+     * @tutorial Window.mergeGroups
      */
     public mergeGroups(target: _Window): Promise<void> {
         return this.wire.sendAction('merge-window-groups', Object.assign({}, this.identity, {
@@ -823,6 +867,7 @@ export class _Window extends EmitterBase {
     /**
      * Minimizes the window.
      * @return {Promise.<void>}
+     * @tutorial Window.minimize
      */
     public minimize(): Promise<void> {
         return this.wire.sendAction('minimize-window', this.identity).then(() => undefined);
@@ -832,8 +877,8 @@ export class _Window extends EmitterBase {
      * Moves the window by a specified amount.
      * @param { number } deltaLeft The change in the left position of the window
      * @param { number } deltaTop The change in the top position of the window
-     * @tutorial Window.moveBy
      * @return {Promise.<void>}
+     * @tutorial Window.moveBy
      */
     public moveBy(deltaLeft: number, deltaTop: number): Promise<void> {
         return this.wire.sendAction('move-window-by', Object.assign({}, this.identity, { deltaLeft, deltaTop })).then(() => undefined);
@@ -843,8 +888,8 @@ export class _Window extends EmitterBase {
      * Moves the window to a specified location.
      * @param { number } left The left position of the window
      * @param { number } top The top position of the window
-     * @tutorial Window.moveTo
      * @return {Promise.<void>}
+     * @tutorial Window.moveTo
      */
     public moveTo(left: number, top: number): Promise<void> {
         return this.wire.sendAction('move-window', Object.assign({}, this.identity, { left, top })).then(() => undefined);
@@ -857,8 +902,8 @@ export class _Window extends EmitterBase {
      * @param { string } anchor Specifies a corner to remain fixed during the resize.
      * Can take the values: "top-left", "top-right", "bottom-left", or "bottom-right."
      * If undefined, the default is "top-left"
-     * @tutorial Window.resizeBy
      * @return {Promise.<void>}
+     * @tutorial Window.resizeBy
      */
     public resizeBy(deltaWidth: number, deltaHeight: number, anchor: string): Promise<void> {
         return this.wire.sendAction('resize-window-by', Object.assign({}, this.identity, {
@@ -875,8 +920,8 @@ export class _Window extends EmitterBase {
      * @param { string } anchor Specifies a corner to remain fixed during the resize.
      * Can take the values: "top-left", "top-right", "bottom-left", or "bottom-right."
      * If undefined, the default is "top-left"
-     * @tutorial Window.resizeTo
      * @return {Promise.<void>}
+     * @tutorial Window.resizeTo
      */
     public resizeTo(width: number, height: number, anchor: string): Promise<void> {
         return this.wire.sendAction('resize-window', Object.assign({}, this.identity, {
@@ -888,8 +933,8 @@ export class _Window extends EmitterBase {
 
     /**
      * Restores the window to its normal state (i.e., unminimized, unmaximized).
-     * @tutorial Window.restore
      * @return {Promise.<void>}
+     * @tutorial Window.restore
      */
     public restore(): Promise<void> {
         return this.wire.sendAction('restore-window', this.identity).then(() => undefined);
@@ -897,8 +942,8 @@ export class _Window extends EmitterBase {
 
     /**
      * Will bring the window to the front of the entire stack and give it focus.
-     * @tutorial Window.setAsForeground
      * @return {Promise.<void>}
+     * @tutorial Window.setAsForeground
      */
     public setAsForeground(): Promise<void> {
         return this.wire.sendAction('set-foreground-window', this.identity).then(() => undefined);
@@ -907,8 +952,8 @@ export class _Window extends EmitterBase {
     /**
      * Sets the window's size and position.
      * @property { Bounds } bounds This is a * @type {string} name - name of the window.object that holds the propertys of
-     * @tutorial Window.setBounds
      * @return {Promise.<void>}
+     * @tutorial Window.setBounds
      */
     public setBounds(bounds: Bounds): Promise<void> {
         return this.wire.sendAction('set-window-bounds', Object.assign({}, this.identity, bounds)).then(() => undefined);
@@ -918,8 +963,8 @@ export class _Window extends EmitterBase {
      * Shows the window if it is hidden.
      * @param { boolean } [force = false] Show will be prevented from showing when force is false and
      *  ‘show-requested’ has been subscribed to for application’s main window.
-     * @tutorial Window.show
      * @return {Promise.<void>}
+     * @tutorial Window.show
      */
     public show(force: boolean = false): Promise<void> {
         return this.wire.sendAction('show-window', Object.assign({}, this.identity, { force })).then(() => undefined);
@@ -933,8 +978,8 @@ export class _Window extends EmitterBase {
      * @param { number } top The right position of the window
      * @param { boolean } force Show will be prevented from closing when force is false and
      * ‘show-requested’ has been subscribed to for application’s main window
-     * @tutorial Window.showAt
      * @return {Promise.<void>}
+     * @tutorial Window.showAt
      */
     public showAt(left: number, top: number, force: boolean = false): Promise<void> {
         return this.wire.sendAction('show-at-window', Object.assign({}, this.identity, {
@@ -957,6 +1002,7 @@ export class _Window extends EmitterBase {
      * Updates the window using the passed options
      * @param {*} options Changes a window's options that were defined upon creation. See tutorial
      * @return {Promise.<void>}
+     * @tutorial Window.updateOptions
      */
     public updateOptions(options: any): Promise<void> {
         return this.wire.sendAction('update-window-options', Object.assign({}, this.identity, { options })).then(() => undefined);
@@ -967,6 +1013,7 @@ export class _Window extends EmitterBase {
      * @param { string } userName userName to provide to the authentication challange
      * @param { string } password password to provide to the authentication challange
      * @return {Promise.<void>}
+     * @tutorial Window.authenticate
      */
     public authenticate(userName: string, password: string): Promise<void> {
         return this.wire.sendAction('window-authenticate', Object.assign({}, this.identity, { userName, password })).then(() => undefined);
@@ -974,8 +1021,8 @@ export class _Window extends EmitterBase {
 
     /**
      * Returns the zoom level of the window.
-     * @tutorial Window.getZoomLevel
      * @return {Promise.<number>}
+     * @tutorial Window.getZoomLevel
      */
     public getZoomLevel(): Promise<number> {
         return this.wire.sendAction('get-zoom-level', this.identity).then(({ payload }) => payload.data);
@@ -984,8 +1031,8 @@ export class _Window extends EmitterBase {
     /**
      * Sets the zoom level of the window.
      * @param { number } level The zoom level
-     * @tutorial Window.setZoomLevel
      * @return {Promise.<void>}
+     * @tutorial Window.setZoomLevel
      */
     public setZoomLevel(level: number): Promise<void> {
         return this.wire.sendAction('set-zoom-level', Object.assign({}, this.identity, { level })).then(() => undefined);
@@ -995,6 +1042,7 @@ export class _Window extends EmitterBase {
      * Navigates the window to a specified URL.
      * @param {string} url - The URL to navigate the window to.
      * @return {Promise.<void>}
+     * @tutorial Window.navigate
      */
     public navigate(url: string): Promise<void> {
         return this.wire.sendAction('navigate-window', Object.assign({}, this.identity, { url })).then(() => undefined);
