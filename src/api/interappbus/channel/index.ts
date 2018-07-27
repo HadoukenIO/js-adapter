@@ -1,8 +1,8 @@
-import { Client } from './client';
-import { Identity } from '../../identity';
-import { Provider } from './provider';
-import { EmitterBase } from '../base';
-import Transport, { Message, Payload } from '../../transport/transport';
+import { ChannelClient } from './client';
+import { Identity } from '../../../identity';
+import { ChannelProvider } from './provider';
+import { EmitterBase } from '../../base';
+import Transport, { Message, Payload } from '../../../transport/transport';
 
 export interface Options {
     wait?: boolean;
@@ -10,25 +10,26 @@ export interface Options {
     payload?: any;
 }
 
-export interface ServicePayload {
+export interface ChannelPayload {
     payload: Payload;
 }
-export interface ServiceMessage extends Message<any> {
+export interface ChannelMessage extends Message<any> {
   senderIdentity: Identity;
   ackToSender: any;
   serviceIdentity: Identity;
   connectAction: boolean;
 }
 
-export class Service extends EmitterBase {
-    private serviceMap: Map<string, Provider | Client>;
+export class Channel extends EmitterBase {
+    private channelMap: Map<string, ChannelProvider | ChannelClient>;
     constructor(wire: Transport) {
         super(wire);
-        this.serviceMap = new Map();
+        this.topic = 'service';
+        this.channelMap = new Map();
         wire.registerMessageHandler(this.onmessage.bind(this));
     }
 
-    public async onServiceConnect(identity: Identity, listener: EventListener): Promise<void> {
+    public async onChannelConnect(identity: Identity, listener: EventListener): Promise<void> {
             this.registerEventListener({
                 topic: 'service',
                 type: 'connected',
@@ -37,14 +38,14 @@ export class Service extends EmitterBase {
             this.on('connected', listener);
     }
 
-    public async connect(options: Options): Promise<Client> {
+    public async connect(options: Options): Promise<ChannelClient> {
         try {
             const { payload: { data: serviceIdentity } } = await this.wire.sendAction('send-service-message', Object.assign({
                 connectAction: true,
                 wait: true
             }, options));
-            const channel = new Client(serviceIdentity, this.wire.sendAction.bind(this.wire));
-            channel.onServiceDisconnect = (listener: () => void) => {
+            const channel = new ChannelClient(serviceIdentity, this.wire.sendAction.bind(this.wire));
+            channel.onChannelDisconnect = (listener: () => void) => {
                 this.registerEventListener({
                     topic: 'service',
                     type: 'disconnected',
@@ -53,38 +54,38 @@ export class Service extends EmitterBase {
                 this.on('disconnected', listener);
             };
             const key = serviceIdentity.channelId || serviceIdentity.uuid;
-            this.serviceMap.set(key, channel);
+            this.channelMap.set(key, channel);
             return channel;
         } catch (e) {
             throw new Error(e.message);
         }
     }
 
-    public async register(): Promise<Provider> {
+    public async create(): Promise<ChannelProvider> {
         const { payload: { data: serviceIdentity } } = await this.wire.sendAction('register-service', {});
-        const channel = new Provider(serviceIdentity, this.wire.sendAction.bind(this.wire));
+        const channel = new ChannelProvider(serviceIdentity, this.wire.sendAction.bind(this.wire));
         const key = serviceIdentity.channelId || serviceIdentity.uuid;
-        this.serviceMap.set(key, channel);
+        this.channelMap.set(key, channel);
         return channel;
     }
-    public onmessage = (msg: ServiceMessage) => {
+    public onmessage = (msg: ChannelMessage) => {
       if (msg.action === 'process-service-action') {
-          this.processServiceMessage(msg);
+          this.processChannelMessage(msg);
           return true;
       }
       return false;
     }
-    private async processServiceMessage (msg: ServiceMessage) {
+    private async processChannelMessage (msg: ChannelMessage) {
         const { senderIdentity, serviceIdentity, action, ackToSender, payload, connectAction} = msg.payload;
         const key = serviceIdentity.channelId || serviceIdentity.uuid;
-        const bus = this.serviceMap.get(key);
+        const bus = this.channelMap.get(key);
         try {
             let res;
             if (!bus) {
                 return;
             }
             if (connectAction) {
-                if (!(bus instanceof Provider)) {
+                if (!(bus instanceof ChannelProvider)) {
                     throw Error('Cannot connect to a plugin');
                 }
                 res = await bus.processConnection(senderIdentity, payload);

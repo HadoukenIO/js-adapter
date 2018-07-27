@@ -1,15 +1,17 @@
-import { ServiceChannel, ServiceIdentity } from './channel';
-import Transport from '../../transport/transport';
+import { ChannelBase, ServiceIdentity } from './channel';
+import Transport from '../../../transport/transport';
 
 export type ConnectionListener = (adapterIdentity: ServiceIdentity, connectionMessage?: any) => any;
 
-export class Provider extends ServiceChannel {
+export class ChannelProvider extends ChannelBase {
     private connectListener: ConnectionListener;
+    private disconnectListener: ConnectionListener;
     private connections: ServiceIdentity[];
 
     constructor(serviceIdentity: ServiceIdentity, send: Transport['sendAction']) {
         super(serviceIdentity, send);
         this.connectListener = () => undefined;
+        this.disconnectListener = () => undefined;
         this.connections = [];
     }
 

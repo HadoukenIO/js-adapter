@@ -9,7 +9,6 @@ import Clipbpard from './clipboard/clipboard';
 import ExternalApplication from './external-application/external-application';
 import _FrameModule from './frame/frame';
 // import Plugin from './plugin/plugin';
-import { Service } from './services';
 import GlobalHotkey from './global-hotkey';
 import { Identity } from '../identity';
 
@@ -25,7 +24,6 @@ export default class Fin extends EventEmitter {
     public ExternalApplication: ExternalApplication;
     public Frame: _FrameModule;
     // public Plugin: Plugin;
-    public Service: Service;
     public GlobalHotkey: GlobalHotkey;
 
     get me(): Identity {
@@ -44,7 +42,6 @@ export default class Fin extends EventEmitter {
         this.ExternalApplication = new ExternalApplication(wire);
         this.Frame = new _FrameModule(wire);
         // this.Plugin = new Plugin(wire);
-        this.Service = new Service(wire);
         this.GlobalHotkey = new GlobalHotkey(wire);
 
         //Handle disconnect events

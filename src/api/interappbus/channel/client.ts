@@ -1,8 +1,8 @@
-import { ServiceChannel, ServiceIdentity } from './channel';
-import Transport from '../../transport/transport';
+import { ChannelBase, ServiceIdentity } from './channel';
+import Transport from '../../../transport/transport';
 
-export class Client extends ServiceChannel {
-    public onServiceDisconnect: (f: () => void) => void;
+export class ChannelClient extends ChannelBase {
+    public onChannelDisconnect: (f: () => void) => void;
     constructor(serviceIdentity: ServiceIdentity, send: Transport['sendAction']) {
         super(serviceIdentity, send);
     }
@@ -10,5 +10,4 @@ export class Client extends ServiceChannel {
     public async dispatch(action: string, payload?: any): Promise<any> {
         return this.send(this.serviceIdentity, action, payload);
     }
-
 }

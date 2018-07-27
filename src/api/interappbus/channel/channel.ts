@@ -1,5 +1,5 @@
-import { Identity } from '../../identity';
-import Transport, { Message } from '../../transport/transport';
+import { Identity } from '../../../identity';
+import Transport, { Message } from '../../../transport/transport';
 
 const idOrResult = (func: (...args: any[]) => any) => (...args: any[] ) => {
     const res = func(...args);
@@ -17,12 +17,12 @@ export type Middleware = (() => any)
     | ((action: string, payload: any) => any)
     | ((action: string, payload: any, id: ServiceIdentity) => any);
 
-export interface ServiceMessagePayload extends Identity {
+export interface ChannelMessagePayload extends Identity {
     action: string;
     payload: any;
 }
 
-export class ServiceChannel {
+export class ChannelBase {
     protected subscriptions: any;
     public defaultAction: (action?: string, payload?: any, senderIdentity?: ServiceIdentity) => any;
     private preAction: (...args: any[]) => any;
