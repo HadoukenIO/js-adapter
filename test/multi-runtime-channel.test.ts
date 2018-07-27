@@ -89,12 +89,12 @@ describe ('Multi Runtime Services', function() {
                 const client = await finA.InterApplicationBus.Channel.connect({uuid: 'channel-provider-test'});
                 client.register('multi-runtime-test', (r: string) => {
                     assert.equal(r, 'return-mrt', 'wrong payload sent from service');
+                    service.close();
                     done();
                 });
                 client.dispatch('test').then(res => {
                     assert.equal(res, 'return-test', 'wrong return payload from service');
                 });
-
             }
             test();
         });
@@ -102,7 +102,7 @@ describe ('Multi Runtime Services', function() {
 
     describe('Multi Runtime getAllChannels', function () {
 
-        it('Should get all channels from across multiple runtimes', function() {
+        it('Should get all channels from across multiple runtimes', function(done: any) {
             const url = appConfig.startup_app.url;
             const newUrl = url.slice(0, url.lastIndexOf('/')) + '/service.html';
 
@@ -126,7 +126,9 @@ describe ('Multi Runtime Services', function() {
                 await finA.InterApplicationBus.Channel.create('test-channel-multi-runtime');
                 const allChannels = await fin.InterApplicationBus.Channel.getAllChannels();
                 console.error(allChannels);
-                assert.equal(allChannels.length, 3, `expected 2 channels in allChannels: ${allChannels}`);
+                assert.equal(allChannels.length, 2, `expected 2 channels in allChannels: ${JSON.stringify(allChannels)}`);
+                service.close();
+                done();
             }
             test();
         });
