@@ -35,21 +35,15 @@ export class Channel extends EmitterBase {
             .then(({ payload }) => payload.data);
     }
 
-    public async onChannelConnect(identity: Identity, listener: EventListener): Promise<void> {
-        this.registerEventListener({
-            topic: 'channel',
-            type: 'connected',
-            ...identity
-        });
-        this.on('connected', listener);
+    // FIX TYPES HERE!
+    public async onChannelConnect(listener: Function): Promise<void> {
+        return this.on('connected/*', (payload) => listener(payload.data[0]));
     }
 
     // DOCS - if want to send payload, put payload in options
     public async connect(options: Options): Promise<ChannelClient> {
         try {
-            const { payload: { data: providerIdentity } } = await this.wire.sendAction('connect-to-channel', Object.assign({
-                wait: true
-            }, options));
+            const { payload: { data: providerIdentity } } = await this.wire.sendAction('connect-to-channel', options);
             const channel = new ChannelClient(providerIdentity, this.wire.sendAction.bind(this.wire));
             channel.onChannelDisconnect = (listener: () => void) => {
                 this.registerEventListener({
@@ -63,7 +57,30 @@ export class Channel extends EmitterBase {
             this.channelMap.set(key, channel);
             return channel;
         } catch (e) {
-            throw new Error(e.message);
+            console.error('in error');
+            const shouldWait: boolean = Object.assign({ wait: true }, options).wait;
+            if (shouldWait) {
+                console.error('in sw');
+                const { uuid } = options;
+                const waitResponse: Promise<ChannelClient> = new Promise(resolve => {
+                    console.error('in wr', this.onChannelConnect);
+                    // this.onChannelConnect((channel: any) => {
+                    //     console.error('in channel connect', channel);
+                    //     if (channel.uuid === uuid) {
+                    //         this.connect(options).then(response => {
+                    //             resolve(response);
+                    //         });
+                    //     }
+                    // });
+                    this.onChannelConnect(console.log);
+                });
+                console.error('right before waitRes');
+                await waitResponse;
+                console.error('right after waitRes');
+                return Promise.resolve(waitResponse);
+            } else {
+                throw new Error(e.message);
+            }
         }
     }
 

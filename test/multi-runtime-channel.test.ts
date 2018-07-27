@@ -130,4 +130,47 @@ describe ('Multi Runtime Services', function() {
             test();
         });
     });
+
+    describe('Multi Runtime connect before channel creation with wait', function () {
+
+        it('Should be able to connect before channel creation', function(done: any) {
+            const url = appConfig.startup_app.url;
+            const newUrl = url.slice(0, url.lastIndexOf('/')) + '/service.html';
+
+            const serviceConfig = {
+                'name': 'channel-provider-test',
+                'url': newUrl,
+                'uuid': 'channel-provider-test',
+                'autoShow': true,
+                'saveWindowState': false,
+                'nonPersistent': true,
+                'experimental': {
+                    'v2Api': true
+                }
+            };
+
+            async function test() {
+                const [fin, finA] = await Promise.all([launchAndConnect(), launchAndConnect()]);
+                const client = finA.InterApplicationBus.Channel.connect({uuid: 'channel-provider-test'});
+                fin.InterApplicationBus.Channel.onChannelConnect(console.log);
+                client.then(async (c) => {
+                    console.error('here inn client');
+                    c.register('multi-runtime-test', (r: string) => {
+                        assert.equal(r, 'return-mrt', 'wrong payload sent from service');
+                        done();
+                    });
+                    await delayPromise(1000);
+                    c.dispatch('test').then(res => {
+                        assert.equal(res, 'return-test', 'wrong return payload from service');
+                    });
+                });
+                await delayPromise(2000);
+                console.error('here');
+                const service = await fin.Application.create(serviceConfig);
+                await service.run();
+                console.error('here');
+            }
+            test();
+        });
+    });
 });
