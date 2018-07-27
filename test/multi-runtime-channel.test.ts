@@ -89,7 +89,6 @@ describe ('Multi Runtime Services', function() {
                 const client = await finA.InterApplicationBus.Channel.connect({uuid: 'channel-provider-test'});
                 client.register('multi-runtime-test', (r: string) => {
                     assert.equal(r, 'return-mrt', 'wrong payload sent from service');
-                    service.close();
                     done();
                 });
                 client.dispatch('test').then(res => {
@@ -125,9 +124,7 @@ describe ('Multi Runtime Services', function() {
                 await delayPromise(1000);
                 await finA.InterApplicationBus.Channel.create('test-channel-multi-runtime');
                 const allChannels = await fin.InterApplicationBus.Channel.getAllChannels();
-                console.error(allChannels);
                 assert.equal(allChannels.length, 2, `expected 2 channels in allChannels: ${JSON.stringify(allChannels)}`);
-                service.close();
                 done();
             }
             test();
