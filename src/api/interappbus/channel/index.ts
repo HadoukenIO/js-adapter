@@ -3,6 +3,7 @@ import { Identity } from '../../../identity';
 import { ChannelProvider } from './provider';
 import { EmitterBase } from '../../base';
 import Transport, { Message, Payload } from '../../../transport/transport';
+import { ProviderIdentity } from './channel';
 
 export interface Options {
     wait?: boolean;
@@ -29,13 +30,18 @@ export class Channel extends EmitterBase {
         wire.registerMessageHandler(this.onmessage.bind(this));
     }
 
+    public async getAllChannels(): Promise<ProviderIdentity[]> {
+        return this.wire.sendAction('get-all-channels')
+            .then(({ payload }) => payload.data);
+    }
+
     public async onChannelConnect(identity: Identity, listener: EventListener): Promise<void> {
-            this.registerEventListener({
-                topic: 'channel',
-                type: 'connected',
-                ...identity
-            });
-            this.on('connected', listener);
+        this.registerEventListener({
+            topic: 'channel',
+            type: 'connected',
+            ...identity
+        });
+        this.on('connected', listener);
     }
 
     // DOCS - if want to send payload, put payload in options
@@ -61,8 +67,8 @@ export class Channel extends EmitterBase {
         }
     }
 
-    public async create(serviceName?: string): Promise<ChannelProvider> {
-        const { payload: { data: providerIdentity } } = await this.wire.sendAction('create-channel', {serviceName});
+    public async create(channelName?: string): Promise<ChannelProvider> {
+        const { payload: { data: providerIdentity } } = await this.wire.sendAction('create-channel', {channelName});
         const channel = new ChannelProvider(providerIdentity, this.wire.sendAction.bind(this.wire));
         const key = providerIdentity.channelId || providerIdentity.uuid;
         this.channelMap.set(key, channel);
