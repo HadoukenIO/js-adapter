@@ -1,5 +1,5 @@
 import { conn } from './connect';
-import { Fin, Application, connect as rawConnect } from '../src/main';
+import { Fin, Application, Window, connect as rawConnect } from '../src/main';
 import { cleanOpenRuntimes } from './multi-runtime-utils';
 import * as assert from 'assert';
 import * as path from 'path';
@@ -72,6 +72,36 @@ describe('Application.', function() {
     describe('getChildWindows()', () => {
 
         it('Fulfilled', () => testApp.getChildWindows().then(data => assert(data instanceof Array)));
+    });
+
+    describe('getGroups() cross different applications', () => {
+        const app2Config = {
+            name: 'app2',
+            url: 'about:blank',
+            uuid: 'app2',
+            autoShow: true,
+            nonPersistent: true
+        };
+
+        let app2Win: Window;
+        let testAppWin: Window;
+        before(async () => {
+            // create a second app
+            const app2 = await fin.Application.create(app2Config);
+            await app2.run();
+            app2Win = await app2.getWindow();
+        });
+
+        it('Fulfilled', async () => {
+            testAppWin = await testApp.getWindow();
+            await app2Win.joinGroup(testAppWin);
+            const data = await testApp.getGroups();
+            assert(data instanceof Array);
+            assert(data[0] instanceof Array);
+            assert(data[0].length === 2);
+            assert(data[0][0].identity.uuid === app2Config.uuid);
+            assert(data[0][1].identity.uuid === testApp.identity.uuid);
+        });
     });
 
     describe('getGroups()', () => {

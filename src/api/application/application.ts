@@ -103,12 +103,12 @@ export class Application extends EmitterBase {
         return listener.topic === this.topic && listener.uuid === this.identity.uuid;
     }
 
-    private windowListFromNameList(nameList: Array<string>): Array<_Window> {
+    private windowListFromIdentityList(identityList: Array<Identity>): Array<_Window> {
         const windowList: Array<_Window> = [];
-        nameList.forEach(name => {
+        identityList.forEach(identity => {
             windowList.push(new _Window(this.wire, {
-                uuid: <string>this.identity.uuid,
-                name: name
+                uuid: identity.uuid,
+                name: identity.name
             }));
         });
 
@@ -143,7 +143,13 @@ export class Application extends EmitterBase {
      */
     public getChildWindows(): Promise<Array<_Window>> {
         return this.wire.sendAction('get-child-windows', this.identity)
-            .then(({ payload }) => this.windowListFromNameList(payload.data));
+            .then(({ payload }) => {
+                const identityList: Array<Identity> = [];
+                payload.data.forEach((winName: string) => {
+                    identityList.push({uuid: this.identity.uuid, name: winName});
+                });
+                return this.windowListFromIdentityList(identityList);
+            });
     }
 
     /**
@@ -154,10 +160,15 @@ export class Application extends EmitterBase {
      */
     public getGroups(): Promise<Array<Array<_Window>>> {
         const winGroups: Array<Array<_Window>> = <Array<Array<_Window>>>[];
-        return this.wire.sendAction('get-application-groups', this.identity)
-            .then(({ payload }) => {
-                payload.data.forEach((list: string[], index: number) => {
-                    winGroups[index] = this.windowListFromNameList(list);
+        return this.wire.sendAction('get-application-groups', Object.assign({}, this.identity, {
+                crossApp: true // cross app group supported
+            })).then(({ payload }) => {
+                payload.data.forEach((windowList: any[], index: number) => {
+                    const identityList: Array<Identity> = [];
+                    windowList.forEach(winInfo => {
+                        identityList.push({uuid: winInfo.uuid, name: winInfo.windowName});
+                    });
+                    winGroups[index] = this.windowListFromIdentityList(identityList);
                 });
 
                 return winGroups;
