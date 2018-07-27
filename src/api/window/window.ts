@@ -5,9 +5,12 @@ import BoundsChangedReply from './bounds-changed';
 import { Transition, TransitionOptions } from './transition';
 import { Application } from '../application/application';
 import Transport from '../../transport/transport';
+import { notImplementedEnvErrorMsg } from '../../environment/environment';
 
 // tslint:disable-next-line
 export default class _WindowModule extends Base {
+    private instance: _Window;
+
     /**
      * Returns a Window object that represents an existing window.
      * @param { Identity } indentity
@@ -15,7 +18,10 @@ export default class _WindowModule extends Base {
      * @tutorial Window.wrap
      */
     public wrap(identity: Identity): Promise<_Window> {
-        return Promise.resolve(new _Window(this.wire, identity));
+        if (!this.instance) {
+            this.instance = new _Window(this.wire, identity);
+        }
+        return Promise.resolve(this.instance);
     }
 
     /**
@@ -25,51 +31,8 @@ export default class _WindowModule extends Base {
      * @tutorial Window.create
      */
     public create(options: any): Promise<_Window> {
-        return new Promise((resolve, reject) => {
-            const CONSTRUCTOR_CB_TOPIC = 'fire-constructor-callback';
-            const win = new _Window(this.wire, {uuid: this.me.uuid, name: options.name});
-            // need to call pageResponse, otherwise when a child window is created, page is not loaded
-            const pageResponse = new Promise((resolve) => {
-                // tslint:disable-next-line
-                win.on(CONSTRUCTOR_CB_TOPIC, function fireConstructor(response: any) {
-                    let cbPayload;
-                    const success = response.success;
-                    const responseData = response.data;
-                    const message = responseData.message;
-
-                    if (success) {
-                        cbPayload = {
-                            httpResponseCode: responseData.httpResponseCode,
-                            apiInjected: responseData.apiInjected
-                        };
-                    } else {
-                        cbPayload = {
-                            message: responseData.message,
-                            networkErrorCode: responseData.networkErrorCode,
-                            stack: responseData.stack
-                        };
-                    }
-
-                    win.removeListener(CONSTRUCTOR_CB_TOPIC, fireConstructor);
-                    resolve({
-                        message: message,
-                        cbPayload: cbPayload,
-                        success: success
-                    });
-                });
-            });
-
-            const windowCreation = this.wire.environment.createChildWindow(options);
-            Promise.all([pageResponse, windowCreation]).then((resolvedArr: any[]) => {
-                const pageResolve = resolvedArr[0];
-                if (pageResolve.success) {
-                    resolve(win);
-                } else {
-                    reject(pageResolve.message);
-                }
-            });
-
-        });
+       const win = new _Window(this.wire, {uuid: this.me.uuid, name: options.name});
+       return win.createWindow(options);
     }
 
     /**
@@ -519,8 +482,74 @@ export class _Window extends EmitterBase {
      * @property {string} state - The preload script state:
      "load-failed", "failed", "succeeded"
      */
+
+    private nativeWindow: any;
+
     constructor(wire: Transport, public identity: Identity) {
         super(wire);
+
+        // if it's openfin environment, need to add a native window to current window object
+        if (this.isOpenFinEnvironment()) {
+            if (this.wire.environment.isWindowExists(identity.uuid, identity.name)) {
+                if (identity.name === window.name) {
+                    this.nativeWindow = window;
+                }
+            }
+        }
+    }
+
+    // create a new window
+    public createWindow(options: any): Promise<_Window> {
+        return new Promise((resolve, reject) => {
+            const CONSTRUCTOR_CB_TOPIC = 'fire-constructor-callback';
+            // need to call pageResponse, otherwise when a child window is created, page is not loaded
+            const pageResponse = new Promise((resolve) => {
+                // tslint:disable-next-line
+                this.on(CONSTRUCTOR_CB_TOPIC, function fireConstructor(response: any) {
+                    let cbPayload;
+                    const success = response.success;
+                    const responseData = response.data;
+                    const message = responseData.message;
+
+                    if (success) {
+                        cbPayload = {
+                            httpResponseCode: responseData.httpResponseCode,
+                            apiInjected: responseData.apiInjected
+                        };
+                    } else {
+                        cbPayload = {
+                            message: responseData.message,
+                            networkErrorCode: responseData.networkErrorCode,
+                            stack: responseData.stack
+                        };
+                    }
+
+                    this.removeListener(CONSTRUCTOR_CB_TOPIC, fireConstructor);
+                    resolve({
+                        message: message,
+                        cbPayload: cbPayload,
+                        success: success
+                    });
+                });
+            });
+
+            const windowCreation = this.wire.environment.createChildWindow(options);
+            Promise.all([pageResponse, windowCreation]).then((resolvedArr: any[]) => {
+                const pageResolve = resolvedArr[0];
+                const childWin = resolvedArr[1];
+                if (pageResolve.success) {
+                    this.nativeWindow = childWin.nativeWindow;
+
+                    //make sure we clean up all references when a window is closed.
+                    this.on('closed', () => {
+                        delete this.nativeWindow;
+                    });
+                    resolve(this);
+                } else {
+                    reject(pageResolve.message);
+                }
+            });
+        });
     }
 
     protected runtimeEventComparator = (listener: RuntimeEvent): boolean => {
@@ -560,6 +589,18 @@ export class _Window extends EmitterBase {
         return this.wire.sendAction('get-window-bounds', this.identity)
             // tslint:disable-next-line
             .then(({ payload }) => payload.data as Bounds);
+    }
+
+    /**
+    * Returns the native JavaScript "window" object for the window.
+    * @return {Promise.<any>}
+    * @tutorial Window.getNativeWindow
+    */
+    public getNativeWindow(): Promise<any> {
+        if (!this.isOpenFinEnvironment()) {
+            throw new Error(notImplementedEnvErrorMsg);
+        }
+        return Promise.resolve(this.nativeWindow);
     }
 
     /**

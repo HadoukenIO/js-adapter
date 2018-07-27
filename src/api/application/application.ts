@@ -83,9 +83,15 @@ export default class ApplicationModule extends Base {
  */
  // @ts-ignore: return types incompatible with EventEmitter (this)
 export class Application extends EmitterBase {
+    private window: _Window;
 
     constructor(wire: Transport, public identity: Identity) {
         super(wire);
+
+        this.window = new _Window(this.wire, {
+            uuid: this.identity.uuid,
+            name: this.identity.uuid
+        });
     }
 
     protected runtimeEventComparator = (listener: RuntimeEvent): boolean => {
@@ -191,10 +197,7 @@ export class Application extends EmitterBase {
      * @tutorial Application.getWindow
      */
     public getWindow(): Promise<_Window> {
-        return Promise.resolve(new _Window(this.wire, {
-            uuid: <string>this.identity.uuid,
-            name: <string>this.identity.uuid
-        }));
+        return Promise.resolve(this.window);
     }
 
     /**
