@@ -37,7 +37,11 @@ export class Channel extends EmitterBase {
 
     // FIX TYPES HERE!
     public async onChannelConnect(listener: Function): Promise<void> {
-        return this.on('connected/*', (payload) => listener(payload.data[0]));
+        console.error('here in on chann con real');
+        return this.on('connected/*', (payload) => {
+            console.error('made it into list', listener);
+            listener(payload.data[0]);
+    });
     }
 
     // DOCS - if want to send payload, put payload in options
@@ -64,15 +68,16 @@ export class Channel extends EmitterBase {
                 const { uuid } = options;
                 const waitResponse: Promise<ChannelClient> = new Promise(resolve => {
                     console.error('in wr', this.onChannelConnect);
-                    // this.onChannelConnect((channel: any) => {
-                    //     console.error('in channel connect', channel);
-                    //     if (channel.uuid === uuid) {
-                    //         this.connect(options).then(response => {
-                    //             resolve(response);
-                    //         });
-                    //     }
-                    // });
-                    this.onChannelConnect(console.log);
+                    try {
+                        this.onChannelConnect((channel: any) => {
+                            console.error('in channel connect', channel);
+                            if (channel.uuid === uuid) {
+                                this.connect(options).then(response => {
+                                    resolve(response);
+                                });
+                            }
+                        });
+                    } catch (e) {console.error('uhoh', e); }
                 });
                 console.error('right before waitRes');
                 await waitResponse;

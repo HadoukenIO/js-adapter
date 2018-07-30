@@ -152,7 +152,6 @@ describe ('Multi Runtime Services', function() {
             async function test() {
                 const [fin, finA] = await Promise.all([launchAndConnect(), launchAndConnect()]);
                 const client = finA.InterApplicationBus.Channel.connect({uuid: 'channel-provider-test'});
-                fin.InterApplicationBus.Channel.onChannelConnect(console.log);
                 client.then(async (c) => {
                     console.error('here inn client');
                     c.register('multi-runtime-test', (r: string) => {
