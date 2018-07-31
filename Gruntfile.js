@@ -23,6 +23,7 @@ const serverParams = {
 
 module.exports = function (grunt) {
     const version = grunt.option('ver');
+    const corePath = grunt.option('core');
     const remote = grunt.option('remote');
     const rvmDir = grunt.option('rvmDir');
     const target = grunt.option('target');
@@ -69,7 +70,7 @@ module.exports = function (grunt) {
         }
         let resolveVersion = require('./out/src/launcher/util').resolveRuntimeVersion;
         resolveVersion(version).then(v => {
-            const process = exec(`core.sh '' ~/AppData/Local/OpenFin/runtime/${v}`);
+            const process = exec(`core.sh ${corePath || ''} ~/AppData/Local/OpenFin/runtime/${v}`);
         });
     });
 
