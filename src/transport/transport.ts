@@ -139,7 +139,7 @@ class Transport extends EventEmitter {
     }
 
     public registerMessageHandler(handler: MessageHandler): void {
-        this.messageHandlers.push(handler);
+        this.messageHandlers.unshift(handler);
     }
 
     protected addWireListener(id: number, resolve: Function, reject: Function, uncorrelated: boolean): void {
