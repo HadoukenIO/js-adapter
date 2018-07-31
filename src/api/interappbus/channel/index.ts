@@ -36,14 +36,14 @@ export class Channel extends EmitterBase {
     }
 
     public async onChannelConnect(listener: Function): Promise<void> {
-        return this.on('internal-connected', (payload) => {
+        return this.on('connected', (payload) => {
             const eventPayload = Object.assign(payload, {type: 'connected'});
             listener(eventPayload);
         });
     }
 
     public async onChannelDisconnect(listener: Function): Promise<void> {
-        return this.on('internal-disconnected', (payload) => {
+        return this.on('disconnected', (payload) => {
             const eventPayload = Object.assign(payload, {type: 'disconnected'});
             listener(eventPayload);
         });
@@ -54,14 +54,6 @@ export class Channel extends EmitterBase {
         try {
             const { payload: { data: providerIdentity } } = await this.wire.sendAction('connect-to-channel', options);
             const channel = new ChannelClient(providerIdentity, this.wire.sendAction.bind(this.wire));
-            channel.onChannelDisconnect = (listener: () => void) => {
-                this.registerEventListener({
-                    topic: 'channel',
-                    type: 'disconnected',
-                    ...providerIdentity
-                });
-                this.on('disconnected', listener);
-            };
             const key = providerIdentity.channelId || providerIdentity.uuid;
             this.channelMap.set(key, channel);
             return channel;
