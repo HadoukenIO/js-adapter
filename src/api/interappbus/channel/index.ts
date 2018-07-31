@@ -8,6 +8,7 @@ import { ProviderIdentity } from './channel';
 export interface Options {
     wait?: boolean;
     uuid: string;
+    name?: string;
     payload?: any;
 }
 
@@ -51,7 +52,7 @@ export class Channel extends EmitterBase {
 
     // DOCS - if want to send payload, put payload in options
     public async connect(options: Options): Promise<ChannelClient> {
-        const { uuid } = options;
+        const { uuid, name } = options;
         let resolver: any;
         let listener: any;
         //@ts-ignore
@@ -59,9 +60,11 @@ export class Channel extends EmitterBase {
         const waitResponse: Promise<ChannelClient> = new Promise(resolve => {
             resolver = resolve;
             listener = (payload: any) => {
+                // Will need to be improved for uuid/name combo and channelName
                 if (uuid === payload.uuid) {
                     this.connect(options).then(response => {
                         resolve(response);
+                        this.removeListener('channel-connected', listener);
                     });
                 }
             };
@@ -69,7 +72,9 @@ export class Channel extends EmitterBase {
         });
         try {
             const { payload: { data: providerIdentity } } = await this.wire.sendAction('connect-to-channel', options);
-            resolver();
+            if (resolver) {
+                resolver();
+            }
             this.removeListener('channel-connected', listener);
             const channel = new ChannelClient(providerIdentity, this.wire.sendAction.bind(this.wire));
             const key = providerIdentity.channelId || providerIdentity.uuid;
