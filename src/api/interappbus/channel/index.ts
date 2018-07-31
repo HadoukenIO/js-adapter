@@ -35,13 +35,11 @@ export class Channel extends EmitterBase {
             .then(({ payload }) => payload.data);
     }
 
-    // FIX TYPES HERE!
     public async onChannelConnect(listener: Function): Promise<void> {
-        console.error('here in on chann con real');
-        return this.on('connected/*', (payload) => {
-            console.error('made it into list', listener);
-            listener(payload.data[0]);
-    });
+        return this.on('internal-connected', (payload) => {
+            const eventPayload = Object.assign(payload, {type: 'connected'});
+            listener(eventPayload);
+        });
     }
 
     // DOCS - if want to send payload, put payload in options
@@ -61,30 +59,28 @@ export class Channel extends EmitterBase {
             this.channelMap.set(key, channel);
             return channel;
         } catch (e) {
-            console.error('in error');
+            // HOW TO ACTUALLY ERROR OUT???
             const shouldWait: boolean = Object.assign({ wait: true }, options).wait;
-            if (shouldWait) {
-                console.error('in sw');
+            const internalNackMessage = 'internal-nack';
+            if (shouldWait && e.message === internalNackMessage) {
                 const { uuid } = options;
+                //@ts-ignore
+                // tslint:disable-next-line
                 const waitResponse: Promise<ChannelClient> = new Promise(resolve => {
-                    console.error('in wr', this.onChannelConnect);
-                    try {
-                        this.onChannelConnect((channel: any) => {
-                            console.error('in channel connect', channel);
-                            if (channel.uuid === uuid) {
-                                this.connect(options).then(response => {
-                                    resolve(response);
-                                });
-                            }
-                        });
-                    } catch (e) {console.error('uhoh', e); }
+                    this.onChannelConnect((payload: any) => {
+                        if (uuid === payload.uuid) {
+                            this.connect(options).then(response => {
+                                resolve(response);
+                            });
+                        }
+                    });
                 });
-                console.error('right before waitRes');
                 await waitResponse;
-                console.error('right after waitRes');
                 return Promise.resolve(waitResponse);
+            } else if (e.message === internalNackMessage) {
+                throw new Error('No channel found');
             } else {
-                throw new Error(e.message);
+                throw new Error(e);
             }
         }
     }

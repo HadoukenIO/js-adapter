@@ -7,7 +7,7 @@ import * as path from 'path';
 import * as sinon from 'sinon';
 
 describe ('Multi Runtime Services', function() {
-    this.timeout(TEST_TIMEOUT / 4);
+    this.timeout(TEST_TIMEOUT / 3);
     const appConfig = JSON.parse(fs.readFileSync(path.resolve('test/app.json')).toString());
 
     beforeEach(async () => {
@@ -151,23 +151,19 @@ describe ('Multi Runtime Services', function() {
 
             async function test() {
                 const [fin, finA] = await Promise.all([launchAndConnect(), launchAndConnect()]);
-                const client = finA.InterApplicationBus.Channel.connect({uuid: 'channel-provider-test'});
-                client.then(async (c) => {
-                    console.error('here inn client');
+                finA.InterApplicationBus.Channel.connect({uuid: 'channel-provider-test'})
+                .then((c) => {
                     c.register('multi-runtime-test', (r: string) => {
                         assert.equal(r, 'return-mrt', 'wrong payload sent from service');
                         done();
                     });
-                    await delayPromise(1000);
                     c.dispatch('test').then(res => {
                         assert.equal(res, 'return-test', 'wrong return payload from service');
                     });
                 });
                 await delayPromise(2000);
-                console.error('here');
                 const service = await fin.Application.create(serviceConfig);
                 await service.run();
-                console.error('here');
             }
             test();
         });

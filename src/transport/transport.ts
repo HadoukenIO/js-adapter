@@ -155,7 +155,6 @@ class Transport extends EventEmitter {
 
     // This method executes message handlers until the _one_ that handles the message (returns truthy) has run
     protected onmessage(data: Message<Payload>): void {
-        console.error('onmessage', JSON.stringify(data));
         for (const h of this.messageHandlers) {
             h.call(null, data);
         }

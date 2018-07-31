@@ -76,7 +76,6 @@ export class EmitterBase extends Base {
     }
 
     protected registerEventListener = (listener: RuntimeEvent): Promise<void | Message<void>> => {
-        console.error('registerEList', JSON.stringify(listener));
         const key = createKey(listener);
         const refCount = this.wire.topicRefMap.get(key);
 
@@ -103,12 +102,12 @@ export class EmitterBase extends Base {
             }
             return Promise.resolve();
         }
+        // This will only be reached if unsubscribe from event that does not exist but do not want to error here
+        return Promise.resolve();
     }
 
     public on(eventType: string, listener: (...args: any[]) => void): Promise<void> {
         this.emitter.on(eventType, listener);
-        console.error('on topic, eventtype,', this.topic, eventType);
-        console.error('this.id,', this.identity);
         return this.registerEventListener(Object.assign({}, this.identity, {
             type: eventType,
             topic: this.topic
