@@ -5,17 +5,23 @@ import { delayPromise } from './delay-promise';
 import * as fs from 'fs';
 import * as path from 'path';
 import * as sinon from 'sinon';
+import { conn } from './connect';
+import Fin from '../src/api/fin';
 
-describe ('Multi Runtime Services', function() {
-    this.timeout(TEST_TIMEOUT / 3);
+describe ('Multi Runtime Channels', function() {
+    this.retries(2);
+    this.slow(TEST_TIMEOUT / 2 );
+    this.timeout(TEST_TIMEOUT);
+
+    let fin: Fin;
     const appConfig = JSON.parse(fs.readFileSync(path.resolve('test/app.json')).toString());
 
-    beforeEach(async () => {
-        await cleanOpenRuntimes();
+    before(async () => {
+        fin = await conn();
     });
 
-    after(async () => {
-        await cleanOpenRuntimes();
+    beforeEach(async () => {
+        return await cleanOpenRuntimes();
     });
 
     describe('Multi Runtime with External Provider', function () {
@@ -39,8 +45,8 @@ describe ('Multi Runtime Services', function() {
 
             async function test () {
                 const spy = sinon.spy();
-                const [fin, finA] = await Promise.all([launchAndConnect(), launchAndConnect()]);
-                const provider = await finA.InterApplicationBus.Channel.create();
+                const [finA, finB] = await Promise.all([launchAndConnect(), launchAndConnect()]);
+                const provider = await finB.InterApplicationBus.Channel.create();
                 provider.register('test', () => {
                     spy();
                     return 'return-test';
@@ -48,19 +54,18 @@ describe ('Multi Runtime Services', function() {
                 provider.onConnection(c => {
                     spy();
                 });
-                const client = await fin.Application.create(clientConfig);
+                const client = await finA.Application.create(clientConfig);
                 await client.run();
                 await delayPromise(DELAY_MS);
-                await fin.InterApplicationBus.subscribe({uuid: 'channel-client-test'}, 'return', (msg: any) => {
+                await finA.InterApplicationBus.subscribe({uuid: 'channel-client-test'}, 'return', (msg: any) => {
                     assert.ok(spy.calledTwice, 'Did not get IAB from dispatch');
                     assert.equal(msg, 'return-test');
                     done();
                 });
-                await finA.InterApplicationBus.publish('start', 'hi');
+                await finB.InterApplicationBus.publish('start', 'hi');
             }
-            test();
+            test().catch(() => cleanOpenRuntimes());
         });
-
     });
 
     describe('Multi Runtime with External Client', function () {
@@ -82,11 +87,11 @@ describe ('Multi Runtime Services', function() {
             };
 
             async function test() {
-                const [fin, finA] = await Promise.all([launchAndConnect(), launchAndConnect()]);
-                const service = await fin.Application.create(serviceConfig);
+                const [finA, finB] = await Promise.all([launchAndConnect(), launchAndConnect()]);
+                const service = await finA.Application.create(serviceConfig);
                 await service.run();
-                await delayPromise(1000);
-                const client = await finA.InterApplicationBus.Channel.connect({uuid: 'channel-provider-test'});
+                await delayPromise(DELAY_MS);
+                const client = await finB.InterApplicationBus.Channel.connect({uuid: 'channel-provider-test'});
                 client.register('multi-runtime-test', (r: string) => {
                     assert.equal(r, 'return-mrt', 'wrong payload sent from service');
                     done();
@@ -95,7 +100,7 @@ describe ('Multi Runtime Services', function() {
                     assert.equal(res, 'return-test', 'wrong return payload from service');
                 });
             }
-            test();
+            test().catch(() => cleanOpenRuntimes());
         });
     });
 
@@ -118,16 +123,16 @@ describe ('Multi Runtime Services', function() {
             };
 
             async function test() {
-                const [fin, finA] = await Promise.all([launchAndConnect(), launchAndConnect()]);
-                const service = await fin.Application.create(serviceConfig);
+                const [finA, finB] = await Promise.all([launchAndConnect(), launchAndConnect()]);
+                const service = await finA.Application.create(serviceConfig);
                 await service.run();
-                await delayPromise(1000);
-                await finA.InterApplicationBus.Channel.create('test-channel-multi-runtime');
+                await finB.InterApplicationBus.Channel.create('test-channel-multi-runtime');
+                await delayPromise(DELAY_MS * 3);
                 const allChannels = await fin.InterApplicationBus.Channel.getAllChannels();
                 assert.equal(allChannels.length, 2, `expected 2 channels in allChannels: ${JSON.stringify(allChannels)}`);
                 done();
             }
-            test();
+            test().catch(() => cleanOpenRuntimes());
         });
     });
 
@@ -138,9 +143,9 @@ describe ('Multi Runtime Services', function() {
             const newUrl = url.slice(0, url.lastIndexOf('/')) + '/service.html';
 
             const serviceConfig = {
-                'name': 'channel-provider-test',
+                'name': 'channel-provider-mrtest',
                 'url': newUrl,
-                'uuid': 'channel-provider-test',
+                'uuid': 'channel-provider-mrtest',
                 'autoShow': true,
                 'saveWindowState': false,
                 'nonPersistent': true,
@@ -150,8 +155,8 @@ describe ('Multi Runtime Services', function() {
             };
 
             async function test() {
-                const [fin, finA] = await Promise.all([launchAndConnect(), launchAndConnect()]);
-                finA.InterApplicationBus.Channel.connect({uuid: 'channel-provider-test'})
+                const [finA, finB] = await Promise.all([launchAndConnect(), launchAndConnect()]);
+                finB.InterApplicationBus.Channel.connect({uuid: 'channel-provider-mrtest'})
                 .then((c) => {
                     c.register('multi-runtime-test', (r: string) => {
                         assert.equal(r, 'return-mrt', 'wrong payload sent from service');
@@ -161,11 +166,11 @@ describe ('Multi Runtime Services', function() {
                         assert.equal(res, 'return-test', 'wrong return payload from service');
                     });
                 });
-                await delayPromise(2000);
-                const service = await fin.Application.create(serviceConfig);
+                await delayPromise(DELAY_MS * 2);
+                const service = await finA.Application.create(serviceConfig);
                 await service.run();
             }
-            test();
+            test().catch(() => cleanOpenRuntimes());
         });
     });
 });
