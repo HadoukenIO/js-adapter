@@ -42,6 +42,13 @@ export class Channel extends EmitterBase {
         });
     }
 
+    public async onChannelDisconnect(listener: Function): Promise<void> {
+        return this.on('internal-disconnected', (payload) => {
+            const eventPayload = Object.assign(payload, {type: 'disconnected'});
+            listener(eventPayload);
+        });
+    }
+
     // DOCS - if want to send payload, put payload in options
     public async connect(options: Options): Promise<ChannelClient> {
         try {
@@ -59,7 +66,6 @@ export class Channel extends EmitterBase {
             this.channelMap.set(key, channel);
             return channel;
         } catch (e) {
-            // HOW TO ACTUALLY ERROR OUT???
             const shouldWait: boolean = Object.assign({ wait: true }, options).wait;
             const internalNackMessage = 'internal-nack';
             if (shouldWait && e.message === internalNackMessage) {
@@ -75,8 +81,7 @@ export class Channel extends EmitterBase {
                         }
                     });
                 });
-                await waitResponse;
-                return Promise.resolve(waitResponse);
+                return await waitResponse;
             } else if (e.message === internalNackMessage) {
                 throw new Error('No channel found');
             } else {
