@@ -67,6 +67,10 @@ module.exports = function (grunt) {
         if (!version) {
             grunt.fail.fatal('No version given, please provide a target version');
         }
+        let resolveVersion = require('./out/src/launcher/util').resolveRuntimeVersion;
+        resolveVersion(version).then(v => {
+            const process = exec(`core.sh '' ~/AppData/Local/OpenFin/runtime/${v}`);
+        });
     });
 
     grunt.registerTask('clean', function () {
