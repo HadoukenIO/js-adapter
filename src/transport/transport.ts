@@ -17,6 +17,8 @@ import {
     NoAckError,
     RuntimeError
 } from './transport-errors';
+import { RuntimeEvent } from '../api/base';
+import {dispatchEvent} from '../api/events/eventAggregator';
 
 declare var fin: any;
 
@@ -25,7 +27,7 @@ export type MessageHandler = (data: any) => boolean;
 class Transport extends EventEmitter {
     protected wireListeners: Map<number, { resolve: Function, reject: Function }> = new Map();
     protected uncorrelatedListener: Function;
-    protected messageHandlers: MessageHandler[] = [];
+    protected messageHandlers: MessageHandler[] = [dispatchEvent];
     public me: Identity;
     protected wire: Wire;
     public environment: Environment;
@@ -139,7 +141,7 @@ class Transport extends EventEmitter {
     }
 
     public registerMessageHandler(handler: MessageHandler): void {
-        this.messageHandlers.unshift(handler);
+        this.messageHandlers.push(handler);
     }
 
     protected addWireListener(id: number, resolve: Function, reject: Function, uncorrelated: boolean): void {
@@ -204,6 +206,10 @@ export class Message<T> {
     public action: string;
     public payload: T;
     public correlationId?: number;
+}
+export class EventMessage implements Message<RuntimeEvent> {
+   public action: 'process-desktop-event';
+   public payload: RuntimeEvent;
 }
 export class Payload {
     public success: boolean;

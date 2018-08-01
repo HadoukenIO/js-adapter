@@ -180,7 +180,7 @@ import { ClearCacheOption } from './clearCacheOption';
 export default class System extends EmitterBase {
 
     constructor(wire: Transport) {
-        super(wire);
+        super(wire, ['system']);
     }
 
     /**

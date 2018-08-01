@@ -91,7 +91,7 @@ export class Application extends EmitterBase {
     private window: _Window;
 
     constructor(wire: Transport, public identity: Identity) {
-        super(wire);
+        super(wire, ['application', identity.uuid]);
 
         this.window = new _Window(this.wire, {
             uuid: this.identity.uuid,

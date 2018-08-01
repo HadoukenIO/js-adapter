@@ -486,7 +486,7 @@ export class _Window extends EmitterBase {
     private nativeWindow: any;
 
     constructor(wire: Transport, public identity: Identity) {
-        super(wire);
+        super(wire, ['window', identity.uuid, identity.name]);
 
         // if it's openfin environment, need to add a native window to current window object
         if (this.isOpenFinEnvironment()) {

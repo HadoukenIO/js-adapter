@@ -27,7 +27,7 @@ export default class ExternalApplicationModule extends Base {
 export class ExternalApplication extends EmitterBase {
 
     constructor(wire: Transport, public identity: Identity) {
-        super(wire);
+        super(wire, ['external-application', identity.uuid]);
     }
 
     /**

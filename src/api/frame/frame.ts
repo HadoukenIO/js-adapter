@@ -43,7 +43,7 @@ export default class _FrameModule extends Base {
 export class _Frame extends EmitterBase {
 
     constructor(wire: Transport, public identity: Identity) {
-        super(wire);
+        super(wire, ['frame', identity.uuid]);
     }
 
     /**
