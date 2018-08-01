@@ -120,6 +120,14 @@ describe('System.', function () {
         it('Fulfilled', () => fin.System.getCommandLineArguments().then(() => assert(true)));
     });
 
+    describe('getCrashReporterState()', () => {
+
+        it('Fulfilled', () => fin.System.getCrashReporterState().then(state => {
+            assert(typeof(state.diagnosticMode) === 'boolean');
+            assert(typeof(state.isRunning) === 'boolean');
+        }));
+    });
+
     describe('getDeviceId()', () => {
 
         it('Fulfilled', () => fin.System.getDeviceId().then(() => assert(true)));

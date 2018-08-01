@@ -19,6 +19,7 @@ import { RegistryInfo } from './registry-info';
 import { DownloadPreloadOption, DownloadPreloadInfo } from './download-preload';
 import { RuntimeError, NotSupportedError } from '../../transport/transport-errors';
 import { ClearCacheOption } from './clearCacheOption';
+import { CrashReporterOption } from './crashReporterOption';
 
 /**
  * AppAssetInfo interface
@@ -170,6 +171,14 @@ import { ClearCacheOption } from './clearCacheOption';
  * @property {boolean} localStorage browser data that can be used across sessions
  */
 
+ /**
+ * CrashReporterOption interface
+ * @typedef { Object } CrashReporterOption
+ * @property { boolean } diagnosticMode In diagnostic mode the crash reporter will send diagnostic logs to
+ *  the OpenFin reporting service on runtime shutdown
+ * @property { boolean } isRunning check if it's running
+ */
+
 /**
  * An object representing the core of OpenFin Runtime. Allows the developer
  * to perform system-level actions, such as accessing logs, viewing processes,
@@ -261,6 +270,15 @@ export default class System extends EmitterBase {
     public getCommandLineArguments(): Promise<string> {
         return this.wire.sendAction('get-command-line-arguments')
             .then(({ payload }) => payload.data);
+    }
+
+    /**
+     * Get the current state of the crash reporter.
+     * @return {Promise.<CrashReporterOption>}
+     * @tutorial System.getCrashReporterState
+     */
+    public getCrashReporterState(): Promise<CrashReporterOption> {
+        return this.wire.sendAction('get-crash-reporter-state').then(({ payload }) => payload.data);
     }
 
     /**
