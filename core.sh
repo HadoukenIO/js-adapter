@@ -11,9 +11,11 @@ TARBALL_NAME=$(ls hadouken-js-adapter-* -t | head -1)
 ADAPTER_DIR=$(pwd)
 
 if [ ! -z "$CORE_PATH" ]; then
+    echo Building core found at $CORE_PATH
     cd $CORE_PATH
 else
     rm core -rf
+    echo Pulling develop core from GitHub
     git clone https://github.com/HadoukenIO/core.git
     cd core
     CORE_PATH=$(pwd)
