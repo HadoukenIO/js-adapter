@@ -283,6 +283,14 @@ describe('System.', function () {
             .then(() => assert(true)));
     });
 
+    describe('startCrashReporter()', () => {
+
+        it('Fulfilled', () => fin.System.startCrashReporter({diagnosticMode: true}).then(reporter => {
+            assert(typeof(reporter.diagnosticMode) === 'boolean');
+            assert(typeof(reporter.isRunning) === 'boolean');
+        }));
+    });
+
     describe('updateProxySettings()', () => {
         const proxySettings = {
             type: 'system',

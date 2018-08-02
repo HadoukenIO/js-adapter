@@ -291,6 +291,24 @@ export default class System extends EmitterBase {
     }
 
     /**
+     * Start the crash reporter for the browser process if not already running.
+     * You can optionally specify `diagnosticMode` to have the logs sent to
+     * OpenFin on runtime close
+     *
+     * @param { CrashReporterOption } options - configure crash reporter
+     * @return {Promise.<CrashReporterOption>}
+     * @tutorial System.startCrashReporter
+     */
+    public startCrashReporter(options: CrashReporterOption): Promise<CrashReporterOption> {
+        return new Promise((resolve, reject) => {
+            if (!options.diagnosticMode) {
+                return reject(new Error('diagnosticMode not found in options'));
+            }
+            this.wire.sendAction('start-crash-reporter', options).then(({ payload }) => resolve(payload.data)).catch(err => reject(err));
+        });
+    }
+
+    /**
      * Returns a hex encoded hash of the mac address and the currently logged in user name
      * @return {Promise.<string>}
      * @tutorial System.getDeviceUserId
