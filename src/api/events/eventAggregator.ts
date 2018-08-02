@@ -19,8 +19,11 @@ function mapKeyFromEvent (event: RuntimeEvent) {
 }
 
 export function dispatchEvent(message: Message<any>) {
+    console.log(message);
+
     if (isEventMessage(message)) {
         const {payload} = message;
+        //tslint:disable-next-line
         const accessor = mapKeyFromEvent(payload);
         if (emitterMap.has(accessor)) {
            emitterMap.get(accessor).emit(payload.type, payload);

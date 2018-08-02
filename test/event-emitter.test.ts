@@ -57,7 +57,6 @@ describe ('Event Emitter Methods', () => {
             await win.moveBy(1, 1);
             const boundsChangedCount = win.listenerCount('bounds-changed');
             await win.close();
-            console.log(boundsChangedCount);
             assert(boundsChangedCount === 0, 'Expected bounds-changed to be removed');
             assert(boundsSpy.calledOnce);
             assert(closedSpy.calledOnce);
