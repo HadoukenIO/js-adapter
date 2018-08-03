@@ -188,7 +188,7 @@ module.exports = function (grunt) {
             });
         }
         else {
-            buildCore();
+            buildCore(corePath || '');
         }
     });
 

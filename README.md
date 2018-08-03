@@ -124,10 +124,10 @@ npm test -- --ver=alpha --invert --grep="System"
 ## Test with core
 
 ```bash
-npm run core -- ~/core
+npm run core -- --core=~/core
 ```
 
-or without specifying the core path (core will be cloned from GH into parent folder):
+or without specifying the core path (core will be cloned from GH into `core` directory):
 
 ```bash
 npm run core
