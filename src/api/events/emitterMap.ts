@@ -28,8 +28,6 @@ export class EmitterMap {
 
 }
 
-export const emitterMap = new EmitterMap();
-
 function normalizeString(s: string): string {
     const b = new Buffer(s);
     return b.toString('base64');

@@ -176,7 +176,6 @@ import { ClearCacheOption } from './clearCacheOption';
  * clearing the cache and exiting the runtime.
  * @namespace
  */
-// @ts-ignore: return types incompatible with EventEmitter (this)
 export default class System extends EmitterBase {
 
     constructor(wire: Transport) {

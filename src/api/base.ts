@@ -1,8 +1,8 @@
 import Transport from '../transport/transport';
 import { Identity } from '../identity';
 import { promiseMap } from '../util/promises';
-import { emitterMap, EmitterAccessor } from './events/emitterMap';
 import { EventEmitter } from 'events';
+import { EmitterAccessor } from './events/emitterMap';
 
 export interface RuntimeEvent extends Identity {
     topic: string;
@@ -55,15 +55,13 @@ export class EmitterBase extends Base {
 
     public eventNames = () => this.hasEmitter() ? this.getEmitter().eventNames() : [];
 
-    protected listenerDecorator = (x: (...args: any[]) => void) => x;
-
     public emit = (eventName: string | symbol, ...args: any[]) => {
         return this.hasEmitter()
             ? this.getEmitter().emit(eventName, ...args)
             : false;
     }
-    private hasEmitter = () => emitterMap.has(this.emitterAccessor);
-    private getEmitter = () => emitterMap.get(this.emitterAccessor);
+    private hasEmitter = () => this.wire.eventAggregator.has(this.emitterAccessor);
+    private getEmitter = () => this.wire.eventAggregator.get(this.emitterAccessor);
 
     public listeners = (type: string | symbol) => this.hasEmitter() ? this.getEmitter().listeners(type) : [];
     public listenerCount = (type: string | symbol) => this.hasEmitter() ? this.getEmitter().listenerCount(type) : 0;
@@ -75,7 +73,6 @@ export class EmitterBase extends Base {
         });
         const emitter = this.getEmitter();
         const refCount = emitter.listenerCount(runtimeEvent.type);
-
         if (!refCount) {
             await this.wire.sendAction('subscribe-to-desktop-event', runtimeEvent);
         }
@@ -91,9 +88,12 @@ export class EmitterBase extends Base {
             const emitter = this.getEmitter();
             const refCount = emitter.listenerCount(runtimeEvent.type);
             const newRefCount = refCount - 1;
-
             if (newRefCount === 0) {
                 await this.wire.sendAction('unsubscribe-to-desktop-event', runtimeEvent);
+                if (emitter.eventNames().length === 0) {
+                    this.wire.eventAggregator.delete(this.emitterAccessor);
+                    return;
+                }
             }
             return emitter;
         }
@@ -101,7 +101,7 @@ export class EmitterBase extends Base {
 
     public async on(eventType: string, listener: (...args: any[]) => void): Promise<this> {
         const emitter = await this.registerEventListener(eventType);
-        emitter.on(eventType, this.listenerDecorator(listener));
+        emitter.on(eventType, listener);
         return this;
     }
 
@@ -110,20 +110,20 @@ export class EmitterBase extends Base {
         const deregister = () => this.deregisterEventListener(eventType);
         const emitter = await this.registerEventListener(eventType);
         emitter.once(eventType, deregister);
-        emitter.once(eventType, this.listenerDecorator(listener));
+        emitter.once(eventType, listener);
         return this;
     }
 
     public async prependListener(eventType: string, listener: (...args: any[]) => void): Promise<this> {
         const emitter = await this.registerEventListener(eventType);
-        emitter.prependListener(eventType, this.listenerDecorator(listener));
+        emitter.prependListener(eventType, listener);
         return this;
     }
 
     public async prependOnceListener(eventType: string, listener: (...args: any[]) => void): Promise<this> {
         const deregister = () => this.deregisterEventListener(eventType);
         const emitter = await this.registerEventListener(eventType);
-        emitter.prependOnceListener(eventType, this.listenerDecorator(listener));
+        emitter.prependOnceListener(eventType, listener);
         emitter.once(eventType, deregister);
         return this;
     }
@@ -131,10 +131,9 @@ export class EmitterBase extends Base {
     public async removeListener(eventType: string, listener: (...args: any[]) => void): Promise<this> {
         const emitter = await this.deregisterEventListener(eventType);
         if (emitter) {
-            emitter.removeListener(eventType, this.listenerDecorator(listener));
+            emitter.removeListener(eventType, listener);
         }
         return this;
-
     }
 
     protected deregisterAllListeners = async (eventType: string | symbol): Promise<EventEmitter | void> => {
@@ -145,7 +144,13 @@ export class EmitterBase extends Base {
 
         if (this.hasEmitter()) {
             await this.wire.sendAction('unsubscribe-to-desktop-event', runtimeEvent);
-            return this.getEmitter();
+            const emitter = this.getEmitter();
+            emitter.removeAllListeners(eventType);
+            if (emitter.eventNames().length === 0) {
+                this.wire.eventAggregator.delete(this.emitterAccessor);
+                return;
+            }
+            return emitter;
         }
     }
 

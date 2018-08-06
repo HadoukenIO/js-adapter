@@ -190,7 +190,6 @@ describe('Multi Runtime', function() {
                         await delayPromise(DELAY_MS);
                         const realApp = await finB.Application.create(appConfig);
                         await realApp.run();
-                        console.log('running');
 
                         await delayPromise(DELAY_MS);
                         await realApp.close();

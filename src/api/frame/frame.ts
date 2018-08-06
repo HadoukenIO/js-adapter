@@ -38,7 +38,6 @@ export default class _FrameModule extends Base {
  * @class
  * @alias Frame
  */
-// @ts-ignore: return types incompatible with EventEmitter (this)
 // tslint:disable-next-line
 export class _Frame extends EmitterBase {
 
@@ -67,9 +66,8 @@ export class _Frame extends EmitterBase {
 
 }
 
-// @ts-ignore: return types incompatible with EventEmitter (this)
 // tslint:disable-next-line
 export interface _Frame {
-    on(type: 'connected', listener: (eventType: string) => void): Promise<void>;
-    on(type: 'disconnected', listener: (eventType: string) => void): Promise<void>;
+    on(type: 'connected', listener: (eventType: string) => void): Promise<this>;
+    on(type: 'disconnected', listener: (eventType: string) => void): Promise<this>;
 }

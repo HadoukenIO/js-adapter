@@ -18,7 +18,7 @@ import {
     RuntimeError
 } from './transport-errors';
 import { RuntimeEvent } from '../api/base';
-import {dispatchEvent} from '../api/events/eventAggregator';
+import {EventAggregator} from '../api/events/eventAggregator';
 
 declare var fin: any;
 
@@ -27,12 +27,13 @@ export type MessageHandler = (data: any) => boolean;
 class Transport extends EventEmitter {
     protected wireListeners: Map<number, { resolve: Function, reject: Function }> = new Map();
     protected uncorrelatedListener: Function;
-    protected messageHandlers: MessageHandler[] = [dispatchEvent];
     public me: Identity;
     protected wire: Wire;
     public environment: Environment;
     public topicRefMap: Map<string, number> = new Map();
     public sendRaw: Wire['send'];
+    public eventAggregator = new EventAggregator();
+    protected messageHandlers: MessageHandler[] = [this.eventAggregator.dispatchEvent];
 
     constructor(wireType: WireConstructor, environment: Environment) {
         super();
@@ -157,7 +158,6 @@ class Transport extends EventEmitter {
 
     // This method executes message handlers until the _one_ that handles the message (returns truthy) has run
     protected onmessage(data: Message<Payload>): void {
-
         for (const h of this.messageHandlers) {
             h.call(null, data);
         }

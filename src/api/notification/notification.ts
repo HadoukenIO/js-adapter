@@ -56,31 +56,6 @@ export class _Notification extends EmitterBase {
         this.listenerList.length = 0;
     }
 
-    private buildLocalPayload(rawPayload: any): NotificationCallback {
-        const { payload: { message }, type } = rawPayload;
-
-        const payload: NotificationCallback = {};
-
-        switch (type) {
-            case 'message': payload.message = message;
-                break;
-            case 'show':
-            case 'error':
-            case 'click':
-            case 'close':
-            default: break;
-        }
-
-        return payload;
-    }
-    private undecoratedListenerMap = new WeakMap<(...args: any[]) => void, (...args: any[]) => void>();
-    protected listenerDecorator = (listener: (...args: any[]) => void) => {
-        if (!this.undecoratedListenerMap.has(listener)) {
-            this.undecoratedListenerMap.set(listener, (payload: any) => listener(this.buildLocalPayload(payload)));
-        }
-        return this.undecoratedListenerMap.get(listener);
-    }
-
     protected options: NotificationOptions;
     protected generalListener: (msg: any) => void;
     protected notificationId: number;
@@ -159,7 +134,6 @@ export class _Notification extends EmitterBase {
      * @tutorial Notification.close
      */
     public async close(): Promise<void> {
-
         await this.wire.sendAction('send-action-to-notifications-center', {
             action: 'close-notification',
             payload: {
