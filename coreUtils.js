@@ -23,7 +23,7 @@ module.exports.buildCore = function (corePath, coreDest) {
     shell.cd('out');
 
     if (coreDest) {
-        shell.cp('*.asar', coreDest);
+        shell.exec('npm run deploy -- --target=' + coreDest);
         shell.echo(`Finished! .asar was created in ${shell.pwd().stdout} and copied into ${coreDest}`);
     }
     else {

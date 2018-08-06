@@ -70,6 +70,15 @@ module.exports = function (grunt) {
         if (!version) {
             grunt.fail.fatal('No version given, please provide a target version');
         }
+        else{
+            let done = this.async();
+            resolveRuntimeVersion(version).then((v) => {
+                if(!grunt.file.exists(`${process.env.localAppData}/OpenFin/runtime/${v}`)){
+                    grunt.fail.fatal('The specified version of the core was not found');
+                }
+                done();
+            });
+        }
     });
 
     grunt.registerTask('clean', function () {
@@ -183,7 +192,7 @@ module.exports = function (grunt) {
         if (version) {
             let done = this.async();
             resolveRuntimeVersion(version).then(v => {
-                buildCore(corePath || '', `~/AppData/Local/OpenFin/runtime/${v}/OpenFin/resources`);
+                buildCore(corePath || '', `${process.env.localAppData}/OpenFin/runtime/${v}/OpenFin/resources`);
                 done();
             });
         }
