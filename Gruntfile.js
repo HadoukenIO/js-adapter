@@ -183,11 +183,21 @@ module.exports = function (grunt) {
         if (version) {
             let done = this.async();
             resolveRuntimeVersion(version).then(v => {
-                if(!grunt.file.exists(`${process.env.localAppData}/OpenFin/runtime/${v}`)){
-                    console.log(v);
-                    grunt.fail.fatal('The specified version of the core was not found');
+                if (process.platform === 'win32') {
+                    // Windows
+                    if (!grunt.file.exists(`${process.env.localAppData}/OpenFin/runtime/${v}`)) {
+                        grunt.log.error('The specified version of the core was not found. The default version will be built.');
+                        buildCore(corePath || '');
+                    }
+                    else {
+                        buildCore(corePath || '', `${process.env.localAppData}/OpenFin/runtime/${v}/OpenFin/resources`);
+                    }
                 }
-                buildCore(corePath || '', `${process.env.localAppData}/OpenFin/runtime/${v}/OpenFin/resources`);
+                else {
+                    // *nix system
+                    // TODO deploy to appropriate directory
+                    buildCore(corePath || '');
+                }
                 done();
             });
         }
