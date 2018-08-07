@@ -2,6 +2,7 @@ const shell = require('shelljs');
 const https = require('https');
 
 module.exports.buildCore = function (corePath, coreDest) {
+    shell.exec('npm pack');
     let tarballName = shell.ls('-l', 'hadouken-js-adapter-*').map(a => a).sort((a, b) => { b.mtimeMs - a.mtimeMs })[0].name;
     let adapterDir = shell.pwd().stdout;
     if (corePath) {
@@ -72,4 +73,12 @@ async function get(url) {
         });
         request.on('error', (err) => reject(err));
     });
+}
+
+function takeWhile(arr, func) {
+    return arr.reduce(({ take, vals }, x, i, r) => take && func(x, i, r)
+        ? { take: true, vals: [...vals, x] }
+        : { take: false, vals },
+        { take: true, vals: [] })
+        .vals;
 }
