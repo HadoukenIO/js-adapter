@@ -186,8 +186,7 @@ module.exports = function (grunt) {
                 if (process.platform === 'win32') {
                     // Windows
                     if (!grunt.file.exists(`${process.env.localAppData}/OpenFin/runtime/${v}`)) {
-                        grunt.log.error('The specified version of the core was not found. The default version will be built.');
-                        buildCore(corePath || '');
+                        grunt.log.error('WARNING: The specified version of runtime does not exist. The core wil not be deployed.');
                     }
                     else {
                         buildCore(corePath || '', `${process.env.localAppData}/OpenFin/runtime/${v}/OpenFin/resources`);
@@ -196,7 +195,7 @@ module.exports = function (grunt) {
                 else {
                     // *nix system
                     // TODO deploy to appropriate directory
-                    buildCore(corePath || '');
+                    grunt.log.error('WARNING: Core deployment on ' + process.platform + ' is not supported. Core wil not be deployed.');
                 }
                 done();
             });
