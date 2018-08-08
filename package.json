@@ -12,7 +12,8 @@
         "ts": "tsc",
         "path": "PATH",
         "prepublish": "npm run build",
-        "doc": "npm run build && jsdoc -c jsdoc-conf.json -t jsdoc-template -u tutorials out/src --verbose"
+        "doc": "npm run build && jsdoc -c jsdoc-conf.json -t jsdoc-template -u tutorials out/src --verbose",
+        "core": "grunt core"
     },
     "devDependencies": {
         "@types/mocha": "^2.2.38",
@@ -37,6 +38,7 @@
     },
     "dependencies": {
         "@types/node": "^9.4.6",
+        "shelljs": "^0.8.2",
         "ws": "~1.1.1"
     }
 }

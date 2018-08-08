@@ -103,6 +103,12 @@ npm run build
 npm test -- --ver=alpha
 ```
 
+Specifying the core path
+
+```bash
+npm test -- --ver=alpha --core=~/core
+```
+
 Only executing tests that pattern match "Application"
 
 ```bash
@@ -113,6 +119,18 @@ Executing tests that do not pattern match "System"
 
 ```bash
 npm test -- --ver=alpha --invert --grep="System"
+```
+
+## Test with core
+
+```bash
+npm run core -- --core=~/core
+```
+
+or without specifying the core path (core will be cloned from GH into `core` directory):
+
+```bash
+npm run core
 ```
 
 ## Repl
