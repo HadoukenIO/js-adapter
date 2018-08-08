@@ -42,7 +42,7 @@ module.exports.resolveRuntimeVersion = async function (versionOrChannel) {
             //    tslint:disable-next-line:no-backbone-get-set-outside-model
             const res = await get('https://cdn.openfin.co/release/runtimeVersions');
             const versions = res.split('\r\n');
-            const match = first(versions, (v) => v.split('.').slice(0, mustMatch.length).join('.') === mustMatch.join('.'));
+            const match = versions.find((v) => v.split('.').slice(0, mustMatch.length).join('.') === mustMatch.join('.'));
             if (match) {
                 return match;
             }
