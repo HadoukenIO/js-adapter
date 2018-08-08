@@ -8,8 +8,7 @@ module.exports.buildCore = function (corePath, coreDest) {
     if (corePath) {
         shell.echo(`Buliding core found at ${corePath}`);
         shell.cd(corePath);
-    }
-    else {
+    } else {
         shell.rm('-rf', 'core');
         shell.echo('Pulling develop core from GitHub');
         shell.exec('git clone https://github.com/HadoukenIO/core.git');
@@ -24,10 +23,14 @@ module.exports.buildCore = function (corePath, coreDest) {
     shell.cd('out');
 
     if (coreDest) {
-        shell.exec('npm run deploy -- --target=' + coreDest);
-        shell.echo(`Finished! .asar was created in ${shell.pwd().stdout} and copied into ${coreDest}`);
-    }
-    else {
+        shell.exec('npm run deploy -- --force --target=' + coreDest, function (code, stdout, stderr) {
+            if (!stderr) {
+                shell.echo(`Finished! .asar was created in ${shell.pwd().stdout} and copied into ${coreDest}`);
+            } else {
+                shell.echo(`\r\nDeploy failed with error above and exit code: ${code} \r\n`);
+            }
+        });
+    } else {
         shell.echo('Finished! .asar was created in ' + shell.pwd().stdout);
     }
     shell.cd(adapterDir);
