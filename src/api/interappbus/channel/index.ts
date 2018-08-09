@@ -8,6 +8,7 @@ import { ProviderIdentity } from './channel';
 export interface Options {
     wait?: boolean;
     uuid: string;
+    name?: string;
     payload?: any;
 }
 
@@ -35,35 +36,60 @@ export class Channel extends EmitterBase {
             .then(({ payload }) => payload.data);
     }
 
-    public async onChannelConnect(identity: Identity, listener: EventListener): Promise<void> {
-        this.registerEventListener({
-            topic: 'channel',
-            type: 'connected',
-            ...identity
+    public async onChannelConnect(listener: Function): Promise<void> {
+        return this.on('channel-connected', (payload) => {
+            const eventPayload = Object.assign(payload, {type: 'connected'});
+            listener(eventPayload);
         });
-        this.on('connected', listener);
+    }
+
+    public async onChannelDisconnect(listener: Function): Promise<void> {
+        return this.on('channel-disconnected', (payload) => {
+            const eventPayload = Object.assign(payload, {type: 'disconnected'});
+            listener(eventPayload);
+        });
     }
 
     // DOCS - if want to send payload, put payload in options
     public async connect(options: Options): Promise<ChannelClient> {
-        try {
-            const { payload: { data: providerIdentity } } = await this.wire.sendAction('connect-to-channel', Object.assign({
-                wait: true
-            }, options));
-            const channel = new ChannelClient(providerIdentity, this.wire.sendAction.bind(this.wire));
-            channel.onChannelDisconnect = (listener: () => void) => {
-                this.registerEventListener({
-                    topic: 'channel',
-                    type: 'disconnected',
-                    ...providerIdentity
-                });
-                this.on('disconnected', listener);
+        const { uuid, name } = options;
+        let resolver: any;
+        let listener: any;
+        //@ts-ignore
+        // tslint:disable-next-line
+        const waitResponse: Promise<ChannelClient> = new Promise(resolve => {
+            resolver = resolve;
+            listener = (payload: any) => {
+                // Will need to be improved for uuid/name combo and channelName
+                if (uuid === payload.uuid) {
+                    this.connect(options).then(response => {
+                        resolve(response);
+                        this.removeListener('channel-connected', listener);
+                    });
+                }
             };
+            this.on('channel-connected', listener);
+        });
+        try {
+            const { payload: { data: providerIdentity } } = await this.wire.sendAction('connect-to-channel', options);
+            if (resolver) {
+                resolver();
+            }
+            this.removeListener('channel-connected', listener);
+            const channel = new ChannelClient(providerIdentity, this.wire.sendAction.bind(this.wire));
             const key = providerIdentity.channelId || providerIdentity.uuid;
             this.channelMap.set(key, channel);
             return channel;
         } catch (e) {
-            throw new Error(e.message);
+            const shouldWait: boolean = Object.assign({ wait: true }, options).wait;
+            const internalNackMessage = 'internal-nack';
+            if (shouldWait && e.message === internalNackMessage) {
+                return await waitResponse;
+            } else if (e.message === internalNackMessage) {
+                throw new Error('No channel found');
+            } else {
+                throw new Error(e);
+            }
         }
     }
 
