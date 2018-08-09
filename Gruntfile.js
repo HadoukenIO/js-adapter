@@ -3,8 +3,9 @@ const manifestPath = path.resolve('test', 'app.json');
 const httpServer = require('http-server');
 const ps = require('ps-node');
 const os = require('os');
-const exec = require('child_process').exec;
+const { exec } = require('child_process');
 const webpack = require('webpack');
+const { buildCore, resolveRuntimeVersion } = require('./coreUtils');
 
 const outDir = path.resolve('out');
 const webpackConfig = {
@@ -21,8 +22,10 @@ const serverParams = {
     ignore: path.resolve('html')
 };
 
+
 module.exports = function (grunt) {
     const version = grunt.option('ver');
+    const corePath = grunt.option('core');
     const remote = grunt.option('remote');
     const rvmDir = grunt.option('rvmDir');
     const target = grunt.option('target');
@@ -91,7 +94,7 @@ module.exports = function (grunt) {
         } else {
             const deployPath = path.join(target, 'js-adapter', 'js-adapter.js');
             grunt.file.copy(webpackConfig.output.filename, deployPath);
-            grunt.log.ok(`deployed to ${ deployPath }`);
+            grunt.log.ok(`deployed to ${deployPath}`);
         }
     });
 
@@ -105,10 +108,10 @@ module.exports = function (grunt) {
                 if (err.details) {
                     grunt.fail.fatal(err.details, 3);
                 }
-            } else if(stats.hasErrors()) {
+            } else if (stats.hasErrors()) {
                 const info = stats.toJson();
                 grunt.fail.fatal(info.errors, 3);
-            } else if(stats.hasWarnings()) {
+            } else if (stats.hasWarnings()) {
                 const info = stats.toJson();
                 grunt.fail.warn(info.warnings, 6);
             } else {
@@ -145,17 +148,17 @@ module.exports = function (grunt) {
         );
     });
 
-    grunt.registerTask('launch-openfin', function() {
+    grunt.registerTask('launch-openfin', function () {
         const { launch } = require(path.join(outDir, 'src', 'main.js'));
         const done = this.async();
 
-        launch( {
+        launch({
             manifestUrl: manifestPath
         }).then(done).catch(done);
 
     });
 
-    grunt.registerTask('update-manifest', function() {
+    grunt.registerTask('update-manifest', function () {
         const manifest = {
             runtime: {
                 arguments: args,
@@ -174,6 +177,29 @@ module.exports = function (grunt) {
         };
 
         grunt.file.write(manifestPath, JSON.stringify(manifest));
+    });
+
+    grunt.registerTask('core', function () {
+        if (version) {
+            let done = this.async();
+            resolveRuntimeVersion(version).then(v => {
+                if (process.platform === 'win32') {
+                    // Windows
+                    if (!grunt.file.exists(`${process.env.localAppData}/OpenFin/runtime/${v}`)) {
+                        grunt.log.error('WARNING: The specified version of runtime does not exist. The core wil not be deployed.');
+                    } else {
+                        buildCore(corePath || '', `${process.env.localAppData}/OpenFin/runtime/${v}/OpenFin/resources`);
+                    }
+                } else {
+                    // *nix system
+                    // TODO deploy to appropriate directory
+                    grunt.log.error('WARNING: Core deployment on ' + process.platform + ' is not supported. Core wil not be deployed.');
+                }
+                done();
+            });
+        } else {
+            buildCore(corePath || '');
+        }
     });
 
     grunt.loadNpmTasks('grunt-shell');
@@ -199,6 +225,7 @@ module.exports = function (grunt) {
 
     grunt.registerTask('test', [
         'check-version',
+        'core',
         'default',
         'start-server',
         'openfin',

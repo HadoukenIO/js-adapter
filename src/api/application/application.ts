@@ -12,7 +12,12 @@ export interface TrayIconClickReply extends Point, Reply<'application', 'tray-ic
 }
 
 export interface ApplicationInfo {
+    initialOptions: object;
     launchMode: string;
+    manifest: object;
+    manifestUrl: string;
+    parentUuid?: string;
+    runtime: object;
 }
 
 export class NavigationRejectedReply extends Reply<'window-navigation-rejected', void> {
@@ -324,7 +329,6 @@ export class Application extends EmitterBase {
 
     /**
      * Retrieves information about the application.
-     * message after a certain period of time.
      * @return {Promise.<ApplicationInfo>}
      * @tutorial Application.getInfo
      */
