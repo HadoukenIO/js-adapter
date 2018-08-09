@@ -63,8 +63,8 @@ async function spawnRealm(version: string, realm?: string, args?: Array<string>)
                     env: {
                         ELECTRON_NO_ATTACH_CONSOLE: 1
                     },
-                    detached: true
-
+                    detached: true,
+                    stdio: ['pipe', 'ignore', 'pipe']
                 };
                 const runtime = ChildProcess.spawn(ofEXElocation, args, opts);
 
