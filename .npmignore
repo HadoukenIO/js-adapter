@@ -5,9 +5,15 @@ tsconfig.json
 tslint.json
 tutorials
 scripts
+jsdoc-conf.json
+docs.README.md
+Gruntfile.js
+yarn.lock
 resources/
 test
 repl/
 src/
 jsdoc-template/
 docs/
+core
+out/repl

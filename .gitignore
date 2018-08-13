@@ -17,3 +17,5 @@ cache.dat
 /cache
 /runtime
 /apps
+hadouken-js-adapter-*.tgz
+/core

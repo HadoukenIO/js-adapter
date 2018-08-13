@@ -97,6 +97,8 @@ export class EmitterBase extends Base {
             }
             return emitter;
         }
+        // This will only be reached if unsubscribe from event that does not exist but do not want to error here
+        return Promise.resolve();
     }
 
     public async on(eventType: string, listener: (...args: any[]) => void): Promise<this> {
