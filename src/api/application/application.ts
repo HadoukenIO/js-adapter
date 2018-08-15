@@ -213,6 +213,15 @@ export class Application extends EmitterBase {
     }
 
     /**
+     * Returns the zoom level of the application.
+     * @return {Promise.<number>}
+     * @tutorial Application.getZoomLevel
+     */
+    public getZoomLevel(): Promise<number> {
+        return this.wire.sendAction('get-application-zoom-level', this.identity).then(({ payload }) => payload.data);
+    }
+
+    /**
      * Returns an instance of the main Window of the application
      * @return {Promise.<_Window>}
      * @tutorial Application.getWindow
@@ -294,6 +303,16 @@ export class Application extends EmitterBase {
     public setShortcuts(config: ConfigInterface): Promise<void> {
         return this.wire.sendAction('set-shortcuts', Object.assign({}, this.identity, {data: config})
                ).then(() => undefined);
+    }
+
+    /**
+     * Sets the zoom level of the application.
+     * @param { number } level The zoom level
+     * @return {Promise.<void>}
+     * @tutorial Application.setZoomLevel
+     */
+    public setZoomLevel(level: number): Promise<void> {
+        return this.wire.sendAction('set-application-zoom-level', Object.assign({}, this.identity, { level })).then(() => undefined);
     }
 
     /**
