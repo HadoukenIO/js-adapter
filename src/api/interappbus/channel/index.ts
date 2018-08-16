@@ -6,8 +6,9 @@ import Transport, { Message, Payload } from '../../../transport/transport';
 import { ProviderIdentity } from './channel';
 
 export interface Options {
-    wait?: boolean;
     uuid: string;
+    channelName?: string;
+    wait?: boolean;
     name?: string;
     payload?: any;
 }
@@ -37,14 +38,14 @@ export class Channel extends EmitterBase {
     }
 
     public async onChannelConnect(listener: Function): Promise<void> {
-        return this.on('channel-connected', (payload) => {
+        return this.on('connected', (payload) => {
             const eventPayload = Object.assign(payload, {type: 'connected'});
             listener(eventPayload);
         });
     }
 
     public async onChannelDisconnect(listener: Function): Promise<void> {
-        return this.on('channel-disconnected', (payload) => {
+        return this.on('disconnected', (payload) => {
             const eventPayload = Object.assign(payload, {type: 'disconnected'});
             listener(eventPayload);
         });
@@ -52,7 +53,7 @@ export class Channel extends EmitterBase {
 
     // DOCS - if want to send payload, put payload in options
     public async connect(options: Options): Promise<ChannelClient> {
-        const { uuid, name } = options;
+        const { uuid, name, channelName } = options;
         let resolver: any;
         let listener: any;
         //@ts-ignore
@@ -60,30 +61,36 @@ export class Channel extends EmitterBase {
         const waitResponse: Promise<ChannelClient> = new Promise(resolve => {
             resolver = resolve;
             listener = (payload: any) => {
-                // Will need to be improved for uuid/name combo and channelName
                 if (uuid === payload.uuid) {
+                    if (channelName && channelName !== payload.channelName) {
+                        console.warn(`Channel created by ${uuid}: ${payload}
+                        Still waiting for channelName ${channelName}.`);
+                        return;
+                    }
+                    this.removeListener('connected', listener);
                     this.connect(options).then(response => {
                         resolve(response);
-                        this.removeListener('channel-connected', listener);
                     });
                 }
             };
-            this.on('channel-connected', listener);
+            this.on('connected', listener);
         });
         try {
             const { payload: { data: providerIdentity } } = await this.wire.sendAction('connect-to-channel', options);
+            // If there isn't a matching channel, the above sendAction call will error out and go to catch, skipping the logic below
             if (resolver) {
                 resolver();
             }
-            this.removeListener('channel-connected', listener);
+            this.removeListener('connected', listener);
             const channel = new ChannelClient(providerIdentity, this.wire.sendAction.bind(this.wire));
-            const key = providerIdentity.channelId || providerIdentity.uuid;
+            const key = providerIdentity.channelId;
             this.channelMap.set(key, channel);
             return channel;
         } catch (e) {
             const shouldWait: boolean = Object.assign({ wait: true }, options).wait;
             const internalNackMessage = 'internal-nack';
             if (shouldWait && e.message === internalNackMessage) {
+                console.warn(`Channel not found for uuid: ${uuid}, waiting for channel creation.`);
                 return await waitResponse;
             } else if (e.message === internalNackMessage) {
                 throw new Error('No channel found');
@@ -96,7 +103,7 @@ export class Channel extends EmitterBase {
     public async create(channelName?: string): Promise<ChannelProvider> {
         const { payload: { data: providerIdentity } } = await this.wire.sendAction('create-channel', {channelName});
         const channel = new ChannelProvider(providerIdentity, this.wire.sendAction.bind(this.wire));
-        const key = providerIdentity.channelId || providerIdentity.uuid;
+        const key = providerIdentity.channelId;
         this.channelMap.set(key, channel);
         return channel;
     }
