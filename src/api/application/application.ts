@@ -42,11 +42,21 @@ export default class ApplicationModule extends Base {
     /**
      * Returns an Application object that represents an existing application.
      * @param { Identity } indentity
-     * @return {Promise.<Application>}
+     * @return Promise<Application>
      * @tutorial Application.wrap
      */
     public wrap(identity: Identity): Promise<Application> {
         return Promise.resolve(new Application(this.wire, identity));
+    }
+
+    /**
+     * Returns an Application object that represents an existing application.
+     * @param { Identity } indentity
+     * @return Application
+     * @tutorial Application.wrapSync
+     */
+    public wrapSync(identity: Identity): Application {
+        return new Application(this.wire, identity);
     }
 
     /**
