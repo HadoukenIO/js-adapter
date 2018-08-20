@@ -40,7 +40,7 @@ export interface TrayInfo {
 
 export default class ApplicationModule extends Base {
     /**
-     * Returns an Application object that represents an existing application.
+     * Asynchronously returns an Application object that represents an existing application.
      * @param { Identity } indentity
      * @return Promise<Application>
      * @tutorial Application.wrap
@@ -50,7 +50,7 @@ export default class ApplicationModule extends Base {
     }
 
     /**
-     * Returns an Application object that represents an existing application.
+     * Synchronously returns an Application object that represents an existing application.
      * @param { Identity } indentity
      * @return Application
      * @tutorial Application.wrapSync
