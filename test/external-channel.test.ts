@@ -1,6 +1,6 @@
 /* tslint:disable:no-invalid-this no-function-expression insecure-random mocha-no-side-effect-code no-empty */
 import * as assert from 'assert';
-import { cleanOpenRuntimes, DELAY_MS, TEST_TIMEOUT } from './multi-runtime-utils';
+import { cleanOpenRuntimes, DELAY_MS, TEST_TIMEOUT, launchAndConnect } from './multi-runtime-utils';
 import { conn } from './connect';
 import { delayPromise } from './delay-promise';
 import { Fin } from '../src/main';
@@ -8,7 +8,7 @@ import * as fs from 'fs';
 import * as path from 'path';
 import * as sinon from 'sinon';
 
-describe ('External Services', function() {
+describe ('External Channel Provider', function() {
     let fin: Fin;
     const appConfig = JSON.parse(fs.readFileSync(path.resolve('test/app.json')).toString());
     this.timeout(TEST_TIMEOUT / 4);
@@ -24,6 +24,7 @@ describe ('External Services', function() {
             const { uuid } = a;
             return fin.Application.wrap({uuid}).then(app => app.close());
         }));
+        await cleanOpenRuntimes();
     });
 
     describe('External Provider', function () {
@@ -33,9 +34,9 @@ describe ('External Services', function() {
             const newUrl = url.slice(0, url.lastIndexOf('/')) + '/client.html';
 
             const clientConfig = {
-                'name': 'service-client-test',
+                'name': 'channel-client-test',
                 'url': newUrl,
-                'uuid': 'service-client-test',
+                'uuid': 'channel-client-test',
                 'autoShow': true,
                 'saveWindowState': false,
                 'nonPersistent': true,
@@ -46,7 +47,8 @@ describe ('External Services', function() {
 
             async function test () {
                 const spy = sinon.spy();
-                const provider = await fin.Service.register();
+                const finA = await launchAndConnect();
+                const provider = await finA.InterApplicationBus.Channel.create('test');
                 provider.register('test', () => {
                     spy();
                     return 'return-test';
@@ -54,21 +56,20 @@ describe ('External Services', function() {
                 provider.onConnection(c => {
                     spy();
                 });
-                const client = await fin.Application.create(clientConfig);
+                const client = await finA.Application.create(clientConfig);
                 await client.run();
                 const listener = (msg: any) => {
                     assert(spy.calledTwice && msg === 'return-test', 'Did not get IAB from dispatch');
-                    fin.InterApplicationBus.unsubscribe({uuid: 'service-client-test'}, 'return', listener);
+                    finA.InterApplicationBus.unsubscribe({uuid: 'channel-client-test'}, 'return', listener);
                     done();
                 };
-                await fin.InterApplicationBus.subscribe({uuid: 'service-client-test'}, 'return', listener);
+                await finA.InterApplicationBus.subscribe({uuid: 'channel-client-test'}, 'return', listener);
                 await delayPromise(DELAY_MS);
-                await fin.InterApplicationBus.publish('start', 'hi');
+                await finA.InterApplicationBus.publish('start', 'hi');
                 await delayPromise(DELAY_MS);
             }
             test();
         });
-
     });
 
     describe('External Client', function () {
@@ -79,9 +80,9 @@ describe ('External Services', function() {
             const newUrl = url.slice(0, url.lastIndexOf('/')) + '/service.html';
 
             const serviceConfig = {
-                'name': 'service-provider-test',
+                'name': 'channel-provider-test',
                 'url': newUrl,
-                'uuid': 'service-provider-test',
+                'uuid': 'channel-provider-test',
                 'autoShow': true,
                 'saveWindowState': false,
                 'nonPersistent': true,
@@ -91,9 +92,11 @@ describe ('External Services', function() {
             };
 
             async function test() {
-                const service = await fin.Application.create(serviceConfig);
+                const finA = await launchAndConnect();
+                const service = await finA.Application.create(serviceConfig);
                 await service.run();
-                const client = await fin.Service.connect({uuid: 'service-provider-test'});
+                const providerIdentity = {uuid: 'channel-provider-test', name: 'channel-provider-test'};
+                const client = await finA.InterApplicationBus.Channel.connect(providerIdentity);
                 client.dispatch('test').then(res => {
                     assert(res === 'return-test');
                     done();

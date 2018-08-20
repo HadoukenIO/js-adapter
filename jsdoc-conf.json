@@ -12,7 +12,6 @@
             "out/src/api/notification",
             "out/src/api/external-application",
             "out/src/api/frame",
-            "out/src/api/plugin",
             "out/src/api/global-hotkey"
         ]
     },

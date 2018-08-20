@@ -125,6 +125,18 @@ describe('Window.', function() {
         it('Fulfilled', () => testWindow.getNativeId().then(data => assert(typeof (data) === 'string')));
     });
 
+    describe('getNativeWindow()', () => {
+        it('should fail', async () => {
+            try {
+                await testWindow.getNativeWindow();
+            } catch (err) {
+                assert.ok(err instanceof Error, 'Expected error thrown to be an instance of Error');
+                assert.equal(err.message, 'Not implemented in this environment', 'Expected error messages to match');
+            }
+
+        });
+    });
+
     describe('disableFrame()', () => {
 
         it('Fulfilled', () => testWindow.disableFrame().then(() => assert(true)));
@@ -162,6 +174,30 @@ describe('Window.', function() {
     describe('flash()', () => {
 
         it('Fulfilled', () => testWindow.flash().then(() => assert(true)));
+    });
+
+    describe('getGroup() cross different applications', () => {
+        const app2Config = {
+            name: 'app2',
+            url: 'about:blank',
+            uuid: 'app2',
+            autoShow: true,
+            nonPersistent: true
+        };
+        let app2Win: Window;
+
+        before(async () => {
+            // create a second app
+            const app2 = await fin.Application.create(app2Config);
+            await app2.run();
+            app2Win = await app2.getWindow();
+        });
+
+        it('Fulfilled', () => testWindow.joinGroup(app2Win).then(() => testWindow.getGroup()
+            .then(group => {
+                assert(group.length === 2);
+                assert(group[0].identity.uuid !== group[1].identity.uuid);
+            })));
     });
 
     describe('getGroup()', () => {

@@ -84,7 +84,7 @@ describe('Multi Runtime', function () {
                 const isRunning = await app.isRunning();
 
                 assert.equal(isRunning, true, 'Expected application to be running');
-                return await realApp.close().then();
+                return await realApp.close();
             });
         });
     });

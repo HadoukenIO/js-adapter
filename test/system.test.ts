@@ -19,8 +19,13 @@ describe('System.', function () {
     });
 
     describe('clearCache()', () => {
-
-        it('Fulfilled', () => fin.System.clearCache().then(() => assert(true)));
+        const clearCacheOptions = {
+            appcache: true,
+            cache: true,
+            cookies: true,
+            localStorage: true
+        };
+        it('Fulfilled', () => fin.System.clearCache(clearCacheOptions).then(() => assert(true)));
     });
 
     describe('deleteCacheOnExit()', () => {
@@ -113,6 +118,14 @@ describe('System.', function () {
     describe('getCommandLineArguments()', () => {
 
         it('Fulfilled', () => fin.System.getCommandLineArguments().then(() => assert(true)));
+    });
+
+    describe('getCrashReporterState()', () => {
+
+        it('Fulfilled', () => fin.System.getCrashReporterState().then(state => {
+            assert(typeof(state.diagnosticMode) === 'boolean');
+            assert(typeof(state.isRunning) === 'boolean');
+        }));
     });
 
     describe('getDeviceId()', () => {
@@ -268,6 +281,14 @@ describe('System.', function () {
 
         it('Fulfilled', () => fin.System.showDeveloperTools(identity)
             .then(() => assert(true)));
+    });
+
+    describe('startCrashReporter()', () => {
+
+        it('Fulfilled', () => fin.System.startCrashReporter({diagnosticMode: true}).then(reporter => {
+            assert(typeof(reporter.diagnosticMode) === 'boolean');
+            assert(typeof(reporter.isRunning) === 'boolean');
+        }));
     });
 
     describe('updateProxySettings()', () => {

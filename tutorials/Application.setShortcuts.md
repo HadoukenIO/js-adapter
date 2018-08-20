@@ -1,5 +1,4 @@
 Sets new application's shortcut configuration
-
 # Example
 ```js
 async function setShortcuts(config) {
