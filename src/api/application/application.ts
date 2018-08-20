@@ -213,7 +213,7 @@ export class Application extends EmitterBase {
     }
 
     /**
-     * Returns the zoom level of the application.
+     * Returns the current zoom level of the application.
      * @return {Promise.<number>}
      * @tutorial Application.getZoomLevel
      */
@@ -306,7 +306,8 @@ export class Application extends EmitterBase {
     }
 
     /**
-     * Sets the zoom level of the application.
+     * Sets the zoom level of the application. The original size is 0 and each increment above or below represents zooming 20%
+     * larger or smaller to default limits of 300% and 50% of original size, respectively.
      * @param { number } level The zoom level
      * @return {Promise.<void>}
      * @tutorial Application.setZoomLevel

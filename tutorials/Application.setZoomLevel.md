@@ -1,4 +1,4 @@
-Sets the zoom level of the application
+Sets the zoom level of the application. The original size is 0 and each increment above or below represents zooming 20% larger or smaller to default limits of 300% and 50% of original size, respectively.
 
 # Example
 ```js

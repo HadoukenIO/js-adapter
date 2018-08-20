@@ -1,4 +1,4 @@
-Returns the zoom level of the application
+Returns the current zoom level of the application
 
 # Example
 ```js
