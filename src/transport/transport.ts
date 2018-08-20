@@ -211,6 +211,14 @@ export class EventMessage implements Message<RuntimeEvent> {
    public action: 'process-desktop-event';
    public payload: RuntimeEvent;
 }
+export class NotificationEventMessage implements Message<NotificationEvent> {
+    public action: 'process-notification-event';
+    public payload: NotificationEvent;
+}
+export interface NotificationEvent {
+    payload: { notificationId: string; };
+    type: string | symbol;
+}
 export class Payload {
     public success: boolean;
     public data: any;
