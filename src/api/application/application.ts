@@ -80,6 +80,15 @@ export default class ApplicationModule extends Base {
     }
 
     /**
+     * Synchronously returns an Application object that represents the current application
+     * @return Application>
+     * @tutorial Application.getCurrentSync
+     */
+    public getCurrentSync(): Application {
+        return this.wrapSync({ uuid: this.wire.me.uuid });
+    }
+
+    /**
      * Retrieves application's manifest and returns a wrapped application.
      * @param {string} manifestUrl - The URL of app's manifest.
      * @return {Promise.<Application>}

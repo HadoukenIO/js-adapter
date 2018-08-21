@@ -270,4 +270,15 @@ describe('Application.', function() {
             assert.deepEqual(returnVal.identity, testApp.identity);
         });
     });
+
+    describe('getCurrentSync()', () => {
+        it('exists', () => {
+            assert(typeof fin.Application.getCurrentSync === 'function');
+        });
+
+        it('should return Application', () => {
+            const returnVal = fin.Application.getCurrentSync();
+            assert(returnVal instanceof Application);
+        });
+    });
 });
