@@ -20,7 +20,7 @@ const enum nonHotkeyEvents {
 export default class GlobalHotkey extends EmitterBase {
 
     constructor(wire: Transport) {
-        super(wire);
+        super(wire, ['global-hotkey']);
         this.topic = 'global-hotkey';
     }
 
@@ -30,7 +30,7 @@ export default class GlobalHotkey extends EmitterBase {
      * @tutorial GlobalHotkey.register
      */
     public async register(hotkey: string, listener: (...args: any[]) => void): Promise<void> {
-        this.emitter.on(hotkey, listener);
+        await this.on(hotkey, listener);
         await this.wire.sendAction(apiActions.REGISTER, { hotkey });
         return void 0;
     }
@@ -41,7 +41,7 @@ export default class GlobalHotkey extends EmitterBase {
      * @tutorial GlobalHotkey.unregister
      */
     public async unregister(hotkey: string): Promise<void> {
-        this.emitter.removeAllListeners(hotkey);
+        await this.removeAllListeners(hotkey);
         await this.wire.sendAction(apiActions.UNREGISTER, { hotkey });
         return void 0;
     }
@@ -52,10 +52,9 @@ export default class GlobalHotkey extends EmitterBase {
      * @tutorial GlobalHotkey.unregisterAll
      */
     public async unregisterAll(): Promise<void> {
-        this.emitter.eventNames()
+        await Promise.all(this.eventNames()
             .filter((name: string) => !(name === nonHotkeyEvents.REGISTERED || name === nonHotkeyEvents.UNREGISTERED))
-            .forEach((name: string) => this.emitter.removeAllListeners(name));
-
+            .map((name: string) => this.removeAllListeners(name)));
         await this.wire.sendAction(apiActions.UNREGISTER_ALL, {});
         return void 0;
     }

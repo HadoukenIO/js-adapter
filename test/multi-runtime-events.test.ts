@@ -182,7 +182,7 @@ describe('Multi Runtime', function() {
                         const appConfig = getAppConfig();
                         const finA = await launchAndConnect();
                         await delayPromise(DELAY_MS);
-                        finA.System.on('application-started', (e: any) => {
+                        await finA.System.on('application-started', (e: any) => {
                             assert.equal(e.type, 'application-started', 'Expected event type to match event');
                             done();
                         });

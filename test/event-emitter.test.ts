@@ -82,4 +82,21 @@ describe ('Event Emitter Methods', () => {
         });
     });
 
+    it('it should be able to wrap a window', async () => {
+        const boundsSpy = sinon.spy(async () => {
+            await fin.Window.wrap(appConfigTemplate);
+        });
+        const closedSpy = sinon.spy();
+        await win.addListener('bounds-changed', boundsSpy);
+        await win.addListener('closed', closedSpy);
+        await win.moveBy(1, 1);
+        await win.removeAllListeners('bounds-changed');
+        await win.moveBy(1, 1);
+        const boundsChangedCount = win.listenerCount('bounds-changed');
+        await win.close();
+        assert(boundsChangedCount === 0, 'Expected bounds-changed to be removed');
+        assert(boundsSpy.calledOnce);
+        assert(closedSpy.calledOnce);
+    });
+
 });
