@@ -254,4 +254,20 @@ describe('Application.', function() {
             });
         });
     });
+
+    describe('getZoomLevel()', () => {
+
+        it('Fulfilled', () => testApp.getZoomLevel().then(level => assert(level === 0)));  // by default, it's zero.
+    });
+
+    describe('setZoomLevel()', () => {
+
+        const zoomLevel = 2;
+        it('Fulfilled', async () => {
+
+            await testApp.setZoomLevel(zoomLevel);
+            const newZoomLevel = await testApp.getZoomLevel();
+            assert(newZoomLevel === zoomLevel);
+        });
+    });
 });
