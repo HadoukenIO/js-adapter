@@ -76,9 +76,9 @@ describe('Application.', function() {
 
     describe('getGroups() cross different applications', () => {
         const app2Config = {
-            name: 'app2',
+            name: 'app3',
             url: 'about:blank',
-            uuid: 'app2',
+            uuid: 'app3',
             autoShow: true,
             nonPersistent: true
         };

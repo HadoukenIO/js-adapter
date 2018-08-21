@@ -25,7 +25,7 @@ export interface ChannelMessage extends Message<any> {
 export class Channel extends EmitterBase {
     private channelMap: Map<string, ChannelProvider | ChannelClient>;
     constructor(wire: Transport) {
-        super(wire);
+        super(wire, ['channel']);
         this.topic = 'channel';
         this.channelMap = new Map();
         wire.registerMessageHandler(this.onmessage.bind(this));
@@ -37,14 +37,14 @@ export class Channel extends EmitterBase {
     }
 
     public async onChannelConnect(listener: Function): Promise<void> {
-        return this.on('channel-connected', (payload) => {
+        await this.on('channel-connected', (payload) => {
             const eventPayload = Object.assign(payload, {type: 'connected'});
             listener(eventPayload);
         });
     }
 
     public async onChannelDisconnect(listener: Function): Promise<void> {
-        return this.on('channel-disconnected', (payload) => {
+        await this.on('channel-disconnected', (payload) => {
             const eventPayload = Object.assign(payload, {type: 'disconnected'});
             listener(eventPayload);
         });

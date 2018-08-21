@@ -56,44 +56,12 @@ export class _Notification extends EmitterBase {
         this.listenerList.length = 0;
     }
 
-    private buildLocalPayload(rawPayload: any): NotificationCallback {
-        const { payload: { message }, type } = rawPayload;
-
-        const payload: NotificationCallback = {};
-
-        switch (type) {
-            case 'message': payload.message = message;
-                break;
-            case 'show':
-            case 'error':
-            case 'click':
-            case 'close':
-            default: break;
-        }
-
-        return payload;
-    }
-
     protected options: NotificationOptions;
     protected generalListener: (msg: any) => void;
     protected notificationId: number;
 
-    protected onmessage = (message: any): boolean => {
-        const { action, payload: messagePayload } = message;
-
-        if (action === 'process-notification-event') {
-            const { payload: { notificationId }, type } = messagePayload;
-
-            if (notificationId === this.notificationId) {
-                this.emitter.emit(type, this.buildLocalPayload(messagePayload));
-            }
-        }
-
-        return true;
-    }
-
     constructor(wire: Transport, options: NotificationOptions) {
-        super(wire);
+        super(wire, ['notification', '' + options.notificationId]);
 
         this.options = options;
         this.url = options.url;
@@ -166,7 +134,6 @@ export class _Notification extends EmitterBase {
      * @tutorial Notification.close
      */
     public async close(): Promise<void> {
-
         await this.wire.sendAction('send-action-to-notifications-center', {
             action: 'close-notification',
             payload: {

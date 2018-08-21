@@ -90,13 +90,12 @@ export default class ApplicationModule extends Base {
  * execute, show/close an application as well as listen to application events.
  * @class
  */
- // @ts-ignore: return types incompatible with EventEmitter (this)
 export class Application extends EmitterBase {
     public _manifestUrl?: string;
     private window: _Window;
 
     constructor(wire: Transport, public identity: Identity) {
-        super(wire);
+        super(wire, ['application', identity.uuid]);
 
         this.window = new _Window(this.wire, {
             uuid: this.identity.uuid,
@@ -338,22 +337,21 @@ export class Application extends EmitterBase {
 
 }
 
-// @ts-ignore: return types incompatible with EventEmitter (this)
 export interface Application {
-    on(type: 'closed', listener: (data: Reply<'application', 'closed'>) => void): Promise<void>;
-    on(type: 'initialized', listener: (data: Reply<'application', 'initialized'>) => void): Promise<void>;
-    on(type: 'connected', listener: (data: Reply<'application', 'connected'>) => void): Promise<void>;
-    on(type: 'crashed', listener: (data: Reply<'application', 'crashed'>) => void): Promise<void>;
-    on(type: 'error', listener: (data: Reply<'application', 'error'>) => void): Promise<void>;
-    on(type: 'not-responding', listener: (data: Reply<'application', 'not-responding'>) => void): Promise<void>;
-    on(type: 'out-of-memory', listener: (data: Reply<'application', 'out-of-memory'>) => void): Promise<void>;
-    on(type: 'responding', listener: (data: Reply<'application', 'responding'>) => void): Promise<void>;
-    on(type: 'started', listener: (data: Reply<'application', 'started'>) => void): Promise<void>;
-    on(type: 'run-requested', listener: (data: Reply<'application', 'run-requested'>) => void): Promise<void>;
-    on(type: 'window-navigation-rejected', listener: (data: NavigationRejectedReply) => void): Promise<void>;
-    on(type: 'window-created', listener: (data: Reply<'application', 'window-created'>) => void): Promise<void>;
-    on(type: 'window-closed', listener: (data: Reply<'application', 'window-closed'>) => void): Promise<void>;
-    on(type: 'tray-icon-clicked', listener: (data: TrayIconClickReply) => void): Promise<void>;
-    on(type: 'removeListener', listener: (eventType: string) => void): Promise<void>;
-    on(type: 'newListener', listener: (eventType: string) => void): Promise<void>;
+    on(type: 'closed', listener: (data: Reply<'application', 'closed'>) => void): Promise<this>;
+    on(type: 'initialized', listener: (data: Reply<'application', 'initialized'>) => void): Promise<this>;
+    on(type: 'connected', listener: (data: Reply<'application', 'connected'>) => void): Promise<this>;
+    on(type: 'crashed', listener: (data: Reply<'application', 'crashed'>) => void): Promise<this>;
+    on(type: 'error', listener: (data: Reply<'application', 'error'>) => void): Promise<this>;
+    on(type: 'not-responding', listener: (data: Reply<'application', 'not-responding'>) => void): Promise<this>;
+    on(type: 'out-of-memory', listener: (data: Reply<'application', 'out-of-memory'>) => void): Promise<this>;
+    on(type: 'responding', listener: (data: Reply<'application', 'responding'>) => void): Promise<this>;
+    on(type: 'started', listener: (data: Reply<'application', 'started'>) => void): Promise<this>;
+    on(type: 'run-requested', listener: (data: Reply<'application', 'run-requested'>) => void): Promise<this>;
+    on(type: 'window-navigation-rejected', listener: (data: NavigationRejectedReply) => void): Promise<this>;
+    on(type: 'window-created', listener: (data: Reply<'application', 'window-created'>) => void): Promise<this>;
+    on(type: 'window-closed', listener: (data: Reply<'application', 'window-closed'>) => void): Promise<this>;
+    on(type: 'tray-icon-clicked', listener: (data: TrayIconClickReply) => void): Promise<this>;
+    on(type: 'removeListener', listener: (eventType: string) => void): Promise<this>;
+    on(type: 'newListener', listener: (eventType: string) => void): Promise<this>;
 }
