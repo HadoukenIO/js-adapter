@@ -1,4 +1,4 @@
-Returns an Application object that represents the current application
+Synchronously returns an Application object that represents the current application
 
 # Example
 ```js
