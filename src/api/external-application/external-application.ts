@@ -19,7 +19,7 @@ export default class ExternalApplicationModule extends Base {
     /**
      * Synchronously returns an External Application object that represents an existing external application.
      * @param {string} uuid The UUID of the external application to be wrapped
-     * @return ExternalApplication
+     * @return {ExternalApplication}
      */
     public wrapSync(uuid: string): ExternalApplication {
         return new ExternalApplication(this.wire, {uuid});

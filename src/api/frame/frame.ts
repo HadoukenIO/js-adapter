@@ -27,14 +27,14 @@ export default class _FrameModule extends Base {
      * Synchronously returns a reference to the specified frame. The frame does not have to exist
      * @param {string} uuid - uuid of the frame you want to wrap
      * @param {string} name - name of the frame you want to wrap
-     * @return _Frame
+     * @return {_Frame}
      */
     public wrapSync(uuid: string, name: string): _Frame {
         return new _Frame(this.wire, {uuid, name});
     }
 
     /**
-     * Returns a reference to the current frame
+     * Asynchronously returns a reference to the current frame
      * @return {Promise.<_Frame>}
      */
     public getCurrent(): Promise<_Frame> {
@@ -43,7 +43,7 @@ export default class _FrameModule extends Base {
 
     /**
      * Synchronously returns a reference to the current frame
-     * @return _Frame
+     * @return {_Frame}
      */
     public getCurrentSync(): _Frame {
         return new _Frame(this.wire, this.me);

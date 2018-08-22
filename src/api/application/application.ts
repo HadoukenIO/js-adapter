@@ -41,8 +41,8 @@ export interface TrayInfo {
 export default class ApplicationModule extends Base {
     /**
      * Asynchronously returns an Application object that represents an existing application.
-     * @param { Identity } indentity
-     * @return Promise<Application>
+     * @param { Identity } identity
+     * @return {Promise.<Application>}
      * @tutorial Application.wrap
      */
     public wrap(identity: Identity): Promise<Application> {
@@ -51,8 +51,8 @@ export default class ApplicationModule extends Base {
 
     /**
      * Synchronously returns an Application object that represents an existing application.
-     * @param { Identity } indentity
-     * @return Application
+     * @param { Identity } identity
+     * @return {Application}
      * @tutorial Application.wrapSync
      */
     public wrapSync(identity: Identity): Application {
@@ -71,7 +71,7 @@ export default class ApplicationModule extends Base {
     }
 
     /**
-     * Returns an Application object that represents the current application
+     * Asynchronously returns an Application object that represents the current application
      * @return {Promise.<Application>}
      * @tutorial Application.getCurrent
      */
@@ -81,7 +81,7 @@ export default class ApplicationModule extends Base {
 
     /**
      * Synchronously returns an Application object that represents the current application
-     * @return Application>
+     * @return {Application}
      * @tutorial Application.getCurrentSync
      */
     public getCurrentSync(): Application {

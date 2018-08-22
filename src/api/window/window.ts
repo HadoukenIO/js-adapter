@@ -14,7 +14,7 @@ export default class _WindowModule extends Base {
     /**
      * Asynchronously returns a Window object that represents an existing window.
      * @param { Identity } indentity
-     * @return Promise<_Window>
+     * @return {Promise.<_Window>}
      * @tutorial Window.wrap
      */
     public wrap(identity: Identity): Promise<_Window> {
@@ -27,7 +27,7 @@ export default class _WindowModule extends Base {
     /**
      * Synchronously returns a Window object that represents an existing window.
      * @param { Identity } indentity
-     * @return _Window
+     * @return {_Window}
      * @tutorial Window.wrapSync
      */
     public wrapSync(identity: Identity): _Window {
@@ -49,7 +49,7 @@ export default class _WindowModule extends Base {
     }
 
     /**
-     * Returns a Window object that represents the current window
+     * Asynchronously returns a Window object that represents the current window
      * @return {Promise.<Window>}
      * @tutorial window.getCurrent
      */
@@ -59,7 +59,7 @@ export default class _WindowModule extends Base {
 
     /**
      * Synchronously returns a Window object that represents the current window
-     * @return _Window
+     * @return {_Window}
      * @tutorial window.getCurrentSync
      */
     public getCurrentSync(): _Window {
