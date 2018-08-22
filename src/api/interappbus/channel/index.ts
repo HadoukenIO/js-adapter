@@ -26,7 +26,7 @@ export interface ChannelMessage extends Message<any> {
 export class Channel extends EmitterBase {
     private channelMap: Map<string, ChannelProvider | ChannelClient>;
     constructor(wire: Transport) {
-        super(wire);
+        super(wire, ['channel']);
         this.topic = 'channel';
         this.channelMap = new Map();
         wire.registerMessageHandler(this.onmessage.bind(this));
@@ -37,18 +37,12 @@ export class Channel extends EmitterBase {
             .then(({ payload }) => payload.data);
     }
 
-    public async onChannelConnect(listener: Function): Promise<void> {
-        return this.on('connected', (payload) => {
-            const eventPayload = Object.assign(payload, {type: 'connected'});
-            listener(eventPayload);
-        });
+    public async onChannelConnect(listener: (...args: any[]) => void): Promise<void> {
+        await this.on('connected', listener);
     }
 
-    public async onChannelDisconnect(listener: Function): Promise<void> {
-        return this.on('disconnected', (payload) => {
-            const eventPayload = Object.assign(payload, {type: 'disconnected'});
-            listener(eventPayload);
-        });
+    public async onChannelDisconnect(listener: (...args: any[]) => void): Promise<void> {
+        await this.on('disconnected', listener);
     }
 
     // DOCS - if want to send payload, put payload in options

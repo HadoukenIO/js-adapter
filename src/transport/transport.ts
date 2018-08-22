@@ -17,6 +17,8 @@ import {
     NoAckError,
     RuntimeError
 } from './transport-errors';
+import { RuntimeEvent } from '../api/base';
+import {EventAggregator} from '../api/events/eventAggregator';
 
 declare var fin: any;
 
@@ -25,12 +27,13 @@ export type MessageHandler = (data: any) => boolean;
 class Transport extends EventEmitter {
     protected wireListeners: Map<number, { resolve: Function, reject: Function }> = new Map();
     protected uncorrelatedListener: Function;
-    protected messageHandlers: MessageHandler[] = [];
     public me: Identity;
     protected wire: Wire;
     public environment: Environment;
     public topicRefMap: Map<string, number> = new Map();
     public sendRaw: Wire['send'];
+    public eventAggregator = new EventAggregator();
+    protected messageHandlers: MessageHandler[] = [this.eventAggregator.dispatchEvent];
 
     constructor(wireType: WireConstructor, environment: Environment) {
         super();
@@ -139,7 +142,7 @@ class Transport extends EventEmitter {
     }
 
     public registerMessageHandler(handler: MessageHandler): void {
-        this.messageHandlers.unshift(handler);
+        this.messageHandlers.push(handler);
     }
 
     protected addWireListener(id: number, resolve: Function, reject: Function, uncorrelated: boolean): void {
@@ -203,6 +206,18 @@ export class Message<T> {
     public action: string;
     public payload: T;
     public correlationId?: number;
+}
+export class EventMessage implements Message<RuntimeEvent> {
+   public action: 'process-desktop-event';
+   public payload: RuntimeEvent;
+}
+export class NotificationEventMessage implements Message<NotificationEvent> {
+    public action: 'process-notification-event';
+    public payload: NotificationEvent;
+}
+export interface NotificationEvent {
+    payload: { notificationId: string; };
+    type: string | symbol;
 }
 export class Payload {
     public success: boolean;

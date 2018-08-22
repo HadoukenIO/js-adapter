@@ -23,11 +23,10 @@ export default class ExternalApplicationModule extends Base {
  * well as listen to application events.
  * @class
  */
-// @ts-ignore: return types incompatible with EventEmitter (this)
 export class ExternalApplication extends EmitterBase {
 
     constructor(wire: Transport, public identity: Identity) {
-        super(wire);
+        super(wire, ['external-application', identity.uuid]);
     }
 
     /**
@@ -40,10 +39,9 @@ export class ExternalApplication extends EmitterBase {
     }
 }
 
-// @ts-ignore: return types incompatible with EventEmitter (this)
 export interface ExternalApplication {
-    on(type: 'connected', listener: (data: Reply<'externalapplication', 'connected'>) => void): Promise<void>;
-    on(type: 'disconnected', listener: (data: Reply<'externalapplication', 'disconnected'>) => void): Promise<void>;
-    on(type: 'removeListener', listener: (eventType: string) => void): Promise<void>;
-    on(type: 'newListener', listener: (eventType: string) => void): Promise<void>;
+    on(type: 'connected', listener: (data: Reply<'externalapplication', 'connected'>) => void): Promise<this>;
+    on(type: 'disconnected', listener: (data: Reply<'externalapplication', 'disconnected'>) => void): Promise<this>;
+    on(type: 'removeListener', listener: (eventType: string) => void): Promise<this>;
+    on(type: 'newListener', listener: (eventType: string) => void): Promise<this>;
 }

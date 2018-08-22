@@ -125,7 +125,6 @@ this animation onto the end of the animation queue.
  * @alias Window
 */
 // The window.Window name is taken
-// @ts-ignore: return types incompatible with EventEmitter (this)
 // tslint:disable-next-line
 export class _Window extends EmitterBase {
     /**
@@ -486,7 +485,7 @@ export class _Window extends EmitterBase {
     private nativeWindow: any;
 
     constructor(wire: Transport, public identity: Identity) {
-        super(wire);
+        super(wire, ['window', identity.uuid, identity.name]);
 
         // if it's openfin environment, need to add a native window to current window object
         if (this.isOpenFinEnvironment()) {
@@ -1067,15 +1066,14 @@ export class _Window extends EmitterBase {
     }
 
 }
-// @ts-ignore: "on" return types incompatible with EventEmitter (this)
 // tslint:disable-next-line
 export interface _Window {
-    on(type: 'focused', listener: Function): Promise<void>;
-    on(type: 'initialized', listener: Function):  Promise<void>;
-    on(type: 'bounds-changed', listener: (data: BoundsChangedReply) => void):  Promise<void>;
-    on(type: 'hidden', listener: Function):  Promise<void>;
-    on(type: 'removeListener', listener: (eventType: string | symbol) => void):  Promise<void>;
-    on(type: 'newListener', listener: (eventType: string | symbol) => void):  Promise<void>;
-    on(type: 'closed', listener: (eventType: CloseEventShape) => void):  Promise<void>;
-    on(type: 'fire-constructor-callback', listener: Function):  Promise<void>;
+    on(type: 'focused', listener: Function): Promise<this>;
+    on(type: 'initialized', listener: Function):  Promise<this>;
+    on(type: 'bounds-changed', listener: (data: BoundsChangedReply) => void):  Promise<this>;
+    on(type: 'hidden', listener: Function):  Promise<this>;
+    on(type: 'removeListener', listener: (eventType: string | symbol) => void):  Promise<this>;
+    on(type: 'newListener', listener: (eventType: string | symbol) => void):  Promise<this>;
+    on(type: 'closed', listener: (eventType: CloseEventShape) => void):  Promise<this>;
+    on(type: 'fire-constructor-callback', listener: Function):  Promise<this>;
 }

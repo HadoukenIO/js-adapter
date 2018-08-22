@@ -76,9 +76,9 @@ describe('Application.', function() {
 
     describe('getGroups() cross different applications', () => {
         const app2Config = {
-            name: 'app2',
+            name: 'app3',
             url: 'about:blank',
-            uuid: 'app2',
+            uuid: 'app3',
             autoShow: true,
             nonPersistent: true
         };
@@ -252,6 +252,22 @@ describe('Application.', function() {
                     });
                 });
             });
+        });
+    });
+
+    describe('getZoomLevel()', () => {
+
+        it('Fulfilled', () => testApp.getZoomLevel().then(level => assert(level === 0)));  // by default, it's zero.
+    });
+
+    describe('setZoomLevel()', () => {
+
+        const zoomLevel = 2;
+        it('Fulfilled', async () => {
+
+            await testApp.setZoomLevel(zoomLevel);
+            const newZoomLevel = await testApp.getZoomLevel();
+            assert(newZoomLevel === zoomLevel);
         });
     });
 });

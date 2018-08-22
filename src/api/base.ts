@@ -1,11 +1,12 @@
-import Transport, { Message } from '../transport/transport';
+import Transport from '../transport/transport';
 import { Identity } from '../identity';
-import { EventEmitter } from 'events';
 import { promiseMap } from '../util/promises';
+import { EventEmitter } from 'events';
+import { EmitterAccessor } from './events/emitterMap';
 
 export interface RuntimeEvent extends Identity {
     topic: string;
-    type: string|symbol;
+    type: string | symbol;
 }
 
 export class Base {
@@ -16,7 +17,7 @@ export class Base {
     }
 
     private _topic: string;
-    protected get topic() : string {
+    protected get topic(): string {
         return this._topic || this.constructor.name.replace('_', '').toLowerCase();
     }
 
@@ -43,153 +44,134 @@ export class Base {
 }
 
 export class EmitterBase extends Base {
-
     protected identity: Identity;
-    protected emitter: EventEmitter;
-    public listeners: (event: string | symbol) => Function[];
-    public listenerCount: (type: string | symbol) => number;
 
-    constructor(wire: Transport) {
+    constructor(wire: Transport, private emitterAccessor: EmitterAccessor) {
         super(wire);
-        this.emitter = new EventEmitter();
-        this.wire.registerMessageHandler(this.onmessage.bind(this));
-        this.listeners = this.emitter.listeners ? this.emitter.listeners.bind(this.emitter) : void 0;
-        this.listenerCount = this.emitter.listenerCount ? this.emitter.listenerCount.bind(this.emitter) : void 0;
+        this.listeners = (event: string | symbol) => this.hasEmitter()
+            ? this.getEmitter().listeners(event)
+            : [];
     }
 
-    public emit = (eventName: string| symbol, ...args: any[]) => {
-        this.emitter.emit(eventName, ...args);
+    public eventNames = () => this.hasEmitter() ? this.getEmitter().eventNames() : [];
+
+    public emit = (eventName: string | symbol, ...args: any[]) => {
+        return this.hasEmitter()
+            ? this.getEmitter().emit(eventName, ...args)
+            : false;
     }
+    private hasEmitter = () => this.wire.eventAggregator.has(this.emitterAccessor);
+    private getEmitter = () => this.wire.eventAggregator.get(this.emitterAccessor);
 
-    protected onmessage = (message: Message<any>): boolean => {
+    public listeners = (type: string | symbol) => this.hasEmitter() ? this.getEmitter().listeners(type) : [];
+    public listenerCount = (type: string | symbol) => this.hasEmitter() ? this.getEmitter().listenerCount(type) : 0;
 
-        if (message.action === 'process-desktop-event') {
-            const payload = message.payload;
-
-            if (this.runtimeEventComparator(<RuntimeEvent>payload)) {
-                this.emitter.emit(payload.type, message.payload);
-            }
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-    protected registerEventListener = (listener: RuntimeEvent): Promise<void | Message<void>> => {
-        const key = createKey(listener);
-        const refCount = this.wire.topicRefMap.get(key);
-
+    protected registerEventListener = async (eventType: string): Promise<EventEmitter> => {
+        const runtimeEvent = Object.assign({}, this.identity, {
+            type: eventType,
+            topic: this.topic
+        });
+        const emitter = this.getEmitter();
+        const refCount = emitter.listenerCount(runtimeEvent.type);
         if (!refCount) {
-            this.wire.topicRefMap.set(key, 1);
-            return this.wire.sendAction('subscribe-to-desktop-event', listener);
-        } else {
-            this.wire.topicRefMap.set(key, refCount + 1);
-            return Promise.resolve();
+            await this.wire.sendAction('subscribe-to-desktop-event', runtimeEvent);
         }
+        return emitter;
     }
 
-    protected deregisterEventListener = (listener: RuntimeEvent): Promise<void | Message<void>> => {
-        const key = createKey(listener);
-        const refCount = this.wire.topicRefMap.get(key);
-
-        if (refCount) {
-
+    protected deregisterEventListener = async (eventType: string): Promise<void | EventEmitter> => {
+        if (this.hasEmitter()) {
+            const runtimeEvent = Object.assign({}, this.identity, {
+                type: eventType,
+                topic: this.topic
+            });
+            const emitter = this.getEmitter();
+            const refCount = emitter.listenerCount(runtimeEvent.type);
             const newRefCount = refCount - 1;
-            this.wire.topicRefMap.set(key, newRefCount);
-
             if (newRefCount === 0) {
-                return this.wire.sendAction('unsubscribe-to-desktop-event', listener);
+                await this.wire.sendAction('unsubscribe-to-desktop-event', runtimeEvent);
+                if (emitter.eventNames().length === 0) {
+                    this.wire.eventAggregator.delete(this.emitterAccessor);
+                    return;
+                }
             }
-            return Promise.resolve();
+            return emitter;
         }
         // This will only be reached if unsubscribe from event that does not exist but do not want to error here
         return Promise.resolve();
     }
 
-    public on(eventType: string, listener: (...args: any[]) => void): Promise<void> {
-        this.emitter.on(eventType, listener);
-        return this.registerEventListener(Object.assign({}, this.identity, {
-            type: eventType,
-            topic: this.topic
-        })).then(() => undefined);
+    public async on(eventType: string, listener: (...args: any[]) => void): Promise<this> {
+        const emitter = await this.registerEventListener(eventType);
+        emitter.on(eventType, listener);
+        return this;
     }
 
     public addListener = this.on;
-    public once(eventType: string, listener: (...args: any[]) => void): Promise<void> {
-        this.emitter.once(eventType, listener);
-        const deregister =  () => {
-            this.deregisterEventListener(Object.assign({}, this.identity, {
-                type: eventType,
-                topic: this.topic
-            }));
-        };
-        this.emitter.once(eventType, deregister);
-        return this.registerEventListener(Object.assign({}, this.identity, {
-            type: eventType,
-            topic: this.topic
-        })).then(() => undefined);
+    public async once(eventType: string, listener: (...args: any[]) => void): Promise<this> {
+        const deregister = () => this.deregisterEventListener(eventType);
+        const emitter = await this.registerEventListener(eventType);
+        emitter.once(eventType, deregister);
+        emitter.once(eventType, listener);
+        return this;
     }
 
-    public prependListener(eventType: string, listener: (...args: any[]) => void): Promise<void> {
-        this.emitter.prependListener(eventType, listener);
-        return this.registerEventListener(Object.assign({}, this.identity, {
-            type: eventType,
-            topic: this.topic
-        })).then(() => undefined);
+    public async prependListener(eventType: string, listener: (...args: any[]) => void): Promise<this> {
+        const emitter = await this.registerEventListener(eventType);
+        emitter.prependListener(eventType, listener);
+        return this;
     }
 
-    public prependOnceListener(eventType: string, listener: (...args: any[]) => void): Promise<void> {
-        this.emitter.prependOnceListener(eventType, listener);
-        const deregister =  () => {
-            this.deregisterEventListener(Object.assign({}, this.identity, {
-                type: eventType,
-                topic: this.topic
-            }));
-        };
-        this.emitter.once(eventType, deregister);
-        return this.registerEventListener(Object.assign({}, this.identity, {
-            type: eventType,
-            topic: this.topic
-        })).then(() => undefined);
+    public async prependOnceListener(eventType: string, listener: (...args: any[]) => void): Promise<this> {
+        const deregister = () => this.deregisterEventListener(eventType);
+        const emitter = await this.registerEventListener(eventType);
+        emitter.prependOnceListener(eventType, listener);
+        emitter.once(eventType, deregister);
+        return this;
     }
 
-    public removeListener(eventType: string, listener: (...args: any[]) => void): Promise<void> {
-        this.emitter.removeListener(eventType, listener);
-        return this.deregisterEventListener(Object.assign({}, this.identity, {
-            type: eventType,
-            topic: this.topic
-        })).then(() => undefined);
+    public async removeListener(eventType: string, listener: (...args: any[]) => void): Promise<this> {
+        const emitter = await this.deregisterEventListener(eventType);
+        if (emitter) {
+            emitter.removeListener(eventType, listener);
+        }
+        return this;
     }
 
-    protected deregisterAllListeners = (eventType: string|symbol): Promise<void | Message<void>> => {
+    protected deregisterAllListeners = async (eventType: string | symbol): Promise<EventEmitter | void> => {
         const runtimeEvent = Object.assign({}, this.identity, {
             type: eventType,
             topic: this.topic
         });
-        const key = createKey(runtimeEvent);
-        const refCount = this.wire.topicRefMap.get(key);
 
-        if (refCount) {
-            this.wire.topicRefMap.delete(key);
-            return this.wire.sendAction('unsubscribe-to-desktop-event', runtimeEvent);
-        } else {
-            return Promise.resolve();
+        if (this.hasEmitter()) {
+            await this.wire.sendAction('unsubscribe-to-desktop-event', runtimeEvent);
+            const emitter = this.getEmitter();
+            emitter.removeAllListeners(eventType);
+            if (emitter.eventNames().length === 0) {
+                this.wire.eventAggregator.delete(this.emitterAccessor);
+                return;
+            }
+            return emitter;
         }
     }
 
-    public async removeAllListeners(eventType?: string): Promise<void> {
+    public async removeAllListeners(eventType?: string): Promise<this> {
 
-        const removeByEvent = (event: string|symbol): Promise<void> => {
-            this.emitter.removeAllListeners(event);
-            return this.deregisterAllListeners(event).then(() => undefined);
+        const removeByEvent = async (event: string | symbol): Promise<void> => {
+            const emitter = await this.deregisterAllListeners(event);
+            if (emitter) {
+                emitter.removeAllListeners(event);
+            }
         };
 
         if (eventType) {
-            return removeByEvent(eventType);
-        } else {
-            const events = this.emitter.eventNames();
+            await removeByEvent(eventType);
+        } else if (this.hasEmitter()) {
+            const events = this.getEmitter().eventNames();
             await promiseMap(events, removeByEvent);
         }
+        return this;
     }
 }
 
@@ -198,10 +180,4 @@ export class Reply<TOPIC extends string, TYPE extends string | void> implements 
     public type: TYPE;
     public uuid: string;
     public name?: string;
-}
-
-function createKey(listener: RuntimeEvent): string {
-    const { name, uuid, topic, type } = listener;
-
-    return `${name}/${uuid}/${topic}/${<string>type}`;
 }
