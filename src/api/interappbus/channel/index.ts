@@ -45,24 +45,19 @@ export class Channel extends EmitterBase {
         await this.on('disconnected', listener);
     }
 
-    // DOCS - if want to send payload, put payload in options
-    public async connect(options: Options): Promise<ChannelClient> {
-        const { uuid, name, channelName } = options;
-        let resolver: any;
-        let listener: any;
-        //@ts-ignore
-        // tslint:disable-next-line
+    public async connect(channelName: string, options?: Options): Promise<ChannelClient> {
+        if (!channelName || typeof channelName !== 'string') {
+            throw new Error('Please provide a channelName string to connect to a channel.');
+        }
+        const opts: any = options || {};
+        let resolver: (arg?: any) => void;
+        let listener: EventListener;
         const waitResponse: Promise<ChannelClient> = new Promise(resolve => {
             resolver = resolve;
             listener = (payload: any) => {
-                if (uuid === payload.uuid) {
-                    if (channelName && channelName !== payload.channelName) {
-                        console.warn(`Channel created by ${uuid}: ${payload}
-                        Still waiting for channelName ${channelName}.`);
-                        return;
-                    }
+                if (channelName === payload.channelName) {
                     this.removeListener('connected', listener);
-                    this.connect(options).then(response => {
+                    this.connect(channelName, opts).then(response => {
                         resolve(response);
                     });
                 }
@@ -70,7 +65,7 @@ export class Channel extends EmitterBase {
             this.on('connected', listener);
         });
         try {
-            const { payload: { data: providerIdentity } } = await this.wire.sendAction('connect-to-channel', options);
+            const { payload: { data: providerIdentity } } = await this.wire.sendAction('connect-to-channel', { channelName, ...opts});
             // If there isn't a matching channel, the above sendAction call will error out and go to catch, skipping the logic below
             if (resolver) {
                 resolver();
@@ -81,20 +76,23 @@ export class Channel extends EmitterBase {
             this.channelMap.set(key, channel);
             return channel;
         } catch (e) {
-            const shouldWait: boolean = Object.assign({ wait: true }, options).wait;
+            const shouldWait: boolean = Object.assign({ wait: true }, opts).wait;
             const internalNackMessage = 'internal-nack';
             if (shouldWait && e.message === internalNackMessage) {
-                console.warn(`Channel not found for uuid: ${uuid}, waiting for channel creation.`);
+                console.warn(`Channel not found for channelName: ${channelName}, waiting for channel creation.`);
                 return await waitResponse;
             } else if (e.message === internalNackMessage) {
-                throw new Error('No channel found');
+                throw new Error(`No channel found for channelName: ${channelName}`);
             } else {
                 throw new Error(e);
             }
         }
     }
 
-    public async create(channelName?: string): Promise<ChannelProvider> {
+    public async create(channelName: string): Promise<ChannelProvider> {
+        if (!channelName) {
+            throw new Error('Please provide a channelName to create a channel');
+        }
         const { payload: { data: providerIdentity } } = await this.wire.sendAction('create-channel', {channelName});
         const channel = new ChannelProvider(providerIdentity, this.wire.sendAction.bind(this.wire));
         const key = providerIdentity.channelId;
@@ -150,10 +148,4 @@ export class Channel extends EmitterBase {
             this.wire.sendRaw(ackToSender);
         }
     }
-}
-
-interface PluginSubscribeSuccess {
-    uuid: string;
-    name: string;
-    serviceName: string;
 }
