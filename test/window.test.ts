@@ -456,7 +456,7 @@ describe('Window.', function() {
         });
     });
 
-    describe.only('getCurrentSync()', () => {
+    describe('getCurrentSync()', () => {
         it('exists', () => {
             assert(typeof fin.Window.getCurrentSync === 'function');
         });
