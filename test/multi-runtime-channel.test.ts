@@ -46,7 +46,7 @@ describe ('Multi Runtime Channels', function() {
             async function test () {
                 const spy = sinon.spy();
                 const [finA, finB] = await Promise.all([launchAndConnect(), launchAndConnect()]);
-                const provider = await finB.InterApplicationBus.Channel.create();
+                const provider = await finB.InterApplicationBus.Channel.create('test');
                 provider.register('test', () => {
                     spy();
                     return 'return-test';
@@ -91,7 +91,7 @@ describe ('Multi Runtime Channels', function() {
                 const service = await finA.Application.create(serviceConfig);
                 await service.run();
                 await delayPromise(DELAY_MS);
-                const client = await finB.InterApplicationBus.Channel.connect({uuid: 'channel-provider-test'});
+                const client = await finB.InterApplicationBus.Channel.connect('test');
                 client.register('multi-runtime-test', (r: string) => {
                     assert.equal(r, 'return-mrt', 'wrong payload sent from service');
                     done();
@@ -156,13 +156,13 @@ describe ('Multi Runtime Channels', function() {
 
             async function test() {
                 const [finA, finB] = await Promise.all([launchAndConnect(), launchAndConnect()]);
-                finB.InterApplicationBus.Channel.connect({uuid: 'channel-provider-mrtest'})
+                finB.InterApplicationBus.Channel.connect('mrtest')
                 .then((c) => {
                     c.register('multi-runtime-test', (r: string) => {
                         assert.equal(r, 'return-mrt', 'wrong payload sent from service');
                         done();
                     });
-                    c.dispatch('test').then(res => {
+                    c.dispatch('test').then((res: any) => {
                         assert.equal(res, 'return-test', 'wrong return payload from service');
                     });
                 });
