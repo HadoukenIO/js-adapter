@@ -103,12 +103,6 @@ npm run build
 npm test -- --ver=alpha
 ```
 
-Specifying the core path
-
-```bash
-npm test -- --ver=alpha --core=~/core
-```
-
 Only executing tests that pattern match "Application"
 
 ```bash
