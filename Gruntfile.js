@@ -29,6 +29,7 @@ module.exports = function (grunt) {
     const remote = grunt.option('remote');
     const rvmDir = grunt.option('rvmDir');
     const target = grunt.option('target');
+    const shouldBuildCore = grunt.option('build-core');
     const uuid = 'testapp';
     const args = '--enable-multi-runtime --debug=5858';
     process.env.OF_VER = version;
@@ -180,6 +181,11 @@ module.exports = function (grunt) {
     });
 
     grunt.registerTask('core', function () {
+        if (!shouldBuildCore) {
+            grunt.log.ok('skipping core build task');
+            return;
+        }
+
         if (version) {
             let done = this.async();
             resolveRuntimeVersion(version).then(v => {
