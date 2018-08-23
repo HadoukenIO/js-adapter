@@ -48,12 +48,13 @@ describe ('External Channel Provider', function() {
             async function test () {
                 const spy = sinon.spy();
                 const finA = await launchAndConnect();
-                const provider = await finA.InterApplicationBus.Channel.create('ext-test');
+                const provider = await finA.InterApplicationBus.Channel.create('exttest');
                 provider.register('test', () => {
                     spy();
                     return 'return-test';
                 });
                 provider.onConnection(c => {
+                    console.error('connected!');
                     spy();
                 });
                 const client = await finA.Application.create(clientConfig);
@@ -65,7 +66,7 @@ describe ('External Channel Provider', function() {
                 };
                 await finA.InterApplicationBus.subscribe({uuid: 'channel-client-test'}, 'return', listener);
                 await delayPromise(DELAY_MS);
-                await finA.InterApplicationBus.publish('start', 'ext-test');
+                await finA.InterApplicationBus.publish('start', 'exttest');
                 await delayPromise(DELAY_MS);
             }
             test();
@@ -95,7 +96,7 @@ describe ('External Channel Provider', function() {
                 const finA = await launchAndConnect();
                 const service = await finA.Application.create(serviceConfig);
                 await service.run();
-                const client = await finA.InterApplicationBus.Channel.connect('ext-test');
+                const client = await finA.InterApplicationBus.Channel.connect('test');
                 client.dispatch('test').then(res => {
                     assert(res === 'return-test');
                     done();
