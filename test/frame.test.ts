@@ -30,12 +30,12 @@ describe('Frame.', () => {
         });
 
         it('should return _Frame', () => {
-            const returnVal = fin.Frame.wrapSync(testFrame.identity.uuid, testFrame.identity.name);
+            const returnVal = fin.Frame.wrapSync(testFrame.identity);
             assert(returnVal instanceof _Frame);
         });
 
         it('should return _Frame with matching identity', () => {
-            const returnVal = fin.Frame.wrapSync(testFrame.identity.uuid, testFrame.identity.name);
+            const returnVal = fin.Frame.wrapSync(testFrame.identity);
             assert.deepEqual(returnVal.identity, testFrame.identity);
         });
     });

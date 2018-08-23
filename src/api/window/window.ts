@@ -13,7 +13,7 @@ export default class _WindowModule extends Base {
 
     /**
      * Asynchronously returns a Window object that represents an existing window.
-     * @param { Identity } indentity
+     * @param { Identity } identity
      * @return {Promise.<_Window>}
      * @tutorial Window.wrap
      */
@@ -26,7 +26,7 @@ export default class _WindowModule extends Base {
 
     /**
      * Synchronously returns a Window object that represents an existing window.
-     * @param { Identity } indentity
+     * @param { Identity } identity
      * @return {_Window}
      * @tutorial Window.wrapSync
      */

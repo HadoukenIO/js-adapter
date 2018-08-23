@@ -25,12 +25,11 @@ export default class _FrameModule extends Base {
 
     /**
      * Synchronously returns a reference to the specified frame. The frame does not have to exist
-     * @param {string} uuid - uuid of the frame you want to wrap
-     * @param {string} name - name of the frame you want to wrap
+     * @param { Identity } identity
      * @return {_Frame}
      */
-    public wrapSync(uuid: string, name: string): _Frame {
-        return new _Frame(this.wire, {uuid, name});
+    public wrapSync(identity: Identity): _Frame {
+        return new _Frame(this.wire, identity);
     }
 
     /**
