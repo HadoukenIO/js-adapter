@@ -78,7 +78,7 @@ export class Channel extends EmitterBase {
         } catch (e) {
             const shouldWait: boolean = Object.assign({ wait: true }, opts).wait;
             const internalNackMessage = 'internal-nack';
-            if (shouldWait && e.message === internalNackMessage) {
+            if (shouldWait && e.message.includes(internalNackMessage)) {
                 console.warn(`Channel not found for channelName: ${channelName}, waiting for channel creation.`);
                 return await waitResponse;
             } else if (e.message === internalNackMessage) {

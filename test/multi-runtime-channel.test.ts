@@ -46,7 +46,7 @@ describe ('Multi Runtime Channels', function() {
             async function test () {
                 const spy = sinon.spy();
                 const [finA, finB] = await Promise.all([launchAndConnect(), launchAndConnect()]);
-                const provider = await finB.InterApplicationBus.Channel.create('test');
+                const provider = await finB.InterApplicationBus.Channel.create('test-ext-provider');
                 provider.register('test', () => {
                     spy();
                     return 'return-test';
@@ -62,7 +62,7 @@ describe ('Multi Runtime Channels', function() {
                     assert.equal(msg, 'return-test');
                     done();
                 });
-                await finB.InterApplicationBus.publish('start', 'hi');
+                await finB.InterApplicationBus.publish('start', 'test-ext-provider');
             }
             test().catch(() => cleanOpenRuntimes());
         });
@@ -156,7 +156,7 @@ describe ('Multi Runtime Channels', function() {
 
             async function test() {
                 const [finA, finB] = await Promise.all([launchAndConnect(), launchAndConnect()]);
-                finB.InterApplicationBus.Channel.connect('mrtest')
+                finB.InterApplicationBus.Channel.connect('test')
                 .then((c) => {
                     c.register('multi-runtime-test', (r: string) => {
                         assert.equal(r, 'return-mrt', 'wrong payload sent from service');
