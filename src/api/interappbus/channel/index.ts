@@ -7,7 +7,7 @@ import { ProviderIdentity } from './channel';
 
 export interface Options {
     uuid: string;
-    channelName?: string;
+    channelName: string;
     wait?: boolean;
     name?: string;
     payload?: any;
