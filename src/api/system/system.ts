@@ -362,6 +362,15 @@ export default class System extends EmitterBase {
     }
 
     /**
+     * Returns a unique identifier (UUID) provided by the machine.
+     * @return {Promise.<string>}
+     * @tutorial System.getMachineId
+     */
+    public getMachineId(): Promise<string> {
+        return this.wire.sendAction('get-machine-id').then(({ payload }) => payload.data);
+    }
+
+    /**
      * Returns the minimum (inclusive) logging level that is currently being written to the log.
      * @return {Promise.<LogLevel>}
      * @tutorial System.getMinLogLevel
