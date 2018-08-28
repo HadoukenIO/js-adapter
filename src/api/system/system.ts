@@ -280,14 +280,11 @@ export default class System extends EmitterBase {
         return this.wire.sendAction('get-crash-reporter-state').then(({ payload }) => payload.data);
     }
 
-    /**
-     * Returns a unique identifier (UUID) for the machine (SHA256 hash of the system's MAC address).
-     * This call will return the same value on subsequent calls on the same machine(host).
-     * The values will be different on different machines, and should be considered globally unique.
-     * @return {Promise.<string>}
-     * @tutorial System.getDeviceId
+    /* <-- Note the one asterisk to hide from jsdoc because we don't want to publish this method anymore.
+     * @deprecated Use {@link System.getMachineId} instead.
      */
     public getDeviceId(): Promise<string> {
+        console.warn('Function is deprecated; use getMachineId instead.');
         return this.wire.sendAction('get-device-id').then(({ payload }) => payload.data);
     }
 

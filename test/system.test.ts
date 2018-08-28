@@ -128,11 +128,6 @@ describe('System.', function () {
         }));
     });
 
-    describe('getDeviceId()', () => {
-
-        it('Fulfilled', () => fin.System.getDeviceId().then(() => assert(true)));
-    });
-
     describe('getDeviceUserId()', () => {
 
         it('Fulfilled', () => fin.System.getDeviceUserId().then(id => {
