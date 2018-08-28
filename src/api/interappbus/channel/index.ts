@@ -5,11 +5,8 @@ import { EmitterBase } from '../../base';
 import Transport, { Message, Payload } from '../../../transport/transport';
 import { ProviderIdentity } from './channel';
 
-export interface Options {
-    uuid: string;
-    channelName: string;
+export interface ConnectOptions {
     wait?: boolean;
-    name?: string;
     payload?: any;
 }
 
@@ -45,7 +42,7 @@ export class Channel extends EmitterBase {
         await this.on('disconnected', listener);
     }
 
-    public async connect(channelName: string, options?: Options): Promise<ChannelClient> {
+    public async connect(channelName: string, options?: ConnectOptions): Promise<ChannelClient> {
         if (!channelName || typeof channelName !== 'string') {
             throw new Error('Please provide a channelName string to connect to a channel.');
         }
