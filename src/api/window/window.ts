@@ -9,8 +9,6 @@ import { notImplementedEnvErrorMsg } from '../../environment/environment';
 
 // tslint:disable-next-line
 export default class _WindowModule extends Base {
-    private instance: _Window;
-
     /**
      * Returns a Window object that represents an existing window.
      * @param { Identity } indentity
@@ -18,10 +16,7 @@ export default class _WindowModule extends Base {
      * @tutorial Window.wrap
      */
     public wrap(identity: Identity): Promise<_Window> {
-        if (!this.instance) {
-            this.instance = new _Window(this.wire, identity);
-        }
-        return Promise.resolve(this.instance);
+        return Promise.resolve(new _Window(this.wire, identity));
     }
 
     /**
