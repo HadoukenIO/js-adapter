@@ -6,6 +6,7 @@ import { Transition, TransitionOptions } from './transition';
 import { Application } from '../application/application';
 import Transport from '../../transport/transport';
 import { notImplementedEnvErrorMsg } from '../../environment/environment';
+import { WindowEventTypes } from '../events/windowEventTypes';
 
 // tslint:disable-next-line
 export default class _WindowModule extends Base {
@@ -126,7 +127,7 @@ this animation onto the end of the animation queue.
 */
 // The window.Window name is taken
 // tslint:disable-next-line
-export class _Window extends EmitterBase {
+export class _Window extends EmitterBase<WindowEventTypes> {
     /**
      * Raised when a window within this application requires credentials from the user.
      *
