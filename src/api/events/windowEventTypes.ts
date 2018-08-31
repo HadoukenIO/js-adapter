@@ -97,36 +97,36 @@ export interface WindowGroupChanged extends WindowEvent {
 }
 
 export interface WindowEventTypes {
-    'auth-requested': WindowAuthRequestedEvent,
-    'begin-user-bounds-changing': WindowBeginBoundsChangingEvent,
-    'blurred': WindowEvent,
+    'auth-requested': WindowAuthRequestedEvent;
+    'begin-user-bounds-changing': WindowBeginBoundsChangingEvent;
+    'blurred': WindowEvent;
     'bounds-changed': WindowBoundsChange;
     'bounds-changing': WindowBoundsChange;
-    'close-requested': WindowEvent,
-    'closed': WindowEvent,
-    'closing': WindowEvent,
-    'crashed': CrashedEvent & WindowEvent,
+    'close-requested': WindowEvent;
+    'closed': WindowEvent;
+    'closing': WindowEvent;
+    'crashed': CrashedEvent & WindowEvent;
     'disabled-frame-bounds-changed': WindowBoundsChange;
     'disabled-frame-bounds-changing': WindowBoundsChange;
-    'embedded': WindowEvent,
-    'end-user-bounds-changing': WindowBeginBoundsChangingEvent,
-    'external-process-exited': WindowExternalProcessExitedEvent,
-    'external-process-started': WindowExternalProcessStartedEvent,
-    'focused': WindowEvent,
-    'frame-disabled': WindowEvent,
-    'frame-enabled': WindowEvent,
+    'embedded': WindowEvent;
+    'end-user-bounds-changing': WindowBeginBoundsChangingEvent;
+    'external-process-exited': WindowExternalProcessExitedEvent;
+    'external-process-started': WindowExternalProcessStartedEvent;
+    'focused': WindowEvent;
+    'frame-disabled': WindowEvent;
+    'frame-enabled': WindowEvent;
     'group-changed': WindowGroupChanged;
-    'hidden': WindowHiddenEvent,
-    'initialized': WindowEvent,
-    'maximized': WindowEvent,
-    'minimized': WindowEvent,
-    'navigation-rejected': WindowNavigationRejectedEvent,
-    'preload-scripts-state-changed': WindowPreloadScriptsStateChangeEvent,
-    'preload-scripts-state-changing': WindowPreloadScriptsStateChangeEvent,
-    'resource-load-failed': WindowResourceLoadFailedEvent,
-    'resource-response-received': WindowResourceResponseReceivedEvent,
-    'reloaded': WindowReloadedEvent,
-    'restored': WindowEvent,
-    'show-requested': WindowEvent,
-    'shown': WindowEvent
+    'hidden': WindowHiddenEvent;
+    'initialized': WindowEvent;
+    'maximized': WindowEvent;
+    'minimized': WindowEvent;
+    'navigation-rejected': WindowNavigationRejectedEvent;
+    'preload-scripts-state-changed': WindowPreloadScriptsStateChangeEvent;
+    'preload-scripts-state-changing': WindowPreloadScriptsStateChangeEvent;
+    'resource-load-failed': WindowResourceLoadFailedEvent;
+    'resource-response-received': WindowResourceResponseReceivedEvent;
+    'reloaded': WindowReloadedEvent;
+    'restored': WindowEvent;
+    'show-requested': WindowEvent;
+    'shown': WindowEvent;
 }

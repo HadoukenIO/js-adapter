@@ -1,17 +1,18 @@
-import { WindowEvent, WindowAuthRequestedEvent, WindowAlertRequestedEvent, WindowEndLoadEvent, WindowNavigationRejectedEvent, WindowReloadedEvent } from "./windowEventTypes";
+import { WindowEvent, WindowAuthRequestedEvent, WindowAlertRequestedEvent,
+     WindowEndLoadEvent, WindowNavigationRejectedEvent, WindowReloadedEvent } from './windowEventTypes';
 
 export interface Event {
     uuid: string;
     topic: string;
-    type: string
+    type: string;
 }
 
 export interface CrashedEvent extends Event {
-    reason: 'normal-termination' | 'abnormal-termination' | 'killed' | 'crashed' | 'still-running' | 'launch-failed' | 'out-of-memory'
+    reason: 'normal-termination' | 'abnormal-termination' | 'killed' | 'crashed' | 'still-running' | 'launch-failed' | 'out-of-memory';
 }
 
 export interface RunRequestedEvent extends Event {
-    userAppConfigArgs: any
+    userAppConfigArgs: any;
 }
 
 export interface TrayIconClicked extends Event {

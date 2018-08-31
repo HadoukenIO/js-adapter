@@ -3,7 +3,6 @@ import { Identity } from '../identity';
 import { promiseMap } from '../util/promises';
 import { EventEmitter } from 'events';
 import { EmitterAccessor } from './events/emitterMap';
-import { ApplicationEventTypes } from './events/applicationEventTypes';
 
 export interface RuntimeEvent extends Identity {
     topic: string;
@@ -67,7 +66,7 @@ export class EmitterBase<EventTypes = any> extends Base {
     public listeners = (type: string | symbol) => this.hasEmitter() ? this.getEmitter().listeners(type) : [];
     public listenerCount = (type: string | symbol) => this.hasEmitter() ? this.getEmitter().listenerCount(type) : 0;
 
-    protected registerEventListener = async <E extends Extract<keyof EventTypes, string>>(eventType: E):Promise<EventEmitter> => {
+    protected registerEventListener = async <E extends Extract<keyof EventTypes, string>>(eventType: E): Promise<EventEmitter> => {
         const runtimeEvent = Object.assign({}, this.identity, {
             type: eventType,
             topic: this.topic
@@ -107,7 +106,6 @@ export class EmitterBase<EventTypes = any> extends Base {
         emitter.on(eventType, listener);
         return this;
     }
-    
 
     public addListener = this.on;
 
