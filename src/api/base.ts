@@ -67,7 +67,7 @@ export class EmitterBase<EventTypes = any> extends Base {
     public listeners = (type: string | symbol) => this.hasEmitter() ? this.getEmitter().listeners(type) : [];
     public listenerCount = (type: string | symbol) => this.hasEmitter() ? this.getEmitter().listenerCount(type) : 0;
 
-    protected async registerEventListener<E extends Extract<keyof EventTypes, string>>(eventType: E): Promise<EventEmitter> {
+    protected registerEventListener = async <E extends Extract<keyof EventTypes, string>>(eventType: E):Promise<EventEmitter> => {
         const runtimeEvent = Object.assign({}, this.identity, {
             type: eventType,
             topic: this.topic
@@ -80,7 +80,7 @@ export class EmitterBase<EventTypes = any> extends Base {
         return emitter;
     }
 
-    protected async deregisterEventListener<E extends Extract<keyof EventTypes, string>>(eventType: E): Promise<void | EventEmitter> {
+    protected deregisterEventListener = async <E extends Extract<keyof EventTypes, string>>(eventType: E): Promise<void | EventEmitter> => {
         if (this.hasEmitter()) {
             const runtimeEvent = Object.assign({}, this.identity, {
                 type: eventType,
@@ -141,7 +141,7 @@ export class EmitterBase<EventTypes = any> extends Base {
         return this;
     }
 
-    protected async deregisterAllListeners<E extends Extract<keyof EventTypes, string>>(eventType: E): Promise<EventEmitter | void> {
+    protected deregisterAllListeners = async <E extends Extract<keyof EventTypes, string>>(eventType: E): Promise<EventEmitter | void> => {
         const runtimeEvent = Object.assign({}, this.identity, {
             type: eventType,
             topic: this.topic
