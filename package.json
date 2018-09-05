@@ -20,6 +20,7 @@
         "@types/rimraf": "0.0.28",
         "@types/sinon": "^1.16.34",
         "@types/ws": "~0.0.36",
+        "events": "^3.0.0",
         "grunt": "^1.0.3",
         "grunt-contrib-copy": "^1.0.0",
         "grunt-mocha-test": "^0.13.3",
