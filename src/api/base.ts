@@ -90,7 +90,7 @@ export class EmitterBase extends Base {
             const newRefCount = refCount - 1;
             if (newRefCount === 0) {
                 await this.wire.sendAction('unsubscribe-to-desktop-event', runtimeEvent);
-                if (emitter.eventNames().length === 0) {
+                if (emitter.eventNames && emitter.eventNames().length === 0) {
                     this.wire.eventAggregator.delete(this.emitterAccessor);
                     return;
                 }

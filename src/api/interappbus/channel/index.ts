@@ -5,10 +5,8 @@ import { EmitterBase } from '../../base';
 import Transport, { Message, Payload } from '../../../transport/transport';
 import { ProviderIdentity } from './channel';
 
-export interface Options {
+export interface ConnectOptions {
     wait?: boolean;
-    uuid: string;
-    name?: string;
     payload?: any;
 }
 
@@ -36,67 +34,65 @@ export class Channel extends EmitterBase {
             .then(({ payload }) => payload.data);
     }
 
-    public async onChannelConnect(listener: Function): Promise<void> {
-        await this.on('channel-connected', (payload) => {
-            const eventPayload = Object.assign(payload, {type: 'connected'});
-            listener(eventPayload);
-        });
+    public async onChannelConnect(listener: (...args: any[]) => void): Promise<void> {
+        await this.on('connected', listener);
     }
 
-    public async onChannelDisconnect(listener: Function): Promise<void> {
-        await this.on('channel-disconnected', (payload) => {
-            const eventPayload = Object.assign(payload, {type: 'disconnected'});
-            listener(eventPayload);
-        });
+    public async onChannelDisconnect(listener: (...args: any[]) => void): Promise<void> {
+        await this.on('disconnected', listener);
     }
 
-    // DOCS - if want to send payload, put payload in options
-    public async connect(options: Options): Promise<ChannelClient> {
-        const { uuid, name } = options;
-        let resolver: any;
-        let listener: any;
-        //@ts-ignore
-        // tslint:disable-next-line
+    public async connect(channelName: string, options?: ConnectOptions): Promise<ChannelClient> {
+        if (!channelName || typeof channelName !== 'string') {
+            throw new Error('Please provide a channelName string to connect to a channel.');
+        }
+        const opts: any = options || {};
+        let resolver: (arg?: any) => void;
+        let listener: EventListener;
         const waitResponse: Promise<ChannelClient> = new Promise(resolve => {
             resolver = resolve;
             listener = (payload: any) => {
-                // Will need to be improved for uuid/name combo and channelName
-                if (uuid === payload.uuid) {
-                    this.connect(options).then(response => {
+                if (channelName === payload.channelName) {
+                    this.removeListener('connected', listener);
+                    this.connect(channelName, opts).then(response => {
                         resolve(response);
-                        this.removeListener('channel-connected', listener);
                     });
                 }
             };
-            this.on('channel-connected', listener);
+            this.on('connected', listener);
         });
         try {
-            const { payload: { data: providerIdentity } } = await this.wire.sendAction('connect-to-channel', options);
+            const { payload: { data: providerIdentity } } = await this.wire.sendAction('connect-to-channel', { channelName, ...opts});
+            // If there isn't a matching channel, the above sendAction call will error out and go to catch, skipping the logic below
             if (resolver) {
                 resolver();
             }
-            this.removeListener('channel-connected', listener);
+            this.removeListener('connected', listener);
             const channel = new ChannelClient(providerIdentity, this.wire.sendAction.bind(this.wire));
-            const key = providerIdentity.channelId || providerIdentity.uuid;
+            const key = providerIdentity.channelId;
             this.channelMap.set(key, channel);
             return channel;
         } catch (e) {
-            const shouldWait: boolean = Object.assign({ wait: true }, options).wait;
+            const shouldWait: boolean = Object.assign({ wait: true }, opts).wait;
             const internalNackMessage = 'internal-nack';
-            if (shouldWait && e.message === internalNackMessage) {
+            if (shouldWait && e.message && e.message.includes(internalNackMessage)) {
+                console.warn(`Channel not found for channelName: ${channelName}, waiting for channel creation.`);
                 return await waitResponse;
             } else if (e.message === internalNackMessage) {
-                throw new Error('No channel found');
+                throw new Error(`No channel found for channelName: ${channelName}`);
             } else {
                 throw new Error(e);
             }
         }
     }
 
-    public async create(channelName?: string): Promise<ChannelProvider> {
+    public async create(channelName: string): Promise<ChannelProvider> {
+        if (!channelName) {
+            throw new Error('Please provide a channelName to create a channel');
+        }
         const { payload: { data: providerIdentity } } = await this.wire.sendAction('create-channel', {channelName});
         const channel = new ChannelProvider(providerIdentity, this.wire.sendAction.bind(this.wire));
-        const key = providerIdentity.channelId || providerIdentity.uuid;
+        const key = providerIdentity.channelId;
         this.channelMap.set(key, channel);
         return channel;
     }
@@ -149,10 +145,4 @@ export class Channel extends EmitterBase {
             this.wire.sendRaw(ackToSender);
         }
     }
-}
-
-interface PluginSubscribeSuccess {
-    uuid: string;
-    name: string;
-    serviceName: string;
 }
