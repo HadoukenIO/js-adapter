@@ -115,9 +115,11 @@ module.exports = function (grunt) {
                     grunt.fail.fatal(err.details, 3);
                 }
             } else if (stats.hasErrors()) {
-                grunt.fail.fatal(stats.errors, 3);
+                const info = stats.toJson();
+                grunt.fail.fatal(info.errors, 3);
             } else if (stats.hasWarnings()) {
-                grunt.fail.warn(stats.warnings, 6);
+                const info = stats.toJson();
+                grunt.fail.warn(info.warnings, 6);
             } else {
                 grunt.log.ok('webpack task done');
                 done();
