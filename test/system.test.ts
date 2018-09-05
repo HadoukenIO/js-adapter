@@ -170,6 +170,11 @@ describe('System.', function () {
         it('Fulfilled', () => fin.System.getLogList().then(() => assert(true)));
     });
 
+    describe('getMachineId()', () => {
+
+        it('Fulfilled', () => fin.System.getMachineId().then(() => assert(true)));
+    });
+
     describe('getMinLogLevel()', () => {
 
         it('Fulfilled', () => fin.System.getMinLogLevel().then(level => assert(typeof level === 'string')));
