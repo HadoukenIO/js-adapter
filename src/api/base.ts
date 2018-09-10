@@ -101,7 +101,8 @@ export class EmitterBase<EventTypes = any> extends Base {
         return Promise.resolve();
     }
 
-    public async on<E extends Extract<keyof EventTypes, string>>(eventType: E, listener: (...args: Array<EventTypes[E]>) => void): Promise<this> {
+    public async on<E extends Extract<keyof EventTypes, string>>
+    (eventType: E, listener: (...args: Array<EventTypes[E]>) => void): Promise<this> {
         const emitter = await this.registerEventListener(eventType);
         emitter.on(eventType, listener);
         return this;
@@ -109,7 +110,8 @@ export class EmitterBase<EventTypes = any> extends Base {
 
     public addListener = this.on;
 
-    public async once<E extends Extract<keyof EventTypes, string>>(eventType: E, listener: (...args: Array<EventTypes[E]>) => void): Promise<this> {
+    public async once<E extends Extract<keyof EventTypes, string>>
+    (eventType: E, listener: (...args: Array<EventTypes[E]>) => void): Promise<this> {
         const deregister = () => this.deregisterEventListener(eventType);
         const emitter = await this.registerEventListener(eventType);
         emitter.once(eventType, deregister);
@@ -117,13 +119,15 @@ export class EmitterBase<EventTypes = any> extends Base {
         return this;
     }
 
-    public async prependListener<E extends Extract<keyof EventTypes, string>>(eventType: E, listener: (...args: Array<EventTypes[E]>) => void): Promise<this> {
+    public async prependListener<E extends Extract<keyof EventTypes, string>>
+    (eventType: E, listener: (...args: Array<EventTypes[E]>) => void): Promise<this> {
         const emitter = await this.registerEventListener(eventType);
         emitter.prependListener(eventType, listener);
         return this;
     }
 
-    public async prependOnceListener<E extends Extract<keyof EventTypes, string>>(eventType: E, listener: (...args: Array<EventTypes[E]>) => void): Promise<this> {
+    public async prependOnceListener<E extends Extract<keyof EventTypes, string>>
+    (eventType: E, listener: (...args: Array<EventTypes[E]>) => void): Promise<this> {
         const deregister = () => this.deregisterEventListener(eventType);
         const emitter = await this.registerEventListener(eventType);
         emitter.prependOnceListener(eventType, listener);
@@ -131,7 +135,8 @@ export class EmitterBase<EventTypes = any> extends Base {
         return this;
     }
 
-    public async removeListener<E extends Extract<keyof EventTypes, string>>(eventType: E, listener: (...args: Array<EventTypes[E]>) => void): Promise<this> {
+    public async removeListener<E extends Extract<keyof EventTypes, string>>
+    (eventType: E, listener: (...args: Array<EventTypes[E]>) => void): Promise<this> {
         const emitter = await this.deregisterEventListener(eventType);
         if (emitter) {
             emitter.removeListener(eventType, listener);
