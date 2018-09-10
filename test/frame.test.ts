@@ -2,6 +2,7 @@ import { conn } from './connect';
 import * as assert from 'assert';
 import { Fin, Frame } from '../src/main';
 import { cleanOpenRuntimes } from './multi-runtime-utils';
+import { _Frame } from '../src/api/frame/frame';
 
 describe('Frame.', () => {
     let fin: Fin;
@@ -21,6 +22,33 @@ describe('Frame.', () => {
         it('Fulfilled', () => testFrame.getInfo().then(info => {
             assert(typeof(info) === 'object');
         }));
+    });
+
+    describe('wrapSync()', () => {
+        it('exists', () => {
+            assert(typeof fin.Frame.wrapSync === 'function');
+        });
+
+        it('should return _Frame', () => {
+            const returnVal = fin.Frame.wrapSync(testFrame.identity);
+            assert(returnVal instanceof _Frame);
+        });
+
+        it('should return _Frame with matching identity', () => {
+            const returnVal = fin.Frame.wrapSync(testFrame.identity);
+            assert.deepEqual(returnVal.identity, testFrame.identity);
+        });
+    });
+
+    describe('getCurrentSync()', () => {
+        it('exists', () => {
+            assert(typeof fin.Frame.getCurrentSync === 'function');
+        });
+
+        it('should return Frame', () => {
+            const returnVal = fin.Frame.getCurrentSync();
+            assert(returnVal instanceof _Frame);
+        });
     });
 
     /*

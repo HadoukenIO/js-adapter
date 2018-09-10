@@ -40,13 +40,23 @@ export interface TrayInfo {
 
 export default class ApplicationModule extends Base {
     /**
-     * Returns an Application object that represents an existing application.
-     * @param { Identity } indentity
+     * Asynchronously returns an Application object that represents an existing application.
+     * @param { Identity } identity
      * @return {Promise.<Application>}
      * @tutorial Application.wrap
      */
     public wrap(identity: Identity): Promise<Application> {
         return Promise.resolve(new Application(this.wire, identity));
+    }
+
+    /**
+     * Synchronously returns an Application object that represents an existing application.
+     * @param { Identity } identity
+     * @return {Application}
+     * @tutorial Application.wrapSync
+     */
+    public wrapSync(identity: Identity): Application {
+        return new Application(this.wire, identity);
     }
 
     /**
@@ -61,12 +71,21 @@ export default class ApplicationModule extends Base {
     }
 
     /**
-     * Returns an Application object that represents the current application
+     * Asynchronously returns an Application object that represents the current application
      * @return {Promise.<Application>}
      * @tutorial Application.getCurrent
      */
     public getCurrent(): Promise<Application> {
         return this.wrap({ uuid: this.wire.me.uuid });
+    }
+
+    /**
+     * Synchronously returns an Application object that represents the current application
+     * @return {Application}
+     * @tutorial Application.getCurrentSync
+     */
+    public getCurrentSync(): Application {
+        return this.wrapSync({ uuid: this.wire.me.uuid });
     }
 
     /**

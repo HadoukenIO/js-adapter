@@ -3,6 +3,7 @@ import * as assert from 'assert';
 import { connect as rawConnect, Fin, Application, Window } from '../src/main';
 import { delayPromise } from './delay-promise';
 import { cleanOpenRuntimes } from './multi-runtime-utils';
+import { _Window } from '../src/api/window/window';
 
 describe('Window.', function() {
     let fin: Fin;
@@ -437,5 +438,32 @@ describe('Window.', function() {
     describe('stopNavigation()', () => {
 
         it('Fulfilled', () => testWindow.stopNavigation().then(() => assert(true)));
+    });
+
+    describe('wrapSync()', () => {
+        it('exists', () => {
+            assert(typeof fin.Window.wrapSync === 'function');
+        });
+
+        it('should return _Window', () => {
+            const returnVal = fin.Window.wrapSync(testWindow.identity);
+            assert(returnVal instanceof _Window);
+        });
+
+        it('should return _Window with matching identity', () => {
+            const returnVal = fin.Window.wrapSync(testWindow.identity);
+            assert.deepEqual(returnVal.identity, testWindow.identity);
+        });
+    });
+
+    describe('getCurrentSync()', () => {
+        it('exists', () => {
+            assert(typeof fin.Window.getCurrentSync === 'function');
+        });
+
+        it('should return Window', () => {
+            const returnVal = fin.Window.getCurrentSync();
+            assert(returnVal instanceof _Window);
+        });
     });
 });
