@@ -46,7 +46,7 @@ describe ('Multi Runtime Channels', function() {
             async function test () {
                 const spy = sinon.spy();
                 const [finA, finB] = await Promise.all([launchAndConnect(), launchAndConnect()]);
-                const provider = await finB.InterApplicationBus.Channel.create();
+                const provider = await finB.InterApplicationBus.Channel.create('test-ext-provider');
                 provider.register('test', () => {
                     spy();
                     return 'return-test';
@@ -62,7 +62,7 @@ describe ('Multi Runtime Channels', function() {
                     assert.equal(msg, 'return-test');
                     done();
                 });
-                await finB.InterApplicationBus.publish('start', 'hi');
+                await finB.InterApplicationBus.publish('start', 'test-ext-provider');
             }
             test().catch(() => cleanOpenRuntimes());
         });
@@ -74,7 +74,7 @@ describe ('Multi Runtime Channels', function() {
             const url = appConfig.startup_app.url;
             const newUrl = url.slice(0, url.lastIndexOf('/')) + '/service.html';
 
-            const serviceConfig = {
+            const providerConfig = {
                 'name': 'channel-provider-test',
                 'url': newUrl,
                 'uuid': 'channel-provider-test',
@@ -88,12 +88,12 @@ describe ('Multi Runtime Channels', function() {
 
             async function test() {
                 const [finA, finB] = await Promise.all([launchAndConnect(), launchAndConnect()]);
-                const service = await finA.Application.create(serviceConfig);
-                await service.run();
+                const provider = await finA.Application.create(providerConfig);
+                await provider.run();
                 await delayPromise(DELAY_MS);
-                const client = await finB.InterApplicationBus.Channel.connect({uuid: 'channel-provider-test'});
+                const client = await finB.InterApplicationBus.Channel.connect('test');
                 client.register('multi-runtime-test', (r: string) => {
-                    assert.equal(r, 'return-mrt', 'wrong payload sent from service');
+                    assert.equal(r, 'return-mrt', 'wrong payload sent from provider');
                     done();
                 });
                 client.dispatch('test').then(res => {
@@ -126,7 +126,7 @@ describe ('Multi Runtime Channels', function() {
                 const [finA, finB] = await Promise.all([launchAndConnect(), launchAndConnect()]);
                 const service = await finA.Application.create(serviceConfig);
                 await service.run();
-                await finB.InterApplicationBus.Channel.create('test-channel-multi-runtime');
+                await finB.InterApplicationBus.Channel.create('getAllChannels-multi-runtime');
                 await delayPromise(DELAY_MS * 3);
                 const allChannels = await fin.InterApplicationBus.Channel.getAllChannels();
                 assert.equal(allChannels.length, 2, `expected 2 channels in allChannels: ${JSON.stringify(allChannels)}`);
@@ -156,19 +156,39 @@ describe ('Multi Runtime Channels', function() {
 
             async function test() {
                 const [finA, finB] = await Promise.all([launchAndConnect(), launchAndConnect()]);
-                finB.InterApplicationBus.Channel.connect({uuid: 'channel-provider-mrtest'})
+                finB.InterApplicationBus.Channel.connect('test')
                 .then((c) => {
                     c.register('multi-runtime-test', (r: string) => {
                         assert.equal(r, 'return-mrt', 'wrong payload sent from service');
                         done();
                     });
-                    c.dispatch('test').then(res => {
+                    c.dispatch('test').then((res: any) => {
                         assert.equal(res, 'return-test', 'wrong return payload from service');
                     });
                 });
                 await delayPromise(DELAY_MS * 2);
                 const service = await finA.Application.create(serviceConfig);
                 await service.run();
+            }
+            test().catch(() => cleanOpenRuntimes());
+        });
+    });
+
+    describe('Multi Runtime two channel with same name', function () {
+
+        it('Should not be able to create two channels with the same name', function(done: any) {
+            async function test() {
+                const [finA, finB] = await Promise.all([launchAndConnect(), launchAndConnect()]);
+                await delayPromise(DELAY_MS);
+                try {
+                    await finA.InterApplicationBus.Channel.create('mr-channel-name-test');
+                    await finB.InterApplicationBus.Channel.create('mr-channel-name-test');
+                } catch {
+                    assert(true, 'no error on second channel creation');
+                    done();
+                }
+                assert(false, 'no error on second channel creation');
+                done();
             }
             test().catch(() => cleanOpenRuntimes());
         });

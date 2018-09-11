@@ -1,7 +1,7 @@
 import { ChannelBase, ProviderIdentity } from './channel';
 import Transport from '../../../transport/transport';
 
-export type ConnectionListener = (adapterIdentity: ProviderIdentity, connectionMessage?: any) => any;
+export type ConnectionListener = (providerIdentity: ProviderIdentity, connectionMessage?: any) => any;
 
 export class ChannelProvider extends ChannelBase {
     private connectListener: ConnectionListener;

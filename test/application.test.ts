@@ -255,6 +255,33 @@ describe('Application.', function() {
         });
     });
 
+    describe('wrapSync()', () => {
+        it('exists', () => {
+            assert(typeof fin.Application.wrapSync === 'function');
+        });
+
+        it('should return Application', () => {
+            const returnVal = fin.Application.wrapSync(testApp.identity);
+            assert(returnVal instanceof Application);
+        });
+
+        it('should return App with matching identity', () => {
+            const returnVal = fin.Application.wrapSync(testApp.identity);
+            assert.deepEqual(returnVal.identity, testApp.identity);
+        });
+    });
+
+    describe('getCurrentSync()', () => {
+        it('exists', () => {
+            assert(typeof fin.Application.getCurrentSync === 'function');
+        });
+
+        it('should return Application', () => {
+            const returnVal = fin.Application.getCurrentSync();
+            assert(returnVal instanceof Application);
+        });
+    });
+
     describe('getZoomLevel()', () => {
 
         it('Fulfilled', () => testApp.getZoomLevel().then(level => assert(level === 0)));  // by default, it's zero.

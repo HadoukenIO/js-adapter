@@ -10,7 +10,7 @@
 
 <script>
     fin.desktop.main(async () => {
-        const provider = await fin.InterApplicationBus.Channel.create('test-channel');
+        const provider = await fin.InterApplicationBus.Channel.create('test');
         provider.register('test', (payload, id) => {
             provider.dispatch(id, 'multi-runtime-test', 'return-mrt');
             return 'return-test';

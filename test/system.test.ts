@@ -128,11 +128,6 @@ describe('System.', function () {
         }));
     });
 
-    describe('getDeviceId()', () => {
-
-        it('Fulfilled', () => fin.System.getDeviceId().then(() => assert(true)));
-    });
-
     describe('getDeviceUserId()', () => {
 
         it('Fulfilled', () => fin.System.getDeviceUserId().then(id => {
@@ -168,6 +163,11 @@ describe('System.', function () {
     describe('getLogList()', () => {
 
         it('Fulfilled', () => fin.System.getLogList().then(() => assert(true)));
+    });
+
+    describe('getMachineId()', () => {
+
+        it('Fulfilled', () => fin.System.getMachineId().then(() => assert(true)));
     });
 
     describe('getMinLogLevel()', () => {

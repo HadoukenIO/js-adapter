@@ -1,6 +1,6 @@
 {
     "name": "hadouken-js-adapter",
-    "version": "0.34.3",
+    "version": "0.35.1-alpha.1",
     "license": "Apache-2.0",
     "repository": "https://github.com/HadoukenIO/js-adapter",
     "main": "./out/src/main.js",
@@ -20,6 +20,7 @@
         "@types/rimraf": "0.0.28",
         "@types/sinon": "^1.16.34",
         "@types/ws": "~0.0.36",
+        "events": "^3.0.0",
         "grunt": "^1.0.3",
         "grunt-contrib-copy": "^1.0.0",
         "grunt-mocha-test": "^0.13.3",

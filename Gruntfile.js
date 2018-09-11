@@ -9,9 +9,15 @@ const { buildCore, resolveRuntimeVersion } = require('./coreUtils');
 
 const outDir = path.resolve('out');
 const webpackConfig = {
-    entry: './out/src/of-main.js',
+    entry: path.resolve(__dirname, 'out/src/of-main.js'),
+    resolve: {
+        alias: {
+            events: path.resolve(__dirname, 'node_modules/events/events.js')
+        }
+    },
     output: {
-        filename: './out/js-adapter.js'
+        path: path.resolve(__dirname, 'out'),
+        filename: 'js-adapter.js'
     }
 };
 const serverParams = {
@@ -105,7 +111,6 @@ module.exports = function (grunt) {
         const done = this.async();
         webpack(webpackConfig, (err, stats) => {
             if (err) {
-                const error = err ? err.message : 'webpack error';
                 if (err.details) {
                     grunt.fail.fatal(err.details, 3);
                 }

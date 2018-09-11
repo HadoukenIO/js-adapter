@@ -12,8 +12,8 @@ export default class _WindowModule extends Base {
     private instance: _Window;
 
     /**
-     * Returns a Window object that represents an existing window.
-     * @param { Identity } indentity
+     * Asynchronously returns a Window object that represents an existing window.
+     * @param { Identity } identity
      * @return {Promise.<_Window>}
      * @tutorial Window.wrap
      */
@@ -22,6 +22,19 @@ export default class _WindowModule extends Base {
             this.instance = new _Window(this.wire, identity);
         }
         return Promise.resolve(this.instance);
+    }
+
+    /**
+     * Synchronously returns a Window object that represents an existing window.
+     * @param { Identity } identity
+     * @return {_Window}
+     * @tutorial Window.wrapSync
+     */
+    public wrapSync(identity: Identity): _Window {
+        if (!this.instance) {
+            this.instance = new _Window(this.wire, identity);
+        }
+        return this.instance;
     }
 
     /**
@@ -36,12 +49,21 @@ export default class _WindowModule extends Base {
     }
 
     /**
-     * Returns a Window object that represents the current window
+     * Asynchronously returns a Window object that represents the current window
      * @return {Promise.<Window>}
      * @tutorial window.getCurrent
      */
     public getCurrent(): Promise<_Window> {
         return this.wrap(this.wire.me);
+    }
+
+    /**
+     * Synchronously returns a Window object that represents the current window
+     * @return {_Window}
+     * @tutorial window.getCurrentSync
+     */
+    public getCurrentSync(): _Window {
+        return this.wrapSync(this.wire.me);
     }
 }
 
