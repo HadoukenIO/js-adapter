@@ -38,9 +38,14 @@ export interface TrayInfo {
     y: number;
 }
 
+/**
+ * @class
+ * @alias Application
+ */
 export default class ApplicationModule extends Base {
     /**
      * Asynchronously returns an Application object that represents an existing application.
+     * @static
      * @param { Identity } identity
      * @return {Promise.<Application>}
      * @tutorial Application.wrap
@@ -51,6 +56,7 @@ export default class ApplicationModule extends Base {
 
     /**
      * Synchronously returns an Application object that represents an existing application.
+     * @static
      * @param { Identity } identity
      * @return {Application}
      * @tutorial Application.wrapSync
@@ -61,6 +67,7 @@ export default class ApplicationModule extends Base {
 
     /**
      * Creates a new Application.
+     * @static
      * @param {*} appOptions
      * @return {Promise.<Application>}
      * @tutorial Application.create
@@ -72,6 +79,7 @@ export default class ApplicationModule extends Base {
 
     /**
      * Asynchronously returns an Application object that represents the current application
+     * @static
      * @return {Promise.<Application>}
      * @tutorial Application.getCurrent
      */
@@ -81,6 +89,7 @@ export default class ApplicationModule extends Base {
 
     /**
      * Synchronously returns an Application object that represents the current application
+     * @static
      * @return {Application}
      * @tutorial Application.getCurrentSync
      */
@@ -90,6 +99,7 @@ export default class ApplicationModule extends Base {
 
     /**
      * Retrieves application's manifest and returns a wrapped application.
+     * @static
      * @param {string} manifestUrl - The URL of app's manifest.
      * @return {Promise.<Application>}
      * @tutorial Application.createFromManifest
