@@ -1,6 +1,7 @@
 import { Base, EmitterBase } from '../base';
 import { Identity } from '../../identity';
 import Transport from '../../transport/transport';
+import { FrameEvents } from '../events/frame';
 
 export type EntityType = 'window' | 'iframe' | 'external connection' | 'unknown';
 
@@ -39,7 +40,7 @@ export default class _FrameModule extends Base {
  * @alias Frame
  */
 // tslint:disable-next-line
-export class _Frame extends EmitterBase {
+export class _Frame extends EmitterBase<FrameEvents> {
 
     constructor(wire: Transport, public identity: Identity) {
         super(wire, ['frame', identity.uuid, identity.name]);

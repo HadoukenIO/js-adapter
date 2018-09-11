@@ -1,68 +1,92 @@
 import { CrashedEvent } from './applicationEventTypes';
+import {WindowEvent, BaseEventMap} from './base';
 
-export interface WindowEvent extends Event {
-    name: string;
-}
+export type SpecificWindowEvent<Type> = WindowEvent<'window', Type>;
 
-export interface WindowAlertRequestedEvent extends WindowEvent {
+export interface WindowAlertRequestedEvent<Topic, Type> extends WindowEvent<Topic, Type> {
     message: string;
     url: string;
 }
 
-export interface WindowAuthRequestedEvent extends WindowEvent {
-    authInfo: any;
+export interface WindowAuthRequestedEvent<Topic, Type> extends WindowEvent<Topic, Type> {
+    authInfo: {
+        host: string;
+        isProxy: boolean;
+        port: number;
+        realm: string;
+        scheme: string;
+    };
 }
 
-export interface WindowEndLoadEvent extends WindowEvent {
+export interface WindowEndLoadEvent<Topic, Type> extends WindowEvent<Topic, Type> {
     documentName: string;
     isMain: boolean;
 }
 
-export interface WindowNavigationRejectedEvent extends WindowEvent {
+export interface WindowNavigationRejectedEvent<Topic, Type> extends WindowEvent<Topic, Type> {
     sourceName: string;
     url: string;
 }
 
-export interface WindowReloadedEvent extends WindowEvent {
+export interface WindowReloadedEvent<Topic, Type> extends WindowEvent<Topic, Type> {
     url: string;
 }
 
-export interface WindowExternalProcessExitedEvent extends WindowEvent {
+export interface WindowExternalProcessExitedEvent<Topic, Type> extends WindowEvent<Topic, Type> {
     processUuid: string;
     exitCode: number;
 }
 
-export interface WindowExternalProcessStartedEvent extends WindowEvent {
+export interface WindowExternalProcessStartedEvent<Topic, Type> extends WindowEvent<Topic, Type> {
     processUuid: string;
 }
 
-export interface WindowHiddenEvent extends WindowEvent {
+export interface WindowHiddenEvent<Topic, Type> extends WindowEvent<Topic, Type> {
     reason: 'closing' | 'hide' | 'hide-on-close';
 }
 
-export interface WindowPreloadScriptsStateChangeEvent extends WindowEvent {
-    preloadScripts: Array<Object>;
+export interface PreloadScriptInfoRunning {
+    state: 'load-started' |   // started loading preload script
+        'load-failed' |       // preload script failed to load
+        'load-succeeded' |    // preload script is loaded and ready to be eval'ed
+        'failed' |            // preload script failed to eval
+        'succeeded';          // preload script eval'ed successfully
 }
 
-export interface WindowResourceLoadFailedEvent extends WindowEvent {
+export interface PreloadScriptInfo {
+    state: 'load-failed' |// preload script failed to load
+    'failed' |            // preload script failed to eval
+    'succeeded';          // preload script eval'ed successfully
+}
+export interface WindowPreloadScriptsStateChangeEvent<Topic, Type> extends WindowEvent<Topic, Type> {
+    preloadScripts: (PreloadScriptInfoRunning & any)[];
+}
+export interface WindowPreloadScriptsStateChangedEvent<Topic, Type> extends WindowEvent<Topic, Type> {
+    preloadScripts: (PreloadScriptInfoRunning & any)[];
+}
+export interface WindowPreloadScriptsStateChangedEvent<Topic, Type> extends WindowEvent<Topic, Type> {
+    preloadScripts: (PreloadScriptInfo & any)[];
+}
+
+export interface WindowResourceLoadFailedEvent<Topic, Type> extends WindowEvent<Topic, Type> {
     errorCode: number;
     errorDescription: string;
     validatedURL: string;
     isMainFrame: boolean;
 }
 
-export interface WindowResourceResponseReceivedEvent extends WindowEvent {
+export interface WindowResourceResponseReceivedEvent<Topic, Type> extends WindowEvent<Topic, Type> {
     status: boolean;
     newUrl: string;
     originalUrl: string;
     httpResponseCode: number;
     requestMethod: string;
     referrer: string;
-    headers: Object;
+    headers: any;
     resourceType: 'mainFrame' | 'subFrame' | 'styleSheet' | 'script' | 'image' | 'object' | 'xhr' | 'other';
 }
 
-export interface WindowBeginBoundsChangingEvent extends WindowEvent {
+export interface WindowBeginBoundsChangingEvent<Topic, Type> extends WindowEvent<Topic, Type> {
     height: number;
     left: number;
     top: number;
@@ -70,7 +94,7 @@ export interface WindowBeginBoundsChangingEvent extends WindowEvent {
     windowState: 'minimized' | 'normal' | 'maximized';
 }
 
-export interface WindowBoundsChange extends WindowEvent {
+export interface WindowBoundsChange<Topic, Type> extends WindowEvent<Topic, Type> {
     changeType: 0 | 1 | 2;
     deferred: boolean;
     height: number;
@@ -79,54 +103,94 @@ export interface WindowBoundsChange extends WindowEvent {
     width: number;
 }
 
-export interface WindowGroupChanged extends WindowEvent {
+export interface WindowGroupChanged<Topic, Type> extends WindowEvent<Topic, Type> {
     memberOf: 'source' | 'target' | 'nothing';
     reason: 'leave' | 'join' | 'merge' | 'disband';
-    sourceGroup: Array<{
+    sourceGroup: {
         appUuid: string;
         windowName: string;
-    }>;
+    }[];
     sourceWindowAppUuid: string;
     sourceWindowName: string;
-    targetGroup: Array<{
+    targetGroup: {
         appUuid: string;
         windowName: string;
-    }>;
+    }[];
     targetWindowAppUuid: string;
     targetWindowName: string;
 }
 
-export interface WindowEventTypes {
-    'auth-requested': WindowAuthRequestedEvent;
-    'begin-user-bounds-changing': WindowBeginBoundsChangingEvent;
-    'blurred': WindowEvent;
-    'bounds-changed': WindowBoundsChange;
-    'bounds-changing': WindowBoundsChange;
-    'close-requested': WindowEvent;
-    'closed': WindowEvent;
-    'closing': WindowEvent;
-    'crashed': CrashedEvent & WindowEvent;
-    'disabled-frame-bounds-changed': WindowBoundsChange;
-    'disabled-frame-bounds-changing': WindowBoundsChange;
-    'embedded': WindowEvent;
-    'end-user-bounds-changing': WindowBeginBoundsChangingEvent;
-    'external-process-exited': WindowExternalProcessExitedEvent;
-    'external-process-started': WindowExternalProcessStartedEvent;
-    'focused': WindowEvent;
-    'frame-disabled': WindowEvent;
-    'frame-enabled': WindowEvent;
-    'group-changed': WindowGroupChanged;
-    'hidden': WindowHiddenEvent;
-    'initialized': WindowEvent;
-    'maximized': WindowEvent;
-    'minimized': WindowEvent;
-    'navigation-rejected': WindowNavigationRejectedEvent;
-    'preload-scripts-state-changed': WindowPreloadScriptsStateChangeEvent;
-    'preload-scripts-state-changing': WindowPreloadScriptsStateChangeEvent;
-    'resource-load-failed': WindowResourceLoadFailedEvent;
-    'resource-response-received': WindowResourceResponseReceivedEvent;
-    'reloaded': WindowReloadedEvent;
-    'restored': WindowEvent;
-    'show-requested': WindowEvent;
-    'shown': WindowEvent;
+export interface WindowEventMapping<Topic = string, Type = string> extends BaseEventMap {
+    'auth-requested': WindowAuthRequestedEvent<Topic, Type>;
+    'begin-user-bounds-changing': WindowBeginBoundsChangingEvent<Topic, Type>;
+    'blurred': WindowEvent<Topic, Type>;
+    'bounds-changed': WindowBoundsChange<Topic, Type>;
+    'bounds-changing': WindowBoundsChange<Topic, Type>;
+    'close-requested': WindowEvent<Topic, Type>;
+    'closed': WindowEvent<Topic, Type>;
+    'closing': WindowEvent<Topic, Type>;
+    'crashed': CrashedEvent & WindowEvent<Topic, Type>;
+    'disabled-frame-bounds-changed': WindowBoundsChange<Topic, Type>;
+    'disabled-frame-bounds-changing': WindowBoundsChange<Topic, Type>;
+    'embedded': WindowEvent<Topic, Type>;
+    'end-user-bounds-changing': WindowBeginBoundsChangingEvent<Topic, Type>;
+    'external-process-exited': WindowExternalProcessExitedEvent<Topic, Type>;
+    'external-process-started': WindowExternalProcessStartedEvent<Topic, Type>;
+    'focused': WindowEvent<Topic, Type>;
+    'frame-disabled': WindowEvent<Topic, Type>;
+    'frame-enabled': WindowEvent<Topic, Type>;
+    'group-changed': WindowGroupChanged<Topic, Type>;
+    'hidden': WindowHiddenEvent<Topic, Type>;
+    'initialized': WindowEvent<Topic, Type>;
+    'maximized': WindowEvent<Topic, Type>;
+    'minimized': WindowEvent<Topic, Type>;
+    'navigation-rejected': WindowNavigationRejectedEvent<Topic, Type>;
+    'preload-scripts-state-changed': WindowPreloadScriptsStateChangeEvent<Topic, Type>;
+    'preload-scripts-state-changing': WindowPreloadScriptsStateChangeEvent<Topic, Type>;
+    'resource-load-failed': WindowResourceLoadFailedEvent<Topic, Type>;
+    'resource-response-received': WindowResourceResponseReceivedEvent<Topic, Type>;
+    'reloaded': WindowReloadedEvent<Topic, Type>;
+    'restored': WindowEvent<Topic, Type>;
+    'show-requested': WindowEvent<Topic, Type>;
+    'shown': WindowEvent<Topic, Type>;
 }
+
+export interface PropagatedWindowEventMapping<Topic = string, Type = string> extends BaseEventMap {
+    'window-begin-user-bounds-changing': WindowBeginBoundsChangingEvent<Topic, Type>;
+    'window-blurred': WindowEvent<Topic, Type>;
+    'window-bounds-changed': WindowBoundsChange<Topic, Type>;
+    'window-bounds-changing': WindowBoundsChange<Topic, Type>;
+    'window-closed': WindowEvent<Topic, Type>;
+    'window-closing': WindowEvent<Topic, Type>;
+    'window-crashed': CrashedEvent & WindowEvent<Topic, Type>;
+    'window-disabled-frame-bounds-changed': WindowBoundsChange<Topic, Type>;
+    'window-disabled-frame-bounds-changing': WindowBoundsChange<Topic, Type>;
+    'window-embedded': WindowEvent<Topic, Type>;
+    'window-end-user-bounds-changing': WindowBeginBoundsChangingEvent<Topic, Type>;
+    'window-external-process-exited': WindowExternalProcessExitedEvent<Topic, Type>;
+    'window-external-process-started': WindowExternalProcessStartedEvent<Topic, Type>;
+    'window-focused': WindowEvent<Topic, Type>;
+    'window-frame-disabled': WindowEvent<Topic, Type>;
+    'window-frame-enabled': WindowEvent<Topic, Type>;
+    'window-group-changed': WindowGroupChanged<Topic, Type>;
+    'window-hidden': WindowHiddenEvent<Topic, Type>;
+    'window-initialized': WindowEvent<Topic, Type>;
+    'window-maximized': WindowEvent<Topic, Type>;
+    'window-minimized': WindowEvent<Topic, Type>;
+    'window-navigation-rejected': WindowNavigationRejectedEvent<Topic, Type>;
+    'window-preload-scripts-state-changed': WindowPreloadScriptsStateChangeEvent<Topic, Type>;
+    'window-preload-scripts-state-changing': WindowPreloadScriptsStateChangedEvent<Topic, Type>;
+    'window-resource-load-failed': WindowResourceLoadFailedEvent<Topic, Type>;
+    'window-resource-response-received': WindowResourceResponseReceivedEvent<Topic, Type>;
+    'window-reloaded': WindowReloadedEvent<Topic, Type>;
+    'window-restored': WindowEvent<Topic, Type>;
+    'window-shown': WindowEvent<Topic, Type>;
+}
+
+export type WindowEvents = {
+    [Type in keyof WindowEventMapping]: WindowEventMapping<'window', Type>[Type];
+};
+
+export type PropagatedWindowEvents<Topic> = {
+    [Type in keyof PropagatedWindowEventMapping]: PropagatedWindowEventMapping<Topic, Type>[Type]
+};

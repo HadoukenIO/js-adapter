@@ -4,6 +4,7 @@ import { ChannelProvider } from './provider';
 import { EmitterBase } from '../../base';
 import Transport, { Message, Payload } from '../../../transport/transport';
 import { ProviderIdentity } from './channel';
+import { ChannelEvents } from '../../events/channel';
 
 export interface Options {
     wait?: boolean;
@@ -22,7 +23,7 @@ export interface ChannelMessage extends Message<any> {
   connectAction: boolean;
 }
 
-export class Channel extends EmitterBase {
+export class Channel extends EmitterBase<ChannelEvents> {
     private channelMap: Map<string, ChannelProvider | ChannelClient>;
     constructor(wire: Transport) {
         super(wire, ['channel']);
