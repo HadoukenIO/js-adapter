@@ -49,7 +49,7 @@ export default class ApplicationModule extends Base {
      * @tutorial Application.wrap
      * @static
      */
-    public wrap(identity: Identity): Promise<Application> {
+    public async wrap(identity: Identity): Promise<Application> {
         return Promise.resolve(new Application(this.wire, identity));
     }
 
@@ -71,7 +71,7 @@ export default class ApplicationModule extends Base {
      * @tutorial Application.create
      * @static
      */
-    public create(appOptions: any): Promise<Application> {
+    public async create(appOptions: any): Promise<Application> {
         return this.wire.sendAction('create-application', appOptions)
             .then(() => this.wrap({ uuid: appOptions.uuid }));
     }
@@ -82,7 +82,7 @@ export default class ApplicationModule extends Base {
      * @tutorial Application.getCurrent
      * @static
      */
-    public getCurrent(): Promise<Application> {
+    public async getCurrent(): Promise<Application> {
         return this.wrap({ uuid: this.wire.me.uuid });
     }
 
@@ -103,7 +103,7 @@ export default class ApplicationModule extends Base {
      * @tutorial Application.createFromManifest
      * @static
      */
-    public createFromManifest(manifestUrl: string): Promise<Application> {
+    public async createFromManifest(manifestUrl: string): Promise<Application> {
         return this.wire.sendAction('get-application-manifest', { manifestUrl })
             .then(({ payload }) => this.wrap({ uuid: payload.data.startup_app.uuid })
                 .then(app => {

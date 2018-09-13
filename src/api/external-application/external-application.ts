@@ -16,7 +16,7 @@ export default class ExternalApplicationModule extends Base {
      * @return {Promise.<ExternalApplication>}
      * @static
      */
-    public wrap(uuid: string): Promise<ExternalApplication> {
+    public async wrap(uuid: string): Promise<ExternalApplication> {
         return Promise.resolve(new ExternalApplication(this.wire, {uuid}));
     }
 

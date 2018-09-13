@@ -21,7 +21,7 @@ export default class _WindowModule extends Base {
      * @tutorial Window.wrap
      * @static
      */
-    public wrap(identity: Identity): Promise<_Window> {
+    public async wrap(identity: Identity): Promise<_Window> {
         if (!this.instance) {
             this.instance = new _Window(this.wire, identity);
         }
@@ -49,7 +49,7 @@ export default class _WindowModule extends Base {
      * @tutorial Window.create
      * @static
      */
-    public create(options: any): Promise<_Window> {
+    public async create(options: any): Promise<_Window> {
        const win = new _Window(this.wire, {uuid: this.me.uuid, name: options.name});
        return win.createWindow(options);
     }
@@ -60,7 +60,7 @@ export default class _WindowModule extends Base {
      * @tutorial Window.getCurrent
      * @static
      */
-    public getCurrent(): Promise<_Window> {
+    public async getCurrent(): Promise<_Window> {
         return this.wrap(this.wire.me);
     }
 
