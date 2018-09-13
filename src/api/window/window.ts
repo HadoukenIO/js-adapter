@@ -9,19 +9,14 @@ import { notImplementedEnvErrorMsg } from '../../environment/environment';
 
 // tslint:disable-next-line
 export default class _WindowModule extends Base {
-    private instance: _Window;
-
     /**
      * Asynchronously returns a Window object that represents an existing window.
      * @param { Identity } identity
      * @return {Promise.<_Window>}
      * @tutorial Window.wrap
      */
-    public wrap(identity: Identity): Promise<_Window> {
-        if (!this.instance) {
-            this.instance = new _Window(this.wire, identity);
-        }
-        return Promise.resolve(this.instance);
+    public async wrap(identity: Identity): Promise<_Window> {
+        return new _Window(this.wire, identity);
     }
 
     /**
@@ -31,10 +26,7 @@ export default class _WindowModule extends Base {
      * @tutorial Window.wrapSync
      */
     public wrapSync(identity: Identity): _Window {
-        if (!this.instance) {
-            this.instance = new _Window(this.wire, identity);
-        }
-        return this.instance;
+        return new _Window(this.wire, identity);
     }
 
     /**
