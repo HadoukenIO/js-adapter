@@ -39,8 +39,7 @@ export interface TrayInfo {
 }
 
 /**
- * @class
- * @alias Application
+ * @lends Application
  */
 export default class ApplicationModule extends Base {
     /**
