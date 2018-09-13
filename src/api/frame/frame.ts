@@ -15,7 +15,7 @@ export interface FrameInfo {
 // tslint:disable-next-line
 export default class _FrameModule extends Base {
     /**
-     * Asynchronously returns a reference to the specified frame. The frame does not have to exist
+     * Gets a reference to the specified frame. The frame does not have to exist
      * @param {string} uuid - uuid of the frame you want to wrap
      * @param {string} name - name of the frame you want to wrap
      * @return {Promise.<_Frame>}
@@ -82,10 +82,4 @@ export class _Frame extends EmitterBase<FrameEvents> {
         return this.wire.sendAction('get-parent-window', this.identity).then(({ payload }) => payload.data);
     }
 
-}
-
-// tslint:disable-next-line
-export interface _Frame {
-    on(type: 'connected', listener: (eventType: string) => void): Promise<this>;
-    on(type: 'disconnected', listener: (eventType: string) => void): Promise<this>;
 }

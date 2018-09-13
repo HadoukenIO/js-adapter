@@ -1,6 +1,11 @@
-import { BaseEventMap } from './base';
+import { BaseEventMap, WindowEvent } from './base';
+
+export interface FrameEvent<Type> extends WindowEvent<'frame', Type> {
+    entityType: 'iframe';
+    frameName: string;
+}
 
 export interface FrameEvents extends BaseEventMap {
-   connected: string;
-   disconnected: string;
+   connected: FrameEvent<'connected'>;
+   disconnected: FrameEvent<'disconnected'>;
 }

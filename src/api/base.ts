@@ -47,9 +47,12 @@ export class EmitterBase<EventTypes extends BaseEventMap> extends Base {
 
     public eventNames = () => this.hasEmitter() ? this.getEmitter().eventNames() : [];
 
-    public emit = (eventName: string | symbol, ...args: any[]) => {
+    public emit = <E extends Extract<keyof EventTypes, string> | string | symbol>
+    (eventName: E, payload: E extends Extract<keyof EventTypes, string>
+        ? EventTypes[E]
+        : any, ...args: any[]) => {
         return this.hasEmitter()
-            ? this.getEmitter().emit(eventName, ...args)
+            ? this.getEmitter().emit(eventName, payload, ...args)
             : false;
     }
     private hasEmitter = () => this.wire.eventAggregator.has(this.emitterAccessor);

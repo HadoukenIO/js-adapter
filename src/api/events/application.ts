@@ -1,6 +1,6 @@
-import { WindowEvent } from './base';
+import { WindowEvent, BaseEventMap } from './base';
 import { ApplicationEvent } from './base';
-import { WindowAlertRequestedEvent, WindowAuthRequestedEvent, WindowEndLoadEvent, PropagatedWindowEvents } from './windowEventTypes';
+import { WindowAlertRequestedEvent, WindowAuthRequestedEvent, WindowEndLoadEvent, PropagatedWindowEvents } from './window';
 
 export interface CrashedEvent {
     reason: 'normal-termination' | 'abnormal-termination' | 'killed' | 'crashed' | 'still-running' | 'launch-failed' | 'out-of-memory';
@@ -17,7 +17,7 @@ export interface TrayIconClicked<Topic, Type> extends ApplicationEvent<Topic, Ty
     monitorInfo: any;
 }
 
-export interface ApplicationEventMapping<Topic = string, Type = string> {
+export interface ApplicationEventMapping<Topic = string, Type = string> extends BaseEventMap {
     'closed': ApplicationEvent<Topic, Type>;
     'connected': ApplicationEvent<Topic, Type>;
     'crashed': CrashedEvent & ApplicationEvent<Topic, Type>;

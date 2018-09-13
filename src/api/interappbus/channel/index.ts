@@ -4,7 +4,7 @@ import { ChannelProvider } from './provider';
 import { EmitterBase } from '../../base';
 import Transport, { Message, Payload } from '../../../transport/transport';
 import { ProviderIdentity } from './channel';
-import { ChannelEvents } from '../../events/channel';
+import { ChannelEvents, ChannelEvent } from '../../events/channel';
 
 export interface ConnectOptions {
     wait?: boolean;
@@ -49,10 +49,10 @@ export class Channel extends EmitterBase<ChannelEvents> {
         }
         const opts: any = options || {};
         let resolver: (arg?: any) => void;
-        let listener: EventListener;
+        let listener: (evt: ChannelEvent<'connected'>) => void;
         const waitResponse: Promise<ChannelClient> = new Promise(resolve => {
             resolver = resolve;
-            listener = (payload: any) => {
+            listener = (payload: ChannelEvent<'connected'>) => {
                 if (channelName === payload.channelName) {
                     this.removeListener('connected', listener);
                     this.connect(channelName, opts).then(response => {

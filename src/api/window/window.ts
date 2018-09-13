@@ -5,7 +5,7 @@ import { Transition, TransitionOptions } from './transition';
 import { Application } from '../application/application';
 import Transport from '../../transport/transport';
 import { notImplementedEnvErrorMsg } from '../../environment/environment';
-import { WindowEvents } from '../events/windowEventTypes';
+import { WindowEvents } from '../events/window';
 
 // tslint:disable-next-line
 export default class _WindowModule extends Base {

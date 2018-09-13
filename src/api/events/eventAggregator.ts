@@ -30,11 +30,14 @@ const buildLocalPayload = (rawPayload: any): NotificationCallback => {
 };
 function mapKeyFromEvent(event: RuntimeEvent): string[] {
     const { topic } = event;
-    if (topic === 'frame' || topic === 'window') {
-        const { uuid, name } = <RuntimeEvent<'frame' | 'window'>>event;
+    if (topic === 'frame') {
+        const { uuid, name } = <RuntimeEvent<'frame'>>event;
+        return [topic, uuid, name];
+    } if (topic === 'window') {
+        const { uuid, name } = <RuntimeEvent<'window'>> event;
         return [topic, uuid, name];
     } if (topic === 'application') {
-        const { uuid } = <RuntimeEvent<'application'>>event;
+        const { uuid } = <RuntimeEvent<'application'>> event;
         return [topic, uuid];
     }
     return [topic];

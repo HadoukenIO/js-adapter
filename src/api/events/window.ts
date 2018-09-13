@@ -1,4 +1,4 @@
-import { CrashedEvent } from './applicationEventTypes';
+import { CrashedEvent } from './application';
 import {WindowEvent, BaseEventMap} from './base';
 
 export type SpecificWindowEvent<Type> = WindowEvent<'window', Type>;
@@ -187,6 +187,7 @@ export interface PropagatedWindowEventMapping<Topic = string, Type = string> ext
     'window-shown': WindowEvent<Topic, Type>;
 }
 
+// This is the type we should be using. It takes the more generic mapping and applies the proper Topic and Type to each event
 export type WindowEvents = {
     [Type in keyof WindowEventMapping]: WindowEventMapping<'window', Type>[Type];
 };
