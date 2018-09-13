@@ -57,7 +57,7 @@ export default class _WindowModule extends Base {
     /**
      * Asynchronously returns a Window object that represents the current window
      * @return {Promise.<Window>}
-     * @tutorial window.getCurrent
+     * @tutorial Window.getCurrent
      * @static
      */
     public getCurrent(): Promise<_Window> {
@@ -67,7 +67,7 @@ export default class _WindowModule extends Base {
     /**
      * Synchronously returns a Window object that represents the current window
      * @return {_Window}
-     * @tutorial window.getCurrentSync
+     * @tutorial Window.getCurrentSync
      * @static
      */
     public getCurrentSync(): _Window {
