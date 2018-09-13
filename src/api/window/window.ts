@@ -157,6 +157,8 @@ this animation onto the end of the animation queue.
 // The window.Window name is taken
 // tslint:disable-next-line
 export class _Window extends EmitterBase {
+    private nativeWindow: any;
+
     /**
      * Raised when a window within this application requires credentials from the user.
      *
@@ -511,8 +513,6 @@ export class _Window extends EmitterBase {
      * @property {string} state - The preload script state:
      "load-failed", "failed", "succeeded"
      */
-
-    private nativeWindow: any;
 
     constructor(wire: Transport, public identity: Identity) {
         super(wire, ['window', identity.uuid, identity.name]);
