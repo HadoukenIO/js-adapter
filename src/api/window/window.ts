@@ -7,6 +7,9 @@ import { Application } from '../application/application';
 import Transport from '../../transport/transport';
 import { notImplementedEnvErrorMsg } from '../../environment/environment';
 
+/**
+ * @lends Window
+ */
 // tslint:disable-next-line
 export default class _WindowModule extends Base {
     private instance: _Window;
@@ -16,6 +19,7 @@ export default class _WindowModule extends Base {
      * @param { Identity } identity
      * @return {Promise.<_Window>}
      * @tutorial Window.wrap
+     * @static
      */
     public wrap(identity: Identity): Promise<_Window> {
         if (!this.instance) {
@@ -29,6 +33,7 @@ export default class _WindowModule extends Base {
      * @param { Identity } identity
      * @return {_Window}
      * @tutorial Window.wrapSync
+     * @static
      */
     public wrapSync(identity: Identity): _Window {
         if (!this.instance) {
@@ -42,6 +47,7 @@ export default class _WindowModule extends Base {
      * @param { * } options - Window creation options
      * @return {Promise.<_Window>}
      * @tutorial Window.create
+     * @static
      */
     public create(options: any): Promise<_Window> {
        const win = new _Window(this.wire, {uuid: this.me.uuid, name: options.name});
@@ -52,6 +58,7 @@ export default class _WindowModule extends Base {
      * Asynchronously returns a Window object that represents the current window
      * @return {Promise.<Window>}
      * @tutorial window.getCurrent
+     * @static
      */
     public getCurrent(): Promise<_Window> {
         return this.wrap(this.wire.me);
@@ -61,6 +68,7 @@ export default class _WindowModule extends Base {
      * Synchronously returns a Window object that represents the current window
      * @return {_Window}
      * @tutorial window.getCurrentSync
+     * @static
      */
     public getCurrentSync(): _Window {
         return this.wrapSync(this.wire.me);
