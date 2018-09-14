@@ -42,7 +42,7 @@ export default class _FrameModule extends Base {
      * @return {Promise.<_Frame>}
      * @static
      */
-    public async getCurrent(): Promise<_Frame> {
+    public getCurrent(): Promise<_Frame> {
         return Promise.resolve(new _Frame(this.wire, this.me));
     }
 
