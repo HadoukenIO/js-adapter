@@ -23,7 +23,7 @@ export default class _FrameModule extends Base {
      * @return {Promise.<_Frame>}
      * @static
      */
-    public async wrap(uuid: string, name: string): Promise<_Frame> {
+    public wrap(uuid: string, name: string): Promise<_Frame> {
         return Promise.resolve(new _Frame(this.wire, {uuid, name}));
     }
 
