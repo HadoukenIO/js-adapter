@@ -5,6 +5,7 @@ import { Point } from '../system/point';
 import { MonitorInfo } from '../system/monitor';
 import Transport from '../../transport/transport';
 import Bounds from '../window/bounds';
+import { ApplicationEventTypes } from '../events/applicationEventTypes';
 
 export interface TrayIconClickReply extends Point, Reply<'application', 'tray-icon-clicked'> {
     button: number;
@@ -109,7 +110,7 @@ export default class ApplicationModule extends Base {
  * execute, show/close an application as well as listen to application events.
  * @class
  */
-export class Application extends EmitterBase {
+export class Application extends EmitterBase<ApplicationEventTypes> {
     public _manifestUrl?: string;
     private window: _Window;
 
