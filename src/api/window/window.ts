@@ -1,19 +1,17 @@
-import { Base, EmitterBase, RuntimeEvent } from '../base';
+import { Base, EmitterBase } from '../base';
 import { Identity } from '../../identity';
 import Bounds from './bounds';
-import BoundsChangedReply from './bounds-changed';
 import { Transition, TransitionOptions } from './transition';
 import { Application } from '../application/application';
 import Transport from '../../transport/transport';
 import { notImplementedEnvErrorMsg } from '../../environment/environment';
+import { WindowEvents } from '../events/window';
 
 /**
  * @lends Window
  */
 // tslint:disable-next-line
 export default class _WindowModule extends Base {
-    private instance: _Window;
-
     /**
      * Asynchronously returns a Window object that represents an existing window.
      * @param { Identity } identity
@@ -21,11 +19,8 @@ export default class _WindowModule extends Base {
      * @tutorial Window.wrap
      * @static
      */
-    public wrap(identity: Identity): Promise<_Window> {
-        if (!this.instance) {
-            this.instance = new _Window(this.wire, identity);
-        }
-        return Promise.resolve(this.instance);
+    public async wrap(identity: Identity): Promise<_Window> {
+        return new _Window(this.wire, identity);
     }
 
     /**
@@ -36,10 +31,7 @@ export default class _WindowModule extends Base {
      * @static
      */
     public wrapSync(identity: Identity): _Window {
-        if (!this.instance) {
-            this.instance = new _Window(this.wire, identity);
-        }
-        return this.instance;
+        return new _Window(this.wire, identity);
     }
 
     /**
@@ -156,9 +148,8 @@ this animation onto the end of the animation queue.
 */
 // The window.Window name is taken
 // tslint:disable-next-line
-export class _Window extends EmitterBase {
-    private nativeWindow: any;
 
+export class _Window extends EmitterBase<WindowEvents> {
     /**
      * Raised when a window within this application requires credentials from the user.
      *
@@ -579,11 +570,6 @@ export class _Window extends EmitterBase {
                 }
             });
         });
-    }
-
-    protected runtimeEventComparator = (listener: RuntimeEvent): boolean => {
-        return listener.topic === this.topic && listener.uuid === this.identity.uuid &&
-            listener.name === this.identity.name;
     }
 
     private windowListFromNameList(identityList: Array<Identity>): Array<_Window> {
@@ -1095,15 +1081,4 @@ export class _Window extends EmitterBase {
         return this.wire.sendAction('stop-window-navigation', Object.assign({}, this.identity)).then(() => undefined);
     }
 
-}
-// tslint:disable-next-line
-export interface _Window {
-    on(type: 'focused', listener: Function): Promise<this>;
-    on(type: 'initialized', listener: Function):  Promise<this>;
-    on(type: 'bounds-changed', listener: (data: BoundsChangedReply) => void):  Promise<this>;
-    on(type: 'hidden', listener: Function):  Promise<this>;
-    on(type: 'removeListener', listener: (eventType: string | symbol) => void):  Promise<this>;
-    on(type: 'newListener', listener: (eventType: string | symbol) => void):  Promise<this>;
-    on(type: 'closed', listener: (eventType: CloseEventShape) => void):  Promise<this>;
-    on(type: 'fire-constructor-callback', listener: Function):  Promise<this>;
 }
