@@ -1,12 +1,13 @@
 import { ChannelBase, ProviderIdentity } from './channel';
 import Transport from '../../../transport/transport';
+import { Identity } from '../../../main';
 
-export type ConnectionListener = (providerIdentity: ProviderIdentity, connectionMessage?: any) => any;
+export type ConnectionListener = (identity: Identity, connectionMessage?: any) => any;
 
 export class ChannelProvider extends ChannelBase {
     private connectListener: ConnectionListener;
     private disconnectListener: ConnectionListener;
-    public connections: ProviderIdentity[];
+    public connections: Identity[];
 
     constructor(providerIdentity: ProviderIdentity, send: Transport['sendAction']) {
         super(providerIdentity, send);
@@ -15,11 +16,11 @@ export class ChannelProvider extends ChannelBase {
         this.connections = [];
     }
 
-    public dispatch(to: ProviderIdentity, action: string, payload: any): Promise<any> {
+    public dispatch(to: Identity, action: string, payload: any): Promise<any> {
         return this.send(to, action, payload);
     }
 
-    public async processConnection(senderId: ProviderIdentity, payload: any) {
+    public async processConnection(senderId: Identity, payload: any) {
         this.connections.push(senderId);
         return this.connectListener(senderId, payload);
     }

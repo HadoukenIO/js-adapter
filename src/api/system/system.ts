@@ -20,6 +20,7 @@ import { DownloadPreloadOption, DownloadPreloadInfo } from './download-preload';
 import { RuntimeError, NotSupportedError } from '../../transport/transport-errors';
 import { ClearCacheOption } from './clearCacheOption';
 import { CrashReporterOption } from './crashReporterOption';
+import { SystemEvents } from '../events/system';
 
 /**
  * AppAssetInfo interface
@@ -185,7 +186,7 @@ import { CrashReporterOption } from './crashReporterOption';
  * clearing the cache and exiting the runtime.
  * @namespace
  */
-export default class System extends EmitterBase {
+export default class System extends EmitterBase<SystemEvents> {
 
     constructor(wire: Transport) {
         super(wire, ['system']);

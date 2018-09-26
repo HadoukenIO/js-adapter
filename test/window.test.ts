@@ -452,7 +452,8 @@ describe('Window.', function() {
 
         it('should return _Window with matching identity', () => {
             const returnVal = fin.Window.wrapSync(testWindow.identity);
-            assert.deepEqual(returnVal.identity, testWindow.identity);
+            assert.equal(returnVal.identity.uuid, testWindow.identity.uuid);
+            assert.equal(returnVal.identity.name, testWindow.identity.name);
         });
     });
 

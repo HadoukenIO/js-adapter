@@ -1,6 +1,7 @@
 import { Base, EmitterBase } from '../base';
 import { Identity } from '../../identity';
 import Transport from '../../transport/transport';
+import { NotificationEvents } from '../events/notifications';
 
 const events = {
     show: 'show',
@@ -45,7 +46,7 @@ export interface NotificationCallback {
  * @alias Notification
  */
 // tslint:disable-next-line
-export class _Notification extends EmitterBase {
+export class _Notification extends EmitterBase<NotificationEvents> {
     private listenerList: Array<string> = ['newListener'];
 
     private unhookAllListeners = () => {

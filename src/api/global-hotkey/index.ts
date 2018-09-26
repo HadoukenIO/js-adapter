@@ -1,5 +1,6 @@
 import { EmitterBase } from '../base';
 import Transport from '../../transport/transport';
+import { GlobalHotkeyEvents } from '../events/globalHotkey';
 
 const enum apiActions {
     REGISTER = 'global-hotkey-register',
@@ -8,7 +9,7 @@ const enum apiActions {
     IS_REGISTERED = 'global-hotkey-is-registered'
 }
 
-const enum nonHotkeyEvents {
+export const enum nonHotkeyEvents {
     REGISTERED = 'registered',
     UNREGISTERED = 'unregistered'
 }
@@ -17,7 +18,7 @@ const enum nonHotkeyEvents {
  * The GlobalHotkey module can register/unregister a global hotkeys.
  * @namespace
  */
-export default class GlobalHotkey extends EmitterBase {
+export default class GlobalHotkey extends EmitterBase<GlobalHotkeyEvents> {
 
     constructor(wire: Transport) {
         super(wire, ['global-hotkey']);
