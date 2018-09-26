@@ -1,6 +1,6 @@
 import { Message, EventMessage, NotificationEventMessage } from '../../transport/transport';
 import { EmitterMap } from './emitterMap';
-import { RuntimeEvent } from '../base';
+import { RuntimeEvent } from '../events/base';
 import { NotificationCallback } from '../notification/notification';
 
 function isEventMessage(message: Message<any>): message is EventMessage {
@@ -28,18 +28,21 @@ const buildLocalPayload = (rawPayload: any): NotificationCallback => {
 
     return payload;
 };
-function mapKeyFromEvent(event: RuntimeEvent) {
-    const { topic, uuid, name } = event;
-    switch (topic) {
-        case 'frame':
-        case 'window':
-            return [topic, uuid, name];
-        case 'application':
-            return [topic, uuid];
-        default:
-            return [topic];
+function mapKeyFromEvent(event: RuntimeEvent): string[] {
+    const { topic } = event;
+    if (topic === 'frame') {
+        const { uuid, name } = <RuntimeEvent<'frame'>>event;
+        return [topic, uuid, name];
+    } if (topic === 'window') {
+        const { uuid, name } = <RuntimeEvent<'window'>> event;
+        return [topic, uuid, name];
+    } if (topic === 'application') {
+        const { uuid } = <RuntimeEvent<'application'>> event;
+        return [topic, uuid];
     }
+    return [topic];
 }
+
 export class EventAggregator extends EmitterMap {
     public dispatchEvent = (message: Message<any>) => {
         if (isEventMessage(message)) {

@@ -1,10 +1,11 @@
-import { EmitterBase, Base, Reply, RuntimeEvent } from '../base';
+import { EmitterBase, Base, Reply } from '../base';
 import { Identity } from '../../identity';
 import { _Window } from '../window/window';
 import { Point } from '../system/point';
 import { MonitorInfo } from '../system/monitor';
 import Transport from '../../transport/transport';
 import Bounds from '../window/bounds';
+import { ApplicationEvents } from '../events/application';
 
 export interface TrayIconClickReply extends Point, Reply<'application', 'tray-icon-clicked'> {
     button: number;
@@ -109,7 +110,7 @@ export default class ApplicationModule extends Base {
  * execute, show/close an application as well as listen to application events.
  * @class
  */
-export class Application extends EmitterBase {
+export class Application extends EmitterBase<ApplicationEvents> {
     public _manifestUrl?: string;
     private window: _Window;
 
@@ -120,10 +121,6 @@ export class Application extends EmitterBase {
             uuid: this.identity.uuid,
             name: this.identity.uuid
         });
-    }
-
-    protected runtimeEventComparator = (listener: RuntimeEvent): boolean => {
-        return listener.topic === this.topic && listener.uuid === this.identity.uuid;
     }
 
     private windowListFromIdentityList(identityList: Array<Identity>): Array<_Window> {

@@ -17,7 +17,7 @@ import {
     NoAckError,
     RuntimeError
 } from './transport-errors';
-import { RuntimeEvent } from '../api/base';
+import { RuntimeEvent } from '../api/events/base';
 import {EventAggregator} from '../api/events/eventAggregator';
 
 declare var fin: any;

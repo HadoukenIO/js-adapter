@@ -1,6 +1,7 @@
-import { Base, EmitterBase, Reply } from '../base';
+import { Base, EmitterBase } from '../base';
 import { Identity } from '../../identity';
 import Transport from '../../transport/transport';
+import { ExternalApplicationEvents } from '../events/externalApplication';
 
 export interface ExternalApplicationInfo {
     parent: Identity;
@@ -32,7 +33,7 @@ export default class ExternalApplicationModule extends Base {
  * well as listen to application events.
  * @class
  */
-export class ExternalApplication extends EmitterBase {
+export class ExternalApplication extends EmitterBase<ExternalApplicationEvents> {
 
     constructor(wire: Transport, public identity: Identity) {
         super(wire, ['external-application', identity.uuid]);
@@ -46,11 +47,4 @@ export class ExternalApplication extends EmitterBase {
     public getInfo(): Promise<ExternalApplicationInfo> {
         return this.wire.sendAction('get-external-application-info', this.identity).then(({ payload }) => payload.data);
     }
-}
-
-export interface ExternalApplication {
-    on(type: 'connected', listener: (data: Reply<'externalapplication', 'connected'>) => void): Promise<this>;
-    on(type: 'disconnected', listener: (data: Reply<'externalapplication', 'disconnected'>) => void): Promise<this>;
-    on(type: 'removeListener', listener: (eventType: string) => void): Promise<this>;
-    on(type: 'newListener', listener: (eventType: string) => void): Promise<this>;
 }
