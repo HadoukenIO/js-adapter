@@ -39,12 +39,16 @@ export interface TrayInfo {
     y: number;
 }
 
+/**
+ * @lends Application
+ */
 export default class ApplicationModule extends Base {
     /**
      * Asynchronously returns an Application object that represents an existing application.
      * @param { Identity } identity
      * @return {Promise.<Application>}
      * @tutorial Application.wrap
+     * @static
      */
     public wrap(identity: Identity): Promise<Application> {
         return Promise.resolve(new Application(this.wire, identity));
@@ -55,6 +59,7 @@ export default class ApplicationModule extends Base {
      * @param { Identity } identity
      * @return {Application}
      * @tutorial Application.wrapSync
+     * @static
      */
     public wrapSync(identity: Identity): Application {
         return new Application(this.wire, identity);
@@ -65,6 +70,7 @@ export default class ApplicationModule extends Base {
      * @param {*} appOptions
      * @return {Promise.<Application>}
      * @tutorial Application.create
+     * @static
      */
     public create(appOptions: any): Promise<Application> {
         return this.wire.sendAction('create-application', appOptions)
@@ -75,6 +81,7 @@ export default class ApplicationModule extends Base {
      * Asynchronously returns an Application object that represents the current application
      * @return {Promise.<Application>}
      * @tutorial Application.getCurrent
+     * @static
      */
     public getCurrent(): Promise<Application> {
         return this.wrap({ uuid: this.wire.me.uuid });
@@ -84,6 +91,7 @@ export default class ApplicationModule extends Base {
      * Synchronously returns an Application object that represents the current application
      * @return {Application}
      * @tutorial Application.getCurrentSync
+     * @static
      */
     public getCurrentSync(): Application {
         return this.wrapSync({ uuid: this.wire.me.uuid });
@@ -94,6 +102,7 @@ export default class ApplicationModule extends Base {
      * @param {string} manifestUrl - The URL of app's manifest.
      * @return {Promise.<Application>}
      * @tutorial Application.createFromManifest
+     * @static
      */
     public createFromManifest(manifestUrl: string): Promise<Application> {
         return this.wire.sendAction('get-application-manifest', { manifestUrl })

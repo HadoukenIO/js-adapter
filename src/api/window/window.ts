@@ -7,6 +7,9 @@ import Transport from '../../transport/transport';
 import { notImplementedEnvErrorMsg } from '../../environment/environment';
 import { WindowEvents } from '../events/window';
 
+/**
+ * @lends Window
+ */
 // tslint:disable-next-line
 export default class _WindowModule extends Base {
     /**
@@ -14,6 +17,7 @@ export default class _WindowModule extends Base {
      * @param { Identity } identity
      * @return {Promise.<_Window>}
      * @tutorial Window.wrap
+     * @static
      */
     public async wrap(identity: Identity): Promise<_Window> {
         return new _Window(this.wire, identity);
@@ -24,6 +28,7 @@ export default class _WindowModule extends Base {
      * @param { Identity } identity
      * @return {_Window}
      * @tutorial Window.wrapSync
+     * @static
      */
     public wrapSync(identity: Identity): _Window {
         return new _Window(this.wire, identity);
@@ -34,6 +39,7 @@ export default class _WindowModule extends Base {
      * @param { * } options - Window creation options
      * @return {Promise.<_Window>}
      * @tutorial Window.create
+     * @static
      */
     public create(options: any): Promise<_Window> {
        const win = new _Window(this.wire, {uuid: this.me.uuid, name: options.name});
@@ -42,8 +48,9 @@ export default class _WindowModule extends Base {
 
     /**
      * Asynchronously returns a Window object that represents the current window
-     * @return {Promise.<Window>}
-     * @tutorial window.getCurrent
+     * @return {Promise.<_Window>}
+     * @tutorial Window.getCurrent
+     * @static
      */
     public getCurrent(): Promise<_Window> {
         return this.wrap(this.wire.me);
@@ -52,7 +59,8 @@ export default class _WindowModule extends Base {
     /**
      * Synchronously returns a Window object that represents the current window
      * @return {_Window}
-     * @tutorial window.getCurrentSync
+     * @tutorial Window.getCurrentSync
+     * @static
      */
     public getCurrentSync(): _Window {
         return this.wrapSync(this.wire.me);
@@ -140,6 +148,7 @@ this animation onto the end of the animation queue.
 */
 // The window.Window name is taken
 // tslint:disable-next-line
+
 export class _Window extends EmitterBase<WindowEvents> {
     /**
      * Raised when a window within this application requires credentials from the user.
@@ -495,8 +504,6 @@ export class _Window extends EmitterBase<WindowEvents> {
      * @property {string} state - The preload script state:
      "load-failed", "failed", "succeeded"
      */
-
-    private nativeWindow: any;
 
     constructor(wire: Transport, public identity: Identity) {
         super(wire, ['window', identity.uuid, identity.name]);

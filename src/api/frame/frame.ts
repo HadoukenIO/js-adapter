@@ -12,6 +12,9 @@ export interface FrameInfo {
     parent: Identity;
 }
 
+/**
+ * @lends Frame
+ */
 // tslint:disable-next-line
 export default class _FrameModule extends Base {
     /**
@@ -19,6 +22,7 @@ export default class _FrameModule extends Base {
      * @param {string} uuid - uuid of the frame you want to wrap
      * @param {string} name - name of the frame you want to wrap
      * @return {Promise.<_Frame>}
+     * @static
      */
     public wrap(uuid: string, name: string): Promise<_Frame> {
         return Promise.resolve(new _Frame(this.wire, {uuid, name}));
@@ -28,6 +32,7 @@ export default class _FrameModule extends Base {
      * Synchronously returns a reference to the specified frame. The frame does not have to exist
      * @param { Identity } identity
      * @return {_Frame}
+     * @static
      */
     public wrapSync(identity: Identity): _Frame {
         return new _Frame(this.wire, identity);
@@ -36,6 +41,7 @@ export default class _FrameModule extends Base {
     /**
      * Asynchronously returns a reference to the current frame
      * @return {Promise.<_Frame>}
+     * @static
      */
     public getCurrent(): Promise<_Frame> {
         return Promise.resolve(new _Frame(this.wire, this.me));
@@ -44,6 +50,7 @@ export default class _FrameModule extends Base {
     /**
      * Synchronously returns a reference to the current frame
      * @return {_Frame}
+     * @static
      */
     public getCurrentSync(): _Frame {
         return new _Frame(this.wire, this.me);

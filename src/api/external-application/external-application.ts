@@ -7,11 +7,15 @@ export interface ExternalApplicationInfo {
     parent: Identity;
 }
 
+ /**
+  * @lends ExternalApplication
+  */
 export default class ExternalApplicationModule extends Base {
     /**
      * Asynchronously returns an External Application object that represents an existing external application.
      * @param {string} uuid The UUID of the external application to be wrapped
      * @return {Promise.<ExternalApplication>}
+     * @static
      */
     public wrap(uuid: string): Promise<ExternalApplication> {
         return Promise.resolve(new ExternalApplication(this.wire, {uuid}));
@@ -21,6 +25,7 @@ export default class ExternalApplicationModule extends Base {
      * Synchronously returns an External Application object that represents an existing external application.
      * @param {string} uuid The UUID of the external application to be wrapped
      * @return {ExternalApplication}
+     * @static
      */
     public wrapSync(uuid: string): ExternalApplication {
         return new ExternalApplication(this.wire, {uuid});
