@@ -89,6 +89,21 @@ export interface FrameInfo {
     parent?: Identity;
 }
 
+export interface Area {
+    height: number;
+    width: number;
+    x: number;
+    y: number;
+}
+
+/**
+ * @typedef { Object } Area
+ * @property { number } height Area's height
+ * @property { number } width Area's width
+ * @property { number } x X coordinate of area's starting point
+ * @property { number } y Y coordinate of area's starting point
+ */
+
 /**
  * @typedef {object} Transition
  * @property {Opacity} opacity - The Opacity transition
@@ -800,12 +815,16 @@ export class _Window extends EmitterBase<WindowEvents> {
     }
 
     /**
-     * Gets a base64 encoded PNG snapshot of the window.
+     * Gets a base64 encoded PNG snapshot of the window or just part a of it.
+     * @param { Area } [area] The area of the window to be captured.
+     * Omitting it will capture the whole visible window.
      * @return {Promise.<string>}
      * @tutorial Window.getSnapshot
      */
-    public getSnapshot(): Promise<string> {
-        return this.wire.sendAction('get-window-snapshot', this.identity).then(({ payload }) => payload.data);
+    public async getSnapshot(area?: Area): Promise<string> {
+        const req = Object.assign({}, this.identity, { area });
+        const res = await this.wire.sendAction('get-window-snapshot', req);
+        return res.payload.data;
     }
 
     /**

@@ -2,17 +2,19 @@ Gets a base64 encoded PNG snapshot of the window
 
 # Example
 ```js
-async function takeWindowSnapShot() {
-    const app = await fin.Application.create({
-        name: 'myApp',
-        uuid: 'app-1',
-        url: 'https://www.openfin.co',
-        autoShow: true
-    });
-    await app.run();
-    const win = await app.getWindow();
-    return await win.getSnapshot();
-}
+(async () => {
+    const wnd = await fin.Window.getCurrent();
 
-takeWindowSnapShot().then(snapShot => console.log(snapShot)).catch(err => console.log(err));
+    // Snapshot of a full visible window
+    console.log(await wnd.getSnapshot());
+
+    // Snapshot of a defined visible area of the window
+    const area = {
+        height: 100,
+        width: 100,
+        x: 10,
+        y: 10,
+    };
+    console.log(await wnd.getSnapshot(area));
+})();
 ```
