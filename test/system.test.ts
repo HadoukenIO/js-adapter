@@ -207,7 +207,7 @@ describe('System.', function () {
         }));
     });
 
-    describe('launchExternalProcess()', () => {
+    describe.skip('launchExternalProcess()', () => {
         const processOptions = {
             path: 'notepad',
             arguments: '',
