@@ -1,4 +1,4 @@
-Returns an Application object that represents an existing application.
+Asynchronously returns an Application object that represents an existing application.
 # Example
 ```js
 fin.Application.wrap({ uuid: 'testapp' })
