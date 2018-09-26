@@ -1,5 +1,4 @@
-Returns an Application object that represents the current application
-
+Asynchronously returns an Application object that represents the current application
 # Example
 ```js
 async function isCurrentAppRunning () {

@@ -1,4 +1,4 @@
-Returns a Window object that represents an existing window.
+Asynchronously returns a Window object that represents an existing window.
 # Example
 ```js
 async function createWin() {

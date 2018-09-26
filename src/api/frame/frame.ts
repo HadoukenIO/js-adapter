@@ -1,6 +1,7 @@
 import { Base, EmitterBase } from '../base';
 import { Identity } from '../../identity';
 import Transport from '../../transport/transport';
+import { FrameEvents } from '../events/frame';
 
 export type EntityType = 'window' | 'iframe' | 'external connection' | 'unknown';
 
@@ -11,6 +12,9 @@ export interface FrameInfo {
     parent: Identity;
 }
 
+/**
+ * @lends Frame
+ */
 // tslint:disable-next-line
 export default class _FrameModule extends Base {
     /**
@@ -18,6 +22,7 @@ export default class _FrameModule extends Base {
      * @param {Identity} identity - the identity of the frame you want to wrap
      * @return {Promise.<_Frame>}
      * @tutorial Frame.wrap
+     * @static
      */
     public wrap(identity: Identity): Promise<_Frame> {
         return Promise.resolve(new _Frame(this.wire, identity));
@@ -28,6 +33,7 @@ export default class _FrameModule extends Base {
      * @param {Identity} identity - the identity of the frame you want to wrap
      * @return {_Frame}
      * @tutorial Frame.wrapSync
+     * @static
      */
     public wrapSync(identity: Identity): _Frame {
         return new _Frame(this.wire, identity);
@@ -37,6 +43,7 @@ export default class _FrameModule extends Base {
      * Asynchronously returns a reference to the current frame
      * @return {Promise.<_Frame>}
      * @tutorial Frame.getCurrent
+     * @static
      */
     public getCurrent(): Promise<_Frame> {
         return Promise.resolve(new _Frame(this.wire, this.me));
@@ -46,6 +53,7 @@ export default class _FrameModule extends Base {
      * Synchronously returns a reference to the current frame
      * @return {_Frame}
      * @tutorial Frame.getCurrentSync
+     * @static
      */
     public getCurrentSync(): _Frame {
         return new _Frame(this.wire, this.me);
@@ -59,7 +67,7 @@ export default class _FrameModule extends Base {
  * @alias Frame
  */
 // tslint:disable-next-line
-export class _Frame extends EmitterBase {
+export class _Frame extends EmitterBase<FrameEvents> {
 
     constructor(wire: Transport, public identity: Identity) {
         super(wire, ['frame', identity.uuid, identity.name]);
@@ -84,10 +92,4 @@ export class _Frame extends EmitterBase {
         return this.wire.sendAction('get-parent-window', this.identity).then(({ payload }) => payload.data);
     }
 
-}
-
-// tslint:disable-next-line
-export interface _Frame {
-    on(type: 'connected', listener: (eventType: string) => void): Promise<this>;
-    on(type: 'disconnected', listener: (eventType: string) => void): Promise<this>;
 }
