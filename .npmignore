@@ -17,3 +17,5 @@ jsdoc-template/
 docs/
 core
 out/repl
+/.tscache
+/.vscode
