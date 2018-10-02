@@ -16,7 +16,7 @@ export interface ChannelPayload {
 export interface ChannelMessage extends Message<any> {
   senderIdentity: Identity;
   ackToSender: any;
-  providerIdentity: Identity;
+  providerIdentity: ProviderIdentity;
   connectAction: boolean;
 }
 
@@ -94,6 +94,14 @@ export class Channel extends EmitterBase {
         const channel = new ChannelProvider(providerIdentity, this.wire.sendAction.bind(this.wire));
         const key = providerIdentity.channelId;
         this.channelMap.set(key, channel);
+        this.on('client-disconnected', (eventPayload: ProviderIdentity) => {
+            if (eventPayload.channelName === channelName) {
+                channel.connections = channel.connections.filter(identity => {
+                    return identity.uuid !== eventPayload.uuid || identity.name !== eventPayload.name;
+                });
+                channel.disconnectListener(eventPayload);
+            }
+        });
         return channel;
     }
     public onmessage = (msg: ChannelMessage) => {

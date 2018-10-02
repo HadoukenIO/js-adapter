@@ -5,8 +5,8 @@ import { Identity } from '../../../main';
 export type ConnectionListener = (identity: Identity, connectionMessage?: any) => any;
 
 export class ChannelProvider extends ChannelBase {
-    private connectListener: ConnectionListener;
-    private disconnectListener: ConnectionListener;
+    public connectListener: ConnectionListener;
+    public disconnectListener: ConnectionListener;
     public connections: Identity[];
 
     constructor(providerIdentity: ProviderIdentity, send: Transport['sendAction']) {
@@ -22,6 +22,7 @@ export class ChannelProvider extends ChannelBase {
 
     public async processConnection(senderId: Identity, payload: any) {
         this.connections.push(senderId);
+
         return this.connectListener(senderId, payload);
     }
 
@@ -31,6 +32,10 @@ export class ChannelProvider extends ChannelBase {
 
     public onConnection(listener: ConnectionListener): void {
         this.connectListener = listener;
+    }
+
+    public onDisconnection(listener: ConnectionListener): void {
+        this.disconnectListener = listener;
     }
 
 }
