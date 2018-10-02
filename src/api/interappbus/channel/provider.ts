@@ -22,7 +22,6 @@ export class ChannelProvider extends ChannelBase {
 
     public async processConnection(senderId: Identity, payload: any) {
         this.connections.push(senderId);
-
         return this.connectListener(senderId, payload);
     }
 
