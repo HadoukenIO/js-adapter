@@ -5,7 +5,7 @@ import * as assert from 'assert';
 import { delayPromise } from './delay-promise';
 import { cleanOpenRuntimes, DELAY_MS, TEST_TIMEOUT, launchAndConnect } from './multi-runtime-utils';
 
-describe('Multi Runtime', function () {
+describe.skip('Multi Runtime', function () {
     let appConfigTemplate: any;
     let fin: Fin;
 

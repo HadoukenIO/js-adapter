@@ -1,12 +1,15 @@
-import { Base, EmitterBase, RuntimeEvent } from '../base';
+import { Base, EmitterBase } from '../base';
 import { Identity } from '../../identity';
 import Bounds from './bounds';
-import BoundsChangedReply from './bounds-changed';
 import { Transition, TransitionOptions } from './transition';
 import { Application } from '../application/application';
 import Transport from '../../transport/transport';
 import { notImplementedEnvErrorMsg } from '../../environment/environment';
+import { WindowEvents } from '../events/window';
 
+/**
+ * @lends Window
+ */
 // tslint:disable-next-line
 export default class _WindowModule extends Base {
     /**
@@ -14,6 +17,7 @@ export default class _WindowModule extends Base {
      * @param { Identity } identity
      * @return {Promise.<_Window>}
      * @tutorial Window.wrap
+     * @static
      */
     public async wrap(identity: Identity): Promise<_Window> {
         return new _Window(this.wire, identity);
@@ -24,6 +28,7 @@ export default class _WindowModule extends Base {
      * @param { Identity } identity
      * @return {_Window}
      * @tutorial Window.wrapSync
+     * @static
      */
     public wrapSync(identity: Identity): _Window {
         return new _Window(this.wire, identity);
@@ -34,6 +39,7 @@ export default class _WindowModule extends Base {
      * @param { * } options - Window creation options
      * @return {Promise.<_Window>}
      * @tutorial Window.create
+     * @static
      */
     public create(options: any): Promise<_Window> {
        const win = new _Window(this.wire, {uuid: this.me.uuid, name: options.name});
@@ -42,8 +48,9 @@ export default class _WindowModule extends Base {
 
     /**
      * Asynchronously returns a Window object that represents the current window
-     * @return {Promise.<Window>}
-     * @tutorial window.getCurrent
+     * @return {Promise.<_Window>}
+     * @tutorial Window.getCurrent
+     * @static
      */
     public getCurrent(): Promise<_Window> {
         return this.wrap(this.wire.me);
@@ -52,7 +59,8 @@ export default class _WindowModule extends Base {
     /**
      * Synchronously returns a Window object that represents the current window
      * @return {_Window}
-     * @tutorial window.getCurrentSync
+     * @tutorial Window.getCurrentSync
+     * @static
      */
     public getCurrentSync(): _Window {
         return this.wrapSync(this.wire.me);
@@ -80,6 +88,21 @@ export interface FrameInfo {
     entityType: string;
     parent?: Identity;
 }
+
+export interface Area {
+    height: number;
+    width: number;
+    x: number;
+    y: number;
+}
+
+/**
+ * @typedef { Object } Area
+ * @property { number } height Area's height
+ * @property { number } width Area's width
+ * @property { number } x X coordinate of area's starting point
+ * @property { number } y Y coordinate of area's starting point
+ */
 
 /**
  * @typedef {object} Transition
@@ -140,7 +163,7 @@ this animation onto the end of the animation queue.
 */
 // The window.Window name is taken
 // tslint:disable-next-line
-export class _Window extends EmitterBase {
+export class _Window extends EmitterBase<WindowEvents> {
     /**
      * Raised when a window within this application requires credentials from the user.
      *
@@ -565,11 +588,6 @@ export class _Window extends EmitterBase {
         });
     }
 
-    protected runtimeEventComparator = (listener: RuntimeEvent): boolean => {
-        return listener.topic === this.topic && listener.uuid === this.identity.uuid &&
-            listener.name === this.identity.name;
-    }
-
     private windowListFromNameList(identityList: Array<Identity>): Array<_Window> {
         const windowList: Array<_Window> = [];
 
@@ -797,12 +815,16 @@ export class _Window extends EmitterBase {
     }
 
     /**
-     * Gets a base64 encoded PNG snapshot of the window.
+     * Gets a base64 encoded PNG snapshot of the window or just part a of it.
+     * @param { Area } [area] The area of the window to be captured.
+     * Omitting it will capture the whole visible window.
      * @return {Promise.<string>}
      * @tutorial Window.getSnapshot
      */
-    public getSnapshot(): Promise<string> {
-        return this.wire.sendAction('get-window-snapshot', this.identity).then(({ payload }) => payload.data);
+    public async getSnapshot(area?: Area): Promise<string> {
+        const req = Object.assign({}, this.identity, { area });
+        const res = await this.wire.sendAction('get-window-snapshot', req);
+        return res.payload.data;
     }
 
     /**
@@ -1079,15 +1101,4 @@ export class _Window extends EmitterBase {
         return this.wire.sendAction('stop-window-navigation', Object.assign({}, this.identity)).then(() => undefined);
     }
 
-}
-// tslint:disable-next-line
-export interface _Window {
-    on(type: 'focused', listener: Function): Promise<this>;
-    on(type: 'initialized', listener: Function):  Promise<this>;
-    on(type: 'bounds-changed', listener: (data: BoundsChangedReply) => void):  Promise<this>;
-    on(type: 'hidden', listener: Function):  Promise<this>;
-    on(type: 'removeListener', listener: (eventType: string | symbol) => void):  Promise<this>;
-    on(type: 'newListener', listener: (eventType: string | symbol) => void):  Promise<this>;
-    on(type: 'closed', listener: (eventType: CloseEventShape) => void):  Promise<this>;
-    on(type: 'fire-constructor-callback', listener: Function):  Promise<this>;
 }

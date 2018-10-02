@@ -1,4 +1,4 @@
-/* tslint:disable:no-invalid-this no-function-expression insecure-random mocha-no-side-effect-code no-empty */
+/* tslint:disable:no-invalid-this no-function-expression insecure-random mocha-no-side-effect-code no-empty max-func-body-length */
 import * as assert from 'assert';
 import { cleanOpenRuntimes, launchAndConnect, TEST_TIMEOUT, DELAY_MS } from './multi-runtime-utils';
 import { delayPromise } from './delay-promise';
@@ -8,7 +8,7 @@ import * as sinon from 'sinon';
 import { conn } from './connect';
 import Fin from '../src/api/fin';
 
-describe ('Multi Runtime Channels', function() {
+describe.skip('Multi Runtime Channels', function() {
     this.retries(2);
     this.slow(TEST_TIMEOUT / 2 );
     this.timeout(TEST_TIMEOUT);
