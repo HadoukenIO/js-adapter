@@ -126,18 +126,6 @@ describe('Window.', function() {
         it('Fulfilled', () => testWindow.getNativeId().then(data => assert(typeof (data) === 'string')));
     });
 
-    describe('getNativeWindow()', () => {
-        it('should fail', async () => {
-            try {
-                await testWindow.getNativeWindow();
-            } catch (err) {
-                assert.ok(err instanceof Error, 'Expected error thrown to be an instance of Error');
-                assert.equal(err.message, 'Not implemented in this environment', 'Expected error messages to match');
-            }
-
-        });
-    });
-
     describe('disableFrame()', () => {
 
         it('Fulfilled', () => testWindow.disableFrame().then(() => assert(true)));
