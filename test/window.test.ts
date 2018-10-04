@@ -2,7 +2,7 @@ import { conn } from './connect';
 import * as assert from 'assert';
 import { connect as rawConnect, Fin, Application, Window } from '../src/main';
 import { delayPromise } from './delay-promise';
-import { cleanOpenRuntimes } from './multi-runtime-utils';
+import { cleanOpenRuntimes, isSameIdentity } from './multi-runtime-utils';
 import { _Window } from '../src/api/window/window';
 
 describe('Window.', function() {
@@ -197,12 +197,14 @@ describe('Window.', function() {
         it('Fulfilled', () => testWindow.joinGroup(app2Win).then(() => testWindow.getGroup()
             .then(group => {
                 assert(group.length === 2);
-                assert(group[0].identity.uuid !== group[1].identity.uuid);
+                const ids = group.map(w => w.identity);
+                assert(ids.some(id => isSameIdentity(testWindow.identity, id)));
+                assert(ids.some(id => isSameIdentity(app2Win.identity, id)));
+
             })));
     });
 
     describe('getGroup()', () => {
-
         it('Fulfilled', () => testWindow.getGroup().then(data => assert(data instanceof Array,
             `Expected ${typeof (data)} to be an instance of Array`)));
     });
