@@ -100,6 +100,7 @@ export class Channel extends EmitterBase<ChannelEvents> {
                 channel.connections = channel.connections.filter(identity => {
                     return identity.uuid !== eventPayload.uuid || identity.name !== eventPayload.name;
                 });
+                //@ts-ignore use of private property
                 channel.disconnectListener(eventPayload);
             }
         });

@@ -5,8 +5,8 @@ import { Identity } from '../../../main';
 export type ConnectionListener = (identity: Identity, connectionMessage?: any) => any;
 
 export class ChannelProvider extends ChannelBase {
-    public connectListener: ConnectionListener;
-    public disconnectListener: ConnectionListener;
+    private connectListener: ConnectionListener;
+    private disconnectListener: ConnectionListener;
     public connections: Identity[];
 
     constructor(providerIdentity: ProviderIdentity, send: Transport['sendAction']) {
