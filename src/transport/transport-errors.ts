@@ -21,12 +21,12 @@ export class NotSupportedError extends Error {}
 export class RuntimeError extends Error {
 constructor(data: any) {
         const payload = data.payload || data;
-        const { reason, err } = payload;
+        const { reason, error } = payload;
         super(reason);
         this.name = 'RuntimeError';
 
-        if (err && err.stack) {
-            this.stack = err.stack;
+        if (error && error.stack) {
+            this.stack = error.stack;
         }
     }
 }
