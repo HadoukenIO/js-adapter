@@ -33,4 +33,8 @@ export class ChannelProvider extends ChannelBase {
         this.connectListener = listener;
     }
 
+    public onDisconnection(listener: ConnectionListener): void {
+        this.disconnectListener = listener;
+    }
+
 }
