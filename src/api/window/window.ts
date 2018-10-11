@@ -4,7 +4,6 @@ import Bounds from './bounds';
 import { Transition, TransitionOptions } from './transition';
 import { Application } from '../application/application';
 import Transport from '../../transport/transport';
-import { notImplementedEnvErrorMsg } from '../../environment/environment';
 import { WindowEvents } from '../events/window';
 
 /**
@@ -519,19 +518,8 @@ export class _Window extends EmitterBase<WindowEvents> {
      "load-failed", "failed", "succeeded"
      */
 
-    private nativeWindow: any;
-
     constructor(wire: Transport, public identity: Identity) {
         super(wire, ['window', identity.uuid, identity.name]);
-
-        // if it's openfin environment, need to add a native window to current window object
-        if (this.isOpenFinEnvironment()) {
-            if (this.wire.environment.isWindowExists(identity.uuid, identity.name)) {
-                if (identity.name === window.name) {
-                    this.nativeWindow = window;
-                }
-            }
-        }
     }
 
     // create a new window
@@ -572,14 +560,7 @@ export class _Window extends EmitterBase<WindowEvents> {
             const windowCreation = this.wire.environment.createChildWindow(options);
             Promise.all([pageResponse, windowCreation]).then((resolvedArr: any[]) => {
                 const pageResolve = resolvedArr[0];
-                const childWin = resolvedArr[1];
                 if (pageResolve.success) {
-                    this.nativeWindow = childWin.nativeWindow;
-
-                    //make sure we clean up all references when a window is closed.
-                    this.on('closed', () => {
-                        delete this.nativeWindow;
-                    });
                     resolve(this);
                 } else {
                     reject(pageResolve.message);
@@ -619,18 +600,6 @@ export class _Window extends EmitterBase<WindowEvents> {
         return this.wire.sendAction('get-window-bounds', this.identity)
             // tslint:disable-next-line
             .then(({ payload }) => payload.data as Bounds);
-    }
-
-    /**
-    * Returns the native JavaScript "window" object for the window.
-    * @return {Promise.<any>}
-    * @tutorial Window.getNativeWindow
-    */
-    public getNativeWindow(): Promise<any> {
-        if (!this.isOpenFinEnvironment()) {
-            throw new Error(notImplementedEnvErrorMsg);
-        }
-        return Promise.resolve(this.nativeWindow);
     }
 
     /**
