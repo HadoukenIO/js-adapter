@@ -5,7 +5,7 @@ import * as rimraf from 'rimraf';
 import * as fs from 'fs';
 import * as path from 'path';
 import * as ChildProcess from 'child_process';
-import { connect as rawConnect, Fin } from '../src/main';
+import { connect as rawConnect, Fin, Identity } from '../src/main';
 import { resolveDir, first } from '../src/launcher/util';
 import { serial, promiseMap } from '../src/util/promises';
 import { delayPromise } from './delay-promise';
@@ -239,3 +239,5 @@ export async function cleanOpenRuntimes(): Promise<void> {
 }
 
 export const getRuntimeProcessInfo = (fin: Fin) => first(runtimes, x => x.fin === fin);
+
+export const isSameIdentity = (id1: Identity, id2: Identity) => id1.name === id2.name && id1.uuid === id2.uuid;
