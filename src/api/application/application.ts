@@ -381,22 +381,3 @@ export class Application extends EmitterBase<ApplicationEvents> {
     }
 
 }
-
-export interface Application {
-    on(type: 'closed', listener: (data: Reply<'application', 'closed'>) => void): Promise<this>;
-    on(type: 'initialized', listener: (data: Reply<'application', 'initialized'>) => void): Promise<this>;
-    on(type: 'connected', listener: (data: Reply<'application', 'connected'>) => void): Promise<this>;
-    on(type: 'crashed', listener: (data: Reply<'application', 'crashed'>) => void): Promise<this>;
-    on(type: 'error', listener: (data: Reply<'application', 'error'>) => void): Promise<this>;
-    on(type: 'not-responding', listener: (data: Reply<'application', 'not-responding'>) => void): Promise<this>;
-    on(type: 'out-of-memory', listener: (data: Reply<'application', 'out-of-memory'>) => void): Promise<this>;
-    on(type: 'responding', listener: (data: Reply<'application', 'responding'>) => void): Promise<this>;
-    on(type: 'started', listener: (data: Reply<'application', 'started'>) => void): Promise<this>;
-    on(type: 'run-requested', listener: (data: Reply<'application', 'run-requested'>) => void): Promise<this>;
-    on(type: 'window-navigation-rejected', listener: (data: NavigationRejectedReply) => void): Promise<this>;
-    on(type: 'window-created', listener: (data: Reply<'application', 'window-created'>) => void): Promise<this>;
-    on(type: 'window-closed', listener: (data: Reply<'application', 'window-closed'>) => void): Promise<this>;
-    on(type: 'tray-icon-clicked', listener: (data: TrayIconClickReply) => void): Promise<this>;
-    on(type: 'removeListener', listener: (eventType: string) => void): Promise<this>;
-    on(type: 'newListener', listener: (eventType: string) => void): Promise<this>;
-}
