@@ -126,6 +126,16 @@ describe('Window.', function() {
         it('Fulfilled', () => testWindow.getNativeId().then(data => assert(typeof (data) === 'string')));
     });
 
+    describe('getHttpResponseInfo()', () => {
+        it('should fail', async () => {
+            try {
+                await testWindow.getHttpResponseInfo();
+            } catch (err) {
+                assert.ok(err instanceof Error, 'Expected error thrown to be an instance of Error');
+            }
+        });
+    });
+
     describe('disableFrame()', () => {
 
         it('Fulfilled', () => testWindow.disableFrame().then(() => assert(true)));
