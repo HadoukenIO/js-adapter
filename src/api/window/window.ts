@@ -585,7 +585,7 @@ export class _Window extends EmitterBase<WindowEvents> {
     }
 
     /**
-    * Returns the native JavaScript "window" object for the window.
+    * Returns http response info when creating a child window.
     * @return {Promise.<any>}
     * @tutorial Window.getHttpResponseInfo
     */
