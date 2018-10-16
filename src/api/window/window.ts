@@ -518,8 +518,6 @@ export class _Window extends EmitterBase<WindowEvents> {
      "load-failed", "failed", "succeeded"
      */
 
-    private httpResponseInfo: any;
-
     constructor(wire: Transport, public identity: Identity) {
         super(wire, ['window', identity.uuid, identity.name]);
     }
@@ -562,11 +560,10 @@ export class _Window extends EmitterBase<WindowEvents> {
             const windowCreation = this.wire.environment.createChildWindow(options);
             Promise.all([pageResponse, windowCreation]).then((resolvedArr: any[]) => {
                 const pageResolve = resolvedArr[0];
-                this.httpResponseInfo = pageResolve.cbPayload;
                 if (pageResolve.success) {
                     resolve(this);
                 } else {
-                    reject(pageResolve.message);
+                    reject(pageResolve);
                 }
             });
         });
@@ -582,15 +579,6 @@ export class _Window extends EmitterBase<WindowEvents> {
             }));
         });
         return windowList;
-    }
-
-    /**
-    * Returns http response info when creating a child window.
-    * @return {Promise.<any>}
-    * @tutorial Window.getHttpResponseInfo
-    */
-    public getHttpResponseInfo(): Promise<any> {
-        return Promise.resolve(this.httpResponseInfo);
     }
 
     /**
