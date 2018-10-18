@@ -25,6 +25,7 @@ describe('Application.', function() {
             uuid: `adapter-application-test-app-${counter++}`,
             nonPersistent: true,
             autoShow: true,
+            saveWindowState: false,
             accelerator: {
                 devtools: true
             }
