@@ -1,6 +1,7 @@
 import { conn } from './connect';
 import { Fin, Application, Window, connect as rawConnect } from '../src/main';
 import { cleanOpenRuntimes } from './multi-runtime-utils';
+import { delayPromise } from './delay-promise';
 import * as assert from 'assert';
 import * as path from 'path';
 
@@ -294,6 +295,7 @@ describe('Application.', function() {
         it('Fulfilled', async () => {
 
             await testApp.setZoomLevel(zoomLevel);
+            await delayPromise(200); // delay some time to make sure zoom level is actually set
             const newZoomLevel = await testApp.getZoomLevel();
             assert(newZoomLevel === zoomLevel);
         });
