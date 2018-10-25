@@ -15,7 +15,8 @@ describe('Window.', function() {
         url: 'about:blank',
         uuid: 'adapter-test-app-win-tests',
         autoShow: true,
-        nonPersistent: true
+        nonPersistent: true,
+        saveWindowState: false
     };
 
     // tslint:disable-next-line
@@ -323,14 +324,14 @@ describe('Window.', function() {
         it('Fulfilled', () => {
 
             return testWindow.getBounds().then(bounds => {
-
-                return testWindow.resizeTo(10, 10, 'top-left')
+                const delta = 10;
+                return testWindow.resizeTo(bounds.width + delta, bounds.height + delta, 'top-left')
                     .then(() => testWindow.getBounds()
                         .then(data => {
-                            bounds.height = 10;
-                            bounds.width = 10;
-                            bounds.bottom = bounds.top + 10;
-                            bounds.right = bounds.left + 10;
+                            bounds.height += delta;
+                            bounds.width += delta;
+                            bounds.bottom += delta;
+                            bounds.right += delta;
                             return assert.deepEqual(bounds, data);
                         }));
             });
