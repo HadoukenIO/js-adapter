@@ -563,7 +563,7 @@ export class _Window extends EmitterBase<WindowEvents> {
                 if (pageResolve.success) {
                     resolve(this);
                 } else {
-                    reject(pageResolve.message);
+                    reject(pageResolve);
                 }
             });
         });
