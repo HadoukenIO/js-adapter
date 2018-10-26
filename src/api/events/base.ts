@@ -19,7 +19,7 @@ export interface WindowEvent<Topic, Type> extends ApplicationEvent<Topic, Type> 
     name: string;
 }
 
-export function getTopic<T>(e: RuntimeEvent<T>)  {
+export function getTopic(e: RuntimeEvent<any>)  {
     switch (e.topic) {
         case 'window':
             return 'window';
