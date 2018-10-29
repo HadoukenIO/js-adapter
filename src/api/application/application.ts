@@ -341,6 +341,17 @@ export class Application extends EmitterBase<ApplicationEvents> {
     }
 
     /**
+     * Sets a username to correlate with App Log Management.
+     * @param { string } userName Username to correlate with App's Log.
+     * @return {Promise.<void>}
+     */
+    public async setAppLogUsername(userName: string): Promise<void> {
+        await this.wire.sendAction('set-app-log-username', Object.assign({}, this.identity, {
+            data: userName
+        }));
+    }
+
+    /**
      * @summary Retrieves information about the system tray.
      * @desc The only information currently returned is the position and dimensions.
      * @return {Promise.<TrayInfo>}
