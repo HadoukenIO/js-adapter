@@ -123,7 +123,7 @@ describe('GlobalHotkey.', function() {
             await fin.GlobalHotkey.register(reservedHotkey, spy);
         } catch (err) {
             assert.ok(err instanceof Error, 'Expected error thrown to be an instance of Error');
-            assert.equal(err.message, 'Error: Failed to register Hotkey: CommandOrControl+Plus, is reserved');
+            assert.equal(err.message, 'Failed to register Hotkey: CommandOrControl+Plus, is reserved');
         }
     });
 
@@ -152,7 +152,7 @@ describe('GlobalHotkey.', function() {
             await fin2.GlobalHotkey.register(hotkey, spy2);
         } catch (err) {
             assert.ok(err instanceof Error, 'Expected error thrown to be an instance of Error');
-            assert.equal(err.message, 'Error: Failed to register Hotkey: CommandOrControl+X, already registered');
+            assert.equal(err.message, 'Failed to register Hotkey: CommandOrControl+X, already registered');
         }
     });
 
@@ -191,7 +191,7 @@ describe('GlobalHotkey.', function() {
         } catch (err) {
             assert.ok(err instanceof Error, 'Expected error thrown to be an instance of Error');
             assert.equal(err.message,
-                         `Error: Error processing argument at index 0, conversion failure from ${invalidHotkey}`);
+                         `Error processing argument at index 0, conversion failure from ${invalidHotkey}`);
         }
     });
 
