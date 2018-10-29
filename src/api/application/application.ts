@@ -346,9 +346,7 @@ export class Application extends EmitterBase<ApplicationEvents> {
      * @return {Promise.<void>}
      */
     public async setAppLogUsername(userName: string): Promise<void> {
-        await this.wire.sendAction('set-app-log-username', Object.assign({}, this.identity, {
-            data: userName
-        }));
+        await this.wire.sendAction('set-app-log-username', Object.assign({data: userName}, this.identity));
     }
 
     /**
