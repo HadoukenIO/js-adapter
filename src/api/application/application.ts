@@ -26,7 +26,7 @@ export class NavigationRejectedReply extends Reply<'window-navigation-rejected',
     public url: string;
 }
 
-export interface ConfigInterface {
+export interface ShortCutConfig {
     desktop?: boolean;
     startMenu?: boolean;
     systemStartup?: boolean;
@@ -228,10 +228,10 @@ export class Application extends EmitterBase<ApplicationEvents> {
 
     /**
      * Retrieves current application's shortcut configuration.
-     * @return {Promise.<ConfigInterface>}
+     * @return {Promise.<ShortCutConfig>}
      * @tutorial Application.getShortcuts
      */
-    public getShortcuts(): Promise<ConfigInterface> {
+    public getShortcuts(): Promise<ShortCutConfig> {
         return this.wire.sendAction('get-shortcuts', this.identity)
             .then(({ payload }) => payload.data);
     }
@@ -324,7 +324,7 @@ export class Application extends EmitterBase<ApplicationEvents> {
      * @return {Promise.<void>}
      * @tutorial Application.setShortcuts
      */
-    public setShortcuts(config: ConfigInterface): Promise<void> {
+    public setShortcuts(config: ShortCutConfig): Promise<void> {
         return this.wire.sendAction('set-shortcuts', Object.assign({}, this.identity, {data: config})
                ).then(() => undefined);
     }
