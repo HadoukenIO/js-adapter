@@ -83,7 +83,7 @@ describe('InterApplicationBus.', () => {
             .then(() => fin.InterApplicationBus.unsubscribe({ uuid: id }, topic2, noop))
             .then(() => fin.InterApplicationBus.send({ uuid: id }, topic2, m))
             .catch(err => {
-                assert.equal(err.message, 'Error: No subscriptions match', 'Expected to get a no subscriptions match error');
+                assert.equal(err.message, 'No subscriptions match', 'Expected to get a no subscriptions match error');
             });
 
     });
