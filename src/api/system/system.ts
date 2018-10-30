@@ -190,6 +190,13 @@ import { SystemEvents } from '../events/system';
  */
 
 /**
+ * PointTopLeft interface
+ * @typedef { Object } PointTopLeft
+ * @property { number } top The mouse top position in virtual screen coordinates
+ * @property { number } left The mouse left position in virtual screen coordinates
+ */
+
+/**
  * ProcessInfo interface
  * @typedef { Object } ProcessInfo
  * @property { numder } cpuUsage The percentage of total CPU usage
