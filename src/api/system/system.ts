@@ -41,6 +41,25 @@ import { SystemEvents } from '../events/system';
  */
 
 /**
+ * ApplicationInfo interface
+ * @typedef { Object } ApplicationInfo
+ * @property { boolean } isRunning  true when the application is running
+ * @property { string } uuid uuid of the application
+ * @property { string } parentUuid uuid of the application that launches this application
+ */
+
+/**
+ * @typedef { Object } ClearCacheOption
+ * @summary Clear cache options.
+ * @desc These are the options required by the clearCache function.
+ *
+ * @property {boolean} appcache html5 application cache
+ * @property {boolean} cache browser data cache for html files and images
+ * @property {boolean} cookies browser cookies
+ * @property {boolean} localStorage browser data that can be used across sessions
+ */
+
+/**
  * CookieInfo interface
  * @typedef { Object } CookieInfo
  * @property { string } name  The name of the cookie
@@ -54,19 +73,28 @@ import { SystemEvents } from '../events/system';
  * @property { string } name The name of the cookie
  */
 
-/**
- * ExternalConnection interface
- * @typedef { Object } ExternalConnection
- * @property { string } token The token to broker an external connection
- * @property { string } uuid The uuid of the external connection
+ /**
+ * CrashReporterOption interface
+ * @typedef { Object } CrashReporterOption
+ * @property { boolean } diagnosticMode In diagnostic mode the crash reporter will send diagnostic logs to
+ *  the OpenFin reporting service on runtime shutdown
+ * @property { boolean } isRunning check if it's running
  */
 
- /**
- * ExternalProcessRequestType interface
- * @typedef { Object } ExternalProcessRequestType
- * @property { string } path The file path to where the running application resides
- * @property { string } arguments The argument passed to the running application
- * @property { Object } listener This is described in the {LaunchExternalProcessListner} type definition
+/**
+ * DownloadPreloadInfo interface
+ * @typedef { Object } DownloadPreloadInfo
+ * @desc downloadPreloadScripts function return value
+ * @property { string } url url to the preload script
+ * @property { string } error error during preload script acquisition
+ * @property { boolean } succeess download operation success
+ */
+
+/**
+ * DownloadPreloadOption interface
+ * @typedef { Object } DownloadPreloadOption
+ * @desc These are the options object required by the downloadPreloadScripts function
+ * @property { string } url url to the preload script
  */
 
 /**
@@ -83,6 +111,21 @@ import { SystemEvents } from '../events/system';
  * @property { string } uuid The uuid of the entity
  * @property { Identity } parent The parent of the entity
  * @property { string } entityType The type of the entity
+ */
+
+/**
+ * ExternalConnection interface
+ * @typedef { Object } ExternalConnection
+ * @property { string } token The token to broker an external connection
+ * @property { string } uuid The uuid of the external connection
+ */
+
+ /**
+ * ExternalProcessRequestType interface
+ * @typedef { Object } ExternalProcessRequestType
+ * @property { string } path The file path to where the running application resides
+ * @property { string } arguments The argument passed to the running application
+ * @property { Object } listener This is described in the {LaunchExternalProcessListner} type definition
  */
 
  /**
@@ -110,6 +153,24 @@ import { SystemEvents } from '../events/system';
  * @property { string } warning warning and above
  * @property { string } error error and above
  * @property { string } fatal fatal only, indicates a crash is imminent
+ */
+
+/**
+ * ProcessInfo interface
+ * @typedef { Object } ProcessInfo
+ * @property { numder } cpuUsage The percentage of total CPU usage
+ * @property { string } name The application name
+ * @property { number } nonPagedPoolUsage The current nonpaged pool usage in bytes
+ * @property { number } pageFaultCount The number of page faults
+ * @property { number } pagedPoolUsage The current paged pool usage in bytes
+ * @property { number } pagefileUsage The total amount of memory in bytes that the memory manager has committed
+ * @property { number } peakNonPagedPoolUsage The peak nonpaged pool usage in bytes
+ * @property { number } peakPagedPoolUsage The peak paged pool usage in bytes
+ * @property { number } peakPagefileUsage The peak value in bytes of pagefileUsage during the lifetime of this process
+ * @property { number } peakWorkingSetSize The peak working set size in bytes
+ * @property { number } processId The native process identifier
+ * @property { string } uuid The application UUID
+ * @property { nubmer } workingSetSize The current working set size (both shared and private data) in bytes
  */
 
 /**
@@ -146,38 +207,25 @@ import { SystemEvents } from '../events/system';
  */
 
 /**
- * DownloadPreloadOption interface
- * @typedef { Object } DownloadPreloadOption
- * @desc These are the options object required by the downloadPreloadScripts function
- * @property { string } url url to the preload script
+ * WindowDetail interface
+ * @typedef { Object } WindowDetail
+ * @property { number } bottom The bottom-most coordinate of the window
+ * @property { number } height The height of the window
+ * @property { boolean } isShowing Value to check if the window is showing
+ * @property { number } left The left-most coordinate of the window
+ * @property { string } name The name of the window
+ * @property { number } right The right-most coordinate of the window
+ * @property { string } state The window state
+ * @property { number } top The top-most coordinate of the window
+ * @property { number } width The width of the window
  */
 
 /**
- * DownloadPreloadInfo interface
- * @typedef { Object } DownloadPreloadInfo
- * @desc downloadPreloadScripts function return value
- * @property { string } url url to the preload script
- * @property { string } error error during preload script acquisition
- * @property { boolean } succeess download operation success
- */
-
-/**
- * @typedef { Object } ClearCacheOption
- * @summary Clear cache options.
- * @desc These are the options required by the clearCache function.
- *
- * @property {boolean} appcache html5 application cache
- * @property {boolean} cache browser data cache for html files and images
- * @property {boolean} cookies browser cookies
- * @property {boolean} localStorage browser data that can be used across sessions
- */
-
- /**
- * CrashReporterOption interface
- * @typedef { Object } CrashReporterOption
- * @property { boolean } diagnosticMode In diagnostic mode the crash reporter will send diagnostic logs to
- *  the OpenFin reporting service on runtime shutdown
- * @property { boolean } isRunning check if it's running
+ * WindowInfo interface
+ * @typedef { Object } WindowInfo
+ * @property { Array<WindowDetail> } childWindows The array of child windows details
+ * @property { WindowDetail } mainWindow The main window detail
+ * @property { string } uuid The uuid of the application
  */
 
 /**
