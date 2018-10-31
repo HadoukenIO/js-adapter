@@ -5,6 +5,8 @@ import { Transition, TransitionOptions } from './transition';
 import { Application } from '../application/application';
 import Transport from '../../transport/transport';
 import { WindowEvents } from '../events/window';
+import { AnchorType } from './anchor-type';
+import { WindowOption } from './windowOption';
 
 /**
  * @lends Window
@@ -35,12 +37,12 @@ export default class _WindowModule extends Base {
 
     /**
      * Creates a new Window.
-     * @param { * } options - Window creation options
+     * @param { WindowOption } options - Window creation options
      * @return {Promise.<_Window>}
      * @tutorial Window.create
      * @static
      */
-    public create(options: any): Promise<_Window> {
+    public create(options: WindowOption): Promise<_Window> {
        const win = new _Window(this.wire, {uuid: this.me.uuid, name: options.name});
        return win.createWindow(options);
     }
@@ -523,7 +525,7 @@ export class _Window extends EmitterBase<WindowEvents> {
     }
 
     // create a new window
-    public createWindow(options: any): Promise<_Window> {
+    public createWindow(options: WindowOption): Promise<_Window> {
         return new Promise((resolve, reject) => {
             const CONSTRUCTOR_CB_TOPIC = 'fire-constructor-callback';
             // need to call pageResponse, otherwise when a child window is created, page is not loaded
@@ -904,13 +906,13 @@ export class _Window extends EmitterBase<WindowEvents> {
      * Resizes the window by a specified amount.
      * @param { number } deltaWidth The change in the width of the window
      * @param { number } deltaHeight The change in the height of the window
-     * @param { string } anchor Specifies a corner to remain fixed during the resize.
-     * Can take the values: "top-left", "top-right", "bottom-left", or "bottom-right."
+     * @param { AnchorType } anchor Specifies a corner to remain fixed during the resize.
+     * Can take the values: "top-left", "top-right", "bottom-left", or "bottom-right".
      * If undefined, the default is "top-left"
      * @return {Promise.<void>}
      * @tutorial Window.resizeBy
      */
-    public resizeBy(deltaWidth: number, deltaHeight: number, anchor: string): Promise<void> {
+    public resizeBy(deltaWidth: number, deltaHeight: number, anchor: AnchorType): Promise<void> {
         return this.wire.sendAction('resize-window-by', Object.assign({}, this.identity, {
             deltaWidth: Math.floor(deltaWidth),
             deltaHeight: Math.floor(deltaHeight),
@@ -922,13 +924,13 @@ export class _Window extends EmitterBase<WindowEvents> {
      * Resizes the window to the specified dimensions.
      * @param { number } width The change in the width of the window
      * @param { number } height The change in the height of the window
-     * @param { string } anchor Specifies a corner to remain fixed during the resize.
-     * Can take the values: "top-left", "top-right", "bottom-left", or "bottom-right."
+     * @param { AnchorType } anchor Specifies a corner to remain fixed during the resize.
+     * Can take the values: "top-left", "top-right", "bottom-left", or "bottom-right".
      * If undefined, the default is "top-left"
      * @return {Promise.<void>}
      * @tutorial Window.resizeTo
      */
-    public resizeTo(width: number, height: number, anchor: string): Promise<void> {
+    public resizeTo(width: number, height: number, anchor: AnchorType): Promise<void> {
         return this.wire.sendAction('resize-window', Object.assign({}, this.identity, {
             width: Math.floor(width),
             height: Math.floor(height),
