@@ -12,7 +12,7 @@ import { RVMInfo } from './rvm';
 import { RuntimeInfo } from './runtime-info';
 import { Entity, EntityInfo } from './entity';
 import { HostSpecs } from './host-specs';
-import { ExternalProcessRequestType , TerminateExternalRequestType, ExternalConnection } from './external-process';
+import { ExternalProcessRequestType , TerminateExternalRequestType, ExternalConnection, ExternalProcessInfo } from './external-process';
 import Transport from '../../transport/transport';
 import { CookieInfo, CookieOption } from './cookie';
 import { RegistryInfo } from './registry-info';
@@ -598,12 +598,12 @@ export default class System extends EmitterBase<SystemEvents> {
 
     /**
      * Monitors a running process.
-     * @param { number } pid See tutorial for more details
+     * @param { ExternalProcessInfo } options See tutorial for more details
      * @return {Promise.<Identity>}
      * @tutorial System.monitorExternalProcess
      */
-    public monitorExternalProcess(pid: number): Promise<Identity> {
-        return this.wire.sendAction('monitor-external-process', { pid })
+    public monitorExternalProcess(options: ExternalProcessInfo): Promise<Identity> {
+        return this.wire.sendAction('monitor-external-process', options)
             .then(({ payload }) => payload.data);
     }
 
