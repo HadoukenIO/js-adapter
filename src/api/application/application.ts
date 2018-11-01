@@ -342,11 +342,11 @@ export class Application extends EmitterBase<ApplicationEvents> {
 
     /**
      * Sets a username to correlate with App Log Management.
-     * @param { string } userName Username to correlate with App's Log.
+     * @param { string } username Username to correlate with App's Log.
      * @return {Promise.<void>}
      */
-    public async setAppLogUsername(userName: string): Promise<void> {
-        await this.wire.sendAction('set-app-log-username', Object.assign({data: userName}, this.identity));
+    public async setAppLogUsername(username: string): Promise<void> {
+        await this.wire.sendAction('set-app-log-username', Object.assign({data: username}, this.identity));
     }
 
     /**
