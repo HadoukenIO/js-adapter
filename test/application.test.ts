@@ -184,6 +184,10 @@ describe('Application.', function() {
         });
     });
 
+    describe.skip('setAppLogUsername()', () => {
+        it('Fulfilled', () => testApp.setAppLogUsername('mockUser').then(() => assert(true)));
+    });
+
     describe.skip('setShortcuts()', () => {
         // need to create an application using manifest url
         let localApp: Application;
