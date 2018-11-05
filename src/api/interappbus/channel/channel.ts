@@ -35,6 +35,7 @@ export class ChannelBase {
     private defaultSet: boolean;
     protected send: (to: Identity, action: string, payload: any) => Promise<Message<void>>;
     protected providerIdentity: ProviderIdentity;
+    protected sendRaw: Transport['sendAction'];
 
     constructor (providerIdentity: ProviderIdentity, send: Transport['sendAction']) {
         this.defaultSet = false;
@@ -43,6 +44,7 @@ export class ChannelBase {
         this.defaultAction = () => {
             throw new Error('No action registered');
         };
+        this.sendRaw = send;
         this.send = async (to: Identity, action: string, payload: any) => {
             const raw = await send('send-channel-message', { ...to, providerIdentity: this.providerIdentity, action, payload })
             .catch(reason => {
@@ -77,7 +79,7 @@ export class ChannelBase {
         this.preAction = idOrResult(func);
     }
 
-    public onError(func: (e: any, action: string, id: Identity) => any) {
+    public onError(func: (action: string, error: any, id: Identity) => any) {
         if (this.errorMiddleware) {
             throw new Error('Already registered error middleware');
         }

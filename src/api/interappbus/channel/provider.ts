@@ -37,4 +37,9 @@ export class ChannelProvider extends ChannelBase {
         this.disconnectListener = listener;
     }
 
+    public async destroy(): Promise<void> {
+        const { channelId } = this.providerIdentity;
+        await this.sendRaw('destroy-channel', { channelId });
+    }
+
 }
