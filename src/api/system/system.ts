@@ -21,6 +21,7 @@ import { RuntimeError, NotSupportedError } from '../../transport/transport-error
 import { ClearCacheOption } from './clearCacheOption';
 import { CrashReporterOption } from './crashReporterOption';
 import { SystemEvents } from '../events/system';
+import { _Window } from '../window/window';
 
 /**
  * AppAssetInfo interface
@@ -466,8 +467,36 @@ export default class System extends EmitterBase<SystemEvents> {
      * @tutorial System.launchExternalProcess
      */
     public launchExternalProcess(options: ExternalProcessRequestType): Promise<Identity> {
+        const exitEventKey = 'external-process-exited';
+        let processUuid: string;
+        let externalProcessExitHandler: any;
+        let ofWindow: _Window;
+        if (typeof options.listener === 'function') {
+            externalProcessExitHandler = (payload: any) => {
+                const data = payload || {};
+                const exitPayload = {
+                    topic: 'exited',
+                    uuid: data.processUuid || '',
+                    exitCode: data.exitCode || 0
+                };
+                if (processUuid === payload.processUuid) {
+                    options.listener(exitPayload);
+                    ofWindow.removeListener(exitEventKey, externalProcessExitHandler);
+                }
+            };
+            ofWindow = new _Window(this.wire, this.wire.me);
+            ofWindow.on(exitEventKey, externalProcessExitHandler);
+        }
         return this.wire.sendAction('launch-external-process', options)
-            .then(({ payload }) => payload.data);
+        .then(({ payload }) => {
+            processUuid = payload.data.uuid;
+            return payload.data;
+        }).catch(e => {
+            if (ofWindow) {
+                ofWindow.removeListener(exitEventKey, externalProcessExitHandler);
+            }
+            throw new Error(e);
+        });
     }
 
     /**
