@@ -137,7 +137,9 @@ export class Channel extends EmitterBase<ChannelEvents> {
         const key = providerIdentity.channelId;
         const bus = this.channelMap.get(key);
         if (!bus) {
-            return;
+            ackToSender.payload.success = false;
+            ackToSender.payload.reason = `Client connection with identity ${JSON.stringify(this.wire.me)} no longer connected.`;
+            return this.wire.sendRaw(ackToSender);
         }
         try {
             const res = await bus.processAction(action, payload, senderIdentity);
@@ -155,7 +157,9 @@ export class Channel extends EmitterBase<ChannelEvents> {
         const key = providerIdentity.channelId;
         const bus = this.channelMap.get(key);
         if (!bus) {
-            return;
+            ackToSender.payload.success = false;
+            ackToSender.payload.reason = `Channel "${providerIdentity.channelName}" has been destroyed.`;
+            return this.wire.sendRaw(ackToSender);
         }
         try {
             if (!(bus instanceof ChannelProvider)) {
