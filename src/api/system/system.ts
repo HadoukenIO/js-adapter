@@ -12,7 +12,7 @@ import { RVMInfo } from './rvm';
 import { RuntimeInfo } from './runtime-info';
 import { Entity, EntityInfo } from './entity';
 import { HostSpecs } from './host-specs';
-import { ExternalProcessRequestType , TerminateExternalRequestType, ExternalConnection } from './external-process';
+import { ExternalProcessRequestType , TerminateExternalRequestType, ExternalConnection, ExitCode } from './external-process';
 import Transport from '../../transport/transport';
 import { CookieInfo, CookieOption } from './cookie';
 import { RegistryInfo } from './registry-info';
@@ -467,35 +467,41 @@ export default class System extends EmitterBase<SystemEvents> {
      * @tutorial System.launchExternalProcess
      */
     public launchExternalProcess(options: ExternalProcessRequestType): Promise<Identity> {
-        const exitEventKey = 'external-process-exited';
-        let processUuid: string;
-        let externalProcessExitHandler: any;
-        let ofWindow: _Window;
-        if (typeof options.listener === 'function') {
-            externalProcessExitHandler = (payload: any) => {
-                const data = payload || {};
-                const exitPayload = {
-                    topic: 'exited',
-                    uuid: data.processUuid || '',
-                    exitCode: data.exitCode || 0
+        return new Promise((resolve, reject) => {
+            const exitEventKey: string = 'external-process-exited';
+            let processUuid: string;
+            let externalProcessExitHandler: (payload: any) => void;
+            let ofWindow: _Window;
+            if (typeof options.listener === 'function') {
+                externalProcessExitHandler = (payload: any) => {
+                    const data: any = payload || {};
+                    const exitPayload: ExitCode = {
+                        topic: 'exited',
+                        uuid: data.processUuid || '',
+                        exitCode: data.exitCode || 0
+                    };
+                    if (processUuid === payload.processUuid) {
+                        options.listener(exitPayload);
+                        ofWindow.removeListener(exitEventKey, externalProcessExitHandler);
+                    }
                 };
-                if (processUuid === payload.processUuid) {
-                    options.listener(exitPayload);
+                // window constructor expects the name is not undefined
+                if (!this.wire.me.name) {
+                   this.wire.me.name = this.wire.me.uuid;
+                }
+                ofWindow = new _Window(this.wire, this.wire.me);
+                ofWindow.on(exitEventKey, externalProcessExitHandler);
+            }
+            this.wire.sendAction('launch-external-process', options)
+            .then(({ payload }) => {
+                processUuid = payload.data.uuid;
+                resolve(payload.data);
+            }).catch((err: Error) => {
+                if (ofWindow) {
                     ofWindow.removeListener(exitEventKey, externalProcessExitHandler);
                 }
-            };
-            ofWindow = new _Window(this.wire, this.wire.me);
-            ofWindow.on(exitEventKey, externalProcessExitHandler);
-        }
-        return this.wire.sendAction('launch-external-process', options)
-        .then(({ payload }) => {
-            processUuid = payload.data.uuid;
-            return payload.data;
-        }).catch(e => {
-            if (ofWindow) {
-                ofWindow.removeListener(exitEventKey, externalProcessExitHandler);
-            }
-            throw new Error(e);
+                reject(err);
+            });
         });
     }
 
