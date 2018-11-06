@@ -27,6 +27,7 @@ export interface ChannelMessagePayload extends Identity {
 }
 
 export class ChannelBase {
+    protected removeChannel: (mapKey: string) => void;
     protected subscriptions: any;
     public defaultAction: (action?: string, payload?: any, senderIdentity?: ProviderIdentity) => any;
     private preAction: (...args: any[]) => any;

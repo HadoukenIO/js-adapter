@@ -72,6 +72,15 @@ export class Channel extends EmitterBase<ChannelEvents> {
             const channel = new ChannelClient(providerIdentity, this.wire.sendAction.bind(this.wire));
             const key = providerIdentity.channelId;
             this.channelMap.set(key, channel);
+            //@ts-ignore use of protected property
+            channel.removeChannel = this.removeChannelFromMap.bind(this);
+            this.on('disconnected', (eventPayload: ProviderIdentity) => {
+                if (eventPayload.channelName === channelName) {
+                    this.removeChannelFromMap(key);
+                    //@ts-ignore use of private property
+                    channel.disconnectListener(eventPayload);
+                }
+            });
             return channel;
         } catch (e) {
             const shouldWait: boolean = Object.assign({ wait: true }, opts).wait;
@@ -95,6 +104,8 @@ export class Channel extends EmitterBase<ChannelEvents> {
         const channel = new ChannelProvider(providerIdentity, this.wire.sendAction.bind(this.wire));
         const key = providerIdentity.channelId;
         this.channelMap.set(key, channel);
+        //@ts-ignore use of protected property
+        channel.removeChannel = this.removeChannelFromMap.bind(this);
         this.on('client-disconnected', (eventPayload: ProviderIdentity) => {
             if (eventPayload.channelName === channelName) {
                 channel.connections = channel.connections.filter(identity => {
@@ -106,6 +117,11 @@ export class Channel extends EmitterBase<ChannelEvents> {
         });
         return channel;
     }
+
+    protected removeChannelFromMap(mapKey: string) {
+        this.channelMap.delete(mapKey);
+    }
+
     public onmessage = (msg: ChannelMessage) => {
         if (msg.action === 'process-channel-message') {
             this.processChannelMessage(msg);
