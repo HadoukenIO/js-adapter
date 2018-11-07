@@ -312,6 +312,16 @@ import { SystemEvents } from '../events/system';
  */
 
 /**
+ * RuntimeInfo interface
+ * @typedef { Object } RuntimeInfo
+ * @property { string } architecture The runtime build architecture
+ * @property { string } manifestUrl The runtime manifest URL
+ * @property { nubmer } port The runtime websocket port
+ * @property { string } securityRealm The runtime security realm
+ * @property { string } version The runtime version
+ */
+
+/**
  * RVMInfo interface
  * @typedef { Object } RVMInfo
  * @property { string } action The name of action: "get-rvm-info"
