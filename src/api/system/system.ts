@@ -90,6 +90,13 @@ import { SystemEvents } from '../events/system';
  */
 
 /**
+ * DipRect interface
+ * @typedef { Object } DipRect
+ * @property { Rect } dipRect The DIP coordinates
+ * @property { Rect } scaledRect The scale coordinates
+ */
+
+/**
  * DownloadPreloadInfo interface
  * @typedef { Object } DownloadPreloadInfo
  * @desc downloadPreloadScripts function return value
@@ -178,6 +185,39 @@ import { SystemEvents } from '../events/system';
  */
 
 /**
+ * DipScaleRects interface
+ * @typedef { Object } DipScaleRects
+ * @property { Rect } dipRect The DIP coordinates
+ * @property { Rect } scaledRect The scale coordinates
+ */
+
+/**
+ * MonitorDetails interface
+ * @typedef { Object } MonitorDetails
+ * @property { DipScaleRects } available The available DIP scale coordinates
+ * @property { Rect } availableRect The available monitor coordinates
+ * @property { string } deviceId The device id of the display
+ * @property { boolean } displayDeviceActive true if the display is active
+ * @property { number } deviceScaleFactor The device scale factor
+ * @property { Rect } monitorRect The monitor coordinates
+ * @property { string } name The name of the display
+ * @property { Point } dpi The dots per inch
+ * @property { DipScaleRects } monitor The monitor coordinates
+ */
+
+/**
+ * MonitorInfo interface
+ * @typedef { Object } MonitorInfo
+ * @property { number } deviceScaleFactor The device scale factor
+ * @property { Point } dpi The dots per inch
+ * @property { Array<MonitorDetails> } nonPrimaryMonitors The array of monitor details
+ * @property { MonitorDetails } primaryMonitor The monitor details
+ * @property { string } reason always "api-query"
+ * @property { TaskBar } taskBar The taskbar on monitor
+ * @property { DipRect } virtualScreen The virtual display screen coordinates
+ */
+
+/**
  * @typedef { verbose | info | warning | error | fatal } LogLevel
  * @summary Log verbosity levels.
  * @desc Describes the minimum level (inclusive) above which logs will be written
@@ -194,6 +234,13 @@ import { SystemEvents } from '../events/system';
  * @typedef { Object } PointTopLeft
  * @property { number } top The mouse top position in virtual screen coordinates
  * @property { number } left The mouse left position in virtual screen coordinates
+ */
+
+/**
+ * Point interface
+ * @typedef { Object } Point
+ * @property { number } x The mouse x position
+ * @property { number } y The mouse y position
  */
 
 /**
@@ -239,6 +286,15 @@ import { SystemEvents } from '../events/system';
  */
 
 /**
+ * Rect interface
+ * @typedef { Object } Rect
+ * @property { number } bottom The bottom-most coordinate
+ * @property { nubmer } left The left-most coordinate
+ * @property { number } right The right-most coordinate
+ * @property { nubmer } top The top-most coordinate
+ */
+
+/**
  * RegistryInfo interface
  * @typedef { Object } RegistryInfo
  * @property { any } data The registry data
@@ -264,6 +320,13 @@ import { SystemEvents } from '../events/system';
  * @property { string } 'start-time' The start time of RVM
  * @property { string } version The version of RVM
  * @property { string } 'working-dir' The working directory
+ */
+
+/**
+ * TaskBar interface
+ * @typedef { Object } TaskBar
+ * @property { string } edge which edge of a monitor the taskbar is on
+ * @property { Rect } rect The taskbar coordinates
  */
 
 /**
