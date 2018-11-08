@@ -97,6 +97,13 @@ import { SystemEvents } from '../events/system';
  */
 
 /**
+ * DipScaleRects interface
+ * @typedef { Object } DipScaleRects
+ * @property { Rect } dipRect The DIP coordinates
+ * @property { Rect } scaledRect The scale coordinates
+ */
+
+/**
  * DownloadPreloadInfo interface
  * @typedef { Object } DownloadPreloadInfo
  * @desc downloadPreloadScripts function return value
@@ -144,6 +151,15 @@ import { SystemEvents } from '../events/system';
  */
 
 /**
+ * FrameInfo interface
+ * @typedef { Object } FrameInfo
+ * @property { string } name The name of the frame
+ * @property { string } uuid The uuid of the frame
+ * @property { entityType } entityType The entity type, could be 'window', 'iframe', 'external connection' or 'unknown'
+ * @property { Identity } parent The parent identity
+ */
+
+/**
  * GetLogRequestType interface
  * @typedef { Object } GetLogRequestType
  * @property { string } name The name of the running application
@@ -182,13 +198,6 @@ import { SystemEvents } from '../events/system';
  * @property { string } name The filename of the log
  * @property { number } size The size of the log in bytes
  * @property { string } date The unix time at which the log was created "Thu Jan 08 2015 14:40:30 GMT-0500 (Eastern Standard Time)""
- */
-
-/**
- * DipScaleRects interface
- * @typedef { Object } DipScaleRects
- * @property { Rect } dipRect The DIP coordinates
- * @property { Rect } scaledRect The scale coordinates
  */
 
 /**
@@ -330,6 +339,14 @@ import { SystemEvents } from '../events/system';
  * @property { string } 'start-time' The start time of RVM
  * @property { string } version The version of RVM
  * @property { string } 'working-dir' The working directory
+ */
+
+/**
+ * ShortCutConfig interface
+ * @typedef { Object } ShortCutConfig
+ * @property { boolean } desktop true if application has a shortcut on the desktop
+ * @property { boolean } startMenu true if application has shortcut in the start menu
+ * @property { boolean } systemStartup true if application will be launched on system startup
  */
 
 /**
