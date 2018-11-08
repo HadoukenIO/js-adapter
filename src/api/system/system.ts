@@ -29,7 +29,7 @@ import { SystemEvents } from '../events/system';
  * @property { string } alias The name of the asset
  * @property { string } version The version of the package
  * @property { string } target Specify default executable to launch. This option can be overridden in launchExternalProcess
- * @property { args } args The default command line arguments for the aforementioned target.
+ * @property { string } args The default command line arguments for the aforementioned target.
  * @property { boolean } mandatory When set to true, the app will fail to load if the asset cannot be downloaded.
  * When set to false, the app will continue to load if the asset cannot be downloaded. (Default: true)
  */
@@ -133,6 +133,12 @@ import { SystemEvents } from '../events/system';
  * @property { string } uuid The uuid of the entity
  * @property { Identity } parent The parent of the entity
  * @property { string } entityType The type of the entity
+ */
+
+/**
+ * ExternalApplicationInfo interface
+ * @typedef { Object } ExternalApplicationInfo
+ * @property { Identity } parent The parent identity
  */
 
 /**
@@ -372,6 +378,15 @@ import { SystemEvents } from '../events/system';
  * @property { number } sys The number of milliseconds the CPU has spent in sys mode
  * @property { number } idle The number of milliseconds the CPU has spent in idle mode
  * @property { number } irq The number of milliseconds the CPU has spent in irq mode
+ */
+
+/**
+ * TrayInfo interface
+ * @typedef { Object } TrayInfo
+ * @property { Bounds } bounds The bound of tray icon in virtual screen pixels
+ * @property { MonitorInfo } monitorInfo Please see fin.System.getMonitorInfo for more information
+ * @property { number } x copy of bounds.x
+ * @property { number } y copy of bounds.y
  */
 
 /**
