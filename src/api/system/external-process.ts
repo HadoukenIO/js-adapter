@@ -25,3 +25,8 @@ export interface ExternalConnection {
     token: string;
     uuid: string;
 }
+
+export interface ExternalProcessInfo {
+    pid: number;
+    listener?: LaunchExternalProcessListener;
+}

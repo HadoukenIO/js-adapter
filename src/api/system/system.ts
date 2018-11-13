@@ -12,7 +12,8 @@ import { RVMInfo } from './rvm';
 import { RuntimeInfo } from './runtime-info';
 import { Entity, EntityInfo } from './entity';
 import { HostSpecs } from './host-specs';
-import { ExternalProcessRequestType , TerminateExternalRequestType, ExternalConnection, ExitCode } from './external-process';
+import { ExternalProcessRequestType , TerminateExternalRequestType, ExternalConnection, ExitCode, ExternalProcessInfo }
+from './external-process';
 import Transport from '../../transport/transport';
 import { CookieInfo, CookieOption } from './cookie';
 import { RegistryInfo } from './registry-info';
@@ -191,6 +192,45 @@ export default class System extends EmitterBase<SystemEvents> {
 
     constructor(wire: Transport) {
         super(wire, ['system']);
+    }
+
+    private sendExternalProcessRequest(action: string, options: ExternalProcessRequestType | ExternalProcessInfo): Promise<Identity> {
+        return new Promise((resolve, reject) => {
+            const exitEventKey: string = 'external-process-exited';
+            let processUuid: string;
+            let externalProcessExitHandler: (payload: any) => void;
+            let ofWindow: _Window;
+            if (typeof options.listener === 'function') {
+                externalProcessExitHandler = (payload: any) => {
+                    const data: any = payload || {};
+                    const exitPayload: ExitCode = {
+                        topic: 'exited',
+                        uuid: data.processUuid || '',
+                        exitCode: data.exitCode || 0
+                    };
+                    if (processUuid === payload.processUuid) {
+                        options.listener(exitPayload);
+                        ofWindow.removeListener(exitEventKey, externalProcessExitHandler);
+                    }
+                };
+                // window constructor expects the name is not undefined
+                if (!this.wire.me.name) {
+                   this.wire.me.name = this.wire.me.uuid;
+                }
+                ofWindow = new _Window(this.wire, this.wire.me);
+                ofWindow.on(exitEventKey, externalProcessExitHandler);
+            }
+            this.wire.sendAction(action, options)
+            .then(({ payload }) => {
+                processUuid = payload.data.uuid;
+                resolve(payload.data);
+            }).catch((err: Error) => {
+                if (ofWindow) {
+                    ofWindow.removeListener(exitEventKey, externalProcessExitHandler);
+                }
+                reject(err);
+            });
+        });
     }
 
     /**
@@ -467,7 +507,8 @@ export default class System extends EmitterBase<SystemEvents> {
      * @tutorial System.launchExternalProcess
      */
     public launchExternalProcess(options: ExternalProcessRequestType): Promise<Identity> {
-        return new Promise((resolve, reject) => {
+        return this.sendExternalProcessRequest('launch-external-process', options);
+        /*return new Promise((resolve, reject) => {
             const exitEventKey: string = 'external-process-exited';
             let processUuid: string;
             let externalProcessExitHandler: (payload: any) => void;
@@ -502,18 +543,53 @@ export default class System extends EmitterBase<SystemEvents> {
                 }
                 reject(err);
             });
-        });
+        });*/
     }
 
     /**
      * Monitors a running process.
-     * @param { number } pid See tutorial for more details
+     * @param { ExternalProcessInfo } options See tutorial for more details
      * @return {Promise.<Identity>}
      * @tutorial System.monitorExternalProcess
      */
-    public monitorExternalProcess(pid: number): Promise<Identity> {
-        return this.wire.sendAction('monitor-external-process', { pid })
-            .then(({ payload }) => payload.data);
+    public monitorExternalProcess(options: ExternalProcessInfo): Promise<Identity> {
+        return this.sendExternalProcessRequest('monitor-external-process', options);
+        /*return new Promise((resolve, reject) => {
+            const exitEventKey: string = 'external-process-exited';
+            let processUuid: string;
+            let externalProcessExitHandler: (payload: any) => void;
+            let ofWindow: _Window;
+            if (typeof options.listener === 'function') {
+                externalProcessExitHandler = (payload: any) => {
+                    const data: any = payload || {};
+                    const exitPayload: ExitCode = {
+                        topic: 'exited',
+                        uuid: data.processUuid || '',
+                        exitCode: data.exitCode || 0
+                    };
+                    if (processUuid === payload.processUuid) {
+                        options.listener(exitPayload);
+                        ofWindow.removeListener(exitEventKey, externalProcessExitHandler);
+                    }
+                };
+                // window constructor expects the name is not undefined
+                if (!this.wire.me.name) {
+                   this.wire.me.name = this.wire.me.uuid;
+                }
+                ofWindow = new _Window(this.wire, this.wire.me);
+                ofWindow.on(exitEventKey, externalProcessExitHandler);
+            }
+            this.wire.sendAction('monitor-external-process', options)
+            .then(({ payload }) => {
+                processUuid = payload.data.uuid;
+                resolve(payload.data);
+            }).catch((err: Error) => {
+                if (ofWindow) {
+                    ofWindow.removeListener(exitEventKey, externalProcessExitHandler);
+                }
+                reject(err);
+            });
+        });*/
     }
 
     /**
