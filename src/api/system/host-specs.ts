@@ -17,9 +17,11 @@ export interface GpuInfo {
 }
 
 export interface HostSpecs {
-    cpu: CpuInfo[];
-    memory: number;
+    aeroGlassEnabled?: boolean;
     arch: string;
-    name: string;
+    cpus: CpuInfo[];
     gpu: GpuInfo;
+    memory: number;
+    name: string;
+    screenSaver?: boolean;
 }

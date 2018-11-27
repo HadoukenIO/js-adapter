@@ -1,5 +1,4 @@
-import { WindowEvent, BaseEventMap } from './base';
-import { ApplicationEvent } from './base';
+import { WindowEvent, BaseEventMap, ApplicationEvent } from './base';
 import { WindowAlertRequestedEvent, WindowAuthRequestedEvent, WindowEndLoadEvent, PropagatedWindowEvents } from './window';
 
 export interface CrashedEvent {
