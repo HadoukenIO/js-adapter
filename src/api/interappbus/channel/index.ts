@@ -72,6 +72,15 @@ export class Channel extends EmitterBase<ChannelEvents> {
             const channel = new ChannelClient(providerIdentity, this.wire.sendAction.bind(this.wire));
             const key = providerIdentity.channelId;
             this.channelMap.set(key, channel);
+            //@ts-ignore use of protected property
+            channel.removeChannel = this.removeChannelFromMap.bind(this);
+            this.on('disconnected', (eventPayload: ProviderIdentity) => {
+                if (eventPayload.channelName === channelName) {
+                    this.removeChannelFromMap(key);
+                    //@ts-ignore use of private property
+                    channel.disconnectListener(eventPayload);
+                }
+            });
             return channel;
         } catch (e) {
             const shouldWait: boolean = Object.assign({ wait: true }, opts).wait;
@@ -95,6 +104,8 @@ export class Channel extends EmitterBase<ChannelEvents> {
         const channel = new ChannelProvider(providerIdentity, this.wire.sendAction.bind(this.wire));
         const key = providerIdentity.channelId;
         this.channelMap.set(key, channel);
+        //@ts-ignore use of protected property
+        channel.removeChannel = this.removeChannelFromMap.bind(this);
         this.on('client-disconnected', (eventPayload: ProviderIdentity) => {
             if (eventPayload.channelName === channelName) {
                 channel.connections = channel.connections.filter(identity => {
@@ -106,6 +117,11 @@ export class Channel extends EmitterBase<ChannelEvents> {
         });
         return channel;
     }
+
+    protected removeChannelFromMap(mapKey: string) {
+        this.channelMap.delete(mapKey);
+    }
+
     public onmessage = (msg: ChannelMessage) => {
         if (msg.action === 'process-channel-message') {
             this.processChannelMessage(msg);
@@ -121,7 +137,9 @@ export class Channel extends EmitterBase<ChannelEvents> {
         const key = providerIdentity.channelId;
         const bus = this.channelMap.get(key);
         if (!bus) {
-            return;
+            ackToSender.payload.success = false;
+            ackToSender.payload.reason = `Client connection with identity ${JSON.stringify(this.wire.me)} no longer connected.`;
+            return this.wire.sendRaw(ackToSender);
         }
         try {
             const res = await bus.processAction(action, payload, senderIdentity);
@@ -139,7 +157,9 @@ export class Channel extends EmitterBase<ChannelEvents> {
         const key = providerIdentity.channelId;
         const bus = this.channelMap.get(key);
         if (!bus) {
-            return;
+            ackToSender.payload.success = false;
+            ackToSender.payload.reason = `Channel "${providerIdentity.channelName}" has been destroyed.`;
+            return this.wire.sendRaw(ackToSender);
         }
         try {
             if (!(bus instanceof ChannelProvider)) {
