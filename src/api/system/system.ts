@@ -12,7 +12,8 @@ import { RVMInfo } from './rvm';
 import { RuntimeInfo } from './runtime-info';
 import { Entity, EntityInfo } from './entity';
 import { HostSpecs } from './host-specs';
-import { ExternalProcessRequestType , TerminateExternalRequestType, ExternalConnection, ExitCode, ExternalProcessInfo } from './external-process';
+import { ExternalProcessRequestType , TerminateExternalRequestType, ExternalConnection, ExitCode,
+    ExternalProcessInfo } from './external-process';
 import Transport from '../../transport/transport';
 import { CookieInfo, CookieOption } from './cookie';
 import { RegistryInfo } from './registry-info';
