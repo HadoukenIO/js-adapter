@@ -3,6 +3,7 @@ import Transport from '../../../transport/transport';
 import { Identity } from '../../../main';
 
 export type ConnectionListener = (identity: Identity, connectionMessage?: any) => any;
+export type DisconnectionListener = (identity: Identity) => any;
 
 export class ChannelProvider extends ChannelBase {
     private connectListener: ConnectionListener;
@@ -33,8 +34,15 @@ export class ChannelProvider extends ChannelBase {
         this.connectListener = listener;
     }
 
-    public onDisconnection(listener: ConnectionListener): void {
+    public onDisconnection(listener: DisconnectionListener): void {
         this.disconnectListener = listener;
+    }
+
+    public async destroy(): Promise<void> {
+        const { channelName } = this.providerIdentity;
+        await this.sendRaw('destroy-channel', { channelName });
+        const { channelId } = this.providerIdentity;
+        this.removeChannel(channelId);
     }
 
 }
