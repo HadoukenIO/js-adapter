@@ -425,6 +425,45 @@ export default class System extends EmitterBase<SystemEvents> {
         super(wire, ['system']);
     }
 
+    private sendExternalProcessRequest(action: string, options: ExternalProcessRequestType | ExternalProcessInfo): Promise<Identity> {
+        return new Promise((resolve, reject) => {
+            const exitEventKey: string = 'external-process-exited';
+            let processUuid: string;
+            let externalProcessExitHandler: (payload: any) => void;
+            let ofWindow: _Window;
+            if (typeof options.listener === 'function') {
+                externalProcessExitHandler = (payload: any) => {
+                    const data: any = payload || {};
+                    const exitPayload: ExitCode = {
+                        topic: 'exited',
+                        uuid: data.processUuid || '',
+                        exitCode: data.exitCode || 0
+                    };
+                    if (processUuid === payload.processUuid) {
+                        options.listener(exitPayload);
+                        ofWindow.removeListener(exitEventKey, externalProcessExitHandler);
+                    }
+                };
+                // window constructor expects the name is not undefined
+                if (!this.wire.me.name) {
+                   this.wire.me.name = this.wire.me.uuid;
+                }
+                ofWindow = new _Window(this.wire, this.wire.me);
+                ofWindow.on(exitEventKey, externalProcessExitHandler);
+            }
+            this.wire.sendAction(action, options)
+            .then(({ payload }) => {
+                processUuid = payload.data.uuid;
+                resolve(payload.data);
+            }).catch((err: Error) => {
+                if (ofWindow) {
+                    ofWindow.removeListener(exitEventKey, externalProcessExitHandler);
+                }
+                reject(err);
+            });
+        });
+    }
+
     /**
      * Returns the version of the runtime. The version contains the major, minor,
      * build and revision numbers.
@@ -699,42 +738,7 @@ export default class System extends EmitterBase<SystemEvents> {
      * @tutorial System.launchExternalProcess
      */
     public launchExternalProcess(options: ExternalProcessRequestType): Promise<Identity> {
-        return new Promise((resolve, reject) => {
-            const exitEventKey: string = 'external-process-exited';
-            let processUuid: string;
-            let externalProcessExitHandler: (payload: any) => void;
-            let ofWindow: _Window;
-            if (typeof options.listener === 'function') {
-                externalProcessExitHandler = (payload: any) => {
-                    const data: any = payload || {};
-                    const exitPayload: ExitCode = {
-                        topic: 'exited',
-                        uuid: data.processUuid || '',
-                        exitCode: data.exitCode || 0
-                    };
-                    if (processUuid === payload.processUuid) {
-                        options.listener(exitPayload);
-                        ofWindow.removeListener(exitEventKey, externalProcessExitHandler);
-                    }
-                };
-                // window constructor expects the name is not undefined
-                if (!this.wire.me.name) {
-                   this.wire.me.name = this.wire.me.uuid;
-                }
-                ofWindow = new _Window(this.wire, this.wire.me);
-                ofWindow.on(exitEventKey, externalProcessExitHandler);
-            }
-            this.wire.sendAction('launch-external-process', options)
-            .then(({ payload }) => {
-                processUuid = payload.data.uuid;
-                resolve(payload.data);
-            }).catch((err: Error) => {
-                if (ofWindow) {
-                    ofWindow.removeListener(exitEventKey, externalProcessExitHandler);
-                }
-                reject(err);
-            });
-        });
+        return this.sendExternalProcessRequest('launch-external-process', options);
     }
 
     /**
@@ -744,8 +748,7 @@ export default class System extends EmitterBase<SystemEvents> {
      * @tutorial System.monitorExternalProcess
      */
     public monitorExternalProcess(options: ExternalProcessInfo): Promise<Identity> {
-        return this.wire.sendAction('monitor-external-process', options)
-            .then(({ payload }) => payload.data);
+        return this.sendExternalProcessRequest('monitor-external-process', options);
     }
 
     /**
