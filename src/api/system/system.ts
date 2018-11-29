@@ -31,7 +31,7 @@ import { _Window } from '../window/window';
  * @property { string } alias The name of the asset
  * @property { string } version The version of the package
  * @property { string } target Specify default executable to launch. This option can be overridden in launchExternalProcess
- * @property { args } args The default command line arguments for the aforementioned target.
+ * @property { string } args The default command line arguments for the aforementioned target.
  * @property { boolean } mandatory When set to true, the app will fail to load if the asset cannot be downloaded.
  * When set to false, the app will continue to load if the asset cannot be downloaded. (Default: true)
  */
@@ -92,6 +92,20 @@ import { _Window } from '../window/window';
  */
 
 /**
+ * DipRect interface
+ * @typedef { Object } DipRect
+ * @property { Rect } dipRect The DIP coordinates
+ * @property { Rect } scaledRect The scale coordinates
+ */
+
+/**
+ * DipScaleRects interface
+ * @typedef { Object } DipScaleRects
+ * @property { Rect } dipRect The DIP coordinates
+ * @property { Rect } scaledRect The scale coordinates
+ */
+
+/**
  * DownloadPreloadInfo interface
  * @typedef { Object } DownloadPreloadInfo
  * @desc downloadPreloadScripts function return value
@@ -124,6 +138,12 @@ import { _Window } from '../window/window';
  */
 
 /**
+ * ExternalApplicationInfo interface
+ * @typedef { Object } ExternalApplicationInfo
+ * @property { Identity } parent The parent identity
+ */
+
+/**
  * ExternalConnection interface
  * @typedef { Object } ExternalConnection
  * @property { string } token The token to broker an external connection
@@ -136,6 +156,15 @@ import { _Window } from '../window/window';
  * @property { string } path The file path to where the running application resides
  * @property { string } arguments The argument passed to the running application
  * @property { Object } listener This is described in the {LaunchExternalProcessListner} type definition
+ */
+
+/**
+ * FrameInfo interface
+ * @typedef { Object } FrameInfo
+ * @property { string } name The name of the frame
+ * @property { string } uuid The uuid of the frame
+ * @property { entityType } entityType The entity type, could be 'window', 'iframe', 'external connection' or 'unknown'
+ * @property { Identity } parent The parent identity
  */
 
 /**
@@ -180,6 +209,32 @@ import { _Window } from '../window/window';
  */
 
 /**
+ * MonitorDetails interface
+ * @typedef { Object } MonitorDetails
+ * @property { DipScaleRects } available The available DIP scale coordinates
+ * @property { Rect } availableRect The available monitor coordinates
+ * @property { string } deviceId The device id of the display
+ * @property { boolean } displayDeviceActive true if the display is active
+ * @property { number } deviceScaleFactor The device scale factor
+ * @property { Rect } monitorRect The monitor coordinates
+ * @property { string } name The name of the display
+ * @property { Point } dpi The dots per inch
+ * @property { DipScaleRects } monitor The monitor coordinates
+ */
+
+/**
+ * MonitorInfo interface
+ * @typedef { Object } MonitorInfo
+ * @property { number } deviceScaleFactor The device scale factor
+ * @property { Point } dpi The dots per inch
+ * @property { Array<MonitorDetails> } nonPrimaryMonitors The array of monitor details
+ * @property { MonitorDetails } primaryMonitor The monitor details
+ * @property { string } reason always "api-query"
+ * @property { TaskBar } taskBar The taskbar on monitor
+ * @property { DipRect } virtualScreen The virtual display screen coordinates
+ */
+
+/**
  * @typedef { verbose | info | warning | error | fatal } LogLevel
  * @summary Log verbosity levels.
  * @desc Describes the minimum level (inclusive) above which logs will be written
@@ -196,6 +251,13 @@ import { _Window } from '../window/window';
  * @typedef { Object } PointTopLeft
  * @property { number } top The mouse top position in virtual screen coordinates
  * @property { number } left The mouse left position in virtual screen coordinates
+ */
+
+/**
+ * Point interface
+ * @typedef { Object } Point
+ * @property { number } x The mouse x position
+ * @property { number } y The mouse y position
  */
 
 /**
@@ -241,6 +303,15 @@ import { _Window } from '../window/window';
  */
 
 /**
+ * Rect interface
+ * @typedef { Object } Rect
+ * @property { number } bottom The bottom-most coordinate
+ * @property { nubmer } left The left-most coordinate
+ * @property { number } right The right-most coordinate
+ * @property { nubmer } top The top-most coordinate
+ */
+
+/**
  * RegistryInfo interface
  * @typedef { Object } RegistryInfo
  * @property { any } data The registry data
@@ -258,6 +329,16 @@ import { _Window } from '../window/window';
  */
 
 /**
+ * RuntimeInfo interface
+ * @typedef { Object } RuntimeInfo
+ * @property { string } architecture The runtime build architecture
+ * @property { string } manifestUrl The runtime manifest URL
+ * @property { nubmer } port The runtime websocket port
+ * @property { string } securityRealm The runtime security realm
+ * @property { string } version The runtime version
+ */
+
+/**
  * RVMInfo interface
  * @typedef { Object } RVMInfo
  * @property { string } action The name of action: "get-rvm-info"
@@ -266,6 +347,21 @@ import { _Window } from '../window/window';
  * @property { string } 'start-time' The start time of RVM
  * @property { string } version The version of RVM
  * @property { string } 'working-dir' The working directory
+ */
+
+/**
+ * ShortCutConfig interface
+ * @typedef { Object } ShortCutConfig
+ * @property { boolean } desktop true if application has a shortcut on the desktop
+ * @property { boolean } startMenu true if application has shortcut in the start menu
+ * @property { boolean } systemStartup true if application will be launched on system startup
+ */
+
+/**
+ * TaskBar interface
+ * @typedef { Object } TaskBar
+ * @property { string } edge which edge of a monitor the taskbar is on
+ * @property { Rect } rect The taskbar coordinates
  */
 
 /**
@@ -284,6 +380,15 @@ import { _Window } from '../window/window';
  * @property { number } sys The number of milliseconds the CPU has spent in sys mode
  * @property { number } idle The number of milliseconds the CPU has spent in idle mode
  * @property { number } irq The number of milliseconds the CPU has spent in irq mode
+ */
+
+/**
+ * TrayInfo interface
+ * @typedef { Object } TrayInfo
+ * @property { Bounds } bounds The bound of tray icon in virtual screen pixels
+ * @property { MonitorInfo } monitorInfo Please see fin.System.getMonitorInfo for more information
+ * @property { number } x copy of bounds.x
+ * @property { number } y copy of bounds.y
  */
 
 /**

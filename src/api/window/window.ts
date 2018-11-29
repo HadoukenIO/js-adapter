@@ -7,6 +7,7 @@ import Transport from '../../transport/transport';
 import { WindowEvents } from '../events/window';
 import { AnchorType } from './anchor-type';
 import { WindowOption } from './windowOption';
+import { EntityType } from '../frame/frame';
 
 /**
  * @lends Window
@@ -86,7 +87,7 @@ export interface WindowInfo {
 export interface FrameInfo {
     name: string;
     uuid: string;
-    entityType: string;
+    entityType: EntityType;
     parent?: Identity;
 }
 
