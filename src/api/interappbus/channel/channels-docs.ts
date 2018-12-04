@@ -5,7 +5,7 @@
  * 2. App config web page (https://openfin.co/documentation/application-config/)
  */
 
-const InterApplicationBus = {};
+const InterApplicationBus: any = {};
 
 /**
  * @namespace 
@@ -23,6 +23,7 @@ const InterApplicationBus = {};
  *  * {@link InterApplicationBus.Channel.create create(channelName)}
  *  * {@link InterApplicationBus.Channel.connect connect(channelName, options)}
  */
+//tslint:disable-next-line
 InterApplicationBus.Channel = function() {};
 
 /**
