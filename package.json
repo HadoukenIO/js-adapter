@@ -33,10 +33,11 @@
         "rimraf": "^2.6.2",
         "shelljs": "^0.8.2",
         "sinon": "~1.17.6",
+        "ts-loader": "^5.3.1",
         "tslint": "^4.5.1",
         "tslint-microsoft-contrib": "^4.0.1",
         "typescript": "^2.9.2",
-        "webpack": "^3.8.1"
+        "webpack": "^4.26.1"
     },
     "dependencies": {
         "@types/node": "^9.4.6",

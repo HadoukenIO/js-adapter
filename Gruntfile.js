@@ -9,11 +9,17 @@ const { buildCore, resolveRuntimeVersion } = require('./coreUtils');
 
 const outDir = path.resolve('out');
 const webpackConfig = {
-    entry: path.resolve(__dirname, 'out/src/of-main.js'),
+    mode: 'development',
+    entry: path.resolve(__dirname, 'src/of-main.ts'),
+    module: {
+        rules: [{
+            test: /\.ts$/,
+            use: 'ts-loader',
+            exclude: /node_modules/
+        }]
+    },
     resolve: {
-        alias: {
-            events: path.resolve(__dirname, 'node_modules/events/events.js')
-        }
+        extensions: ['.ts', '.js']
     },
     output: {
         path: path.resolve(__dirname, 'out'),
@@ -119,7 +125,9 @@ module.exports = function (grunt) {
                 grunt.fail.fatal(info.errors, 3);
             } else if (stats.hasWarnings()) {
                 const info = stats.toJson();
-                grunt.fail.warn(info.warnings, 6);
+                info.warnings.forEach((warning) => {
+                    grunt.fail.warn(warning, 6);
+                });
             } else {
                 grunt.log.ok('webpack task done');
                 done();
