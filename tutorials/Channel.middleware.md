@@ -1,4 +1,4 @@
-Channel middleware functions receive the following arguments: (action, payload, senderId).  The return value of the middleware function will be passed on as the payload from beforeAction,to the action listener, to afterAction unless it is undefined, in which case the most recently defined payload is used.  Middleware can be used for side effects. 
+Channel middleware functions receive the following arguments: (action, payload, senderId).  The return value of the middleware function will be passed on as the payload from beforeAction, to the action listener, to afterAction unless it is undefined, in which case the most recently defined payload is used.  Middleware can be used for side effects. 
 
 ### Example
 

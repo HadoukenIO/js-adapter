@@ -168,7 +168,7 @@ class ChannelProvider {
     /**
      * 
      * Register an error handler. This is called before responding on any error.
-     * @param {function} middleware - Function to be executed in case of an error.\
+     * @param {function} middleware - Function to be executed in case of an error.
      * @tutorial Channel.middleware
      */
     onError() { }
