@@ -6,6 +6,7 @@ import { MonitorInfo } from '../system/monitor';
 import Transport from '../../transport/transport';
 import Bounds from '../window/bounds';
 import { ApplicationEvents } from '../events/application';
+import { ApplicationOption } from './applicationOption';
 
 export interface TrayIconClickReply extends Point, Reply<'application', 'tray-icon-clicked'> {
     button: number;
@@ -26,7 +27,7 @@ export class NavigationRejectedReply extends Reply<'window-navigation-rejected',
     public url: string;
 }
 
-export interface ConfigInterface {
+export interface ShortCutConfig {
     desktop?: boolean;
     startMenu?: boolean;
     systemStartup?: boolean;
@@ -67,12 +68,12 @@ export default class ApplicationModule extends Base {
 
     /**
      * Creates a new Application.
-     * @param {*} appOptions
+     * @param { ApplicationOption } appOptions
      * @return {Promise.<Application>}
      * @tutorial Application.create
      * @static
      */
-    public create(appOptions: any): Promise<Application> {
+    public create(appOptions: ApplicationOption): Promise<Application> {
         return this.wire.sendAction('create-application', appOptions)
             .then(() => this.wrap({ uuid: appOptions.uuid }));
     }
@@ -228,10 +229,10 @@ export class Application extends EmitterBase<ApplicationEvents> {
 
     /**
      * Retrieves current application's shortcut configuration.
-     * @return {Promise.<ConfigInterface>}
+     * @return {Promise.<ShortCutConfig>}
      * @tutorial Application.getShortcuts
      */
-    public getShortcuts(): Promise<ConfigInterface> {
+    public getShortcuts(): Promise<ShortCutConfig> {
         return this.wire.sendAction('get-shortcuts', this.identity)
             .then(({ payload }) => payload.data);
     }
@@ -324,7 +325,7 @@ export class Application extends EmitterBase<ApplicationEvents> {
      * @return {Promise.<void>}
      * @tutorial Application.setShortcuts
      */
-    public setShortcuts(config: ConfigInterface): Promise<void> {
+    public setShortcuts(config: ShortCutConfig): Promise<void> {
         return this.wire.sendAction('set-shortcuts', Object.assign({}, this.identity, {data: config})
                ).then(() => undefined);
     }

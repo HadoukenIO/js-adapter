@@ -1,15 +1,17 @@
 export interface WindowInfo {
-    uuid: string;
-    mainWindow: WindowDetail;
     childWindows: Array<WindowDetail>;
+    mainWindow: WindowDetail;
+    uuid: string;
 }
 
 export interface WindowDetail {
-    name: string;
-    top: number;
-    right: number;
     bottom: number;
     height: number;
-    width: number;
+    isShowing: boolean;
     left: number;
+    name: string;
+    right: number;
+    state: string;
+    top: number;
+    width: number;
 }
