@@ -136,7 +136,6 @@ For a single-page reference to all application settings and configuration option
 * {@link Application#getManifest getManifest} _Application_
 * {@link System#getMonitorInfo getMonitorInfo} _System_
 * {@link System#getMousePosition getMousePosition} _System_
-* {@link Window#getNativeWindow getNativeWindow} _Window_
 * {@link Window#getOptions getOptions} _Window_
 * {@link Window#getParentApplication getParentApplication} _Window_
 * {@link Application#getParentUuid getParentUuid} _Application_
@@ -203,7 +202,6 @@ For a single-page reference to all application settings and configuration option
 * {@link Application#scheduleRestart scheduleRestart} _Application_
 * {@link InterApplicationBus#send send} _InterApplicationBus_
 * {@link Notification#sendMessage sendMessage} _Notification_
-* {@link Notification#sendMessageToApplication sendMessageToApplication} _Notification_
 * {@link Window#setAsForeground setAsForeground} _Window_
 * {@link Window#setBounds setBounds} _Window_
 * {@link System#setMinLogLevel setMinLogLevel} _System_
