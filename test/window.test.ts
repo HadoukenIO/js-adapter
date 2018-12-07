@@ -426,6 +426,12 @@ describe('Window.', function() {
         it('Fulfilled', () => testWindow.navigateBack().then(() => assert(true)));
     });
 
+    describe('navigateForward()', () => {
+
+        it('Fulfilled', () => testWindow.navigate('https://www.google.com').then(() => testWindow.navigateBack()).
+            then(() => testWindow.navigateForward()).then(() => assert(true)));
+    });
+
     describe('stopNavigation()', () => {
 
         it('Fulfilled', () => testWindow.stopNavigation().then(() => assert(true)));
