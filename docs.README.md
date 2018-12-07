@@ -77,7 +77,6 @@ For a single-page reference to all application settings and configuration option
 * {@link InterApplicationBus#addSubscribeListener addSubscribeListener} _InterApplicationBus_
 * {@link InterApplicationBus#addUnsubscribeListener addUnsubscribeListener} _InterApplicationBus_
 * {@link Window#animate animate} _Window_
-* [Application](Application.html#Application) _(constructor)_
 * {@link Window#authenticate authenticate} _Window_
 * {@link Clipboard#getAvailableFormats getAvailableFormats} _Clipboard_
 * {@link Window#blur blur} _Window_
@@ -99,7 +98,6 @@ For a single-page reference to all application settings and configuration option
 * {@link Window#enableFrame enableFrame} _Window_
 * {@link Window#executeJavaScript executeJavaScript} _Window_
 * {@link System#exit exit} _System_
-* [ExternalApplication](ExternalApplication.html#ExternalApplication) _(constructor)_
 * {@link Window#flash flash} _Window_
 * {@link System#flushCookieStore flushCookieStore} _System_
 * {@link Window#focus focus} _Window_
@@ -172,7 +170,6 @@ For a single-page reference to all application settings and configuration option
 * {@link Window#navigate navigate} _Window_
 * {@link Window#navigateBack navigateBack} _Window_
 * {@link Window#navigateForward navigateForward} _Window_
-* [Notification](Notification.html#Notification) _(constructor)_
 * {@link InterApplicationBus.Channel.onChannelConnect onChannelConnect} _Channel_
 * {@link InterApplicationBus.Channel.onChannelDisconnect onChannelDisconnect} _Channel_
 * {@link System#openUrlWithBrowser openUrlWithBrowser} _System_
@@ -226,7 +223,6 @@ For a single-page reference to all application settings and configuration option
 * {@link InterApplicationBus#unsubscribe unsubscribe} _InterApplicationBus_
 * {@link Window#updateOptions updateOptions} _Window_
 * {@link System#updateProxySettings updateProxySettings} _System_
-* [Window](Window.html#Window) _(constructor)_
 * {@link Application.wrap wrap} _Application_
 * {@link ExternalApplication.wrap wrap} _ExternalApplication_
 * {@link Frame.wrap wrap} _Frame_
