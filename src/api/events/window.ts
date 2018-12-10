@@ -137,8 +137,6 @@ export interface WindowEventMapping<Topic = string, Type = string> extends BaseE
     'external-process-exited': WindowExternalProcessExitedEvent<Topic, Type>;
     'external-process-started': WindowExternalProcessStartedEvent<Topic, Type>;
     'focused': WindowEvent<Topic, Type>;
-    'frame-disabled': WindowEvent<Topic, Type>;
-    'frame-enabled': WindowEvent<Topic, Type>;
     'group-changed': WindowGroupChanged<Topic, Type>;
     'hidden': WindowHiddenEvent<Topic, Type>;
     'initialized': WindowEvent<Topic, Type>;
@@ -153,6 +151,8 @@ export interface WindowEventMapping<Topic = string, Type = string> extends BaseE
     'restored': WindowEvent<Topic, Type>;
     'show-requested': WindowEvent<Topic, Type>;
     'shown': WindowEvent<Topic, Type>;
+    'user-movement-disabled': WindowEvent<Topic, Type>;
+    'user-movement-enabled': WindowEvent<Topic, Type>;
 }
 
 export interface PropagatedWindowEventMapping<Topic = string, Type = string> extends BaseEventMap {
@@ -170,8 +170,8 @@ export interface PropagatedWindowEventMapping<Topic = string, Type = string> ext
     'window-external-process-exited': WindowExternalProcessExitedEvent<Topic, Type>;
     'window-external-process-started': WindowExternalProcessStartedEvent<Topic, Type>;
     'window-focused': WindowEvent<Topic, Type>;
-    'window-frame-disabled': WindowEvent<Topic, Type>;
-    'window-frame-enabled': WindowEvent<Topic, Type>;
+    'window-user-movement-disabled': WindowEvent<Topic, Type>;
+    'window-user-movement-enabled': WindowEvent<Topic, Type>;
     'window-group-changed': WindowGroupChanged<Topic, Type>;
     'window-hidden': WindowHiddenEvent<Topic, Type>;
     'window-initialized': WindowEvent<Topic, Type>;

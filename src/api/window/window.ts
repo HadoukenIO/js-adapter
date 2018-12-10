@@ -305,7 +305,7 @@ export class _Window extends EmitterBase<WindowEvents> {
     /**
      * Raised when a window's frame becomes disabled.
      *
-     * @event Window#frame-disabled
+     * @event Window#user-movement-disabled
      * @type {object}
      * @property {string} name - Name of the window.
      * @property {string} uuid - UUID of the application that the window belongs to.
@@ -314,7 +314,7 @@ export class _Window extends EmitterBase<WindowEvents> {
     /**
      * Raised when a window's frame becomes enabled.
      *
-     * @event Window#frame-enabled
+     * @event Window#user-movement-enabled
      * @type {object}
      * @property {string} name - Name of the window.
      * @property {string} uuid - UUID of the application that the window belongs to.
