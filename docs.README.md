@@ -1,7 +1,7 @@
 <style>
 article > ul:last-of-type {
     position: relative;
-    width: 50em; 
+    width: 50em;
     list-style-type: none;
     padding: 0;
     column-count: 2;
@@ -9,8 +9,8 @@ article > ul:last-of-type {
 }
 .dashbox {
     position: relative;
-    width: 30em; 
-    padding: .65em; 
+    width: 30em;
+    padding: .65em;
     text-align: center;
     margin-top: 2em;
     margin-bottom: 2.5em;
@@ -89,13 +89,13 @@ For a single-page reference to all application settings and configuration option
 * {@link InterApplicationBus.Channel.create create} _Channel_
 * {@link Application.createFromManifest createFromManifest} _Application_
 * {@link System#deleteCacheOnExit deleteCacheOnExit} _System_
-* {@link Window#disableFrame disableFrame} _Window_
+* {@link Window#disableUserMovement disableUserMovement} _Window_
 * {@link Channel#ChannelClient#dispatch dispatch} _ChannelClient_
 * {@link Channel#ChannelProvider#dispatch dispatch} _ChannelProvider_
 * {@link System#downloadAsset downloadAsset} _System_
 * {@link System#downloadPreloadScripts downloadPreloadScripts} _System_
 * {@link System#downloadRuntime downloadRuntime} _System_
-* {@link Window#enableFrame enableFrame} _Window_
+* {@link Window#enableUserMovement enableUserMovement} _Window_
 * {@link Window#executeJavaScript executeJavaScript} _Window_
 * {@link System#exit exit} _System_
 * {@link Window#flash flash} _Window_
