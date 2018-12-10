@@ -684,18 +684,18 @@ export class _Window extends EmitterBase<WindowEvents> {
     /**
      * Prevents a user from changing a window's size/position when using the window's frame.
      * @return {Promise.<void>}
-     * @tutorial Window.disableFrame
+     * @tutorial Window.disableUserMovement
      */
-    public disableFrame(): Promise<void> {
+    public disableUserMovement(): Promise<void> {
         return this.wire.sendAction('disable-window-frame', this.identity).then(() => undefined);
     }
 
     /**
      * Re-enables user changes to a window's size/position when using the window's frame.
      * @return {Promise.<void>}
-     * @tutorial Window.enableFrame
+     * @tutorial Window.enableUserMovement
      */
-    public enableFrame(): Promise<void> {
+    public enableUserMovement(): Promise<void> {
         return this.wire.sendAction('enable-window-frame', this.identity).then(() => undefined);
     }
 

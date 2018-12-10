@@ -127,14 +127,14 @@ describe('Window.', function() {
         it('Fulfilled', () => testWindow.getNativeId().then(data => assert(typeof (data) === 'string')));
     });
 
-    describe('disableFrame()', () => {
+    describe('disableUserMovement()', () => {
 
-        it('Fulfilled', () => testWindow.disableFrame().then(() => assert(true)));
+        it('Fulfilled', () => testWindow.disableUserMovement().then(() => assert(true)));
     });
 
-    describe('enableFrame()', () => {
+    describe('enableUserMovement()', () => {
 
-        it('Fulfilled', () => testWindow.enableFrame().then(() => assert(true)));
+        it('Fulfilled', () => testWindow.enableUserMovement().then(() => assert(true)));
     });
 
     describe('executeJavaScript()', () => {
