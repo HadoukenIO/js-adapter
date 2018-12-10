@@ -27,7 +27,7 @@ async function downloadConfig (url: Url): Promise<any> {
     return JSON.parse(res);
 }
 
-async function loadConfig(config: ExternalConfig): Promise<any> {
+export async function loadConfig(config: ExternalConfig): Promise<any> {
    try {
        const x = parse(config.manifestUrl);
        return await downloadConfig(x);

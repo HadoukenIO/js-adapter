@@ -5,6 +5,7 @@ import { ConfigWithRuntime } from '../transport/wire';
 import { promisify } from '../util/promises';
 import { resolveRuntimeVersion, rmDir, downloadFile, unzip, resolveDir, exists } from './util';
 import { launch as rootLaunch } from '../main';
+import { loadConfig } from '../util/normalize-config';
 
 const mkdir = promisify(fs.mkdir);
 
@@ -148,19 +149,8 @@ const launchService = async (osConfig: OsConfig, service: ServiceConfig) => {
     await rootLaunch({ manifestUrl: sURL });
 };
 
-const loadManifest = async (path: string): Promise<AppManifest> => {
-    return new Promise<AppManifest>( (res, rej) => {
-        fs.readFile(path, 'utf8', (err, contents) => {
-            if (err) {
-                return rej(err);
-            }
-            res(JSON.parse(contents));
-        });
-    });
-};
-
 const startServices = async (osConfig: OsConfig) => {
-    const manifest = await loadManifest(osConfig.manifestLocation);
+    const manifest = await loadConfig({manifestUrl: osConfig.manifestLocation});
     if (manifest && manifest.services) {
         for (let i = 0; i < manifest.services.length; i += 1) {
             const service = manifest.services[i];
