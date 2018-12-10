@@ -8,6 +8,7 @@
             "out/src/api/system",
             "out/src/api/clipboard",
             "out/src/api/interappbus",
+            "out/src/api/interappbus/channel",
             "out/src/api/application",
             "out/src/api/notification",
             "out/src/api/external-application",

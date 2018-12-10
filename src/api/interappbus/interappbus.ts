@@ -23,6 +23,7 @@ export default class InterApplicationBus extends Base {
     public removeAllListeners: any;
     constructor(wire: Transport) {
         super(wire);
+        //tslint:disable-next-line
         this.Channel = new Channel(wire);
         this.emitter = new EventEmitter();
         wire.registerMessageHandler(this.onmessage.bind(this));
@@ -176,6 +177,7 @@ export default class InterApplicationBus extends Base {
 
         return true;
     }
+
 }
 
 export class InterAppPayload {
