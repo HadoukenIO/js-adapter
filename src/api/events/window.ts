@@ -130,8 +130,8 @@ export interface WindowEventMapping<Topic = string, Type = string> extends BaseE
     'closed': WindowEvent<Topic, Type>;
     'closing': WindowEvent<Topic, Type>;
     'crashed': CrashedEvent & WindowEvent<Topic, Type>;
-    'disabled-frame-bounds-changed': WindowBoundsChange<Topic, Type>;
-    'disabled-frame-bounds-changing': WindowBoundsChange<Topic, Type>;
+    'disabled-movement-bounds-changed': WindowBoundsChange<Topic, Type>;
+    'disabled-movement-bounds-changing': WindowBoundsChange<Topic, Type>;
     'embedded': WindowEvent<Topic, Type>;
     'end-user-bounds-changing': WindowBeginBoundsChangingEvent<Topic, Type>;
     'external-process-exited': WindowExternalProcessExitedEvent<Topic, Type>;
@@ -163,8 +163,8 @@ export interface PropagatedWindowEventMapping<Topic = string, Type = string> ext
     'window-closed': WindowEvent<Topic, Type>;
     'window-closing': WindowEvent<Topic, Type>;
     'window-crashed': CrashedEvent & WindowEvent<Topic, Type>;
-    'window-disabled-frame-bounds-changed': WindowBoundsChange<Topic, Type>;
-    'window-disabled-frame-bounds-changing': WindowBoundsChange<Topic, Type>;
+    'window-disabled-movement-bounds-changed': WindowBoundsChange<Topic, Type>;
+    'window-disabled-movement-bounds-changing': WindowBoundsChange<Topic, Type>;
     'window-embedded': WindowEvent<Topic, Type>;
     'window-end-user-bounds-changing': WindowBeginBoundsChangingEvent<Topic, Type>;
     'window-external-process-exited': WindowExternalProcessExitedEvent<Topic, Type>;

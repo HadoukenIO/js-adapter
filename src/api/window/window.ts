@@ -237,9 +237,9 @@ export class _Window extends EmitterBase<WindowEvents> {
      */
 
     /**
-     * Raised when the frame is disabled after all prevent user changes in window's size and/or position have completed.
+     * Raised when the user movement is disabled after all prevent user changes in window's size and/or position have completed.
      *
-     * @event Window#disabled-frame-bounds-changed
+     * @event Window#disabled-movement-bounds-changed
      * @type {object}
      * @property {string} name - Name of the window.
      * @property {string} uuid - UUID of the application that the window belongs to.
@@ -255,9 +255,9 @@ export class _Window extends EmitterBase<WindowEvents> {
      */
 
     /**
-     * Raised when the frame is disabled during prevented user changes to a window's size and/or position.
+     * Raised when the user movement is disabled during prevented user changes to a window's size and/or position.
      *
-     * @event Window#disabled-frame-bounds-changing
+     * @event Window#disabled-movement-bounds-changing
      * @type {object}
      * @property {string} name - Name of the window.
      * @property {string} uuid - UUID of the application that the window belongs to.
@@ -303,7 +303,7 @@ export class _Window extends EmitterBase<WindowEvents> {
      */
 
     /**
-     * Raised when a window's frame becomes disabled.
+     * Raised when a window's user movement becomes disabled.
      *
      * @event Window#user-movement-disabled
      * @type {object}
@@ -312,7 +312,7 @@ export class _Window extends EmitterBase<WindowEvents> {
      */
 
     /**
-     * Raised when a window's frame becomes enabled.
+     * Raised when a window's user movement becomes enabled.
      *
      * @event Window#user-movement-enabled
      * @type {object}
