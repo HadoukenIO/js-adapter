@@ -170,8 +170,6 @@ export interface PropagatedWindowEventMapping<Topic = string, Type = string> ext
     'window-external-process-exited': WindowExternalProcessExitedEvent<Topic, Type>;
     'window-external-process-started': WindowExternalProcessStartedEvent<Topic, Type>;
     'window-focused': WindowEvent<Topic, Type>;
-    'window-user-movement-disabled': WindowEvent<Topic, Type>;
-    'window-user-movement-enabled': WindowEvent<Topic, Type>;
     'window-group-changed': WindowGroupChanged<Topic, Type>;
     'window-hidden': WindowHiddenEvent<Topic, Type>;
     'window-initialized': WindowEvent<Topic, Type>;
@@ -185,6 +183,8 @@ export interface PropagatedWindowEventMapping<Topic = string, Type = string> ext
     'window-reloaded': WindowReloadedEvent<Topic, Type>;
     'window-restored': WindowEvent<Topic, Type>;
     'window-shown': WindowEvent<Topic, Type>;
+    'window-user-movement-disabled': WindowEvent<Topic, Type>;
+    'window-user-movement-enabled': WindowEvent<Topic, Type>;
 }
 
 // This is the type we should be using. It takes the more generic mapping and applies the proper Topic and Type to each event
