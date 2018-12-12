@@ -305,6 +305,16 @@ export class Application extends EmitterBase<ApplicationEvents> {
     }
 
     /**
+     * Uploads app log to Log Manager and returns a promise containing the log id.
+     * @return {Promise.<any>}
+     * @tutorial Application.sendApplicationLog
+     */
+    public async sendApplicationLog(): Promise<any> {
+        const { payload } = await this.wire.sendAction('send-application-log', this.identity);
+        return payload.data;
+    }
+
+    /**
      * Adds a customizable icon in the system tray and notifies the application when clicked.
      * @param { string } iconUrl Image URL to be used as the icon
      * @return {Promise.<void>}
