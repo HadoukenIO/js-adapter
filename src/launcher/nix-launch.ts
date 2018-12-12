@@ -68,10 +68,7 @@ export async function install(versionOrChannel: string, osConfig: OsConfig): Pro
 }
 
 export interface OsConfig {
-    manifestLocation: string;
-    namedPipeName: string;
-    urlPath: string;
-    executablePath: string;
+    manifestLocation: string; namedPipeName: string; urlPath: string; executablePath: string;
 }
 
 export default async function launch(config: ConfigWithRuntime, osConfig: OsConfig): Promise<ChildProcess> {
