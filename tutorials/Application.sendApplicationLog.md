@@ -1,4 +1,5 @@
-Uploads app log to Log Manager and returns a promise containing the log id.
+Sends a message to the RVM to upload the application's logs. On success,
+an object containing logId is returned.
 
  ### Example
 ```js
@@ -6,5 +7,6 @@ async function sendLog() {
     const app = await fin.Application.getCurrent();
     return await app.sendApplicationLog();
 }
- sendLog().then(info => console.log(info)).catch(err => console.log(err));
+
+sendLog().then(info => console.log(info.logId)).catch(err => console.log(err));
 ```
