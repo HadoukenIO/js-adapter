@@ -305,7 +305,8 @@ export class Application extends EmitterBase<ApplicationEvents> {
     }
 
     /**
-     * Uploads app log to Log Manager and returns a promise containing the log id.
+     * Sends a message to the RVM to upload the application's logs. On success,
+     * an object containing logId is returned.
      * @return {Promise.<any>}
      * @tutorial Application.sendApplicationLog
      */
