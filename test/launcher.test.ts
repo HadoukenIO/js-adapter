@@ -66,8 +66,7 @@ describe('Launcher', () => {
                 const location = await getRuntimePath(version);
                 // tslint:disable-next-line:no-empty
                 await rmDir(location, false);
-                const mockConf: OsConfig = { urlPath: 'mac/x64', manifestLocation: '', namedPipeName: '',
-                    executablePath: '', appDirectoryHost: '' };
+                const mockConf: OsConfig = { urlPath: 'mac/x64', manifestLocation: '', namedPipeName: '', executablePath: '' };
                 await doesntThrowAsync(async () => await download(version, location, mockConf));
             });
         });
@@ -78,8 +77,7 @@ describe('Launcher', () => {
                 const location = await getRuntimePath(version);
                 // tslint:disable-next-line:no-empty
                 await rmDir(location, false);
-                const mockConf: OsConfig = { urlPath: `linux/${os.arch()}`, manifestLocation: '',
-                    namedPipeName: '', executablePath: '', appDirectoryHost: '' };
+                const mockConf: OsConfig = { urlPath: `linux/${os.arch()}`, manifestLocation: '', namedPipeName: '', executablePath: '' };
                 await doesntThrowAsync(async () => await download(version, location, mockConf));
             }).timeout(40000);
         });

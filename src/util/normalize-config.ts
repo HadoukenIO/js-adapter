@@ -27,7 +27,7 @@ async function downloadConfig (url: Url): Promise<any> {
     return JSON.parse(res);
 }
 
-export async function loadConfig(config: ExternalConfig): Promise<any> {
+async function loadConfig(config: ExternalConfig): Promise<any> {
    try {
        const x = parse(config.manifestUrl);
        return await downloadConfig(x);
@@ -47,6 +47,9 @@ export async function normalizeConfig (config: ConnectConfig): Promise<InternalC
         testThisConfig.runtime = loadedConfig.runtime;
         if (typeof loadedConfig.assetsUrl === 'string') {
             testThisConfig.assetsUrl = loadedConfig.assetsUrl;
+        }
+        if (loadedConfig.services) {
+            testThisConfig.services = loadedConfig.services;
         }
     }
     return testThisConfig;
