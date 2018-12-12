@@ -1064,6 +1064,16 @@ export class _Window extends EmitterBase<WindowEvents> {
     public navigateBack(): Promise<void> {
         return this.wire.sendAction('navigate-window-back', Object.assign({}, this.identity)).then(() => undefined);
     }
+
+    /**
+     * Navigates the window forward one page.
+     * @return {Promise.<void>}
+     * @tutorial window.navigateForward
+     */
+    public async navigateForward(): Promise<void> {
+        await this.wire.sendAction('navigate-window-forward', Object.assign({}, this.identity));
+    }
+
     /**
      * Stops any current navigation the window is performing.
      * @return {Promise.<void>}
