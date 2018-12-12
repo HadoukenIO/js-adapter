@@ -681,6 +681,14 @@ export class _Window extends EmitterBase<WindowEvents> {
             .then(({ payload }) => payload.data);
     }
 
+    /*
+     * @deprecated Use {@link Window.disableUserMovement} instead.
+     */
+    public disableFrame(): Promise<void> {
+        console.warn('Function is deprecated; use disableUserMovement instead.');
+        return this.wire.sendAction('disable-window-frame', this.identity).then(() => undefined);
+    }
+
     /**
      * Prevents a user from changing a window's size/position when using the window's frame.
      * @return {Promise.<void>}
@@ -688,6 +696,14 @@ export class _Window extends EmitterBase<WindowEvents> {
      */
     public disableUserMovement(): Promise<void> {
         return this.wire.sendAction('disable-window-frame', this.identity).then(() => undefined);
+    }
+
+    /*
+     * @deprecated Use {@link Window.enableUserMovement} instead.
+     */
+    public enableFrame(): Promise<void> {
+        console.warn('Function is deprecated; use enableUserMovement instead.');
+        return this.wire.sendAction('enable-window-frame', this.identity).then(() => undefined);
     }
 
     /**
