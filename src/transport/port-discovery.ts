@@ -57,7 +57,7 @@ interface PortDiscoveryMessageEnvolope {
     payload: PortDiscoveryMessage;
 }
 
-function matchRuntimeInstance(config: PortDiscoveryConfig, message: PortDiscoveryMessage): Boolean {
+function matchRuntimeInstance(config: PortDiscoveryConfig, message: PortDiscoveryMessage): boolean {
     const args = config.runtime.arguments || '';
     const realm = config.runtime.securityRealm || (args.split('--security-realm=')[1] || '').split(' ')[0];
     if (config.runtime.version && realm) {
