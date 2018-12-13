@@ -237,9 +237,9 @@ export class _Window extends EmitterBase<WindowEvents> {
      */
 
     /**
-     * Raised when the frame is disabled after all prevent user changes in window's size and/or position have completed.
+     * Raised when the user movement is disabled after all prevent user changes in window's size and/or position have completed.
      *
-     * @event Window#disabled-frame-bounds-changed
+     * @event Window#disabled-movement-bounds-changed
      * @type {object}
      * @property {string} name - Name of the window.
      * @property {string} uuid - UUID of the application that the window belongs to.
@@ -255,9 +255,9 @@ export class _Window extends EmitterBase<WindowEvents> {
      */
 
     /**
-     * Raised when the frame is disabled during prevented user changes to a window's size and/or position.
+     * Raised when the user movement is disabled during prevented user changes to a window's size and/or position.
      *
-     * @event Window#disabled-frame-bounds-changing
+     * @event Window#disabled-movement-bounds-changing
      * @type {object}
      * @property {string} name - Name of the window.
      * @property {string} uuid - UUID of the application that the window belongs to.
@@ -303,18 +303,18 @@ export class _Window extends EmitterBase<WindowEvents> {
      */
 
     /**
-     * Raised when a window's frame becomes disabled.
+     * Raised when a window's user movement becomes disabled.
      *
-     * @event Window#frame-disabled
+     * @event Window#user-movement-disabled
      * @type {object}
      * @property {string} name - Name of the window.
      * @property {string} uuid - UUID of the application that the window belongs to.
      */
 
     /**
-     * Raised when a window's frame becomes enabled.
+     * Raised when a window's user movement becomes enabled.
      *
-     * @event Window#frame-enabled
+     * @event Window#user-movement-enabled
      * @type {object}
      * @property {string} name - Name of the window.
      * @property {string} uuid - UUID of the application that the window belongs to.
@@ -681,21 +681,37 @@ export class _Window extends EmitterBase<WindowEvents> {
             .then(({ payload }) => payload.data);
     }
 
+    /*
+     * @deprecated Use {@link Window.disableUserMovement} instead.
+     */
+    public disableFrame(): Promise<void> {
+        console.warn('Function is deprecated; use disableUserMovement instead.');
+        return this.wire.sendAction('disable-window-frame', this.identity).then(() => undefined);
+    }
+
     /**
      * Prevents a user from changing a window's size/position when using the window's frame.
      * @return {Promise.<void>}
-     * @tutorial Window.disableFrame
+     * @tutorial Window.disableUserMovement
      */
-    public disableFrame(): Promise<void> {
+    public disableUserMovement(): Promise<void> {
         return this.wire.sendAction('disable-window-frame', this.identity).then(() => undefined);
+    }
+
+    /*
+     * @deprecated Use {@link Window.enableUserMovement} instead.
+     */
+    public enableFrame(): Promise<void> {
+        console.warn('Function is deprecated; use enableUserMovement instead.');
+        return this.wire.sendAction('enable-window-frame', this.identity).then(() => undefined);
     }
 
     /**
      * Re-enables user changes to a window's size/position when using the window's frame.
      * @return {Promise.<void>}
-     * @tutorial Window.enableFrame
+     * @tutorial Window.enableUserMovement
      */
-    public enableFrame(): Promise<void> {
+    public enableUserMovement(): Promise<void> {
         return this.wire.sendAction('enable-window-frame', this.identity).then(() => undefined);
     }
 
