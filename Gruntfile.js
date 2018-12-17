@@ -19,6 +19,7 @@ const webpackConfig = {
         }]
     },
     resolve: {
+        alias: { events: path.resolve(__dirname, 'node_modules/events/events.js') },
         extensions: ['.ts', '.js']
     },
     output: {
