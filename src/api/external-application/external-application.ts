@@ -47,6 +47,70 @@ export class ExternalApplication extends EmitterBase<ExternalApplicationEvents> 
     }
 
     /**
+     * Adds the listener function to the end of the listeners array for the specified event type.
+     * @param { string | symbol } eventType  - The type of the event.
+     * @param { Function } listener - Called whenever an event of the specified type occurs.
+     * @param { SubOptions } [options] - Option to support event timestamps.
+     * @return {Promise.<this>}
+     * @method
+     * @tutorial ExternalApplication.addEventListener
+     */
+    public on = super.on;
+
+    /**
+     * Adds a one-time listener function for the specified event type.
+     * @param { string | symbol } eventType  - The type of the event.
+     * @param { Function } listener - The callback function.
+     * @param { SubOptions } [options] - Option to support event timestamps.
+     * @return {Promise.<this>}
+     * @method
+     * @tutorial ExternalApplication.addEventListener
+     */
+    public once = super.once;
+
+    /**
+     * Adds the listener function to the beginning of the listeners array for the specified event type.
+     * @param { string | symbol } eventType  - The type of the event.
+     * @param { Function } listener - The callback function.
+     * @param { SubOptions } [options] - Option to support event timestamps.
+     * @return {Promise.<this>}
+     * @method
+     * @tutorial ExternalApplication.addEventListener
+     */
+    public prependListener = super.prependListener;
+
+    /**
+     * Adds a one-time listener function for the specified event type to the beginning of the listeners array.
+     * @param { string | symbol } eventType  - The type of the event.
+     * @param { Function } listener - The callback function.
+     * @param { SubOptions } [options] - Option to support event timestamps.
+     * @return {Promise.<this>}
+     * @method
+     * @tutorial ExternalApplication.addEventListener
+     */
+    public prependOnceListener = super.prependOnceListener;
+
+    /**
+     * Removes the specified listener from the listener array for the specified event type.
+     * @param { string | symbol } eventType  - The type of the event.
+     * @param { Function } listener - The callback function.
+     * @param { SubOptions } [options] - Option to support event timestamps.
+     * @return {Promise.<this>}
+     * @method
+     * @tutorial ExternalApplication.removeListener
+     */
+    public removeListener = super.removeListener;
+
+    /**
+     * Removes all listeners, or those of the specified event type.
+     * @param { string | symbol } eventType  - The type of the event.
+     * @return {Promise.<this>}
+     * @method
+     * @tutorial ExternalApplication.removeAllListeners
+     */
+    public removeAllListeners = super.removeAllListeners;
+
+    /**
      * Retrieves information about the external application.
      * @return {Promise.<ExternalApplicationInfo>}
      * @tutorial ExternalApplication.getInfo
