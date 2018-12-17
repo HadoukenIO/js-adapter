@@ -1,4 +1,4 @@
-import { EmitterBase, Base, Reply } from '../base';
+import { EmitterBase, Base, Reply, SubOptions } from '../base';
 import { Identity } from '../../identity';
 import { _Window } from '../window/window';
 import { Point } from '../system/point';
@@ -148,6 +148,70 @@ export class Application extends EmitterBase<ApplicationEvents> {
 
         return windowList;
     }
+
+    /**
+     * Adds the listener function to the end of the listeners array for the specified event type.
+     * @param { string | symbol } eventType  - The type of the event.
+     * @param { Function } listener - Called whenever an event of the specified type occurs.
+     * @param { SubOptions } [options] - Option to support event timestamps.
+     * @return {Promise.<this>}
+     * @method
+     * @tutorial Application.addEventListener
+     */
+    public on = super.on;
+
+    /**
+     * Adds a one-time listener function for the specified event type.
+     * @param { string | symbol } eventType  - The type of the event.
+     * @param { Function } listener - The callback function.
+     * @param { SubOptions } [options] - Option to support event timestamps.
+     * @return {Promise.<this>}
+     * @method
+     * @tutorial Application.addEventListener
+     */
+    public once = super.once;
+
+    /**
+     * Adds the listener function to the beginning of the listeners array for the specified event type.
+     * @param { string | symbol } eventType  - The type of the event.
+     * @param { Function } listener - The callback function.
+     * @param { SubOptions } [options] - Option to support event timestamps.
+     * @return {Promise.<this>}
+     * @method
+     * @tutorial Application.addEventListener
+     */
+    public prependListener = super.prependListener;
+
+    /**
+     * Adds a one-time listener function for the specified event type to the beginning of the listeners array.
+     * @param { string | symbol } eventType  - The type of the event.
+     * @param { Function } listener - The callback function.
+     * @param { SubOptions } [options] - Option to support event timestamps.
+     * @return {Promise.<this>}
+     * @method
+     * @tutorial Application.addEventListener
+     */
+    public prependOnceListener = super.prependOnceListener;
+
+    /**
+     * Removes the specified listener from the listener array for the specified event type.
+     * @param { string | symbol } eventType  - The type of the event.
+     * @param { Function } listener - The callback function.
+     * @param { SubOptions } [options] - Option to support event timestamps.
+     * @return {Promise.<this>}
+     * @method
+     * @tutorial Application.removeListener
+     */
+    public removeListener = super.removeListener;
+
+    /**
+     * Removes all listeners, or those of the specified event type.
+     * @param { string | symbol } eventType  - The type of the event.
+     * @return {Promise.<this>}
+     * @method
+     * @tutorial Application.removeAllListeners
+     */
+    public removeAllListeners = super.removeAllListeners;
 
     /**
      * Determines if the application is currently running.

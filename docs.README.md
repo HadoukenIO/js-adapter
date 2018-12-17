@@ -69,7 +69,6 @@ For a single-page reference to all application settings and configuration option
 ```
 
 #### Index of API Methods <span id=index></span>
-* {@link Application#addEventListener addEventListener} _Application_
 * {@link ExternalApplication#addEventListener addEventListener} _ExternalApplication_
 * {@link Frame#addEventListener addEventListener} _Frame_
 * {@link System#addEventListener addEventListener} _System_
@@ -169,9 +168,13 @@ For a single-page reference to all application settings and configuration option
 * {@link Window#navigate navigate} _Window_
 * {@link Window#navigateBack navigateBack} _Window_
 * {@link Window#navigateForward navigateForward} _Window_
+* {@link Application#on on} _Application_
+* {@link Application#once once} _Application_
 * {@link InterApplicationBus.Channel.onChannelConnect onChannelConnect} _Channel_
 * {@link InterApplicationBus.Channel.onChannelDisconnect onChannelDisconnect} _Channel_
 * {@link System#openUrlWithBrowser openUrlWithBrowser} _System_
+* {@link Application#prependListener prependListener} _Application_
+* {@link Application#prependOnceListener prependOnceListener} _Application_
 * {@link Channel#ChannelProvider#publish publish} _ChannelProvider_
 * {@link InterApplicationBus#publish publish} _InterApplicationBus_
 * {@link Clipboard#readHtml readHtml} _Clipboard_
@@ -186,7 +189,8 @@ For a single-page reference to all application settings and configuration option
 * {@link Window#reload reload} _Window_
 * {@link Channel#ChannelClient#remove remove} _ChannelClient_
 * {@link Channel#ChannelProvider#remove remove} _ChannelProvider_
-* {@link Application#removeEventListener removeEventListener} _Application_
+* {@link Application#removeAllListeners removeAllListeners} _Application_
+* {@link Application#removeListener removeListener} _Application_
 * {@link ExternalApplication#removeEventListener removeEventListener} _ExternalApplication_
 * {@link Frame#removeEventListener removeEventListener} _Frame_
 * {@link System#removeEventListener removeEventListener} _System_

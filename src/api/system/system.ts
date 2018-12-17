@@ -358,6 +358,12 @@ import { _Window } from '../window/window';
  */
 
 /**
+ * SubOptions interface
+ * @typedef { Object } SubOptions
+ * @property { number } timestamp The event timestamp
+ */
+
+/**
  * TaskBar interface
  * @typedef { Object } TaskBar
  * @property { string } edge which edge of a monitor the taskbar is on
