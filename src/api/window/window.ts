@@ -182,6 +182,20 @@ export class _Window extends EmitterBase<WindowEvents> {
      */
 
     /**
+     * Raised at the beginning of a user-driven change to a window's size or position.
+     *
+     * @event Window#begin-user-bounds-changing
+     * @type {object}
+     * @property {string} name - Name of the window.
+     * @property {string} uuid - UUID of the application the window belongs to.
+     * @property {number} height - Height of the window prior to change.
+     * @property {number} left - The left-most coordinate of the window prior to change.
+     * @property {number} top - The top-most coordinate of the window prior to change.
+     * @property {number} width - Width of the window prior to change.
+     * @property {string} windowState - State of the window: "minimized", "normal", or "maximized"
+     */
+
+    /**
      * Raised when a window loses focus.
      *
      * @event Window#blurred
@@ -201,7 +215,25 @@ export class _Window extends EmitterBase<WindowEvents> {
      0 means a change in position.
      1 means a change in size.
      2 means a change in position and size.
-     * @property {string} deferred - Indicated whether pending changes have been applied.
+     * @property {boolean} deferred - Indicated whether pending changes have been applied.
+     * @property {number} height - New height of the window.
+     * @property {number} left - New left most coordinate of the window.
+     * @property {number} top - New top most coordinate of the window.
+     * @property {number} width - New width of the window.
+     */
+
+    /**
+     * Raised during changes to a window's size and/or position.
+     *
+     * @event Window#bounds-changing
+     * @type {object}
+     * @property {string} name - Name of the window.
+     * @property {string} uuid - UUID of the application that the window belongs to.
+     * @property {number} changeType - Describes what kind of change occurred.
+     0 means a change in position.
+     1 means a change in size.
+     2 means a change in position and size.
+     * @property {boolean} deferred - Indicated whether pending changes have been applied.
      * @property {number} height - New height of the window.
      * @property {number} left - New left most coordinate of the window.
      * @property {number} top - New top most coordinate of the window.
@@ -228,12 +260,23 @@ export class _Window extends EmitterBase<WindowEvents> {
      */
 
     /**
+     * Raised when a window has initiated the closing routine.
+     *
+     * @event Window#closing
+     * @type {object}
+     * @property {string} name - Name of the window.
+     * @property {string} uuid - UUID of the application that the window belongs to.
+     */
+
+    /**
      * Raised when a window has crashed.
      *
      * @event Window#crashed
      * @type {object}
      * @property {string} name - Name of the window.
      * @property {string} uuid - UUID of the application that the window belongs to.
+     * @property {string} reason - Reason of crash. Possible values: "normal-termination", "abnormal-termination", "killed",
+     "crashed", "still-running", "launch-failed", "out-of-memory"
      */
 
     /**
@@ -247,7 +290,7 @@ export class _Window extends EmitterBase<WindowEvents> {
      0 means a change in position.
      1 means a change in size.
      2 means a change in position and size.
-     * @property {string} deferred - Indicated whether pending changes have been applied.
+     * @property {boolean} deferred - Indicated whether pending changes have been applied.
      * @property {number} height - New height of the window.
      * @property {number} left - New left most coordinate of the window.
      * @property {number} top - New top most coordinate of the window.
@@ -265,7 +308,7 @@ export class _Window extends EmitterBase<WindowEvents> {
      0 means a change in position.
      1 means a change in size.
      2 means a change in position and size.
-     * @property {string} deferred - Indicated whether pending changes have been applied.
+     * @property {boolean} deferred - Indicated whether pending changes have been applied.
      * @property {number} height - New height of the window.
      * @property {number} left - New left most coordinate of the window.
      * @property {number} top - New top most coordinate of the window.
@@ -279,6 +322,20 @@ export class _Window extends EmitterBase<WindowEvents> {
      * @type {object}
      * @property {string} name - Name of the window.
      * @property {string} uuid - UUID of the application that the window belongs to.
+     */
+
+    /**
+     * Raised at the end of a user-driven change to a window's size or position.
+     *
+     * @event Window#end-user-bounds-changing
+     * @type {object}
+     * @property {string} name - Name of the window.
+     * @property {string} uuid - UUID of the application the window belongs to.
+     * @property {number} height - Height of the window prior to change.
+     * @property {number} left - The left-most coordinate of the window prior to change.
+     * @property {number} top - The top-most coordinate of the window prior to change.
+     * @property {number} width - Width of the window prior to change.
+     * @property {string} windowState - State of the window: "minimized", "normal", or "maximized"
      */
 
     /**
@@ -303,18 +360,69 @@ export class _Window extends EmitterBase<WindowEvents> {
      */
 
     /**
-     * Raised when a window's user movement becomes disabled.
+     * Raised when a file download has completed.
      *
-     * @event Window#user-movement-disabled
+     * @event Window#file-download-completed
      * @type {object}
      * @property {string} name - Name of the window.
      * @property {string} uuid - UUID of the application that the window belongs to.
+     * @property {string} state - State value: "started" | "completed" | "cancelled" |  "interrupted" | "paused" | "interrupted" | "paused"
+     * @property {string} url - url where the file is being downloaded from.
+     * @property {string} mimeType - File mime type.
+     * @property {string} fileName - Name of the file as chosen by the user.
+     * @property {string} originalFileName - Original name of the file.
+     * @property {number} totalBytes - Total size in bytes of the file.
+     * @property {number} startTime - Number of seconds since the UNIX epoch when the download was started.
+     * @property {string} contentDisposition - The Content-Disposition field from the response header.
+     * @property {string} lastModifiedTime - The Last-Modified header value.
+     * @property {string} eTag - ETag header value.
+     * @property {number} downloadedBytes - The downloaded bytes of the download item.
      */
 
     /**
-     * Raised when a window's user movement becomes enabled.
+     * Raised during file download progress.
      *
-     * @event Window#user-movement-enabled
+     * @event Window#file-download-progress
+     * @type {object}
+     * @property {string} name - Name of the window.
+     * @property {string} uuid - UUID of the application that the window belongs to.
+     * @property {string} state - State value: "started" | "completed" | "cancelled" |  "interrupted" | "paused" | "interrupted" | "paused"
+     * @property {string} url - url where the file is being downloaded from.
+     * @property {string} mimeType - File mime type.
+     * @property {string} fileName - Name of the file as chosen by the user.
+     * @property {string} originalFileName - Original name of the file.
+     * @property {number} totalBytes - Total size in bytes of the file.
+     * @property {number} startTime - Number of seconds since the UNIX epoch when the download was started.
+     * @property {string} contentDisposition - The Content-Disposition field from the response header.
+     * @property {string} lastModifiedTime - The Last-Modified header value.
+     * @property {string} eTag - ETag header value.
+     * @property {number} downloadedBytes - The downloaded bytes of the download item.
+     */
+
+    /**
+     * Raised when a file download has started.
+     *
+     * @event Window#file-download-started
+     * @type {object}
+     * @property {string} name - Name of the window.
+     * @property {string} uuid - UUID of the application that the window belongs to.
+     * @property {string} state - State value: "started" | "completed" | "cancelled" |  "interrupted" | "paused" | "interrupted" | "paused"
+     * @property {string} url - url where the file is being downloaded from.
+     * @property {string} mimeType - File mime type.
+     * @property {string} fileName - Name of the file as chosen by the user.
+     * @property {string} originalFileName - Original name of the file.
+     * @property {number} totalBytes - Total size in bytes of the file.
+     * @property {number} startTime - Number of seconds since the UNIX epoch when the download was started.
+     * @property {string} contentDisposition - The Content-Disposition field from the response header.
+     * @property {string} lastModifiedTime - The Last-Modified header value.
+     * @property {string} eTag - ETag header value.
+     * @property {number} downloadedBytes - The downloaded bytes of the download item.
+     */
+
+    /**
+     * Raised when a window receives focus.
+     *
+     * @event Window#focused
      * @type {object}
      * @property {string} name - Name of the window.
      * @property {string} uuid - UUID of the application that the window belongs to.
@@ -357,6 +465,7 @@ export class _Window extends EmitterBase<WindowEvents> {
      * @property {string} name - Name of the window.
      * @property {string} uuid - UUID of the application that the window belongs to.
      * @property {string} reason - Action prompted the close The reasons are:
+     "closing" if the event is triggered by close of the window
      "hide"
      "hide-on-close"
     */
@@ -400,15 +509,6 @@ export class _Window extends EmitterBase<WindowEvents> {
      */
 
     /**
-     * Raised when a window is out of memory.
-     *
-     * @event Window#out-of-memory
-     * @type {object}
-     * @property {string} name - Name of the window.
-     * @property {string} uuid - UUID of the application that the window belongs to.
-     */
-
-    /**
      * Raised after the execution of all of a window's preload scripts. Contains
      information about all window's preload scripts' final states.
      *
@@ -428,6 +528,16 @@ export class _Window extends EmitterBase<WindowEvents> {
      * @property {string} name - Name of the window.
      * @property {string} uuid - UUID of the application that the window belongs to.
      * @property {preloadScriptState[]} preloadState -  An array of all final preload scripts' states
+     */
+
+    /**
+     * Raised when a window has been reloaded.
+     *
+     * @event Window#reloaded
+     * @type {object}
+     * @property {string} name - Name of the window.
+     * @property {string} uuid - UUID of the application that the window belongs to.
+     * @property {string} url - Url has has been reloaded.
      */
 
     /**
@@ -464,16 +574,6 @@ export class _Window extends EmitterBase<WindowEvents> {
     */
 
     /**
-     * Raised when a window has reloaded.
-     *
-     * @event Window#reloaded
-     * @type {object}
-     * @property {string} name - Name of the window.
-     * @property {string} uuid - UUID of the application that the window belongs to.
-     * @property {string} url - Url has has been reloaded.
-     */
-
-    /**
      * Raised when a window is displayed after having been minimized or
      when a window leaves the maximize state without minimizing.
      *
@@ -499,6 +599,24 @@ export class _Window extends EmitterBase<WindowEvents> {
      * Raised when a window been shown.
      *
      * @event Window#shown
+     * @type {object}
+     * @property {string} name - Name of the window.
+     * @property {string} uuid - UUID of the application that the window belongs to.
+     */
+
+    /**
+     * Raised when a window's user movement becomes disabled.
+     *
+     * @event Window#user-movement-disabled
+     * @type {object}
+     * @property {string} name - Name of the window.
+     * @property {string} uuid - UUID of the application that the window belongs to.
+     */
+
+    /**
+     * Raised when a window's user movement becomes enabled.
+     *
+     * @event Window#user-movement-enabled
      * @type {object}
      * @property {string} name - Name of the window.
      * @property {string} uuid - UUID of the application that the window belongs to.
