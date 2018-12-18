@@ -115,6 +115,18 @@ Executing tests that do not pattern match "System"
 npm test -- --ver=alpha --invert --grep="System"
 ```
 
+## Test with core
+
+```bash
+npm test -- --ver=alpha --build-core --core=~/core
+```
+
+or without specifying the core path (core will be cloned from GH into `core` directory):
+
+```bash
+npm test -- --ver=alpha --build-core
+```
+
 ## Repl
 
 To start the read-eval-print loop:

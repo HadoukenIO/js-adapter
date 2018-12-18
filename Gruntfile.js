@@ -1,16 +1,23 @@
 const path = require('path');
-const testAppConfig = path.resolve('test', 'app.json');
+const manifestPath = path.resolve('test', 'app.json');
 const httpServer = require('http-server');
 const ps = require('ps-node');
 const os = require('os');
-const exec = require('child_process').exec;
+const { exec } = require('child_process');
 const webpack = require('webpack');
+const { buildCore, resolveRuntimeVersion } = require('./coreUtils');
 
 const outDir = path.resolve('out');
 const webpackConfig = {
-    entry: './out/src/of-main.js',
+    entry: path.resolve(__dirname, 'out/src/of-main.js'),
+    resolve: {
+        alias: {
+            events: path.resolve(__dirname, 'node_modules/events/events.js')
+        }
+    },
     output: {
-        filename: './out/js-adapter.js'
+        path: path.resolve(__dirname, 'out'),
+        filename: 'js-adapter.js'
     }
 };
 const serverParams = {
@@ -21,11 +28,14 @@ const serverParams = {
     ignore: path.resolve('html')
 };
 
+
 module.exports = function (grunt) {
     const version = grunt.option('ver');
+    const corePath = grunt.option('core');
     const remote = grunt.option('remote');
     const rvmDir = grunt.option('rvmDir');
     const target = grunt.option('target');
+    const shouldBuildCore = grunt.option('build-core');
     const uuid = 'testapp';
     const args = '--enable-multi-runtime --debug=5858';
     process.env.OF_VER = version;
@@ -54,35 +64,6 @@ module.exports = function (grunt) {
             default: {
                 src: 'out/test/**/*.js',
                 timeout: 30000
-            }
-        },
-        openfin: {
-            options: {
-                open: true,
-                configPath: path.resolve(testAppConfig),
-                config: {
-                    filePath: path.resolve(testAppConfig),
-                    create: true,
-                    options: {
-                        runtime: {
-                            arguments: args,
-                            version
-                        },
-                        startup_app: {
-                            uuid,
-                            autoShow: true,
-                            url: `http://localhost:${serverParams.port}/index.html`,
-                            nonPersistent: true,
-                            saveWindowState: false,
-                            experimental: {
-                                v2Api: true
-                            }
-                        }
-                    }
-                }
-            },
-            launch: {
-                open: true
             }
         },
         copy: {
@@ -120,7 +101,7 @@ module.exports = function (grunt) {
         } else {
             const deployPath = path.join(target, 'js-adapter', 'js-adapter.js');
             grunt.file.copy(webpackConfig.output.filename, deployPath);
-            grunt.log.ok(`deployed to ${ deployPath }`);
+            grunt.log.ok(`deployed to ${deployPath}`);
         }
     });
 
@@ -130,14 +111,13 @@ module.exports = function (grunt) {
         const done = this.async();
         webpack(webpackConfig, (err, stats) => {
             if (err) {
-                const error = err ? err.message : 'webpack error';
                 if (err.details) {
                     grunt.fail.fatal(err.details, 3);
                 }
-            } else if(stats.hasErrors()) {
+            } else if (stats.hasErrors()) {
                 const info = stats.toJson();
                 grunt.fail.fatal(info.errors, 3);
-            } else if(stats.hasWarnings()) {
+            } else if (stats.hasWarnings()) {
                 const info = stats.toJson();
                 grunt.fail.warn(info.warnings, 6);
             } else {
@@ -174,14 +154,73 @@ module.exports = function (grunt) {
         );
     });
 
+    grunt.registerTask('launch-openfin', function () {
+        const { launch } = require(path.join(outDir, 'src', 'main.js'));
+        const done = this.async();
+
+        launch({
+            manifestUrl: manifestPath
+        }).then(done).catch(done);
+
+    });
+
+    grunt.registerTask('update-manifest', function () {
+        const manifest = {
+            runtime: {
+                arguments: args,
+                version
+            },
+            startup_app: {
+                uuid,
+                autoShow: true,
+                url: `http://localhost:${serverParams.port}/index.html`,
+                nonPersistent: true,
+                saveWindowState: false,
+                experimental: {
+                    v2Api: true
+                }
+            }
+        };
+
+        grunt.file.write(manifestPath, JSON.stringify(manifest));
+    });
+
+    grunt.registerTask('core', function () {
+        if (!shouldBuildCore) {
+            grunt.log.ok('skipping core build task');
+            return;
+        }
+
+        if (version) {
+            let done = this.async();
+            resolveRuntimeVersion(version).then(v => {
+                if (process.platform === 'win32') {
+                    // Windows
+                    if (!grunt.file.exists(`${process.env.localAppData}/OpenFin/runtime/${v}`)) {
+                        grunt.log.error('WARNING: The specified version of runtime does not exist. The core wil not be deployed.');
+                    } else {
+                        buildCore(corePath || '', `${process.env.localAppData}/OpenFin/runtime/${v}/OpenFin/resources`);
+                    }
+                } else {
+                    // *nix system
+                    // TODO deploy to appropriate directory
+                    grunt.log.error('WARNING: Core deployment on ' + process.platform + ' is not supported. Core wil not be deployed.');
+                }
+                done();
+            });
+        } else {
+            buildCore(corePath || '');
+        }
+    });
+
     grunt.loadNpmTasks('grunt-shell');
     grunt.loadNpmTasks('grunt-tslint');
     grunt.loadNpmTasks('grunt-mocha-test');
-    grunt.loadNpmTasks('grunt-openfin');
     grunt.loadNpmTasks('grunt-contrib-copy');
 
     grunt.registerTask('lint', ['tslint']);
 
+    grunt.registerTask('openfin', ['update-manifest', 'launch-openfin']);
     grunt.registerTask('build', [
         'clean',
         'shell',
@@ -197,6 +236,7 @@ module.exports = function (grunt) {
 
     grunt.registerTask('test', [
         'check-version',
+        'core',
         'default',
         'start-server',
         'openfin',
@@ -211,4 +251,5 @@ module.exports = function (grunt) {
         'openfin',
         'start-repl'
     ]);
+
 };

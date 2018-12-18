@@ -1,6 +1,7 @@
 import { conn } from './connect';
-import { Fin, Application, connect as rawConnect } from '../src/main';
+import { Fin, Application, Window, connect as rawConnect } from '../src/main';
 import { cleanOpenRuntimes } from './multi-runtime-utils';
+import { delayPromise } from './delay-promise';
 import * as assert from 'assert';
 import * as path from 'path';
 
@@ -25,6 +26,7 @@ describe('Application.', function() {
             uuid: `adapter-application-test-app-${counter++}`,
             nonPersistent: true,
             autoShow: true,
+            saveWindowState: false,
             accelerator: {
                 devtools: true
             }
@@ -72,6 +74,36 @@ describe('Application.', function() {
     describe('getChildWindows()', () => {
 
         it('Fulfilled', () => testApp.getChildWindows().then(data => assert(data instanceof Array)));
+    });
+
+    describe('getGroups() cross different applications', () => {
+        const app2Config = {
+            name: 'app3',
+            url: 'about:blank',
+            uuid: 'app3',
+            autoShow: true,
+            nonPersistent: true
+        };
+
+        let app2Win: Window;
+        let testAppWin: Window;
+        before(async () => {
+            // create a second app
+            const app2 = await fin.Application.create(app2Config);
+            await app2.run();
+            app2Win = await app2.getWindow();
+        });
+
+        it('Fulfilled', async () => {
+            testAppWin = await testApp.getWindow();
+            await app2Win.joinGroup(testAppWin);
+            const data = await testApp.getGroups();
+            assert(data instanceof Array);
+            assert(data[0] instanceof Array);
+            assert(data[0].length === 2);
+            assert(data[0][0].identity.uuid === app2Config.uuid);
+            assert(data[0][1].identity.uuid === testApp.identity.uuid);
+        });
     });
 
     describe('getGroups()', () => {
@@ -207,6 +239,65 @@ describe('Application.', function() {
 
                 return assert.equal(info.launchMode, expectedLaunchMode, `Expected launchMode to be "${expectedLaunchMode}"`);
             });
+        });
+    });
+
+    describe('createFromManifest()', () => {
+
+        it('should create and run the app', () => {
+            const manifestUrl = path.resolve('test/service-app.json');
+            return fin.Application.createFromManifest(manifestUrl).then(app => {
+                return app.run().then(() => {
+                    return app.isRunning().then(data => {
+                        app.close();
+                        return assert(data === true);
+                    });
+                });
+            });
+        });
+    });
+
+    describe('wrapSync()', () => {
+        it('exists', () => {
+            assert(typeof fin.Application.wrapSync === 'function');
+        });
+
+        it('should return Application', () => {
+            const returnVal = fin.Application.wrapSync(testApp.identity);
+            assert(returnVal instanceof Application);
+        });
+
+        it('should return App with matching identity', () => {
+            const returnVal = fin.Application.wrapSync(testApp.identity);
+            assert.deepEqual(returnVal.identity, testApp.identity);
+        });
+    });
+
+    describe('getCurrentSync()', () => {
+        it('exists', () => {
+            assert(typeof fin.Application.getCurrentSync === 'function');
+        });
+
+        it('should return Application', () => {
+            const returnVal = fin.Application.getCurrentSync();
+            assert(returnVal instanceof Application);
+        });
+    });
+
+    describe('getZoomLevel()', () => {
+
+        it('Fulfilled', () => testApp.getZoomLevel().then(level => assert(level === 0)));  // by default, it's zero.
+    });
+
+    describe('setZoomLevel()', () => {
+
+        const zoomLevel = 2;
+        it('Fulfilled', async () => {
+
+            await testApp.setZoomLevel(zoomLevel);
+            await delayPromise(200); // delay some time to make sure zoom level is actually set
+            const newZoomLevel = await testApp.getZoomLevel();
+            assert(newZoomLevel === zoomLevel);
         });
     });
 });

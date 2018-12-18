@@ -35,7 +35,7 @@ export default class OpenFinEnvironment implements Environment {
                 return reject(new Error('Child window uuid must match the parent window\'s uuid: ' + parentUuid));
             }
 
-            if (fin.__internal_.windowExists(opt.uuid, opt.name)) {
+            if (this.isWindowExists(opt.uuid, opt.name)) {
                 return reject(new Error('Trying to create a window that already exists'));
             }
 
@@ -62,5 +62,9 @@ export default class OpenFinEnvironment implements Environment {
     private resolveUrl(url: string): string {
         const newUrl = new URL(url, location.href);
         return newUrl.href;
+    }
+
+    public isWindowExists = (uuid: string, name: string): boolean => {
+        return fin.__internal_.windowExists(uuid, name);
     }
 }

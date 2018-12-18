@@ -1,6 +1,7 @@
-import { Bare, Base } from '../base';
+import { Base, EmitterBase } from '../base';
 import { Identity } from '../../identity';
 import Transport from '../../transport/transport';
+import { NotificationEvents } from '../events/notifications';
 
 const events = {
     show: 'show',
@@ -45,7 +46,7 @@ export interface NotificationCallback {
  * @alias Notification
  */
 // tslint:disable-next-line
-export class _Notification extends Base {
+export class _Notification extends EmitterBase<NotificationEvents> {
     private listenerList: Array<string> = ['newListener'];
 
     private unhookAllListeners = () => {
@@ -56,44 +57,12 @@ export class _Notification extends Base {
         this.listenerList.length = 0;
     }
 
-    private buildLocalPayload(rawPayload: any): NotificationCallback {
-        const { payload: { message }, type } = rawPayload;
-
-        const payload: NotificationCallback = {};
-
-        switch (type) {
-            case 'message': payload.message = message;
-                break;
-            case 'show':
-            case 'error':
-            case 'click':
-            case 'close':
-            default: break;
-        }
-
-        return payload;
-    }
-
     protected options: NotificationOptions;
     protected generalListener: (msg: any) => void;
     protected notificationId: number;
 
-    protected onmessage = (message: any): boolean => {
-        const { action, payload: messagePayload } = message;
-
-        if (action === 'process-notification-event') {
-            const { payload: { notificationId }, type } = messagePayload;
-
-            if (notificationId === this.notificationId) {
-                this.emit(type, this.buildLocalPayload(messagePayload));
-            }
-        }
-
-        return true;
-    }
-
     constructor(wire: Transport, options: NotificationOptions) {
-        super(wire);
+        super(wire, ['notification', '' + options.notificationId]);
 
         this.options = options;
         this.url = options.url;
@@ -166,7 +135,6 @@ export class _Notification extends Base {
      * @tutorial Notification.close
      */
     public async close(): Promise<void> {
-
         await this.wire.sendAction('send-action-to-notifications-center', {
             action: 'close-notification',
             payload: {
@@ -177,7 +145,7 @@ export class _Notification extends Base {
 }
 
 // tslint:disable-next-line
-export default class _NotificationModule extends Bare {
+export default class _NotificationModule extends Base {
 
     private nextNoteId = 0;
     private genNoteId() {

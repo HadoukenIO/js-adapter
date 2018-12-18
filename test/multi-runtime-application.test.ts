@@ -5,7 +5,7 @@ import * as assert from 'assert';
 import { delayPromise } from './delay-promise';
 import { cleanOpenRuntimes, DELAY_MS, TEST_TIMEOUT, launchAndConnect } from './multi-runtime-utils';
 
-describe('Multi Runtime', function () {
+describe.skip('Multi Runtime', function () {
     let appConfigTemplate: any;
     let fin: Fin;
 
@@ -59,7 +59,7 @@ describe('Multi Runtime', function () {
 
             it('should return the uuid of the parent adapter connection', async function () {
                 const [finA, finB] = await Promise.all([launchAndConnect(), launchAndConnect()]);
-                const expectedUuid = finB.wire.me.uuid;
+                const expectedUuid = finB.me.uuid;
 
                 await delayPromise(DELAY_MS);
                 const realApp = await finB.Application.create(appConfigTemplate);
@@ -84,7 +84,7 @@ describe('Multi Runtime', function () {
                 const isRunning = await app.isRunning();
 
                 assert.equal(isRunning, true, 'Expected application to be running');
-                return await realApp.close().then();
+                return await realApp.close();
             });
         });
     });

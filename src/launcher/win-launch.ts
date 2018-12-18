@@ -50,7 +50,7 @@ function launchRVM(config: ConfigWithRuntime, manifestLocation: string, namedPip
     } if (config.assetsUrl) {
         rvmArgs.push(`--assetsUrl=${config.assetsUrl}`);
     }
-    return spawn(rvm, rvmArgs);
+    return spawn(rvm, rvmArgs, { stdio: ['pipe', 'ignore', 'pipe']});
 }
 
 const checkRVM = makeQueued(checkRVMAsync);

@@ -1,82 +1,68 @@
-import { Bare, EmitterBase, RuntimeEvent } from '../base';
+import { Base, EmitterBase } from '../base';
 import { Identity } from '../../identity';
 import Bounds from './bounds';
-import BoundsChangedReply from './bounds-changed';
 import { Transition, TransitionOptions } from './transition';
 import { Application } from '../application/application';
 import Transport from '../../transport/transport';
+import { WindowEvents } from '../events/window';
 
+/**
+ * @lends Window
+ */
 // tslint:disable-next-line
-export default class _WindowModule extends Bare {
+export default class _WindowModule extends Base {
     /**
-     * Returns a Window object that represents an existing window.
-     * @param { Identity } indentity
+     * Asynchronously returns a Window object that represents an existing window.
+     * @param { Identity } identity
      * @return {Promise.<_Window>}
+     * @tutorial Window.wrap
+     * @static
      */
-    public wrap(identity: Identity): Promise<_Window> {
-        return Promise.resolve(new _Window(this.wire, identity));
+    public async wrap(identity: Identity): Promise<_Window> {
+        return new _Window(this.wire, identity);
+    }
+
+    /**
+     * Synchronously returns a Window object that represents an existing window.
+     * @param { Identity } identity
+     * @return {_Window}
+     * @tutorial Window.wrapSync
+     * @static
+     */
+    public wrapSync(identity: Identity): _Window {
+        return new _Window(this.wire, identity);
     }
 
     /**
      * Creates a new Window.
      * @param { * } options - Window creation options
      * @return {Promise.<_Window>}
+     * @tutorial Window.create
+     * @static
      */
     public create(options: any): Promise<_Window> {
-        return new Promise((resolve, reject) => {
-            const CONSTRUCTOR_CB_TOPIC = 'fire-constructor-callback';
-            const win = new _Window(this.wire, {uuid: this.me.uuid, name: options.name});
-            // need to call pageResponse, otherwise when a child window is created, page is not loaded
-            const pageResponse = new Promise((resolve) => {
-                // tslint:disable-next-line
-                win.on(CONSTRUCTOR_CB_TOPIC, function fireConstructor(response: any) {
-                    let cbPayload;
-                    const success = response.success;
-                    const responseData = response.data;
-                    const message = responseData.message;
-
-                    if (success) {
-                        cbPayload = {
-                            httpResponseCode: responseData.httpResponseCode,
-                            apiInjected: responseData.apiInjected
-                        };
-                    } else {
-                        cbPayload = {
-                            message: responseData.message,
-                            networkErrorCode: responseData.networkErrorCode,
-                            stack: responseData.stack
-                        };
-                    }
-
-                    win.removeListener(CONSTRUCTOR_CB_TOPIC, fireConstructor);
-                    resolve({
-                        message: message,
-                        cbPayload: cbPayload,
-                        success: success
-                    });
-                });
-            });
-
-            const windowCreation = this.wire.environment.createChildWindow(options);
-            Promise.all([pageResponse, windowCreation]).then((resolvedArr: any[]) => {
-                const pageResolve = resolvedArr[0];
-                if (pageResolve.success) {
-                    resolve(win);
-                } else {
-                    reject(pageResolve.message);
-                }
-            });
-
-        });
+       const win = new _Window(this.wire, {uuid: this.me.uuid, name: options.name});
+       return win.createWindow(options);
     }
 
     /**
-     * Returns a Window object that represents the current window
-     * @return {Promise.<Window>}
-     * @tutorial window.getCurrent
+     * Asynchronously returns a Window object that represents the current window
+     * @return {Promise.<_Window>}
+     * @tutorial Window.getCurrent
+     * @static
      */
     public getCurrent(): Promise<_Window> {
         return this.wrap(this.wire.me);
+    }
+
+    /**
+     * Synchronously returns a Window object that represents the current window
+     * @return {_Window}
+     * @tutorial Window.getCurrentSync
+     * @static
+     */
+    public getCurrentSync(): _Window {
+        return this.wrapSync(this.wire.me);
     }
 }
 
@@ -90,7 +76,6 @@ export interface CloseEventShape {
 export interface WindowInfo {
     canNavigateBack: boolean;
     canNavigateForward: boolean;
-    plugins: Array<any>;
     preloadScripts: Array<any>;
     title: string;
     url: string;
@@ -102,6 +87,21 @@ export interface FrameInfo {
     entityType: string;
     parent?: Identity;
 }
+
+export interface Area {
+    height: number;
+    width: number;
+    x: number;
+    y: number;
+}
+
+/**
+ * @typedef { Object } Area
+ * @property { number } height Area's height
+ * @property { number } width Area's width
+ * @property { number } x X coordinate of area's starting point
+ * @property { number } y Y coordinate of area's starting point
+ */
 
 /**
  * @typedef {object} Transition
@@ -161,9 +161,8 @@ this animation onto the end of the animation queue.
  * @alias Window
 */
 // The window.Window name is taken
-// @ts-ignore: return types incompatible with EventEmitter (this)
 // tslint:disable-next-line
-export class _Window extends EmitterBase {
+export class _Window extends EmitterBase<WindowEvents> {
     /**
      * Raised when a window within this application requires credentials from the user.
      *
@@ -407,28 +406,6 @@ export class _Window extends EmitterBase {
      */
 
     /**
-     * Raised after the execution of all plugin modules. Contains information about all
-     plugin modules' final states.
-     *
-     * @event Window#plugins-state-changed
-     * @type {object}
-     * @property {string} name - Name of the window.
-     * @property {string} uuid - UUID of the application that the window belongs to.
-     * @property {pluginModuleState[]} plugins - An array of all final plugin module states
-     */
-
-    /**
-     * Raised during the execution of a plugin module in a window.
-     Contains information about a single plugin module's state, for which the event has been raised.
-     *
-     * @event Window#plugins-state-changing
-     * @type {object}
-     * @property {string} name - Name of the window.
-     * @property {string} uuid - UUID of the application that the window belongs to.
-     * @property {pluginModuleState[]} plugins - An array of all final plugin module states
-     */
-
-    /**
      * Raised after the execution of all of a window's preload scripts. Contains
      information about all window's preload scripts' final states.
      *
@@ -540,23 +517,65 @@ export class _Window extends EmitterBase {
      * @property {string} state - The preload script state:
      "load-failed", "failed", "succeeded"
      */
+
     constructor(wire: Transport, public identity: Identity) {
-        super(wire);
+        super(wire, ['window', identity.uuid, identity.name]);
     }
 
-    protected runtimeEventComparator = (listener: RuntimeEvent): boolean => {
-        return listener.topic === this.topic && listener.uuid === this.identity.uuid &&
-            listener.name === this.identity.name;
+    // create a new window
+    public createWindow(options: any): Promise<_Window> {
+        return new Promise((resolve, reject) => {
+            const CONSTRUCTOR_CB_TOPIC = 'fire-constructor-callback';
+            // need to call pageResponse, otherwise when a child window is created, page is not loaded
+            const pageResponse = new Promise((resolve) => {
+                // tslint:disable-next-line
+                this.on(CONSTRUCTOR_CB_TOPIC, function fireConstructor(response: any) {
+                    let cbPayload;
+                    const success = response.success;
+                    const responseData = response.data;
+                    const message = responseData.message;
+
+                    if (success) {
+                        cbPayload = {
+                            httpResponseCode: responseData.httpResponseCode,
+                            apiInjected: responseData.apiInjected
+                        };
+                    } else {
+                        cbPayload = {
+                            message: responseData.message,
+                            networkErrorCode: responseData.networkErrorCode,
+                            stack: responseData.stack
+                        };
+                    }
+
+                    this.removeListener(CONSTRUCTOR_CB_TOPIC, fireConstructor);
+                    resolve({
+                        message: message,
+                        cbPayload: cbPayload,
+                        success: success
+                    });
+                });
+            });
+
+            const windowCreation = this.wire.environment.createChildWindow(options);
+            Promise.all([pageResponse, windowCreation]).then((resolvedArr: any[]) => {
+                const pageResolve = resolvedArr[0];
+                if (pageResolve.success) {
+                    resolve(this);
+                } else {
+                    reject(pageResolve);
+                }
+            });
+        });
     }
 
-    private windowListFromNameList(nameList: Array<string>): Array<_Window> {
+    private windowListFromNameList(identityList: Array<Identity>): Array<_Window> {
         const windowList: Array<_Window> = [];
 
-        nameList.forEach(name => {
+        identityList.forEach(identity => {
             windowList.push(new _Window(this.wire, {
-                // tslint:disable-next-line
-                uuid: this.identity.uuid as string,
-                name: name
+                uuid: identity.uuid,
+                name: identity.name
             }));
         });
         return windowList;
@@ -715,7 +734,9 @@ export class _Window extends EmitterBase {
      * @tutorial Window.getGroup
      */
     public getGroup(): Promise<Array<_Window>> {
-        return this.wire.sendAction('get-window-group', this.identity).then(({ payload }) => {
+        return this.wire.sendAction('get-window-group', Object.assign({}, this.identity, {
+            crossApp: true // cross app group supported
+        })).then(({ payload }) => {
             // tslint:disable-next-line
             let winGroup: Array<_Window> = [] as Array<_Window>;
 
@@ -763,12 +784,16 @@ export class _Window extends EmitterBase {
     }
 
     /**
-     * Gets a base64 encoded PNG snapshot of the window.
+     * Gets a base64 encoded PNG snapshot of the window or just part a of it.
+     * @param { Area } [area] The area of the window to be captured.
+     * Omitting it will capture the whole visible window.
      * @return {Promise.<string>}
      * @tutorial Window.getSnapshot
      */
-    public getSnapshot(): Promise<string> {
-        return this.wire.sendAction('get-window-snapshot', this.identity).then(({ payload }) => payload.data);
+    public async getSnapshot(area?: Area): Promise<string> {
+        const req = Object.assign({}, this.identity, { area });
+        const res = await this.wire.sendAction('get-window-snapshot', req);
+        return res.payload.data;
     }
 
     /**
@@ -835,6 +860,7 @@ export class _Window extends EmitterBase {
      * Merges the instance's window group with the same window group as the specified window
      * @param { class } target The window whose group is to be merged with
      * @return {Promise.<void>}
+     * @tutorial Window.mergeGroups
      */
     public mergeGroups(target: _Window): Promise<void> {
         return this.wire.sendAction('merge-window-groups', Object.assign({}, this.identity, {
@@ -846,6 +872,7 @@ export class _Window extends EmitterBase {
     /**
      * Minimizes the window.
      * @return {Promise.<void>}
+     * @tutorial Window.minimize
      */
     public minimize(): Promise<void> {
         return this.wire.sendAction('minimize-window', this.identity).then(() => undefined);
@@ -855,8 +882,8 @@ export class _Window extends EmitterBase {
      * Moves the window by a specified amount.
      * @param { number } deltaLeft The change in the left position of the window
      * @param { number } deltaTop The change in the top position of the window
-     * @tutorial Window.moveBy
      * @return {Promise.<void>}
+     * @tutorial Window.moveBy
      */
     public moveBy(deltaLeft: number, deltaTop: number): Promise<void> {
         return this.wire.sendAction('move-window-by', Object.assign({}, this.identity, { deltaLeft, deltaTop })).then(() => undefined);
@@ -866,8 +893,8 @@ export class _Window extends EmitterBase {
      * Moves the window to a specified location.
      * @param { number } left The left position of the window
      * @param { number } top The top position of the window
-     * @tutorial Window.moveTo
      * @return {Promise.<void>}
+     * @tutorial Window.moveTo
      */
     public moveTo(left: number, top: number): Promise<void> {
         return this.wire.sendAction('move-window', Object.assign({}, this.identity, { left, top })).then(() => undefined);
@@ -880,8 +907,8 @@ export class _Window extends EmitterBase {
      * @param { string } anchor Specifies a corner to remain fixed during the resize.
      * Can take the values: "top-left", "top-right", "bottom-left", or "bottom-right."
      * If undefined, the default is "top-left"
-     * @tutorial Window.resizeBy
      * @return {Promise.<void>}
+     * @tutorial Window.resizeBy
      */
     public resizeBy(deltaWidth: number, deltaHeight: number, anchor: string): Promise<void> {
         return this.wire.sendAction('resize-window-by', Object.assign({}, this.identity, {
@@ -898,8 +925,8 @@ export class _Window extends EmitterBase {
      * @param { string } anchor Specifies a corner to remain fixed during the resize.
      * Can take the values: "top-left", "top-right", "bottom-left", or "bottom-right."
      * If undefined, the default is "top-left"
-     * @tutorial Window.resizeTo
      * @return {Promise.<void>}
+     * @tutorial Window.resizeTo
      */
     public resizeTo(width: number, height: number, anchor: string): Promise<void> {
         return this.wire.sendAction('resize-window', Object.assign({}, this.identity, {
@@ -911,8 +938,8 @@ export class _Window extends EmitterBase {
 
     /**
      * Restores the window to its normal state (i.e., unminimized, unmaximized).
-     * @tutorial Window.restore
      * @return {Promise.<void>}
+     * @tutorial Window.restore
      */
     public restore(): Promise<void> {
         return this.wire.sendAction('restore-window', this.identity).then(() => undefined);
@@ -920,8 +947,8 @@ export class _Window extends EmitterBase {
 
     /**
      * Will bring the window to the front of the entire stack and give it focus.
-     * @tutorial Window.setAsForeground
      * @return {Promise.<void>}
+     * @tutorial Window.setAsForeground
      */
     public setAsForeground(): Promise<void> {
         return this.wire.sendAction('set-foreground-window', this.identity).then(() => undefined);
@@ -930,8 +957,8 @@ export class _Window extends EmitterBase {
     /**
      * Sets the window's size and position.
      * @property { Bounds } bounds This is a * @type {string} name - name of the window.object that holds the propertys of
-     * @tutorial Window.setBounds
      * @return {Promise.<void>}
+     * @tutorial Window.setBounds
      */
     public setBounds(bounds: Bounds): Promise<void> {
         return this.wire.sendAction('set-window-bounds', Object.assign({}, this.identity, bounds)).then(() => undefined);
@@ -941,8 +968,8 @@ export class _Window extends EmitterBase {
      * Shows the window if it is hidden.
      * @param { boolean } [force = false] Show will be prevented from showing when force is false and
      *  ‘show-requested’ has been subscribed to for application’s main window.
-     * @tutorial Window.show
      * @return {Promise.<void>}
+     * @tutorial Window.show
      */
     public show(force: boolean = false): Promise<void> {
         return this.wire.sendAction('show-window', Object.assign({}, this.identity, { force })).then(() => undefined);
@@ -956,8 +983,8 @@ export class _Window extends EmitterBase {
      * @param { number } top The right position of the window
      * @param { boolean } force Show will be prevented from closing when force is false and
      * ‘show-requested’ has been subscribed to for application’s main window
-     * @tutorial Window.showAt
      * @return {Promise.<void>}
+     * @tutorial Window.showAt
      */
     public showAt(left: number, top: number, force: boolean = false): Promise<void> {
         return this.wire.sendAction('show-at-window', Object.assign({}, this.identity, {
@@ -980,6 +1007,7 @@ export class _Window extends EmitterBase {
      * Updates the window using the passed options
      * @param {*} options Changes a window's options that were defined upon creation. See tutorial
      * @return {Promise.<void>}
+     * @tutorial Window.updateOptions
      */
     public updateOptions(options: any): Promise<void> {
         return this.wire.sendAction('update-window-options', Object.assign({}, this.identity, { options })).then(() => undefined);
@@ -990,6 +1018,7 @@ export class _Window extends EmitterBase {
      * @param { string } userName userName to provide to the authentication challange
      * @param { string } password password to provide to the authentication challange
      * @return {Promise.<void>}
+     * @tutorial Window.authenticate
      */
     public authenticate(userName: string, password: string): Promise<void> {
         return this.wire.sendAction('window-authenticate', Object.assign({}, this.identity, { userName, password })).then(() => undefined);
@@ -997,8 +1026,8 @@ export class _Window extends EmitterBase {
 
     /**
      * Returns the zoom level of the window.
-     * @tutorial Window.getZoomLevel
      * @return {Promise.<number>}
+     * @tutorial Window.getZoomLevel
      */
     public getZoomLevel(): Promise<number> {
         return this.wire.sendAction('get-zoom-level', this.identity).then(({ payload }) => payload.data);
@@ -1007,8 +1036,8 @@ export class _Window extends EmitterBase {
     /**
      * Sets the zoom level of the window.
      * @param { number } level The zoom level
-     * @tutorial Window.setZoomLevel
      * @return {Promise.<void>}
+     * @tutorial Window.setZoomLevel
      */
     public setZoomLevel(level: number): Promise<void> {
         return this.wire.sendAction('set-zoom-level', Object.assign({}, this.identity, { level })).then(() => undefined);
@@ -1018,6 +1047,7 @@ export class _Window extends EmitterBase {
      * Navigates the window to a specified URL.
      * @param {string} url - The URL to navigate the window to.
      * @return {Promise.<void>}
+     * @tutorial Window.navigate
      */
     public navigate(url: string): Promise<void> {
         return this.wire.sendAction('navigate-window', Object.assign({}, this.identity, { url })).then(() => undefined);
@@ -1040,16 +1070,4 @@ export class _Window extends EmitterBase {
         return this.wire.sendAction('stop-window-navigation', Object.assign({}, this.identity)).then(() => undefined);
     }
 
-}
-// @ts-ignore: "on" return types incompatible with EventEmitter (this)
-// tslint:disable-next-line
-export interface _Window {
-    on(type: 'focused', listener: Function): Promise<void>;
-    on(type: 'initialized', listener: Function):  Promise<void>;
-    on(type: 'bounds-changed', listener: (data: BoundsChangedReply) => void):  Promise<void>;
-    on(type: 'hidden', listener: Function):  Promise<void>;
-    on(type: 'removeListener', listener: (eventType: string | symbol) => void):  Promise<void>;
-    on(type: 'newListener', listener: (eventType: string | symbol) => void):  Promise<void>;
-    on(type: 'closed', listener: (eventType: CloseEventShape) => void):  Promise<void>;
-    on(type: 'fire-constructor-callback', listener: Function):  Promise<void>;
 }

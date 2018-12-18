@@ -19,8 +19,13 @@ describe('System.', function () {
     });
 
     describe('clearCache()', () => {
-
-        it('Fulfilled', () => fin.System.clearCache().then(() => assert(true)));
+        const clearCacheOptions = {
+            appcache: true,
+            cache: true,
+            cookies: true,
+            localStorage: true
+        };
+        it('Fulfilled', () => fin.System.clearCache(clearCacheOptions).then(() => assert(true)));
     });
 
     describe('deleteCacheOnExit()', () => {
@@ -115,9 +120,12 @@ describe('System.', function () {
         it('Fulfilled', () => fin.System.getCommandLineArguments().then(() => assert(true)));
     });
 
-    describe('getDeviceId()', () => {
+    describe('getCrashReporterState()', () => {
 
-        it('Fulfilled', () => fin.System.getDeviceId().then(() => assert(true)));
+        it('Fulfilled', () => fin.System.getCrashReporterState().then(state => {
+            assert(typeof(state.diagnosticMode) === 'boolean');
+            assert(typeof(state.isRunning) === 'boolean');
+        }));
     });
 
     describe('getDeviceUserId()', () => {
@@ -157,6 +165,11 @@ describe('System.', function () {
         it('Fulfilled', () => fin.System.getLogList().then(() => assert(true)));
     });
 
+    describe('getMachineId()', () => {
+
+        it('Fulfilled', () => fin.System.getMachineId().then(() => assert(true)));
+    });
+
     describe('getMinLogLevel()', () => {
 
         it('Fulfilled', () => fin.System.getMinLogLevel().then(level => assert(typeof level === 'string')));
@@ -194,7 +207,7 @@ describe('System.', function () {
         }));
     });
 
-    describe('launchExternalProcess()', () => {
+    describe.skip('launchExternalProcess()', () => {
         const processOptions = {
             path: 'notepad',
             arguments: '',
@@ -268,6 +281,14 @@ describe('System.', function () {
 
         it('Fulfilled', () => fin.System.showDeveloperTools(identity)
             .then(() => assert(true)));
+    });
+
+    describe('startCrashReporter()', () => {
+
+        it('Fulfilled', () => fin.System.startCrashReporter({diagnosticMode: true}).then(reporter => {
+            assert(typeof(reporter.diagnosticMode) === 'boolean');
+            assert(typeof(reporter.isRunning) === 'boolean');
+        }));
     });
 
     describe('updateProxySettings()', () => {

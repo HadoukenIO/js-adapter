@@ -2,7 +2,7 @@ import { ConnectConfig, isExternalConfig, InternalConnectConfig, ExternalConfig,
 import { Url, parse } from 'url';
 import { IncomingMessage } from 'http';
 import * as fs from 'fs';
-import { promisify } from '../util/promises';
+import { promisify } from './promises';
 
 async function readLocalConfig(location: string): Promise<any> {
     const txt = await promisify(fs.readFile)(location);

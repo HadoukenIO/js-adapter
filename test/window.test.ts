@@ -2,7 +2,8 @@ import { conn } from './connect';
 import * as assert from 'assert';
 import { connect as rawConnect, Fin, Application, Window } from '../src/main';
 import { delayPromise } from './delay-promise';
-import { cleanOpenRuntimes } from './multi-runtime-utils';
+import { cleanOpenRuntimes, isSameIdentity } from './multi-runtime-utils';
+import { _Window } from '../src/api/window/window';
 
 describe('Window.', function() {
     let fin: Fin;
@@ -14,7 +15,8 @@ describe('Window.', function() {
         url: 'about:blank',
         uuid: 'adapter-test-app-win-tests',
         autoShow: true,
-        nonPersistent: true
+        nonPersistent: true,
+        saveWindowState: false
     };
 
     // tslint:disable-next-line
@@ -164,8 +166,34 @@ describe('Window.', function() {
         it('Fulfilled', () => testWindow.flash().then(() => assert(true)));
     });
 
-    describe('getGroup()', () => {
+    describe('getGroup() cross different applications', () => {
+        const app2Config = {
+            name: 'app2',
+            url: 'about:blank',
+            uuid: 'app2',
+            autoShow: true,
+            nonPersistent: true
+        };
+        let app2Win: Window;
 
+        before(async () => {
+            // create a second app
+            const app2 = await fin.Application.create(app2Config);
+            await app2.run();
+            app2Win = await app2.getWindow();
+        });
+
+        it('Fulfilled', () => testWindow.joinGroup(app2Win).then(() => testWindow.getGroup()
+            .then(group => {
+                assert(group.length === 2);
+                const ids = group.map(w => w.identity);
+                assert(ids.some(id => isSameIdentity(testWindow.identity, id)));
+                assert(ids.some(id => isSameIdentity(app2Win.identity, id)));
+
+            })));
+    });
+
+    describe('getGroup()', () => {
         it('Fulfilled', () => testWindow.getGroup().then(data => assert(data instanceof Array,
             `Expected ${typeof (data)} to be an instance of Array`)));
     });
@@ -296,14 +324,14 @@ describe('Window.', function() {
         it('Fulfilled', () => {
 
             return testWindow.getBounds().then(bounds => {
-
-                return testWindow.resizeTo(10, 10, 'top-left')
+                const delta = 10;
+                return testWindow.resizeTo(bounds.width + delta, bounds.height + delta, 'top-left')
                     .then(() => testWindow.getBounds()
                         .then(data => {
-                            bounds.height = 10;
-                            bounds.width = 10;
-                            bounds.bottom = bounds.top + 10;
-                            bounds.right = bounds.left + 10;
+                            bounds.height += delta;
+                            bounds.width += delta;
+                            bounds.bottom += delta;
+                            bounds.right += delta;
                             return assert.deepEqual(bounds, data);
                         }));
             });
@@ -401,5 +429,33 @@ describe('Window.', function() {
     describe('stopNavigation()', () => {
 
         it('Fulfilled', () => testWindow.stopNavigation().then(() => assert(true)));
+    });
+
+    describe('wrapSync()', () => {
+        it('exists', () => {
+            assert(typeof fin.Window.wrapSync === 'function');
+        });
+
+        it('should return _Window', () => {
+            const returnVal = fin.Window.wrapSync(testWindow.identity);
+            assert(returnVal instanceof _Window);
+        });
+
+        it('should return _Window with matching identity', () => {
+            const returnVal = fin.Window.wrapSync(testWindow.identity);
+            assert.equal(returnVal.identity.uuid, testWindow.identity.uuid);
+            assert.equal(returnVal.identity.name, testWindow.identity.name);
+        });
+    });
+
+    describe('getCurrentSync()', () => {
+        it('exists', () => {
+            assert(typeof fin.Window.getCurrentSync === 'function');
+        });
+
+        it('should return Window', () => {
+            const returnVal = fin.Window.getCurrentSync();
+            assert(returnVal instanceof _Window);
+        });
     });
 });

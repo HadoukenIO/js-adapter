@@ -1,6 +1,6 @@
 {
     "compilerOptions": {
-        "target": "es6",
+        "target": "es2017",
         "lib": [
             "dom",
             "es7"
@@ -17,6 +17,7 @@
     "exclude": [
         "node_modules",
         "out",
-        "OpenFin"
+        "OpenFin",
+        "core"
     ]
 }

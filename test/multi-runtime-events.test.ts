@@ -1,11 +1,11 @@
-/* tslint:disable:no-invalid-this no-function-expression insecure-random mocha-no-side-effect-code no-empty */
+/* tslint:disable:no-invalid-this no-function-expression insecure-random mocha-no-side-effect-code no-empty max-func-body-length */
 import { conn } from './connect';
 import { Fin } from '../src/main';
 import * as assert from 'assert';
 import { delayPromise } from './delay-promise';
 import { launchAndConnect, cleanOpenRuntimes, DELAY_MS, TEST_TIMEOUT } from './multi-runtime-utils';
 
-describe('Multi Runtime', function() {
+describe.skip('Multi Runtime', function() {
     let fin: Fin;
 
     this.slow(TEST_TIMEOUT / 2 );
@@ -182,7 +182,7 @@ describe('Multi Runtime', function() {
                         const appConfig = getAppConfig();
                         const finA = await launchAndConnect();
                         await delayPromise(DELAY_MS);
-                        finA.System.on('application-started', (e: any) => {
+                        await finA.System.on('application-started', (e: any) => {
                             assert.equal(e.type, 'application-started', 'Expected event type to match event');
                             done();
                         });

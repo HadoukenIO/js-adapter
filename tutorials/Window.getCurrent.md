@@ -1,4 +1,4 @@
-Returns a Window object that represents the current window
+Asynchronously returns a Window object that represents the current window
 
 # Example
 ```js

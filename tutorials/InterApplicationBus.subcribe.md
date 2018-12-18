@@ -1,13 +1,9 @@
-Subscribes to messages from the specified application on the specified topic.
+Subscribes to messages from the specified application (or "*") on the specified topic.
 # Example
 ```js
-async function subcribe(topic, listener) {
-    return await fin.InterApplicationBus.subscribe({
-        uuid: fin.me.uuid
-    }, topic, listener);
-}
+// subsribe to a specified application
+fin.InterApplicationBus.subscribe(fin.me, 'topic', sub_msg => console.log(sub_msg)).then(() => console.log('Subscribed to the specified application')).catch(err => console.log(err));
 
-subcribe('topic', sub_msg => {
-    console.log(sub_msg);
-}).then(resp => console.log('Subscribed')).catch(err => console.log(err));
+// subscribe to wildcard
+fin.InterApplicationBus.subscribe({ uuid: '*' }, 'topic', sub_msg => console.log(sub_msg)).then(() => console.log('Subscribed to *')).catch(err => console.log(err));
 ```

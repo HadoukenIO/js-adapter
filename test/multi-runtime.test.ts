@@ -5,7 +5,7 @@ import * as assert from 'assert';
 import { delayPromise } from './delay-promise';
 import { cleanOpenRuntimes, DELAY_MS, getRuntimeProcessInfo, launchAndConnect, TEST_TIMEOUT } from './multi-runtime-utils';
 
-describe('Multi Runtime', function() {
+describe.skip('Multi Runtime', function() {
     let fin: Fin;
 
     this.retries(2);

@@ -6,6 +6,7 @@ export interface Environment {
     getNextMessageId(): any;
     getRandomId(): string;
     createChildWindow(options: any): Promise<any>;
+    isWindowExists(uuid: string, name: string) : boolean;
 }
 
 export const notImplementedEnvErrorMsg = 'Not implemented in this environment';

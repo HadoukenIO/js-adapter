@@ -1,19 +1,36 @@
-import { Bare, EmitterBase, Reply } from '../base';
+import { Base, EmitterBase } from '../base';
 import { Identity } from '../../identity';
 import Transport from '../../transport/transport';
+import { ExternalApplicationEvents } from '../events/externalApplication';
 
 export interface ExternalApplicationInfo {
     parent: Identity;
 }
 
-export default class ExternalApplicationModule extends Bare {
+ /**
+  * @lends ExternalApplication
+  */
+export default class ExternalApplicationModule extends Base {
     /**
-     * Returns an External Application object that represents an existing external application.
+     * Asynchronously returns an External Application object that represents an existing external application.
      * @param {string} uuid The UUID of the external application to be wrapped
      * @return {Promise.<ExternalApplication>}
+     * @tutorial ExternalApplication.wrap
+     * @static
      */
     public wrap(uuid: string): Promise<ExternalApplication> {
         return Promise.resolve(new ExternalApplication(this.wire, {uuid}));
+    }
+
+    /**
+     * Synchronously returns an External Application object that represents an existing external application.
+     * @param {string} uuid The UUID of the external application to be wrapped
+     * @return {ExternalApplication}
+     * @tutorial ExternalApplication.wrapSync
+     * @static
+     */
+    public wrapSync(uuid: string): ExternalApplication {
+        return new ExternalApplication(this.wire, {uuid});
     }
 }
 
@@ -23,11 +40,10 @@ export default class ExternalApplicationModule extends Bare {
  * well as listen to application events.
  * @class
  */
-// @ts-ignore: return types incompatible with EventEmitter (this)
-export class ExternalApplication extends EmitterBase {
+export class ExternalApplication extends EmitterBase<ExternalApplicationEvents> {
 
     constructor(wire: Transport, public identity: Identity) {
-        super(wire);
+        super(wire, ['external-application', identity.uuid]);
     }
 
     /**
@@ -38,12 +54,4 @@ export class ExternalApplication extends EmitterBase {
     public getInfo(): Promise<ExternalApplicationInfo> {
         return this.wire.sendAction('get-external-application-info', this.identity).then(({ payload }) => payload.data);
     }
-}
-
-// @ts-ignore: return types incompatible with EventEmitter (this)
-export interface ExternalApplication {
-    on(type: 'connected', listener: (data: Reply<'externalapplication', 'connected'>) => void): Promise<void>;
-    on(type: 'disconnected', listener: (data: Reply<'externalapplication', 'disconnected'>) => void): Promise<void>;
-    on(type: 'removeListener', listener: (eventType: string) => void): Promise<void>;
-    on(type: 'newListener', listener: (eventType: string) => void): Promise<void>;
 }

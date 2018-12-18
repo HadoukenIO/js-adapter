@@ -1,11 +1,11 @@
-/* tslint:disable:no-invalid-this no-function-expression insecure-random mocha-no-side-effect-code no-empty */
+/* tslint:disable:no-invalid-this no-function-expression insecure-random mocha-no-side-effect-code no-empty max-func-body-length*/
 import { conn } from './connect';
 import { Fin } from '../src/main';
 import * as assert from 'assert';
 import { delayPromise } from './delay-promise';
 import { launchAndConnect, cleanOpenRuntimes, DELAY_MS, TEST_TIMEOUT } from './multi-runtime-utils';
 
-describe('Multi Runtime', function () {
+describe.skip('Multi Runtime', function () {
     let fin: Fin;
 
     this.retries(2);
