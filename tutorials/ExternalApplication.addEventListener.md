@@ -8,6 +8,7 @@ Registers an event listener on the specified event. Supported external applicati
 ```js
 const externalApp = fin.ExternalApplication.wrapSync('my-uuid');
 
+// The below functions are provided to add an event listener.
 externalApp.on("closed", (event) => {
     console.log("The application is closed in on callback");
 });

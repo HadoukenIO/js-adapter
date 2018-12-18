@@ -69,7 +69,6 @@ For a single-page reference to all application settings and configuration option
 ```
 
 #### Index of API Methods <span id=index></span>
-* {@link Frame#addEventListener addEventListener} _Frame_
 * {@link System#addEventListener addEventListener} _System_
 * {@link Window#addEventListener addEventListener} _Window_
 * {@link InterApplicationBus#addSubscribeListener addSubscribeListener} _InterApplicationBus_
@@ -169,15 +168,19 @@ For a single-page reference to all application settings and configuration option
 * {@link Window#navigateForward navigateForward} _Window_
 * {@link Application#on on} _Application_
 * {@link ExternalApplication#on on} _ExternalApplication_
+* {@link Frame#on on} _Frame_
 * {@link Application#once once} _Application_
-* {@link ExternalApplication#once once} _ExternalApplication_
+* {@link ExternalApplication#once once}
+* {@link Frame#once once} _Frame_
 * {@link InterApplicationBus.Channel.onChannelConnect onChannelConnect} _Channel_
 * {@link InterApplicationBus.Channel.onChannelDisconnect onChannelDisconnect} _Channel_
 * {@link System#openUrlWithBrowser openUrlWithBrowser} _System_
 * {@link Application#prependListener prependListener} _Application_
 * {@link ExternalApplication#prependListener prependListener} _ExternalApplication_
+* {@link Frame#prependListener prependListener} _Frame_
 * {@link Application#prependOnceListener prependOnceListener} _Application_
 * {@link ExternalApplication#prependOnceListener prependOnceListener} _ExternalApplication_
+* {@link Frame#prependOnceListener prependOnceListener} _Frame_
 * {@link Channel#ChannelProvider#publish publish} _ChannelProvider_
 * {@link InterApplicationBus#publish publish} _InterApplicationBus_
 * {@link Clipboard#readHtml readHtml} _Clipboard_
@@ -194,9 +197,10 @@ For a single-page reference to all application settings and configuration option
 * {@link Channel#ChannelProvider#remove remove} _ChannelProvider_
 * {@link Application#removeAllListeners removeAllListeners} _Application_
 * {@link ExternalApplication#removeAllListeners removeAllListeners} _ExternalApplication_
+* {@link Frame#removeAllListeners removeAllListeners} _Frame_
 * {@link Application#removeListener removeListener} _Application_
 * {@link ExternalApplication#removeListener removeListener} _ExternalApplication_
-* {@link Frame#removeEventListener removeEventListener} _Frame_
+* {@link Frame#removeListener removeListener} _Frame_
 * {@link System#removeEventListener removeEventListener} _System_
 * {@link Window#removeEventListener removeEventListener} _Window_
 * {@link InterApplicationBus#removeSubscribeListener removeSubscribeListener} _InterApplicationBus_
