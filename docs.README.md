@@ -210,7 +210,6 @@ For a single-page reference to all application settings and configuration option
 * {@link ExternalApplication#removeListener removeListener} _ExternalApplication_
 * {@link Frame#removeListener removeListener} _Frame_
 * {@link System#removeListener removeListener} _System_
-* {@link System#removeEventListener removeEventListener} _System_
 * {@link Window#removeEventListener removeEventListener} _Window_
 * {@link InterApplicationBus#removeSubscribeListener removeSubscribeListener} _InterApplicationBus_
 * {@link Application#removeTrayIcon removeTrayIcon} _Application_

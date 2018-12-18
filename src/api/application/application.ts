@@ -155,10 +155,11 @@ export class Application extends EmitterBase<ApplicationEvents> {
      * @param { Function } listener - Called whenever an event of the specified type occurs.
      * @param { SubOptions } [options] - Option to support event timestamps.
      * @return {Promise.<this>}
-     * @method
+     * @function addListener
+     * @memberof Application
+     * @instance
      * @tutorial Application.addEventListener
      */
-    public addListener = super.addListener;
 
     /**
      * Adds the listener function to the end of the listeners array for the specified event type.
@@ -166,10 +167,11 @@ export class Application extends EmitterBase<ApplicationEvents> {
      * @param { Function } listener - Called whenever an event of the specified type occurs.
      * @param { SubOptions } [options] - Option to support event timestamps.
      * @return {Promise.<this>}
-     * @method
+     * @function on
+     * @memberof Application
+     * @instance
      * @tutorial Application.addEventListener
      */
-    public on = super.on;
 
     /**
      * Adds a one-time listener function for the specified event type.
@@ -177,10 +179,11 @@ export class Application extends EmitterBase<ApplicationEvents> {
      * @param { Function } listener - The callback function.
      * @param { SubOptions } [options] - Option to support event timestamps.
      * @return {Promise.<this>}
-     * @method
+     * @function once
+     * @memberof Application
+     * @instance
      * @tutorial Application.addEventListener
      */
-    public once = super.once;
 
     /**
      * Adds the listener function to the beginning of the listeners array for the specified event type.
@@ -188,10 +191,11 @@ export class Application extends EmitterBase<ApplicationEvents> {
      * @param { Function } listener - The callback function.
      * @param { SubOptions } [options] - Option to support event timestamps.
      * @return {Promise.<this>}
-     * @method
+     * @function prependListener
+     * @memberof Application
+     * @instance
      * @tutorial Application.addEventListener
      */
-    public prependListener = super.prependListener;
 
     /**
      * Adds a one-time listener function for the specified event type to the beginning of the listeners array.
@@ -199,10 +203,11 @@ export class Application extends EmitterBase<ApplicationEvents> {
      * @param { Function } listener - The callback function.
      * @param { SubOptions } [options] - Option to support event timestamps.
      * @return {Promise.<this>}
-     * @method
+     * @function prependOnceListener
+     * @memberof Application
+     * @instance
      * @tutorial Application.addEventListener
      */
-    public prependOnceListener = super.prependOnceListener;
 
     /**
      * Removes the specified listener from the listener array for the specified event type.
@@ -210,19 +215,21 @@ export class Application extends EmitterBase<ApplicationEvents> {
      * @param { Function } listener - The callback function.
      * @param { SubOptions } [options] - Option to support event timestamps.
      * @return {Promise.<this>}
-     * @method
+     * @function removeListener
+     * @memberof Application
+     * @instance
      * @tutorial Application.removeListener
      */
-    public removeListener = super.removeListener;
 
     /**
      * Removes all listeners, or those of the specified event type.
      * @param { string | symbol } eventType  - The type of the event.
      * @return {Promise.<this>}
-     * @method
+     * @function removeAllListeners
+     * @memberof Application
+     * @instance
      * @tutorial Application.removeAllListeners
      */
-    public removeAllListeners = super.removeAllListeners;
 
     /**
      * Determines if the application is currently running.
