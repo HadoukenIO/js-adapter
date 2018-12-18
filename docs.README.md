@@ -69,6 +69,9 @@ For a single-page reference to all application settings and configuration option
 ```
 
 #### Index of API Methods <span id=index></span>
+* {@link Application.addListener addListener} _Application_
+* {@link ExternalApplication#addListener addListener} _ExternalApplication_
+* {@link Frame#addListener addListener} _Frame_
 * {@link System#addEventListener addEventListener} _System_
 * {@link Window#addEventListener addEventListener} _Window_
 * {@link InterApplicationBus#addSubscribeListener addSubscribeListener} _InterApplicationBus_

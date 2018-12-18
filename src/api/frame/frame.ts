@@ -82,6 +82,17 @@ export class _Frame extends EmitterBase<FrameEvents> {
      * @method
      * @tutorial Frame.addEventListener
      */
+    public addListener = super.addListener;
+
+    /**
+     * Adds the listener function to the end of the listeners array for the specified event type.
+     * @param { string | symbol } eventType  - The type of the event.
+     * @param { Function } listener - Called whenever an event of the specified type occurs.
+     * @param { SubOptions } [options] - Option to support event timestamps.
+     * @return {Promise.<this>}
+     * @method
+     * @tutorial Frame.addEventListener
+     */
     public on = super.on;
 
     /**
