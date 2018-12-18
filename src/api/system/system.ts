@@ -471,6 +471,88 @@ export default class System extends EmitterBase<SystemEvents> {
     }
 
     /**
+     * Adds the listener function to the end of the listeners array for the specified event type.
+     * @param { string | symbol } eventType  - The type of the event.
+     * @param { Function } listener - Called whenever an event of the specified type occurs.
+     * @param { SubOptions } [options] - Option to support event timestamps.
+     * @return {Promise.<this>}
+     * @function addListener
+     * @memberof System
+     * @instance
+     * @tutorial System.addEventListener
+     */
+
+    /**
+     * Adds the listener function to the end of the listeners array for the specified event type.
+     * @param { string | symbol } eventType  - The type of the event.
+     * @param { Function } listener - Called whenever an event of the specified type occurs.
+     * @param { SubOptions } [options] - Option to support event timestamps.
+     * @return {Promise.<this>}
+     * @function on
+     * @memberof System
+     * @instance
+     * @tutorial System.addEventListener
+     */
+
+    /**
+     * Adds a one-time listener function for the specified event type.
+     * @param { string | symbol } eventType  - The type of the event.
+     * @param { Function } listener - The callback function.
+     * @param { SubOptions } [options] - Option to support event timestamps.
+     * @return {Promise.<this>}
+     * @function once
+     * @memberof System
+     * @instance
+     * @tutorial System.addEventListener
+     */
+
+    /**
+     * Adds the listener function to the beginning of the listeners array for the specified event type.
+     * @param { string | symbol } eventType  - The type of the event.
+     * @param { Function } listener - The callback function.
+     * @param { SubOptions } [options] - Option to support event timestamps.
+     * @return {Promise.<this>}
+     * @function prependListener
+     * @memberof System
+     * @instance
+     * @tutorial System.addEventListener
+     */
+
+    /**
+     * Adds a one-time listener function for the specified event type to the beginning of the listeners array.
+     * @param { string | symbol } eventType  - The type of the event.
+     * @param { Function } listener - The callback function.
+     * @param { SubOptions } [options] - Option to support event timestamps.
+     * @return {Promise.<this>}
+     * @function prependOnceListener
+     * @memberof System
+     * @instance
+     * @tutorial System.addEventListener
+     */
+
+    /**
+     * Removes the specified listener from the listener array for the specified event type.
+     * @param { string | symbol } eventType  - The type of the event.
+     * @param { Function } listener - The callback function.
+     * @param { SubOptions } [options] - Option to support event timestamps.
+     * @return {Promise.<this>}
+     * @function removeListener
+     * @memberof System
+     * @instance
+     * @tutorial System.removeListener
+     */
+
+    /**
+     * Removes all listeners, or those of the specified event type.
+     * @param { string | symbol } eventType  - The type of the event.
+     * @return {Promise.<this>}
+     * @function removeAllListeners
+     * @memberof System
+     * @instance
+     * @tutorial System.removeAllListeners
+     */
+
+    /**
      * Returns the version of the runtime. The version contains the major, minor,
      * build and revision numbers.
      * @return {Promise.<string>}
