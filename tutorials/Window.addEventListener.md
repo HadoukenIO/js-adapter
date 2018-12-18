@@ -43,23 +43,23 @@ const finWindow = await fin.Window.getCurrent();
 
 // The below functions are provided to add an event listener.
 finWindow.addListener("bounds-changed", (event) => {
-    console.log("The window has been moved or resized in addListener's callback");
+    console.log("The window has been moved or resized.");
 });
 
 finWindow.on("bounds-changed", (event) => {
-    console.log("The window has been moved or resized in on's callback");
+    console.log("The window has been moved or resized.");
 });
 
 finWindow.once("bounds-changed", (event) => {
-    console.log("The window has been moved or resized in once's callback");
+    console.log("The window has been moved or resized.");
 });
 
 finWindow.prependListener("bounds-changed", (event) => {
-    console.log("The window has been moved or resized in prependListener's callback");
+    console.log("The window has been moved or resized.");
 });
 
 finWindow.prependOnceListener("bounds-changed", (event) => {
-    console.log("The window has been moved or resized in prependOnceListener's callback");
+    console.log("The window has been moved or resized.");
 });
 ```
 

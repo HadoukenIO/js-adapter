@@ -1,53 +1,53 @@
 Registers an event listener on the specified event. Supported system event types are:
 
 * application-closed
-* application-connected (see {@tutorial application.addEventListener})
+* application-connected (see {@tutorial Application.addEventListener})
 * application-crashed
 * application-created
-* application-initialized (see {@tutorial application.addEventListener})
-* application-manifest-changed (see {@tutorial application.addEventListener})
-* application-not-responding (see {@tutorial application.addEventListener})
-* application-responding (see {@tutorial application.addEventListener})
-* application-run-requested (see {@tutorial application.addEventListener})
+* application-initialized (see {@tutorial Application.addEventListener})
+* application-manifest-changed (see {@tutorial Application.addEventListener})
+* application-not-responding (see {@tutorial Application.addEventListener})
+* application-responding (see {@tutorial Application.addEventListener})
+* application-run-requested (see {@tutorial Application.addEventListener})
 * application-started
-* application-tray-icon-clicked (see {@tutorial application.addEventListener})
+* application-tray-icon-clicked (see {@tutorial Application.addEventListener})
 * desktop-icon-clicked
 * idle-state-changed
 * monitor-info-changed
 * session-changed
 * window-blurred
-* window-bounds-changed (see {@tutorial window.addEventListener})
-* window-bounds-changing (see {@tutorial window.addEventListener})
+* window-bounds-changed (see {@tutorial Window.addEventListener})
+* window-bounds-changing (see {@tutorial Window.addEventListener})
 * window-closed
 * window-closing
 * window-crashed
 * window-created
-* window-disabled-frame-bounds-changed (see {@tutorial window.addEventListener})
-* window-disabled-frame-bounds-changing (see {@tutorial window.addEventListener})
-* window-embedded (see {@tutorial window.addEventListener})
-* window-end-load (see {@tutorial window.addEventListener})
-* window-external-process-exited (see {@tutorial window.addEventListener})
-* window-external-process-started (see {@tutorial window.addEventListener})
-* window-file-download-completed (see {@tutorial window.addEventListener})
-* window-file-download-progress (see {@tutorial window.addEventListener})
-* window-file-download-started (see {@tutorial window.addEventListener})
+* window-disabled-movement-bounds-changed (see {@tutorial Window.addEventListener})
+* window-disabled-movement-bounds-changing (see {@tutorial Window.addEventListener})
+* window-embedded (see {@tutorial Window.addEventListener})
+* window-end-load (see {@tutorial Window.addEventListener})
+* window-external-process-exited (see {@tutorial Window.addEventListener})
+* window-external-process-started (see {@tutorial Window.addEventListener})
+* window-file-download-completed (see {@tutorial Window.addEventListener})
+* window-file-download-progress (see {@tutorial Window.addEventListener})
+* window-file-download-started (see {@tutorial Window.addEventListener})
 * window-focused
-* window-frame-disabled (see {@tutorial window.addEventListener})
-* window-frame-enabled (see {@tutorial window.addEventListener})
-* window-group-changed (see {@tutorial window.addEventListener})
-* window-hidden (see {@tutorial window.addEventListener})
-* window-initialized (see {@tutorial window.addEventListener})
-* window-maximized (see {@tutorial window.addEventListener})
-* window-minimized (see {@tutorial window.addEventListener})
-* window-navigation-rejected (see {@tutorial window.addEventListener})
-* window-not-responding (see {@tutorial window.addEventListener})
-* window-preload-scripts-state-changed (see {@tutorial window.addEventListener})
-* window-preload-scripts-state-changing (see {@tutorial window.addEventListener})
-* window-reloaded (see {@tutorial window.addEventListener})
-* window-responding (see {@tutorial window.addEventListener})
-* window-restored (see {@tutorial window.addEventListener})
-* window-shown (see {@tutorial window.addEventListener})
-* window-start-load (see {@tutorial window.addEventListener})
+* window-group-changed (see {@tutorial Window.addEventListener})
+* window-hidden (see {@tutorial Window.addEventListener})
+* window-initialized (see {@tutorial Window.addEventListener})
+* window-maximized (see {@tutorial Window.addEventListener})
+* window-minimized (see {@tutorial Window.addEventListener})
+* window-navigation-rejected (see {@tutorial Window.addEventListener})
+* window-not-responding (see {@tutorial Window.addEventListener})
+* window-preload-scripts-state-changed (see {@tutorial Window.addEventListener})
+* window-preload-scripts-state-changing (see {@tutorial Window.addEventListener})
+* window-reloaded (see {@tutorial Window.addEventListener})
+* window-responding (see {@tutorial Window.addEventListener})
+* window-restored (see {@tutorial Window.addEventListener})
+* window-shown (see {@tutorial Window.addEventListener})
+* window-start-load (see {@tutorial Window.addEventListener})
+* window-user-movement-disabled (see {@tutorial Window.addEventListener})
+* window-user-movement-enabled (see {@tutorial Window.addEventListener})
 
 ### Example
 

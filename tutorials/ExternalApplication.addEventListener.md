@@ -6,26 +6,26 @@ Registers an event listener on the specified event. Supported external applicati
 ### Example
 
 ```js
-const externalApp = fin.ExternalApplication.wrapSync('my-uuid');
+const externalApp = await fin.ExternalApplication.wrap('my-uuid');
 
 // The below functions are provided to add an event listener.
-externalApp.addListener("closed", (event) => {
-    console.log("The application is closed in on callback");
+externalApp.addListener("connected", (event) => {
+    console.log("The external app connected.");
 });
 
-externalApp.on("closed", (event) => {
-    console.log("The application is closed in on callback");
+externalApp.on("connected", (event) => {
+    console.log("The external app connected.");
 });
 
-externalApp.once("closed", (event) => {
-    console.log("The application is closed in once callback");
+externalApp.once("connected", (event) => {
+    console.log("The external app connected.");
 });
 
-externalApp.prependListener("closed", (event) => {
-    console.log("The application is closed in prependListener callback");
+externalApp.prependListener("connected", (event) => {
+    console.log("The external app connected.");
 });
 
-externalApp.prependOnceListener("closed", (event) => {
-    console.log("The application is closed in prependOnceListener callback");
+externalApp.prependOnceListener("connected", (event) => {
+    console.log("The external app connected.");
 });
 ```

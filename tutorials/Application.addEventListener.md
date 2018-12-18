@@ -13,62 +13,64 @@ Registers an event listener on the specified event. Supported application event 
 * window-alert-requested
 * window-auth-requested
 * window-blurred
-* window-bounds-changed (see {@tutorial window.addEventListener})
-* window-bounds-changing (see {@tutorial window.addEventListener})
+* window-bounds-changed (see {@tutorial Window.addEventListener})
+* window-bounds-changing (see {@tutorial Window.addEventListener})
 * window-closed
 * window-closing
 * window-crashed
 * window-created
-* window-disabled-frame-bounds-changed (see {@tutorial window.addEventListener})
-* window-disabled-frame-bounds-changing (see {@tutorial window.addEventListener})
-* window-embedded (see {@tutorial window.addEventListener})
+* window-disabled-movement-bounds-changed (see {@tutorial Window.addEventListener})
+* window-disabled-movement-bounds-changing (see {@tutorial Window.addEventListener})
+* window-embedded (see {@tutorial Window.addEventListener})
 * window-end-load
-* window-external-process-exited (see {@tutorial window.addEventListener})
-* window-external-process-started (see {@tutorial window.addEventListener})
-* window-file-download-completed (see {@tutorial window.addEventListener})
-* window-file-download-progress (see {@tutorial window.addEventListener})
-* window-file-download-started (see {@tutorial window.addEventListener})
+* window-external-process-exited (see {@tutorial Window.addEventListener})
+* window-external-process-started (see {@tutorial Window.addEventListener})
+* window-file-download-completed (see {@tutorial Window.addEventListener})
+* window-file-download-progress (see {@tutorial Window.addEventListener})
+* window-file-download-started (see {@tutorial Window.addEventListener})
 * window-focused
-* window-frame-disabled (see {@tutorial window.addEventListener})
-* window-frame-enabled (see {@tutorial window.addEventListener})
-* window-group-changed (see {@tutorial window.addEventListener})
-* window-hidden (see {@tutorial window.addEventListener})
-* window-initialized (see {@tutorial window.addEventListener})
-* window-maximized (see {@tutorial window.addEventListener})
-* window-minimized (see {@tutorial window.addEventListener})
+* window-group-changed (see {@tutorial Window.addEventListener})
+* window-hidden (see {@tutorial Window.addEventListener})
+* window-initialized (see {@tutorial Window.addEventListener})
+* window-maximized (see {@tutorial Window.addEventListener})
+* window-minimized (see {@tutorial Window.addEventListener})
 * window-navigation-rejected
 * window-not-responding
-* window-preload-scripts-state-changed (see {@tutorial window.addEventListener})
-* window-preload-scripts-state-changing (see {@tutorial window.addEventListener})
+* window-preload-scripts-state-changed (see {@tutorial Window.addEventListener})
+* window-preload-scripts-state-changing (see {@tutorial Window.addEventListener})
 * window-reloaded
 * window-responding
-* window-restored (see {@tutorial window.addEventListener})
+* window-restored (see {@tutorial Window.addEventListener})
 * window-show-requested
-* window-shown (see {@tutorial window.addEventListener})
+* window-shown (see {@tutorial Window.addEventListener})
 * window-start-load
+* window-user-movement-disabled (see {@tutorial Window.addEventListener})
+* window-user-movement-enabled (see {@tutorial Window.addEventListener})
 
 ### Example
 
 ```js
+const app = await fin.Application.getCurrent();
+
 // The below functions are provided to add an event listener.
 app.addListener("closed", (event) => {
-    console.log("The application is closed in on callback");
+    console.log("The application has closed.");
 });
 
 app.on("closed", (event) => {
-    console.log("The application is closed in on callback");
+    console.log("The application has closed.");
 });
 
 app.once("closed", (event) => {
-    console.log("The application is closed in once callback");
+    console.log("The application has closed.");
 });
 
 app.prependListener("closed", (event) => {
-    console.log("The application is closed in prependListener callback");
+    console.log("The application has closed.");
 });
 
 app.prependOnceListener("closed", (event) => {
-    console.log("The application is closed in prependOnceListener callback");
+    console.log("The application has closed.");
 });
 ```
 
