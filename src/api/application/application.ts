@@ -22,6 +22,10 @@ export interface ApplicationInfo {
     runtime: object;
 }
 
+export interface LogInfo {
+    logId: string;
+}
+
 export class NavigationRejectedReply extends Reply<'window-navigation-rejected', void> {
     public sourceName: string;
     public url: string;
@@ -310,7 +314,7 @@ export class Application extends EmitterBase<ApplicationEvents> {
      * @return {Promise.<any>}
      * @tutorial Application.sendApplicationLog
      */
-    public async sendApplicationLog(): Promise<any> {
+    public async sendApplicationLog(): Promise<LogInfo> {
         const { payload } = await this.wire.sendAction('send-application-log', this.identity);
         return payload.data;
     }
