@@ -22,6 +22,10 @@ export interface ApplicationInfo {
     runtime: object;
 }
 
+export interface LogInfo {
+    logId: string;
+}
+
 export class NavigationRejectedReply extends Reply<'window-navigation-rejected', void> {
     public sourceName: string;
     public url: string;
@@ -302,6 +306,17 @@ export class Application extends EmitterBase<ApplicationEvents> {
      */
     public scheduleRestart(): Promise<void> {
         return this.wire.sendAction('relaunch-on-close', this.identity).then(() => undefined);
+    }
+
+    /**
+     * Sends a message to the RVM to upload the application's logs. On success,
+     * an object containing logId is returned.
+     * @return {Promise.<any>}
+     * @tutorial Application.sendApplicationLog
+     */
+    public async sendApplicationLog(): Promise<LogInfo> {
+        const { payload } = await this.wire.sendAction('send-application-log', this.identity);
+        return payload.data;
     }
 
     /**
