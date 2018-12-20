@@ -154,6 +154,7 @@ For a single-page reference to all application settings and configuration option
 * {@link Application#getZoomLevel getZoomLevel} _Application_
 * {@link Window#getZoomLevel getZoomLevel} _Window_
 * {@link Window#hide hide} _Window_
+* {@link Window#isMainWindow isMainWindow} _Window_
 * {@link Application#isRunning isRunning} _Application_
 * {@link Window#isShowing isShowing} _Window_
 * {@link Window#joinGroup joinGroup} _Window_
