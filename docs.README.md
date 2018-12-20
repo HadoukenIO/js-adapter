@@ -74,8 +74,6 @@ For a single-page reference to all application settings and configuration option
 * {@link Frame#addListener addListener} _Frame_
 * {@link System#addListener addListener} _System_
 * {@link Window#addListener addListener} _Window_
-* {@link InterApplicationBus#addSubscribeListener addSubscribeListener} _InterApplicationBus_
-* {@link InterApplicationBus#addUnsubscribeListener addUnsubscribeListener} _InterApplicationBus_
 * {@link Window#animate animate} _Window_
 * {@link Window#authenticate authenticate} _Window_
 * {@link Clipboard#getAvailableFormats getAvailableFormats} _Clipboard_
@@ -216,9 +214,7 @@ For a single-page reference to all application settings and configuration option
 * {@link Frame#removeListener removeListener} _Frame_
 * {@link System#removeListener removeListener} _System_
 * {@link Window#removeListener removeListener} _Window_
-* {@link InterApplicationBus#removeSubscribeListener removeSubscribeListener} _InterApplicationBus_
 * {@link Application#removeTrayIcon removeTrayIcon} _Application_
-* {@link InterApplicationBus#removeUnsubscribeListener removeUnsubscribeListener} _InterApplicationBus_
 * {@link Window#resizeBy resizeBy} _Window_
 * {@link Window#resizeTo resizeTo} _Window_
 * {@link Application#restart restart} _Application_
