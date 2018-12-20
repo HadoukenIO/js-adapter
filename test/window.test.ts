@@ -239,6 +239,14 @@ describe('Window.', function() {
         it('Fulfilled', () => testWindow.isShowing().then(data => assert(typeof (data) === 'boolean')));
     });
 
+    describe('isMainWindow()', () => {
+
+        it('Fulfilled', () =>  {
+             const isMainWindow = testWindow.isMainWindow();
+             assert(typeof (isMainWindow) === 'boolean');
+        });
+    });
+
     //TODO: feature needs testing.
     // describe('joinGroup()', () => {
 
