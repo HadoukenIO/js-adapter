@@ -37,7 +37,7 @@ export default class ExternalApplicationModule extends Base {
 /**
  * @classdesc An ExternalApplication object representing an application. Allows
  * the developer to create, execute, show and close an external application as
- * well as listen to application events.
+ * well as listen to <a href="tutorial-ExternalApplication.EventEmitter.html">application events</a>.
  * @class
  */
 export class ExternalApplication extends EmitterBase<ExternalApplicationEvents> {
@@ -47,7 +47,7 @@ export class ExternalApplication extends EmitterBase<ExternalApplicationEvents> 
     }
 
     /**
-     * Adds the listener function to the end of the listeners array for the specified event type.
+     * Adds a listener to the end of the listeners array for the specified event.
      * @param { string | symbol } eventType  - The type of the event.
      * @param { Function } listener - Called whenever an event of the specified type occurs.
      * @param { SubOptions } [options] - Option to support event timestamps.
@@ -55,11 +55,11 @@ export class ExternalApplication extends EmitterBase<ExternalApplicationEvents> 
      * @function addListener
      * @memberof ExternalApplication
      * @instance
-     * @tutorial ExternalApplication.addEventListener
+     * @tutorial ExternalApplication.EventEmitter
      */
 
     /**
-     * Adds the listener function to the end of the listeners array for the specified event type.
+     * Adds a listener to the end of the listeners array for the specified event.
      * @param { string | symbol } eventType  - The type of the event.
      * @param { Function } listener - Called whenever an event of the specified type occurs.
      * @param { SubOptions } [options] - Option to support event timestamps.
@@ -67,11 +67,11 @@ export class ExternalApplication extends EmitterBase<ExternalApplicationEvents> 
      * @function on
      * @memberof ExternalApplication
      * @instance
-     * @tutorial ExternalApplication.addEventListener
+     * @tutorial ExternalApplication.EventEmitter
      */
 
     /**
-     * Adds a one-time listener function for the specified event type.
+     * Adds a one time listener for the event. The listener is invoked only the first time the event is fired, after which it is removed.
      * @param { string | symbol } eventType  - The type of the event.
      * @param { Function } listener - The callback function.
      * @param { SubOptions } [options] - Option to support event timestamps.
@@ -79,11 +79,11 @@ export class ExternalApplication extends EmitterBase<ExternalApplicationEvents> 
      * @function once
      * @memberof ExternalApplication
      * @instance
-     * @tutorial ExternalApplication.addEventListener
+     * @tutorial ExternalApplication.EventEmitter
      */
 
     /**
-     * Adds the listener function to the beginning of the listeners array for the specified event type.
+     * Adds a listener to the beginning of the listeners array for the specified event.
      * @param { string | symbol } eventType  - The type of the event.
      * @param { Function } listener - The callback function.
      * @param { SubOptions } [options] - Option to support event timestamps.
@@ -91,11 +91,12 @@ export class ExternalApplication extends EmitterBase<ExternalApplicationEvents> 
      * @function prependListener
      * @memberof ExternalApplication
      * @instance
-     * @tutorial ExternalApplication.addEventListener
+     * @tutorial ExternalApplication.EventEmitter
      */
 
     /**
-     * Adds a one-time listener function for the specified event type to the beginning of the listeners array.
+     * Adds a one time listener for the event. The listener is invoked only the first time the event is fired, after which it is removed.
+     * The listener is added to the beginning of the listeners array.
      * @param { string | symbol } eventType  - The type of the event.
      * @param { Function } listener - The callback function.
      * @param { SubOptions } [options] - Option to support event timestamps.
@@ -103,11 +104,12 @@ export class ExternalApplication extends EmitterBase<ExternalApplicationEvents> 
      * @function prependOnceListener
      * @memberof ExternalApplication
      * @instance
-     * @tutorial ExternalApplication.addEventListener
+     * @tutorial ExternalApplication.EventEmitter
      */
 
     /**
-     * Removes the specified listener from the listener array for the specified event type.
+     * Remove a listener from the listener array for the specified event.
+     * Caution: Calling this method changes the array indices in the listener array behind the listener.
      * @param { string | symbol } eventType  - The type of the event.
      * @param { Function } listener - The callback function.
      * @param { SubOptions } [options] - Option to support event timestamps.
@@ -115,17 +117,17 @@ export class ExternalApplication extends EmitterBase<ExternalApplicationEvents> 
      * @function removeListener
      * @memberof ExternalApplication
      * @instance
-     * @tutorial ExternalApplication.removeListener
+     * @tutorial ExternalApplication.EventEmitter
      */
 
     /**
-     * Removes all listeners, or those of the specified event type.
-     * @param { string | symbol } eventType  - The type of the event.
+     * Removes all listeners, or those of the specified event.
+     * @param { string | symbol } [eventType]  - The type of the event.
      * @return {Promise.<this>}
      * @function removeAllListeners
      * @memberof ExternalApplication
      * @instance
-     * @tutorial ExternalApplication.removeAllListeners
+     * @tutorial ExternalApplication.EventEmitter
      */
 
     /**

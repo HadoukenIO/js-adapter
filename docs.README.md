@@ -69,7 +69,6 @@ For a single-page reference to all application settings and configuration option
 ```
 
 #### Index of API Methods <span id=index></span>
-* {@link ExternalApplication#addListener addListener} _ExternalApplication_
 * {@link Frame#addListener addListener} _Frame_
 * {@link System#addListener addListener} _System_
 * {@link Window#addListener addListener} _Window_
@@ -166,7 +165,6 @@ For a single-page reference to all application settings and configuration option
 * {@link Window#navigate navigate} _Window_
 * {@link Window#navigateBack navigateBack} _Window_
 * {@link Window#navigateForward navigateForward} _Window_
-* {@link ExternalApplication#on on} _ExternalApplication_
 * {@link Frame#on on} _Frame_
 * {@link System#on on} _System_
 * {@link Window#on on} _Window_
@@ -177,11 +175,9 @@ For a single-page reference to all application settings and configuration option
 * {@link InterApplicationBus.Channel.onChannelConnect onChannelConnect} _Channel_
 * {@link InterApplicationBus.Channel.onChannelDisconnect onChannelDisconnect} _Channel_
 * {@link System#openUrlWithBrowser openUrlWithBrowser} _System_
-* {@link ExternalApplication#prependListener prependListener} _ExternalApplication_
 * {@link Frame#prependListener prependListener} _Frame_
 * {@link System#prependListener prependListener} _System_
 * {@link Window#prependListener prependListener} _Window_
-* {@link ExternalApplication#prependOnceListener prependOnceListener} _ExternalApplication_
 * {@link Frame#prependOnceListener prependOnceListener} _Frame_
 * {@link System#prependOnceListener prependOnceListener} _System_
 * {@link Window#prependOnceListener prependOnceListener} _Window_
@@ -200,12 +196,10 @@ For a single-page reference to all application settings and configuration option
 * {@link Channel#ChannelClient#remove remove} _ChannelClient_
 * {@link Channel#ChannelProvider#remove remove} _ChannelProvider_
 * {@link Application#removeAllListeners removeAllListeners} _Application_
-* {@link ExternalApplication#removeAllListeners removeAllListeners} _ExternalApplication_
 * {@link Frame#removeAllListeners removeAllListeners} _Frame_
 * {@link System#removeAllListeners removeAllListeners} _System_
 * {@link Window#removeAllListeners removeAllListeners} _Window_
 * {@link Application#removeListener removeListener} _Application_
-* {@link ExternalApplication#removeListener removeListener} _ExternalApplication_
 * {@link Frame#removeListener removeListener} _Frame_
 * {@link System#removeListener removeListener} _System_
 * {@link Window#removeListener removeListener} _Window_
@@ -251,8 +245,7 @@ For a single-page reference to all application settings and configuration option
 * {@link Clipboard#writeText writeText} _Clipboard_
 
 #### EventEmitter API Methods
-<a href="tutorial-Application.EventEmitter.html">Application.EventEmitter</a><br/>
-<a href="tutorial-ExternalApplication.addEventListener.html">ExternalApplication.EventEmitter</a><br/>
+<a href="tutorial-ExternalApplication.EventEmitter.html">ExternalApplication.EventEmitter</a><br/>
 <a href="tutorial-Frame.addEventListener.html">Frame.EventEmitter</a><br/>
 <a href="tutorial-System.addEventListener.html">System.EventEmitter</a><br/>
 <a href="tutorial-Window.addEventListener.html">Window.EventEmitter</a>

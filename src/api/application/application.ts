@@ -121,7 +121,7 @@ export default class ApplicationModule extends Base {
 
 /**
  * @classdesc An object representing an application. Allows the developer to create,
- * execute, show/close an application as well as listen to application events.
+ * execute, show/close an application as well as listen to <a href="tutorial-Application.EventEmitter.html">application events</a>.
  * @class
  */
 export class Application extends EmitterBase<ApplicationEvents> {
