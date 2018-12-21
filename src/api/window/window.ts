@@ -160,6 +160,7 @@ this animation onto the end of the animation queue.
  * control over the window state such as the ability to minimize, maximize, restore, etc.
  * By default a window does not show upon instantiation; instead the window's show() method
  * must be invoked manually. The new window appears in the same process as the parent window.
+ * It has the ability to listen for <a href="tutorial-Window.EventEmitter.html">window specific events</a>.
  * @class
  * @alias Window
 */
@@ -171,8 +172,8 @@ export class _Window extends EmitterBase<WindowEvents> {
         super(wire, ['window', identity.uuid, identity.name]);
     }
 
-  /**
-     * Adds the listener function to the end of the listeners array for the specified event type.
+    /**
+     * Adds a listener to the end of the listeners array for the specified event.
      * @param { string | symbol } eventType  - The type of the event.
      * @param { Function } listener - Called whenever an event of the specified type occurs.
      * @param { SubOptions } [options] - Option to support event timestamps.
@@ -180,11 +181,11 @@ export class _Window extends EmitterBase<WindowEvents> {
      * @function addListener
      * @memberof Window
      * @instance
-     * @tutorial Window.addEventListener
+     * @tutorial Window.EventEmitter
      */
 
     /**
-     * Adds the listener function to the end of the listeners array for the specified event type.
+     * Adds a listener to the end of the listeners array for the specified event.
      * @param { string | symbol } eventType  - The type of the event.
      * @param { Function } listener - Called whenever an event of the specified type occurs.
      * @param { SubOptions } [options] - Option to support event timestamps.
@@ -192,11 +193,11 @@ export class _Window extends EmitterBase<WindowEvents> {
      * @function on
      * @memberof Window
      * @instance
-     * @tutorial Window.addEventListener
+     * @tutorial Window.EventEmitter
      */
 
     /**
-     * Adds a one-time listener function for the specified event type.
+     * Adds a one time listener for the event. The listener is invoked only the first time the event is fired, after which it is removed.
      * @param { string | symbol } eventType  - The type of the event.
      * @param { Function } listener - The callback function.
      * @param { SubOptions } [options] - Option to support event timestamps.
@@ -204,11 +205,11 @@ export class _Window extends EmitterBase<WindowEvents> {
      * @function once
      * @memberof Window
      * @instance
-     * @tutorial Window.addEventListener
+     * @tutorial Window.EventEmitter
      */
 
     /**
-     * Adds the listener function to the beginning of the listeners array for the specified event type.
+     * Adds a listener to the beginning of the listeners array for the specified event.
      * @param { string | symbol } eventType  - The type of the event.
      * @param { Function } listener - The callback function.
      * @param { SubOptions } [options] - Option to support event timestamps.
@@ -216,11 +217,12 @@ export class _Window extends EmitterBase<WindowEvents> {
      * @function prependListener
      * @memberof Window
      * @instance
-     * @tutorial Window.addEventListener
+     * @tutorial Window.EventEmitter
      */
 
     /**
-     * Adds a one-time listener function for the specified event type to the beginning of the listeners array.
+     * Adds a one time listener for the event. The listener is invoked only the first time the event is fired, after which it is removed.
+     * The listener is added to the beginning of the listeners array.
      * @param { string | symbol } eventType  - The type of the event.
      * @param { Function } listener - The callback function.
      * @param { SubOptions } [options] - Option to support event timestamps.
@@ -228,11 +230,12 @@ export class _Window extends EmitterBase<WindowEvents> {
      * @function prependOnceListener
      * @memberof Window
      * @instance
-     * @tutorial Window.addEventListener
+     * @tutorial Window.EventEmitter
      */
 
     /**
-     * Removes the specified listener from the listener array for the specified event type.
+     * Remove a listener from the listener array for the specified event.
+     * Caution: Calling this method changes the array indices in the listener array behind the listener.
      * @param { string | symbol } eventType  - The type of the event.
      * @param { Function } listener - The callback function.
      * @param { SubOptions } [options] - Option to support event timestamps.
@@ -240,17 +243,17 @@ export class _Window extends EmitterBase<WindowEvents> {
      * @function removeListener
      * @memberof Window
      * @instance
-     * @tutorial Window.removeListener
+     * @tutorial Window.EventEmitter
      */
 
     /**
-     * Removes all listeners, or those of the specified event type.
-     * @param { string | symbol } eventType  - The type of the event.
+     * Removes all listeners, or those of the specified event.
+     * @param { string | symbol } [eventType]  - The type of the event.
      * @return {Promise.<this>}
      * @function removeAllListeners
      * @memberof Window
      * @instance
-     * @tutorial Window.removeAllListeners
+     * @tutorial Window.EventEmitter
      */
 
     // create a new window

@@ -70,7 +70,6 @@ For a single-page reference to all application settings and configuration option
 
 #### Index of API Methods <span id=index></span>
 * {@link System#addListener addListener} _System_
-* {@link Window#addListener addListener} _Window_
 * {@link Window#animate animate} _Window_
 * {@link Window#authenticate authenticate} _Window_
 * {@link Clipboard#getAvailableFormats getAvailableFormats} _Clipboard_
@@ -165,19 +164,12 @@ For a single-page reference to all application settings and configuration option
 * {@link Window#navigateBack navigateBack} _Window_
 * {@link Window#navigateForward navigateForward} _Window_
 * {@link System#on on} _System_
-* {@link Window#on on} _Window_
-* {@link ExternalApplication#once once} _ExternalApplication_
 * {@link System#once once} _System_
-* {@link Window#once once} _Window_
 * {@link InterApplicationBus.Channel.onChannelConnect onChannelConnect} _Channel_
 * {@link InterApplicationBus.Channel.onChannelDisconnect onChannelDisconnect} _Channel_
 * {@link System#openUrlWithBrowser openUrlWithBrowser} _System_
-* {@link Frame#prependListener prependListener} _Frame_
 * {@link System#prependListener prependListener} _System_
-* {@link Window#prependListener prependListener} _Window_
-* {@link Frame#prependOnceListener prependOnceListener} _Frame_
 * {@link System#prependOnceListener prependOnceListener} _System_
-* {@link Window#prependOnceListener prependOnceListener} _Window_
 * {@link Channel#ChannelProvider#publish publish} _ChannelProvider_
 * {@link InterApplicationBus#publish publish} _InterApplicationBus_
 * {@link Clipboard#readHtml readHtml} _Clipboard_
@@ -193,9 +185,7 @@ For a single-page reference to all application settings and configuration option
 * {@link Channel#ChannelClient#remove remove} _ChannelClient_
 * {@link Channel#ChannelProvider#remove remove} _ChannelProvider_
 * {@link System#removeAllListeners removeAllListeners} _System_
-* {@link Window#removeAllListeners removeAllListeners} _Window_
 * {@link System#removeListener removeListener} _System_
-* {@link Window#removeListener removeListener} _Window_
 * {@link Application#removeTrayIcon removeTrayIcon} _Application_
 * {@link Window#resizeBy resizeBy} _Window_
 * {@link Window#resizeTo resizeTo} _Window_
@@ -239,4 +229,4 @@ For a single-page reference to all application settings and configuration option
 
 #### EventEmitter API Methods
 <a href="tutorial-System.addEventListener.html">System.EventEmitter</a><br/>
-<a href="tutorial-Window.addEventListener.html">Window.EventEmitter</a>
+
