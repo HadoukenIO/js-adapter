@@ -1,16 +1,16 @@
 Registers an event listener on the specified event. Supported system event types are:
 
 * application-closed
-* application-connected (see {@tutorial Application.addEventListener})
+* application-connected (see {@tutorial Application.EventEmitter})
 * application-crashed
 * application-created
-* application-initialized (see {@tutorial Application.addEventListener})
-* application-manifest-changed (see {@tutorial Application.addEventListener})
-* application-not-responding (see {@tutorial Application.addEventListener})
-* application-responding (see {@tutorial Application.addEventListener})
-* application-run-requested (see {@tutorial Application.addEventListener})
+* application-initialized (see {@tutorial Application.EventEmitter})
+* application-manifest-changed (see {@tutorial Application.EventEmitter})
+* application-not-responding (see {@tutorial Application.EventEmitter})
+* application-responding (see {@tutorial Application.EventEmitter})
+* application-run-requested (see {@tutorial Application.EventEmitter})
 * application-started
-* application-tray-icon-clicked (see {@tutorial Application.addEventListener})
+* application-tray-icon-clicked (see {@tutorial Application.EventEmitter})
 * desktop-icon-clicked
 * idle-state-changed
 * monitor-info-changed

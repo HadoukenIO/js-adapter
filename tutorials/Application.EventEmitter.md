@@ -1,4 +1,76 @@
-Registers an event listener on the specified event. Supported application event types are:
+When an instance of `fin.Application` is created, it inherits an EventEmitter with the below methods so that it is possible to listen to OpenFin events. The below methods are asynchronous as they must cross process boundaries and setup the listener in the browser process.  When the `EventEmitter` receives an event from the browser process and emits on the renderer, all of the functions attached to that specific event are called synchronously.  Any values returned by the called listeners are ignored and will be discarded.  If the execution context of the window is destroyed by page navigation or reload, any events that have been setup in that context will be destroyed.
+It is important to keep in mind that when an ordinary listener function is called, the standard `this` keyword is intentionally set to reference the `EventEmitter` instance to which the listener is attached.  It is possible to use ES6 Arrow Functions as listeners, however, when doing so, the `this` keyword will no longer reference the `EventEmitter` instance.
+
+#### {@link Application#addListener addListener(event, listener)}
+Adds a listener to the end of the listeners array for the specified event.
+```js
+const app = await fin.Application.getCurrent();
+
+app.addListener("closed", function(event) {
+    console.log("The application has closed.");
+});
+```
+
+#### {@link Application#on on(event, listener)}
+Adds a listener to the end of the listeners array for the specified event.
+```js
+const app = await fin.Application.getCurrent();
+
+app.on("closed", function(event) {
+    console.log("The application has closed.");
+});
+```
+
+#### {@link Application#once once(event, listener)}
+Adds a one time listener for the event. The listener is invoked only the first time the event is fired, after which it is removed.
+```js
+const app = await fin.Application.getCurrent();
+
+app.once("closed", function(event) {
+    console.log("The application has closed.");
+});
+```
+
+#### {@link Application#prependListener prependListener(event, listener)}
+Adds a listener to the beginning of the listeners array for the specified event.
+```js
+const app = await fin.Application.getCurrent();
+
+app.prependListener("closed", function(event) {
+    console.log("The application has closed.");
+});
+```
+
+#### {@link Application#prependOnceListener prependOnceListener(event, listener)}
+Adds a one time listener for the event. The listener is invoked only the first time the event is fired, after which it is removed. The listener is added to the beginning of the listeners array.
+```js
+const app = await fin.Application.getCurrent();
+
+app.prependListener("closed", function(event) {
+    console.log("The application has closed.");
+});
+```
+
+#### {@link Application#removeListener removeListener(event, listener)}
+Remove a listener from the listener array for the specified event. Caution: Calling this method changes the array indices in the listener array behind the listener.
+```js
+const app = await fin.Application.getCurrent();
+const callback = function(event) {
+  console.log('The application closed');
+};
+
+app.on('closed', callback);
+app.removeListener("closed", callback);
+```
+
+#### {@link Application#removeAllListeners removeAllListeners([event])}
+Removes all listeners, or those of the specified event.
+```js
+const app = await fin.Application.getCurrent();
+app.removeAllListeners("closed");
+```
+
+### Supported application event types
 
 * closed
 * connected
@@ -46,33 +118,6 @@ Registers an event listener on the specified event. Supported application event 
 * window-start-load
 * window-user-movement-disabled (see {@tutorial Window.addEventListener})
 * window-user-movement-enabled (see {@tutorial Window.addEventListener})
-
-### Example
-
-```js
-const app = await fin.Application.getCurrent();
-
-// The below functions are provided to add an event listener.
-app.addListener("closed", (event) => {
-    console.log("The application has closed.");
-});
-
-app.on("closed", (event) => {
-    console.log("The application has closed.");
-});
-
-app.once("closed", (event) => {
-    console.log("The application has closed.");
-});
-
-app.prependListener("closed", (event) => {
-    console.log("The application has closed.");
-});
-
-app.prependOnceListener("closed", (event) => {
-    console.log("The application has closed.");
-});
-```
 
 ### Application Events
 

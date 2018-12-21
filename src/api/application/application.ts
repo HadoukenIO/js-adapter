@@ -150,7 +150,7 @@ export class Application extends EmitterBase<ApplicationEvents> {
     }
 
     /**
-     * Adds the listener function to the end of the listeners array for the specified event type.
+     * Adds a listener to the end of the listeners array for the specified event.
      * @param { string | symbol } eventType  - The type of the event.
      * @param { Function } listener - Called whenever an event of the specified type occurs.
      * @param { SubOptions } [options] - Option to support event timestamps.
@@ -158,11 +158,11 @@ export class Application extends EmitterBase<ApplicationEvents> {
      * @function addListener
      * @memberof Application
      * @instance
-     * @tutorial Application.addEventListener
+     * @tutorial Application.EventEmitter
      */
 
     /**
-     * Adds the listener function to the end of the listeners array for the specified event type.
+     * Adds a listener to the end of the listeners array for the specified event.
      * @param { string | symbol } eventType  - The type of the event.
      * @param { Function } listener - Called whenever an event of the specified type occurs.
      * @param { SubOptions } [options] - Option to support event timestamps.
@@ -170,11 +170,11 @@ export class Application extends EmitterBase<ApplicationEvents> {
      * @function on
      * @memberof Application
      * @instance
-     * @tutorial Application.addEventListener
+     * @tutorial Application.EventEmitter
      */
 
     /**
-     * Adds a one-time listener function for the specified event type.
+     * Adds a one time listener for the event. The listener is invoked only the first time the event is fired, after which it is removed.
      * @param { string | symbol } eventType  - The type of the event.
      * @param { Function } listener - The callback function.
      * @param { SubOptions } [options] - Option to support event timestamps.
@@ -182,11 +182,11 @@ export class Application extends EmitterBase<ApplicationEvents> {
      * @function once
      * @memberof Application
      * @instance
-     * @tutorial Application.addEventListener
+     * @tutorial Application.EventEmitter
      */
 
     /**
-     * Adds the listener function to the beginning of the listeners array for the specified event type.
+     * Adds a listener to the beginning of the listeners array for the specified event.
      * @param { string | symbol } eventType  - The type of the event.
      * @param { Function } listener - The callback function.
      * @param { SubOptions } [options] - Option to support event timestamps.
@@ -194,11 +194,12 @@ export class Application extends EmitterBase<ApplicationEvents> {
      * @function prependListener
      * @memberof Application
      * @instance
-     * @tutorial Application.addEventListener
+     * @tutorial Application.EventEmitter
      */
 
     /**
-     * Adds a one-time listener function for the specified event type to the beginning of the listeners array.
+     * Adds a one time listener for the event. The listener is invoked only the first time the event is fired, after which it is removed.
+     * The listener is added to the beginning of the listeners array.
      * @param { string | symbol } eventType  - The type of the event.
      * @param { Function } listener - The callback function.
      * @param { SubOptions } [options] - Option to support event timestamps.
@@ -206,11 +207,12 @@ export class Application extends EmitterBase<ApplicationEvents> {
      * @function prependOnceListener
      * @memberof Application
      * @instance
-     * @tutorial Application.addEventListener
+     * @tutorial Application.EventEmitter
      */
 
     /**
-     * Removes the specified listener from the listener array for the specified event type.
+     * Remove a listener from the listener array for the specified event.
+     * Caution: Calling this method changes the array indices in the listener array behind the listener.
      * @param { string | symbol } eventType  - The type of the event.
      * @param { Function } listener - The callback function.
      * @param { SubOptions } [options] - Option to support event timestamps.
@@ -218,17 +220,17 @@ export class Application extends EmitterBase<ApplicationEvents> {
      * @function removeListener
      * @memberof Application
      * @instance
-     * @tutorial Application.removeListener
+     * @tutorial Application.EventEmitter
      */
 
     /**
-     * Removes all listeners, or those of the specified event type.
-     * @param { string | symbol } eventType  - The type of the event.
+     * Removes all listeners, or those of the specified event.
+     * @param { string | symbol } [eventType]  - The type of the event.
      * @return {Promise.<this>}
      * @function removeAllListeners
      * @memberof Application
      * @instance
-     * @tutorial Application.removeAllListeners
+     * @tutorial Application.EventEmitter
      */
 
     /**
