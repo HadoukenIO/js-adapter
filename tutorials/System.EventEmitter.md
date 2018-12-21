@@ -1,4 +1,63 @@
-Registers an event listener on the specified event. Supported system event types are:
+`fin.System` has inherited an `EventEmitter` with the below methods so that it is possible to listen to OpenFin events. The below methods are asynchronous as they must cross process boundaries and setup the listener in the browser process. When the `EventEmitter` receives an event from the browser process and emits on the renderer, all of the functions attached to that specific event are called synchronously. Any values returned by the called listeners are ignored and will be discarded. If the execution context of the window is destroyed by page navigation or reload, any events that have been setup in that context will be destroyed.
+
+#### {@link System#addListener addListener(event, listener)}
+Adds a listener to the end of the listeners array for the specified event.
+```js
+fin.System.addListener('monitor-info-changed', function(event) {
+    console.log("The monitor information has changed to: ", event);
+});
+```
+
+#### {@link System#on on(event, listener)}
+Adds a listener to the end of the listeners array for the specified event.
+```js
+fin.System.on('monitor-info-changed', function(event) {
+    console.log("The monitor information has changed to: ", event);
+});
+```
+
+#### {@link System#once once(event, listener)}
+Adds a one time listener for the event. The listener is invoked only the first time the event is fired, after which it is removed.
+```js
+fin.System.once('monitor-info-changed', function(event) {
+    console.log("The monitor information has changed to: ", event);
+});
+```
+
+#### {@link System#prependListener prependListener(event, listener)}
+Adds a listener to the beginning of the listeners array for the specified event.
+```js
+fin.System.prependListener('monitor-info-changed', function(event) {
+    console.log("The monitor information has changed to: ", event);
+});
+```
+
+#### {@link System#prependOnceListener prependOnceListener(event, listener)}
+Adds a one time listener for the event. The listener is invoked only the first time the event is fired, after which it is removed. The listener is added to the beginning of the listeners array.
+```js
+fin.System.prependOnceListener('monitor-info-changed', function(event) {
+    console.log("The monitor information has changed to: ", event);
+});
+```
+
+#### {@link System#removeListener removeListener(event, listener)}
+Remove a listener from the listener array for the specified event. Caution: Calling this method changes the array indices in the listener array behind the listener.
+```js
+const callback = function(event) {
+  console.log("The monitor information has changed to: ", event);
+};
+
+fin.System.on('monitor-info-changed', callback);
+fin.System.removeListener("monitor-info-changed", callback);
+```
+
+#### {@link System#removeAllListeners removeAllListeners([event])}
+Removes all listeners, or those of the specified event.
+```js
+fin.System.removeAllListeners("monitor-info-changed");
+```
+
+### Supported system event types
 
 * application-closed
 * application-connected (see {@tutorial Application.EventEmitter})
@@ -48,31 +107,6 @@ Registers an event listener on the specified event. Supported system event types
 * window-start-load (see {@tutorial Window.addEventListener})
 * window-user-movement-disabled (see {@tutorial Window.addEventListener})
 * window-user-movement-enabled (see {@tutorial Window.addEventListener})
-
-### Example
-
-```js
-// The below functions are provided to add an event listener.
-fin.System.addListener('monitor-info-changed', (evnt) => {
-    console.log("The monitor information has changed to: ", evnt);
-});
-
-fin.System.on('monitor-info-changed', (evnt) => {
-    console.log("The monitor information has changed to: ", evnt);
-});
-
-fin.System.once('monitor-info-changed', (evnt) => {
-    console.log("The monitor information has changed to: ", evnt);
-});
-
-fin.System.prependListener('monitor-info-changed', (evnt) => {
-    console.log("The monitor information has changed to: ", evnt);
-});
-
-fin.System.prependOnceListener('monitor-info-changed', (evnt) => {
-    console.log("The monitor information has changed to: ", evnt);
-});
-```
 
 ### System Events
 
