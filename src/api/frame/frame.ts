@@ -62,7 +62,7 @@ export default class _FrameModule extends Base {
 
 /**
  * @classdesc Represents a way to interact with `iframes`. Facilitates discovery of current context
- * (iframe or main window) as well as the ability to listen for frame-specific events.
+ * (iframe or main window) as well as the ability to listen for <a href="tutorial-Frame.EventEmitter.html">frame-specific events</a>.
  * @class
  * @alias Frame
  */
@@ -82,11 +82,11 @@ export class _Frame extends EmitterBase<FrameEvents> {
      * @function addListener
      * @memberof Frame
      * @instance
-     * @tutorial Frame.addEventListener
+     * @tutorial Frame.EventEmitter
      */
 
     /**
-     * Adds the listener function to the end of the listeners array for the specified event type.
+     * Adds a listener to the end of the listeners array for the specified event.
      * @param { string | symbol } eventType  - The type of the event.
      * @param { Function } listener - Called whenever an event of the specified type occurs.
      * @param { SubOptions } [options] - Option to support event timestamps.
@@ -94,11 +94,11 @@ export class _Frame extends EmitterBase<FrameEvents> {
      * @function on
      * @memberof Frame
      * @instance
-     * @tutorial Frame.addEventListener
+     * @tutorial Frame.EventEmitter
      */
 
     /**
-     * Adds a one-time listener function for the specified event type.
+     * Adds a one time listener for the event. The listener is invoked only the first time the event is fired, after which it is removed.
      * @param { string | symbol } eventType  - The type of the event.
      * @param { Function } listener - The callback function.
      * @param { SubOptions } [options] - Option to support event timestamps.
@@ -106,11 +106,11 @@ export class _Frame extends EmitterBase<FrameEvents> {
      * @function once
      * @memberof Frame
      * @instance
-     * @tutorial Frame.addEventListener
+     * @tutorial Frame.EventEmitter
      */
 
     /**
-     * Adds the listener function to the beginning of the listeners array for the specified event type.
+     * Adds a listener to the beginning of the listeners array for the specified event.
      * @param { string | symbol } eventType  - The type of the event.
      * @param { Function } listener - The callback function.
      * @param { SubOptions } [options] - Option to support event timestamps.
@@ -118,11 +118,12 @@ export class _Frame extends EmitterBase<FrameEvents> {
      * @function prependListener
      * @memberof Frame
      * @instance
-     * @tutorial Frame.addEventListener
+     * @tutorial Frame.EventEmitter
      */
 
     /**
-     * Adds a one-time listener function for the specified event type to the beginning of the listeners array.
+     * Adds a one time listener for the event. The listener is invoked only the first time the event is fired, after which it is removed.
+     * The listener is added to the beginning of the listeners array.
      * @param { string | symbol } eventType  - The type of the event.
      * @param { Function } listener - The callback function.
      * @param { SubOptions } [options] - Option to support event timestamps.
@@ -130,11 +131,12 @@ export class _Frame extends EmitterBase<FrameEvents> {
      * @function prependOnceListener
      * @memberof Frame
      * @instance
-     * @tutorial Frame.addEventListener
+     * @tutorial Frame.EventEmitter
      */
 
     /**
-     * Removes the specified listener from the listener array for the specified event type.
+     * Remove a listener from the listener array for the specified event.
+     * Caution: Calling this method changes the array indices in the listener array behind the listener.
      * @param { string | symbol } eventType  - The type of the event.
      * @param { Function } listener - The callback function.
      * @param { SubOptions } [options] - Option to support event timestamps.
@@ -142,17 +144,17 @@ export class _Frame extends EmitterBase<FrameEvents> {
      * @function removeListener
      * @memberof Frame
      * @instance
-     * @tutorial Frame.removeListener
+     * @tutorial Frame.EventEmitter
      */
 
     /**
-     * Removes all listeners, or those of the specified event type.
-     * @param { string | symbol } eventType  - The type of the event.
+     * Removes all listeners, or those of the specified event.
+     * @param { string | symbol } [eventType]  - The type of the event.
      * @return {Promise.<this>}
      * @function removeAllListeners
      * @memberof Frame
      * @instance
-     * @tutorial Frame.removeAllListeners
+     * @tutorial Frame.EventEmitter
      */
 
     /**

@@ -69,7 +69,6 @@ For a single-page reference to all application settings and configuration option
 ```
 
 #### Index of API Methods <span id=index></span>
-* {@link Frame#addListener addListener} _Frame_
 * {@link System#addListener addListener} _System_
 * {@link Window#addListener addListener} _Window_
 * {@link Window#animate animate} _Window_
@@ -165,11 +164,9 @@ For a single-page reference to all application settings and configuration option
 * {@link Window#navigate navigate} _Window_
 * {@link Window#navigateBack navigateBack} _Window_
 * {@link Window#navigateForward navigateForward} _Window_
-* {@link Frame#on on} _Frame_
 * {@link System#on on} _System_
 * {@link Window#on on} _Window_
 * {@link ExternalApplication#once once} _ExternalApplication_
-* {@link Frame#once once} _Frame_
 * {@link System#once once} _System_
 * {@link Window#once once} _Window_
 * {@link InterApplicationBus.Channel.onChannelConnect onChannelConnect} _Channel_
@@ -195,12 +192,8 @@ For a single-page reference to all application settings and configuration option
 * {@link Window#reload reload} _Window_
 * {@link Channel#ChannelClient#remove remove} _ChannelClient_
 * {@link Channel#ChannelProvider#remove remove} _ChannelProvider_
-* {@link Application#removeAllListeners removeAllListeners} _Application_
-* {@link Frame#removeAllListeners removeAllListeners} _Frame_
 * {@link System#removeAllListeners removeAllListeners} _System_
 * {@link Window#removeAllListeners removeAllListeners} _Window_
-* {@link Application#removeListener removeListener} _Application_
-* {@link Frame#removeListener removeListener} _Frame_
 * {@link System#removeListener removeListener} _System_
 * {@link Window#removeListener removeListener} _Window_
 * {@link Application#removeTrayIcon removeTrayIcon} _Application_
@@ -245,7 +238,5 @@ For a single-page reference to all application settings and configuration option
 * {@link Clipboard#writeText writeText} _Clipboard_
 
 #### EventEmitter API Methods
-<a href="tutorial-ExternalApplication.EventEmitter.html">ExternalApplication.EventEmitter</a><br/>
-<a href="tutorial-Frame.addEventListener.html">Frame.EventEmitter</a><br/>
 <a href="tutorial-System.addEventListener.html">System.EventEmitter</a><br/>
 <a href="tutorial-Window.addEventListener.html">Window.EventEmitter</a>
