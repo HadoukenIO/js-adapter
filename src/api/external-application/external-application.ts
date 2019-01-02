@@ -39,6 +39,7 @@ export default class ExternalApplicationModule extends Base {
  * the developer to create, execute, show and close an external application as
  * well as listen to <a href="tutorial-ExternalApplication.EventEmitter.html">application events</a>.
  * @class
+ * @hideconstructor
  */
 export class ExternalApplication extends EmitterBase<ExternalApplicationEvents> {
 

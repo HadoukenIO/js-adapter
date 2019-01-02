@@ -44,6 +44,7 @@ export interface NotificationCallback {
  * are controlled by the runtime.
  * @class
  * @alias Notification
+ * @hideconstructor
  */
 // tslint:disable-next-line
 export class _Notification extends EmitterBase<NotificationEvents> {

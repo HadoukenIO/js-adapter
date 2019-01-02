@@ -163,7 +163,8 @@ this animation onto the end of the animation queue.
  * It has the ability to listen for <a href="tutorial-Window.EventEmitter.html">window specific events</a>.
  * @class
  * @alias Window
-*/
+ * @hideconstructor
+ */
 // The window.Window name is taken
 // tslint:disable-next-line
 export class _Window extends EmitterBase<WindowEvents> {

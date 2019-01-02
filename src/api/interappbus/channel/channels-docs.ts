@@ -91,13 +91,10 @@ InterApplicationBus.Channel.onChannelDisconnect = function () { }
  *  * {@link Channel#ChannelProvider#afterAction afterAction(middleware)}
  * 
  * @memberof! Channel#
+ * @hideconstructor
  */
 class ChannelProvider {
 
-    /**
-     * <strong>Note:</strong> Do not instantiate this class directly.  
-     * Returned by {@link Channel.create Channel.create}.
-     */
     constructor() {}
 
     /**
@@ -226,10 +223,6 @@ class ChannelProvider {
  */
 class ChannelClient {
 
-    /**
-     * <strong>Note:</strong> Do not instantiate this class directly.  
-     * Returned by {@link Channel.connect Channel.connect}.
-     */
     constructor() {}
 
     /**
