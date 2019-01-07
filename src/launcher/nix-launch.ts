@@ -1,12 +1,10 @@
 import * as fs from 'fs';
 import * as path from 'path';
 import { ChildProcess, spawn } from 'child_process';
-import { ConfigWithRuntime, ServiceConfig } from '../transport/wire';
+import { ConfigWithRuntime } from '../transport/wire';
 import { promisify } from '../util/promises';
 import { resolveRuntimeVersion, rmDir, downloadFile, unzip, resolveDir, exists } from './util';
-import { launch as rootLaunch } from '../main';
-import { parse } from 'url';
-import { IncomingMessage } from 'http';
+import { startServices } from './services';
 
 const mkdir = promisify(fs.mkdir);
 
@@ -19,8 +17,6 @@ export function getUrl(version: string, urlPath: string): string {
     const runtimeRoot = process.env.assetsUrl || 'https://cdn.openfin.co/release/runtime/';
     return `${runtimeRoot}${urlPath}/${version}`;
 }
-
-const appDirectoryHost = process.env.appDirectoryHost || 'https://app-directory.openfin.co';
 
 export async function download(version: string, folder: string, osConfig: OsConfig): Promise<string> {
     const url = getUrl(version, osConfig.urlPath);
@@ -100,7 +96,6 @@ export default async function launch(config: ConfigWithRuntime, osConfig: OsConf
             args.push('--attach-console');
         }
         if (typeof config.services !== undefined && config.services != null) {
-            // tslint:disable-next-line:no-use-before-declare
             await startServices(config.services);
         }
         return spawn(runtimePath, args);
@@ -109,57 +104,3 @@ export default async function launch(config: ConfigWithRuntime, osConfig: OsConf
         throw e;
     }
 }
-
-interface AppDirectoryEntry {
-    manifest_url: string;
-}
-
-const fetchServiceDefinition = async (url: string): Promise<AppDirectoryEntry> => {
-    const lookupUrl = parse(url);
-    const protocol = await import(lookupUrl.protocol.slice(0, -1));
-    const res = await new Promise<string>(async (resolve, reject) => {
-        const request = protocol.get(lookupUrl, (response: IncomingMessage) => {
-            if (response.statusCode < 200 || response.statusCode > 299) {
-                reject(new Error(`Failed to load service at: ${url}, status code:${response.statusCode}`));
-            }
-            const body: string[] = [];
-            response.on('data', (chunk: string): void => {
-                body.push(chunk);
-            });
-            response.on('end', (): void => resolve(body.join('')));
-        });
-        request.on('error', (err: any) => reject(err));
-    });
-    return JSON.parse(res);
-};
-
-const lookupServiceUrl = async (serviceName: string) => {
-    if (appDirectoryHost.length > 0) {
-        const appUrl = `${appDirectoryHost}/api/v1/apps/${serviceName}`;
-        const mani = await fetchServiceDefinition(appUrl);
-        return mani.manifest_url;
-    }
-    console.error(`error getting startup url for ${serviceName}, host: ${appDirectoryHost}`);
-    return '';
-};
-
-const launchService = async (service: ServiceConfig) => {
-    let sURL = '';
-    if (service.manifestUrl) {
-        sURL = service.manifestUrl;
-    } else {
-        sURL = await lookupServiceUrl(service.name);
-    }
-    await rootLaunch({ manifestUrl: sURL });
-};
-
-const startServices = async (services: ServiceConfig[]) => {
-    for (let i = 0; i < services.length; i += 1) {
-        const service = services[i];
-        try {
-            await launchService(service);
-        } catch (e) {
-            console.error(e);
-        }
-    }
-};
