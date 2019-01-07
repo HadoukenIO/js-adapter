@@ -2,12 +2,12 @@ import { parse } from 'url';
 import { IncomingMessage } from 'http';
 
 export const fetch = async (url: string): Promise<any> => {
-    const proto = parse(url).protocol.slice(0, -1);
+    const proto = (parse(url).protocol.slice(0, -1)) === 'http' ? 'http' : 'https';
     const fetcher = await import(proto);
     return await new Promise<string>(async (resolve, reject) => {
         const request = fetcher.get(url, (response: IncomingMessage) => {
             if (response.statusCode < 200 || response.statusCode > 299) {
-                reject(new Error(`Failed to load service at: ${url}, status code:${response.statusCode}`));
+                reject(new Error(`Failed to load url: ${url}, status code:${response.statusCode}`));
             }
             const body: string[] = [];
             response.on('data', (chunk: string): void => {
