@@ -1,7 +1,7 @@
 import { ConnectConfig, isExternalConfig, InternalConnectConfig, ExternalConfig, isInternalConnectConfig } from '../transport/wire';
 import * as fs from 'fs';
 import { promisify } from './promises';
-import { fetch } from './http';
+import { fetchJson } from './http';
 
 async function readLocalConfig(location: string): Promise<any> {
     const txt = await promisify(fs.readFile)(location);
@@ -10,7 +10,7 @@ async function readLocalConfig(location: string): Promise<any> {
 
 async function loadConfig(config: ExternalConfig): Promise<any> {
    try {
-       return await fetch(config.manifestUrl);
+       return await fetchJson(config.manifestUrl);
    } catch (e) {
        try {
            return await readLocalConfig(config.manifestUrl);
