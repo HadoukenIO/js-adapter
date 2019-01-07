@@ -78,7 +78,6 @@ For a single-page reference to all application settings and configuration option
 * {@link InterApplicationBus#addUnsubscribeListener addUnsubscribeListener} _InterApplicationBus_
 * {@link Window#animate animate} _Window_
 * {@link Window#authenticate authenticate} _Window_
-* {@link Clipboard#getAvailableFormats getAvailableFormats} _Clipboard_
 * {@link Window#blur blur} _Window_
 * {@link Window#bringToFront bringToFront} _Window_
 * {@link System#clearCache clearCache} _System_
@@ -86,7 +85,9 @@ For a single-page reference to all application settings and configuration option
 * {@link Notification#close close} _Notification_
 * {@link Window#close close} _Window_
 * {@link InterApplicationBus.Channel.connect connect} _Channel_
+* {@link Application.create create} _Application_
 * {@link InterApplicationBus.Channel.create create} _Channel_
+* {@link Window.create create} _Window_
 * {@link Application.createFromManifest createFromManifest} _Application_
 * {@link System#deleteCacheOnExit deleteCacheOnExit} _System_
 * {@link Window#disableUserMovement disableUserMovement} _Window_
@@ -105,6 +106,7 @@ For a single-page reference to all application settings and configuration option
 * {@link System#getAllExternalApplications getAllExternalApplications} _System_
 * {@link System#getAllWindows getAllWindows} _System_
 * {@link System#getAppAssetInfo getAppAssetInfo} _System_
+* {@link Clipboard#getAvailableFormats getAvailableFormats} _Clipboard_
 * {@link Window#getBounds getBounds} _Window_
 * {@link Application#getChildWindows getChildWindows} _Application_
 * {@link System#getCommandLineArguments getCommandLineArguments} _System_
@@ -131,7 +133,7 @@ For a single-page reference to all application settings and configuration option
 * {@link Window#getInfo getInfo} _Window_
 * {@link System#getLog getLog} _System_
 * {@link System#getLogList getLogList} _System_
-* {@link System#getMachineId} _System_
+* {@link System#getMachineId getMachineId} _System_
 * {@link System#getMinLogLevel getMinLogLevel} _System_
 * {@link Application#getManifest getManifest} _Application_
 * {@link System#getMonitorInfo getMonitorInfo} _System_
@@ -154,6 +156,7 @@ For a single-page reference to all application settings and configuration option
 * {@link Application#getZoomLevel getZoomLevel} _Application_
 * {@link Window#getZoomLevel getZoomLevel} _Window_
 * {@link Window#hide hide} _Window_
+* {@link GlobalHotkey#isRegistered isRegistered} _GlobalHotkey_
 * {@link Application#isRunning isRunning} _Application_
 * {@link Window#isShowing isShowing} _Window_
 * {@link Window#joinGroup joinGroup} _Window_
@@ -180,6 +183,7 @@ For a single-page reference to all application settings and configuration option
 * {@link Clipboard#readText readText} _Clipboard_
 * {@link Channel#ChannelClient#register register} _ChannelClient_
 * {@link Channel#ChannelProvider#register register} _ChannelProvider_
+* {@link GlobalHotkey#register register} _GlobalHotkey_
 * {@link System#registerExternalConnection registerExternalConnection} _System_
 * {@link Application#registerUser registerUser} _Application_
 * {@link System#releaseExternalProcess releaseExternalProcess} _System_
@@ -202,6 +206,7 @@ For a single-page reference to all application settings and configuration option
 * {@link Application#scheduleRestart scheduleRestart} _Application_
 * {@link InterApplicationBus#send send} _InterApplicationBus_
 * {@link Notification#sendMessage sendMessage} _Notification_
+* {@link Application#setAppLogUsername setAppLogUsername} _Application_
 * {@link Window#setAsForeground setAsForeground} _Window_
 * {@link Window#setBounds setBounds} _Window_
 * {@link System#setMinLogLevel setMinLogLevel} _System_
@@ -218,6 +223,8 @@ For a single-page reference to all application settings and configuration option
 * {@link InterApplicationBus#subscribe subscribe} _InterApplicationBus_
 * {@link Application#terminate terminate} _Application_
 * {@link System#terminateExternalProcess terminateExternalProcess} _System_
+* {@link GlobalHotkey#unregister unregister} _GlobalHotkey_
+* {@link GlobalHotkey#unregisterAll unregisterAll} _GlobalHotkey_
 * {@link InterApplicationBus#unsubscribe unsubscribe} _InterApplicationBus_
 * {@link Window#updateOptions updateOptions} _Window_
 * {@link System#updateProxySettings updateProxySettings} _System_
