@@ -950,6 +950,16 @@ export default class System extends EmitterBase<SystemEvents> {
     }
 
     /**
+     * TODO
+     * @return {Promise.Array.<Identity>}
+     * @tutorial System.getAllExternalWindows
+     */
+    public getAllExternalWindows(): Promise<Array<Identity>> {
+        return this.wire.sendAction('get-all-external-windows')
+            .then(({ payload }) => payload.data);
+    }
+
+    /**
      * Retrieves app asset information.
      * @param { AppAssetRequest } options
      * @return {Promise.<AppAssetInfo>}

@@ -18,6 +18,9 @@ export interface ApplicationEvent<Topic, Type> extends BaseEvent<Topic, Type> {
 export interface WindowEvent<Topic, Type> extends ApplicationEvent<Topic, Type> {
     name: string;
 }
+export interface ExternalWindowEvent<Topic, Type> extends BaseEvent<Topic, Type> {
+    hwnd: string;
+}
 
 export function getTopic(e: RuntimeEvent<any>)  {
     switch (e.topic) {
