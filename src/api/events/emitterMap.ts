@@ -36,6 +36,13 @@ function normalizeString(s: string): string {
 export type SystemEmitterAccessor = ['system'];
 export type ApplicationEmitterAccessor = ['application', string];
 export type WindowEmitterAccessor = ['window', string, string];
+export type ExternalWindowEmitterAccessor = ['external-window', string];
 export type HotkeyEmitterAccessor = ['global-hotkey'];
 
-export type EmitterAccessor = SystemEmitterAccessor | ApplicationEmitterAccessor | WindowEmitterAccessor | HotkeyEmitterAccessor | string[];
+export type EmitterAccessor =
+    SystemEmitterAccessor |
+    ApplicationEmitterAccessor |
+    WindowEmitterAccessor |
+    ExternalWindowEmitterAccessor |
+    HotkeyEmitterAccessor |
+    string[];
