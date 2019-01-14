@@ -55,6 +55,8 @@ export class Channel extends EmitterBase<ChannelEvents> {
             listener = (payload: ChannelEvent<'connected'>) => {
                 if (channelName === payload.channelName) {
                     this.removeListener('connected', listener);
+                    // tslint:disable-next-line
+                    console.log(`channel: ${channelName} is now connected.`);
                     this.connect(channelName, opts).then(response => {
                         resolve(response);
                     });
