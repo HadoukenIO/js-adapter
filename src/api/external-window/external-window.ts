@@ -50,7 +50,7 @@ export class ExternalWindow extends EmitterBase<ExternalWindowEvents> {
         return this.wire.sendAction('animate-external-window', Object.assign({}, this.identity, {
             transitions,
             options
-        })).then(() => undefined);
+        })).then(({ payload }) => payload.data);
     }
 
     /**
@@ -60,7 +60,7 @@ export class ExternalWindow extends EmitterBase<ExternalWindowEvents> {
      */
     public bringToFront(): Promise<void> {
         return this.wire.sendAction('bring-external-window-to-front', this.identity)
-            .then(() => undefined);
+            .then(({ payload }) => payload.data);
     }
 
     /**
@@ -84,7 +84,7 @@ export class ExternalWindow extends EmitterBase<ExternalWindowEvents> {
      */
     public disableUserMovement(): Promise<void> {
         return this.wire.sendAction('disable-external-window-frame', this.identity)
-            .then(() => undefined);
+            .then(({ payload }) => payload.data);
     }
 
     /**
@@ -95,7 +95,7 @@ export class ExternalWindow extends EmitterBase<ExternalWindowEvents> {
      */
     public enableUserMovement(): Promise<void> {
         return this.wire.sendAction('enable-externa-window-frame', this.identity)
-            .then(() => undefined);
+            .then(({ payload }) => payload.data);
     }
 
     /**
@@ -105,7 +105,7 @@ export class ExternalWindow extends EmitterBase<ExternalWindowEvents> {
      */
     public flash(): Promise<void> {
         return this.wire.sendAction('flash-external-window', this.identity)
-            .then(() => undefined);
+            .then(({ payload }) => payload.data);
     }
 
     /**
@@ -116,7 +116,7 @@ export class ExternalWindow extends EmitterBase<ExternalWindowEvents> {
      */
     public focus(): Promise<void> {
         return this.wire.sendAction('focus-external-window', this.identity)
-            .then(() => undefined);
+            .then(({ payload }) => payload.data);
     }
 
     /**
@@ -182,7 +182,7 @@ export class ExternalWindow extends EmitterBase<ExternalWindowEvents> {
      */
     public hide(): Promise<void> {
         return this.wire.sendAction('hide-external-window', this.identity)
-            .then(() => undefined);
+            .then(({ payload }) => payload.data);
     }
 
     /**
@@ -205,7 +205,7 @@ export class ExternalWindow extends EmitterBase<ExternalWindowEvents> {
         return this.wire.sendAction('join-external-window-group', Object.assign({}, this.identity, {
             groupingHwnd: target.identity.name, // TODO: fix this to use external window identity
             groupingPid: target.identity.uuid // TODO: fix this to use external window identity
-        })).then(() => undefined);
+        })).then(({ payload }) => payload.data);
     }
 
     /**
@@ -216,7 +216,7 @@ export class ExternalWindow extends EmitterBase<ExternalWindowEvents> {
      */
     public leaveGroup(): Promise<void> {
         return this.wire.sendAction('leave-external-window-group', this.identity)
-            .then(() => undefined);
+            .then(({ payload }) => payload.data);
     }
 
     /**
@@ -226,7 +226,7 @@ export class ExternalWindow extends EmitterBase<ExternalWindowEvents> {
      */
     public maximize(): Promise<void> {
         return this.wire.sendAction('maximize-external-window', this.identity)
-            .then(() => undefined);
+            .then(({ payload }) => payload.data);
     }
 
     /**
@@ -240,7 +240,7 @@ export class ExternalWindow extends EmitterBase<ExternalWindowEvents> {
         return this.wire.sendAction('merge-external-window-groups', Object.assign({}, this.identity, {
             groupingUuid: target.identity.uuid, // TODO: fix this to use external window identity
             groupingWindowName: target.identity.name // TODO: fix this to use external window identity
-        })).then(() => undefined);
+        })).then(({ payload }) => payload.data);
     }
 
     /**
@@ -250,7 +250,7 @@ export class ExternalWindow extends EmitterBase<ExternalWindowEvents> {
      */
     public minimize(): Promise<void> {
         return this.wire.sendAction('minimize-external-window', this.identity)
-            .then(() => undefined);
+            .then(({ payload }) => payload.data);
     }
 
     /**
@@ -262,7 +262,7 @@ export class ExternalWindow extends EmitterBase<ExternalWindowEvents> {
      */
     public moveBy(deltaLeft: number, deltaTop: number): Promise<void> {
         return this.wire.sendAction('move-external-window-by', Object.assign({}, this.identity, { deltaLeft, deltaTop }))
-            .then(() => undefined);
+            .then(({ payload }) => payload.data);
     }
 
     /**
@@ -274,7 +274,7 @@ export class ExternalWindow extends EmitterBase<ExternalWindowEvents> {
      */
     public moveTo(left: number, top: number): Promise<void> {
         return this.wire.sendAction('move-external-window', Object.assign({}, this.identity, { left, top }))
-            .then(() => undefined);
+            .then(({ payload }) => payload.data);
     }
 
     /**
@@ -292,7 +292,7 @@ export class ExternalWindow extends EmitterBase<ExternalWindowEvents> {
             deltaWidth: Math.floor(deltaWidth),
             deltaHeight: Math.floor(deltaHeight),
             anchor
-        })).then(() => undefined);
+        })).then(({ payload }) => payload.data);
     }
 
     /**
@@ -310,7 +310,7 @@ export class ExternalWindow extends EmitterBase<ExternalWindowEvents> {
             width: Math.floor(width),
             height: Math.floor(height),
             anchor
-        })).then(() => undefined);
+        })).then(({ payload }) => payload.data);
     }
 
     /**
@@ -320,7 +320,7 @@ export class ExternalWindow extends EmitterBase<ExternalWindowEvents> {
      */
     public restore(): Promise<void> {
         return this.wire.sendAction('restore-external-window', this.identity)
-            .then(() => undefined);
+            .then(({ payload }) => payload.data);
     }
 
     /**
@@ -331,7 +331,7 @@ export class ExternalWindow extends EmitterBase<ExternalWindowEvents> {
      */
     public setAsForeground(): Promise<void> {
         return this.wire.sendAction('set-foreground-external-window', this.identity)
-            .then(() => undefined);
+            .then(({ payload }) => payload.data);
     }
 
     /**
@@ -342,7 +342,7 @@ export class ExternalWindow extends EmitterBase<ExternalWindowEvents> {
      */
     public setBounds(bounds: Bounds): Promise<void> {
         return this.wire.sendAction('set-external-window-bounds', Object.assign({}, this.identity, bounds))
-            .then(() => undefined);
+            .then(({ payload }) => payload.data);
     }
 
     /**
@@ -352,7 +352,7 @@ export class ExternalWindow extends EmitterBase<ExternalWindowEvents> {
      */
     public show(): Promise<void> {
         return this.wire.sendAction('show-external-window', this.identity)
-            .then(() => undefined);
+            .then(({ payload }) => payload.data);
     }
 
     /**
@@ -368,7 +368,7 @@ export class ExternalWindow extends EmitterBase<ExternalWindowEvents> {
         return this.wire.sendAction('show-at-window', Object.assign({}, this.identity, {
             left: Math.floor(left),
             top: Math.floor(top)
-        })).then(() => undefined);
+        })).then(({ payload }) => payload.data);
     }
 
     /**
@@ -378,6 +378,6 @@ export class ExternalWindow extends EmitterBase<ExternalWindowEvents> {
      */
     public stopFlashing(): Promise<void> {
         return this.wire.sendAction('stop-flash-external-window', this.identity)
-            .then(() => undefined);
+            .then(({ payload }) => payload.data);
     }
 }
