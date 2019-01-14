@@ -1,11 +1,10 @@
 import { Base, EmitterBase } from '../base';
 import { Identity } from '../../identity';
 import Bounds from './bounds';
-import { Transition, TransitionOptions } from './transition';
 import { Application } from '../application/application';
 import Transport from '../../transport/transport';
 import { WindowEvents } from '../events/window';
-import { AnchorType } from './anchor-type';
+import { AnchorType, Transition, TransitionOptions } from '../../shapes';
 import { WindowOption } from './windowOption';
 import { EntityType } from '../frame/frame';
 

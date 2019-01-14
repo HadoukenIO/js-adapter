@@ -1,3 +1,4 @@
+import { AnchorType, Transition, TransitionOptions } from '../../shapes';
 import { Base, EmitterBase } from '../base';
 import { ExternalWindowEvents } from '../events/externalWindow';
 import { Identity } from '../../identity';
@@ -39,12 +40,27 @@ export class ExternalWindow extends EmitterBase<ExternalWindowEvents> {
     }
 
     /**
+     * Performs the specified external window transitions.
+     * @param {Transition} transitions - Describes the animations to perform. See the tutorial.
+     * @param {TransitionOptions} options - Options for the animation. See the tutorial.
+     * @return {Promise.<void>}
+     * @tutorial Window.animate
+     */
+    public animate(transitions: Transition, options: TransitionOptions): Promise<void> {
+        return this.wire.sendAction('animate-external-window', Object.assign({}, this.identity, {
+            transitions,
+            options
+        })).then(() => undefined);
+    }
+
+    /**
      * Brings the external window to the front of the window stack.
      * @return {Promise.<void>}
      * @tutorial ExternalWindow.bringToFront
      */
     public bringToFront(): Promise<void> {
-        return this.wire.sendAction('bring-external-window-to-front', this.identity).then(() => undefined);
+        return this.wire.sendAction('bring-external-window-to-front', this.identity)
+            .then(() => undefined);
     }
 
     /**
@@ -58,6 +74,49 @@ export class ExternalWindow extends EmitterBase<ExternalWindowEvents> {
                 Object.setPrototypeOf(this, null);
                 return undefined;
             });
+    }
+
+    /**
+     * Prevents a user from changing an external window's size/position
+     * when using the window's frame.
+     * @return {Promise.<void>}
+     * @tutorial ExternalWindow.disableUserMovement
+     */
+    public disableUserMovement(): Promise<void> {
+        return this.wire.sendAction('disable-external-window-frame', this.identity)
+            .then(() => undefined);
+    }
+
+    /**
+     * Re-enables user changes to an external window's size/position
+     * when using the window's frame.
+     * @return {Promise.<void>}
+     * @tutorial ExternalWindow.enableUserMovement
+     */
+    public enableUserMovement(): Promise<void> {
+        return this.wire.sendAction('enable-externa-window-frame', this.identity)
+            .then(() => undefined);
+    }
+
+    /**
+     * Flashes the external window’s frame and taskbar icon until stopFlashing is called.
+     * @return {Promise.<void>}
+     * @tutorial ExternalWindow.flash
+     */
+    public flash(): Promise<void> {
+        return this.wire.sendAction('flash-external-window', this.identity)
+            .then(() => undefined);
+    }
+
+    /**
+     * Gives focus to the external window.
+     * @return {Promise.<void>}
+     * @emits ExternalWindow#focused
+     * @tutorial ExternalWindow.focus
+     */
+    public focus(): Promise<void> {
+        return this.wire.sendAction('focus-external-window', this.identity)
+            .then(() => undefined);
     }
 
     /**
@@ -101,7 +160,19 @@ export class ExternalWindow extends EmitterBase<ExternalWindowEvents> {
      * @tutorial ExternalWindow.getOptions
      */
     public getOptions(): Promise<any> {
-        return this.wire.sendAction('get-external-window-options', this.identity).then(({ payload }) => payload.data);
+        return this.wire.sendAction('get-external-window-options', this.identity)
+            .then(({ payload }) => payload.data);
+    }
+
+    /**
+     * Gets the current state ("minimized", "maximized", or "restored") of
+     * the external window.
+     * @return {Promise.<string>}
+     * @tutorial ExternalWindow.getState
+     */
+    public getState(): Promise<string> {
+        return this.wire.sendAction('get-external-window-state', this.identity)
+            .then(({ payload }) => payload.data);
     }
 
     /**
@@ -110,7 +181,8 @@ export class ExternalWindow extends EmitterBase<ExternalWindowEvents> {
      * @tutorial ExternalWindow.hide
      */
     public hide(): Promise<void> {
-        return this.wire.sendAction('hide-external-window', this.identity).then(() => undefined);
+        return this.wire.sendAction('hide-external-window', this.identity)
+            .then(() => undefined);
     }
 
     /**
@@ -119,7 +191,8 @@ export class ExternalWindow extends EmitterBase<ExternalWindowEvents> {
      * @tutorial ExternalWindow.isShowing
      */
     public isShowing(): Promise<boolean> {
-        return this.wire.sendAction('is-external-window-showing', this.identity).then(({ payload }) => payload.data);
+        return this.wire.sendAction('is-external-window-showing', this.identity)
+            .then(({ payload }) => payload.data);
     }
 
     /**
@@ -142,7 +215,8 @@ export class ExternalWindow extends EmitterBase<ExternalWindowEvents> {
      * @tutorial ExternalWindow.leaveGroup
      */
     public leaveGroup(): Promise<void> {
-        return this.wire.sendAction('leave-external-window-group', this.identity).then(() => undefined);
+        return this.wire.sendAction('leave-external-window-group', this.identity)
+            .then(() => undefined);
     }
 
     /**
@@ -151,7 +225,22 @@ export class ExternalWindow extends EmitterBase<ExternalWindowEvents> {
      * @tutorial ExternalWindow.maximize
      */
     public maximize(): Promise<void> {
-        return this.wire.sendAction('maximize-external-window', this.identity).then(() => undefined);
+        return this.wire.sendAction('maximize-external-window', this.identity)
+            .then(() => undefined);
+    }
+
+    /**
+     * Merges the instance's external window group with the same window group
+     * as the specified window.
+     * @param { class } target The window whose group is to be merged with
+     * @return {Promise.<void>}
+     * @tutorial ExternalWindow.mergeGroups
+     */
+    public mergeGroups(target: ExternalWindow): Promise<void> {
+        return this.wire.sendAction('merge-external-window-groups', Object.assign({}, this.identity, {
+            groupingUuid: target.identity.uuid, // TODO: fix this to use external window identity
+            groupingWindowName: target.identity.name // TODO: fix this to use external window identity
+        })).then(() => undefined);
     }
 
     /**
@@ -160,7 +249,68 @@ export class ExternalWindow extends EmitterBase<ExternalWindowEvents> {
      * @tutorial ExternalWindow.minimize
      */
     public minimize(): Promise<void> {
-        return this.wire.sendAction('minimize-external-window', this.identity).then(() => undefined);
+        return this.wire.sendAction('minimize-external-window', this.identity)
+            .then(() => undefined);
+    }
+
+    /**
+     * Moves the external window by a specified amount.
+     * @param { number } deltaLeft The change in the left position of the window
+     * @param { number } deltaTop The change in the top position of the window
+     * @return {Promise.<void>}
+     * @tutorial ExternalWindow.moveBy
+     */
+    public moveBy(deltaLeft: number, deltaTop: number): Promise<void> {
+        return this.wire.sendAction('move-external-window-by', Object.assign({}, this.identity, { deltaLeft, deltaTop }))
+            .then(() => undefined);
+    }
+
+    /**
+     * Moves the external window to a specified location.
+     * @param { number } left The left position of the window
+     * @param { number } top The top position of the window
+     * @return {Promise.<void>}
+     * @tutorial ExternalWindow.moveTo
+     */
+    public moveTo(left: number, top: number): Promise<void> {
+        return this.wire.sendAction('move-external-window', Object.assign({}, this.identity, { left, top }))
+            .then(() => undefined);
+    }
+
+    /**
+     * Resizes the external window by a specified amount.
+     * @param { number } deltaWidth The change in the width of the window
+     * @param { number } deltaHeight The change in the height of the window
+     * @param { AnchorType } anchor Specifies a corner to remain fixed during the resize.
+     * Can take the values: "top-left", "top-right", "bottom-left", or "bottom-right".
+     * If undefined, the default is "top-left".
+     * @return {Promise.<void>}
+     * @tutorial ExternalWindow.resizeBy
+     */
+    public resizeBy(deltaWidth: number, deltaHeight: number, anchor: AnchorType): Promise<void> {
+        return this.wire.sendAction('resize-external-window-by', Object.assign({}, this.identity, {
+            deltaWidth: Math.floor(deltaWidth),
+            deltaHeight: Math.floor(deltaHeight),
+            anchor
+        })).then(() => undefined);
+    }
+
+    /**
+     * Resizes the external window to the specified dimensions.
+     * @param { number } width The change in the width of the window
+     * @param { number } height The change in the height of the window
+     * @param { AnchorType } anchor Specifies a corner to remain fixed during the resize.
+     * Can take the values: "top-left", "top-right", "bottom-left", or "bottom-right".
+     * If undefined, the default is "top-left".
+     * @return {Promise.<void>}
+     * @tutorial ExternalWindow.resizeTo
+     */
+    public resizeTo(width: number, height: number, anchor: AnchorType): Promise<void> {
+        return this.wire.sendAction('resize-external-window', Object.assign({}, this.identity, {
+            width: Math.floor(width),
+            height: Math.floor(height),
+            anchor
+        })).then(() => undefined);
     }
 
     /**
@@ -169,7 +319,19 @@ export class ExternalWindow extends EmitterBase<ExternalWindowEvents> {
      * @tutorial ExternalWindow.restore
      */
     public restore(): Promise<void> {
-        return this.wire.sendAction('restore-external-window', this.identity).then(() => undefined);
+        return this.wire.sendAction('restore-external-window', this.identity)
+            .then(() => undefined);
+    }
+
+    /**
+     * Will bring the external window to the front of the entire stack and
+     * give it focus.
+     * @return {Promise.<void>}
+     * @tutorial ExternalWindow.setAsForeground
+     */
+    public setAsForeground(): Promise<void> {
+        return this.wire.sendAction('set-foreground-external-window', this.identity)
+            .then(() => undefined);
     }
 
     /**
@@ -179,7 +341,8 @@ export class ExternalWindow extends EmitterBase<ExternalWindowEvents> {
      * @tutorial ExternalWindow.setBounds
      */
     public setBounds(bounds: Bounds): Promise<void> {
-        return this.wire.sendAction('set-external-window-bounds', Object.assign({}, this.identity, bounds)).then(() => undefined);
+        return this.wire.sendAction('set-external-window-bounds', Object.assign({}, this.identity, bounds))
+            .then(() => undefined);
     }
 
     /**
@@ -188,7 +351,8 @@ export class ExternalWindow extends EmitterBase<ExternalWindowEvents> {
      * @tutorial ExternalWindow.show
      */
     public show(): Promise<void> {
-        return this.wire.sendAction('show-external-window', this.identity).then(() => undefined);
+        return this.wire.sendAction('show-external-window', this.identity)
+            .then(() => undefined);
     }
 
     /**
@@ -205,5 +369,15 @@ export class ExternalWindow extends EmitterBase<ExternalWindowEvents> {
             left: Math.floor(left),
             top: Math.floor(top)
         })).then(() => undefined);
+    }
+
+    /**
+     * Stops the taskbar icon from flashing.
+     * @return {Promise.<void>}
+     * @tutorial ExternalWindow.stopFlashing
+     */
+    public stopFlashing(): Promise<void> {
+        return this.wire.sendAction('stop-flash-external-window', this.identity)
+            .then(() => undefined);
     }
 }
