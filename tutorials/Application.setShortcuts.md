@@ -5,7 +5,7 @@ async function setShortcuts(config) {
     const app = await fin.Application.create({
             uuid: 'app-1',
             name: 'myApp',
-            url: 'https://openfin.co',
+            url: 'http://cdn.openfin.co/docs/javascript/stable/tutorial-Application.setShortcuts.html',
             autoShow: true
     });
     await app.run();

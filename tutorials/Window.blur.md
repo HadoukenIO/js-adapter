@@ -5,7 +5,7 @@ async function blurWindow() {
     const app = await fin.Application.create({
         name: 'myApp',
         uuid: 'app-1',
-        url: 'https://www.openfin.co',
+        url: 'http://cdn.openfin.co/docs/javascript/stable/tutorial-Window.blur.html',
         autoShow: true
     });
     await app.run();

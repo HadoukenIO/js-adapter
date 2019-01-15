@@ -7,7 +7,7 @@ async function getAllFrames() {
     const app = await fin.Application.create({
         name: 'myApp',
         uuid: 'app-1',
-        url: 'https://www.openfin.co',
+        url: 'http://cdn.openfin.co/docs/javascript/stable/tutorial-Window.getAllFrames.html',
         autoShow: true
     });
     await app.run();
