@@ -12,7 +12,7 @@ const manifest = {
     runtime: { version: testVersion, securityRealm: '' }
 };
 let fin: Fin;
-//tslint:disable-next-line\
+//tslint:disable-next-line
 const updateManifest = (uuid: string, realm = 'uuid-enforcement-realm-' + realmCount++) => {
    manifest.startup_app.uuid = uuid;
    manifest.startup_app.name = uuid;
@@ -20,7 +20,7 @@ const updateManifest = (uuid: string, realm = 'uuid-enforcement-realm-' + realmC
 };
 const server = http.createServer((req, res) => res.end(JSON.stringify(manifest)));
 const serverReady = new Promise((y, n) => {
-    server.listen(5000, e => e ? n(e) : y());
+    server.listen(5000, (e: any) => e ? n(e) : y());
 });
 //tslint:disable-next-line
 const newUuid = () => `duplicatedUuid${uuidCount++}`;
@@ -29,12 +29,13 @@ function makeTest<T>(func1: (uuid: string) => Promise<T>, func2: (uuid: string, 
     return async function () {
         const uuid = newUuid();
         const ret = await func1(uuid);
+        let secondFailed = false;
         try {
             await func2(uuid, ret);
         } catch (e) {
-            console.error(e);
-            assert.ok(true);
+            secondFailed = true;
         }
+        assert.ok(secondFailed);
     };
 }
 const createFromManifest = async (uuid: string) => {
