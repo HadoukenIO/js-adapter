@@ -57,7 +57,7 @@ const createFromManifestIntoRealm = async (uuid: string, fin2: Fin) => {
 };
 const externalConnection = (uuid: string) => launchAndConnect(testVersion, uuid);
 
-describe('UUID Enforcement', async function () {
+describe.skip('UUID Enforcement', async function () {
     this.retries(2);
     this.slow(TEST_TIMEOUT);
     this.timeout(TEST_TIMEOUT);
