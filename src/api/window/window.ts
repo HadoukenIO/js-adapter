@@ -404,7 +404,8 @@ export class _Window extends EmitterBase<WindowEvents> {
     }
 
     /**
-     * Returns then running applications uuid
+     * Returns the native OS level Id.
+     * In Windows, it will return the Windows [handle](https://docs.microsoft.com/en-us/windows/desktop/WinProg/windows-data-types#HWND).
      * @return {Promise.<string>}
      * @tutorial Window.getNativeId
      */

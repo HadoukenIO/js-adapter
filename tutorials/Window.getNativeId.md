@@ -1,4 +1,4 @@
-This returns the native OS level Id, in Windows it will return the Windows [handle](https://docs.microsoft.com/en-us/windows/desktop/WinProg/windows-data-types#HWND).
+Returns the native OS level Id. In Windows, it will return the Windows [handle](https://docs.microsoft.com/en-us/windows/desktop/WinProg/windows-data-types#HWND).
 
 # Example
 ```js
