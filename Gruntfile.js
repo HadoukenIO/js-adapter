@@ -233,7 +233,7 @@ module.exports = function (grunt) {
     grunt.registerTask('build', [
         'clean',
         'shell',
-        // 'webpack',
+        'webpack',
         'copy:resources'
     ]);
 
