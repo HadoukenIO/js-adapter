@@ -52,7 +52,7 @@ export default class InterApplicationBus extends Base {
 
     /**
      * Sends a message to a specific application on a specific topic.
-     * @param { object } destination The uuid of the application to which the message is sent
+     * @param { Identity } destination The uuid of the application to which the message is sent
      * @param { string } topic The topic on which the message is sent
      * @param { any } message The message to be sent. Can be either a primitive data
      * type (string, number, or boolean) or composite data type (object, array) that
