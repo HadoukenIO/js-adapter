@@ -69,13 +69,12 @@ export default class ApplicationModule extends Base {
     public wrapSync(identity: Identity): Application {
         return new Application(this.wire, identity);
     }
-
-    private _create(appOptions: ApplicationOption): Promise<Application> {
-        return this.wire.sendAction('create-application', appOptions)
-            .then(() => this.wrap({ uuid: appOptions.uuid }));
+    // tslint:disable-next-line:function-name
+    private async _create(appOptions: ApplicationOption): Promise<Application> {
+        await this.wire.sendAction('create-application', appOptions);
+        return await this.wrap({ uuid: appOptions.uuid });
     }
-    // tslint:disable-next-line:no-unused-variable
-    private create(appOptions: ApplicationOption): Promise<Application> {
+    public create(appOptions: ApplicationOption): Promise<Application> {
         console.warn('Deprecation Warning: fin.Application.create is deprecated. Please use fin.Application.start');
         return this._create(appOptions);
     }
@@ -128,8 +127,7 @@ export default class ApplicationModule extends Base {
         }, identity));
         return app;
     }
-    // tslint:disable-next-line:no-unused-variable
-    private createFromManifest(manifestUrl: string): Promise<Application> {
+    public createFromManifest(manifestUrl: string): Promise<Application> {
         console.warn('Deprecation Warning: fin.Application.createFromManifest is deprecated. Please use fin.Application.startFromManifest');
         return this.wire.sendAction('get-application-manifest', { manifestUrl })
             .then(({ payload }) => this.wrap({ uuid: payload.data.startup_app.uuid })
@@ -192,11 +190,11 @@ export class Application extends EmitterBase<ApplicationEvents> {
         await this._close(force);
         await this.wire.sendAction('destroy-application', Object.assign({force}, this.identity));
     }
+    //tslint:disable-next-line:function-name
     private _close(force: boolean = false): Promise<void> {
         return this.wire.sendAction('close-application', Object.assign({}, this.identity, { force })).then(() => undefined);
     }
-    // tslint:disable-next-line:no-unused-variable
-    private close(force: boolean = false): Promise<void> {
+    public close(force: boolean = false): Promise<void> {
         console.warn('Deprecation Warning: Application.close is deprecated Please use Application.quit');
         return this._close(force);
     }
@@ -320,7 +318,7 @@ export class Application extends EmitterBase<ApplicationEvents> {
     }
 
     // tslint:disable-next-line:no-unused-variable
-    private run(): Promise<void> {
+    public run(): Promise<void> {
         console.warn('Deprecation Warning: Application.run is deprecated Please use fin.Application.start');
         return this.wire.sendAction('run-application', Object.assign({}, this.identity, {
             manifestUrl: this._manifestUrl
