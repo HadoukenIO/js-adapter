@@ -5,7 +5,7 @@ import { EventEmitter } from 'events';
 import { EmitterAccessor } from './events/emitterMap';
 import { BaseEventMap } from './events/base';
 
-interface SubOptions {
+export interface SubOptions {
     timestamp?: number;
 }
 

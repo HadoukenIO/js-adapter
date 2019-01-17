@@ -358,6 +358,12 @@ import { _Window } from '../window/window';
  */
 
 /**
+ * SubOptions interface
+ * @typedef { Object } SubOptions
+ * @property { number } timestamp The event timestamp
+ */
+
+/**
  * TaskBar interface
  * @typedef { Object } TaskBar
  * @property { string } edge which edge of a monitor the taskbar is on
@@ -416,7 +422,7 @@ import { _Window } from '../window/window';
 /**
  * An object representing the core of OpenFin Runtime. Allows the developer
  * to perform system-level actions, such as accessing logs, viewing processes,
- * clearing the cache and exiting the runtime.
+ * clearing the cache and exiting the runtime as well as listen to <a href="tutorial-System.EventEmitter.html">system events</a>.
  * @namespace
  */
 export default class System extends EmitterBase<SystemEvents> {
@@ -463,6 +469,90 @@ export default class System extends EmitterBase<SystemEvents> {
             });
         });
     }
+
+    /**
+     * Adds a listener to the end of the listeners array for the specified event.
+     * @param { string | symbol } eventType  - The type of the event.
+     * @param { Function } listener - Called whenever an event of the specified type occurs.
+     * @param { SubOptions } [options] - Option to support event timestamps.
+     * @return {Promise.<this>}
+     * @function addListener
+     * @memberof System
+     * @instance
+     * @tutorial System.EventEmitter
+     */
+
+    /**
+     * Adds a listener to the end of the listeners array for the specified event.
+     * @param { string | symbol } eventType  - The type of the event.
+     * @param { Function } listener - Called whenever an event of the specified type occurs.
+     * @param { SubOptions } [options] - Option to support event timestamps.
+     * @return {Promise.<this>}
+     * @function on
+     * @memberof System
+     * @instance
+     * @tutorial System.EventEmitter
+     */
+
+    /**
+     * Adds a one time listener for the event. The listener is invoked only the first time the event is fired, after which it is removed.
+     * @param { string | symbol } eventType  - The type of the event.
+     * @param { Function } listener - The callback function.
+     * @param { SubOptions } [options] - Option to support event timestamps.
+     * @return {Promise.<this>}
+     * @function once
+     * @memberof System
+     * @instance
+     * @tutorial System.EventEmitter
+     */
+
+    /**
+     * Adds a listener to the beginning of the listeners array for the specified event.
+     * @param { string | symbol } eventType  - The type of the event.
+     * @param { Function } listener - The callback function.
+     * @param { SubOptions } [options] - Option to support event timestamps.
+     * @return {Promise.<this>}
+     * @function prependListener
+     * @memberof System
+     * @instance
+     * @tutorial System.EventEmitter
+     */
+
+    /**
+     * Adds a one time listener for the event. The listener is invoked only the first time the event is fired, after which it is removed.
+     * The listener is added to the beginning of the listeners array.
+     * @param { string | symbol } eventType  - The type of the event.
+     * @param { Function } listener - The callback function.
+     * @param { SubOptions } [options] - Option to support event timestamps.
+     * @return {Promise.<this>}
+     * @function prependOnceListener
+     * @memberof System
+     * @instance
+     * @tutorial System.EventEmitter
+     */
+
+    /**
+     * Remove a listener from the listener array for the specified event.
+     * Caution: Calling this method changes the array indices in the listener array behind the listener.
+     * @param { string | symbol } eventType  - The type of the event.
+     * @param { Function } listener - The callback function.
+     * @param { SubOptions } [options] - Option to support event timestamps.
+     * @return {Promise.<this>}
+     * @function removeListener
+     * @memberof System
+     * @instance
+     * @tutorial System.EventEmitter
+     */
+
+    /**
+     * Removes all listeners, or those of the specified event.
+     * @param { string | symbol } [eventType]  - The type of the event.
+     * @return {Promise.<this>}
+     * @function removeAllListeners
+     * @memberof System
+     * @instance
+     * @tutorial System.EventEmitter
+     */
 
     /**
      * Returns the version of the runtime. The version contains the major, minor,

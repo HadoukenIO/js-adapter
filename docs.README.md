@@ -69,13 +69,6 @@ For a single-page reference to all application settings and configuration option
 ```
 
 #### Index of API Methods <span id=index></span>
-* {@link Application#addEventListener addEventListener} _Application_
-* {@link ExternalApplication#addEventListener addEventListener} _ExternalApplication_
-* {@link Frame#addEventListener addEventListener} _Frame_
-* {@link System#addEventListener addEventListener} _System_
-* {@link Window#addEventListener addEventListener} _Window_
-* {@link InterApplicationBus#addSubscribeListener addSubscribeListener} _InterApplicationBus_
-* {@link InterApplicationBus#addUnsubscribeListener addUnsubscribeListener} _InterApplicationBus_
 * {@link Window#animate animate} _Window_
 * {@link Window#authenticate authenticate} _Window_
 * {@link Window#blur blur} _Window_
@@ -190,14 +183,7 @@ For a single-page reference to all application settings and configuration option
 * {@link Window#reload reload} _Window_
 * {@link Channel#ChannelClient#remove remove} _ChannelClient_
 * {@link Channel#ChannelProvider#remove remove} _ChannelProvider_
-* {@link Application#removeEventListener removeEventListener} _Application_
-* {@link ExternalApplication#removeEventListener removeEventListener} _ExternalApplication_
-* {@link Frame#removeEventListener removeEventListener} _Frame_
-* {@link System#removeEventListener removeEventListener} _System_
-* {@link Window#removeEventListener removeEventListener} _Window_
-* {@link InterApplicationBus#removeSubscribeListener removeSubscribeListener} _InterApplicationBus_
 * {@link Application#removeTrayIcon removeTrayIcon} _Application_
-* {@link InterApplicationBus#removeUnsubscribeListener removeUnsubscribeListener} _InterApplicationBus_
 * {@link Window#resizeBy resizeBy} _Window_
 * {@link Window#resizeTo resizeTo} _Window_
 * {@link Application#restart restart} _Application_
@@ -240,3 +226,4 @@ For a single-page reference to all application settings and configuration option
 * {@link Clipboard#writeHtml writeHtml} _Clipboard_
 * {@link Clipboard#writeRtf writeRtf} _Clipboard_
 * {@link Clipboard#writeText writeText} _Clipboard_
+
