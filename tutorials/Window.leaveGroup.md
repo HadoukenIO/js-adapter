@@ -5,7 +5,7 @@ async function createWin(uuid) {
     const app = await fin.Application.create({
         name: 'myApp',
         uuid: uuid,
-        url: 'http://cdn.openfin.co/docs/javascript/stable/tutorial-Window.leaveGroup.html',
+        url: 'https://cdn.openfin.co/docs/javascript/stable/tutorial-Window.leaveGroup.html',
         autoShow: true
     });
     await app.run();

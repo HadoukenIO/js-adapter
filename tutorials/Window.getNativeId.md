@@ -6,7 +6,7 @@ async function getWindowNativeId() {
     const app = await fin.Application.create({
         name: 'myApp',
         uuid: 'app-3',
-        url: 'http://cdn.openfin.co/docs/javascript/stable/tutorial-Window.getNativeId.html',
+        url: 'https://cdn.openfin.co/docs/javascript/stable/tutorial-Window.getNativeId.html',
         autoShow: true
     });
     await app.run();

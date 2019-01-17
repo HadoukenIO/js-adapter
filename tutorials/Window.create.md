@@ -6,7 +6,7 @@ async function createWindow() {
         name:'child',
         defaultWidth: 300,
         defaultHeight: 300,
-        url: 'http://cdn.openfin.co/docs/javascript/stable/tutorial-Window.create.html',
+        url: 'https://cdn.openfin.co/docs/javascript/stable/tutorial-Window.create.html',
         frame: true,
         autoShow: true
     };

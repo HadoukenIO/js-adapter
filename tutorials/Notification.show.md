@@ -2,6 +2,6 @@ Invoked when the notification is shown
 # Example
 ```js
 fin.Notification.create({
-    url: 'http://cdn.openfin.co/docs/javascript/stable/tutorial-Notification.show.html'
+    url: 'https://cdn.openfin.co/docs/javascript/stable/tutorial-Notification.show.html'
 }).show().then(() => console.log('Notification shown')).catch(err => console.log(err));
 ```

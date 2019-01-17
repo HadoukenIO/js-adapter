@@ -6,7 +6,7 @@ async function getWindowState() {
     const app = await fin.Application.create({
         name: 'myApp',
         uuid: 'app-1',
-        url: 'http://cdn.openfin.co/docs/javascript/stable/tutorial-Window.getState.html',
+        url: 'https://cdn.openfin.co/docs/javascript/stable/tutorial-Window.getState.html',
         autoShow: true
     });
     await app.run();

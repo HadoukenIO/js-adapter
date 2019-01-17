@@ -5,7 +5,7 @@ async function run() {
     const app = await fin.Application.create({
         name: 'myApp',
         uuid: 'app-1',
-        url: 'http://cdn.openfin.co/docs/javascript/stable/tutorial-Application.run.html',
+        url: 'https://cdn.openfin.co/docs/javascript/stable/tutorial-Application.run.html',
         autoShow: true
     });
     await app.run();

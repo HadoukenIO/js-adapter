@@ -5,7 +5,7 @@ async function BringWindowToFront() {
     const app = await fin.Application.create({
         name: 'myApp',
         uuid: 'app-1',
-        url: 'http://cdn.openfin.co/docs/javascript/stable/tutorial-Window.bringToFront.html',
+        url: 'https://cdn.openfin.co/docs/javascript/stable/tutorial-Window.bringToFront.html',
         autoShow: true
     });
     await app.run();
