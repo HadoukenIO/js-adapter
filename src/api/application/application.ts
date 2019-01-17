@@ -418,7 +418,7 @@ export class Application extends EmitterBase<ApplicationEvents> {
 
     /**
      * Sets new application's shortcut configuration.
-     * @param { object } config New application's shortcut configuration.
+     * @param { ShortCutConfig } config New application's shortcut configuration.
      * @param { boolean } [config.desktop] - Enable/disable desktop shortcut.
      * @param { boolean } [config.startMenu] - Enable/disable start menu shortcut.
      * @param { boolean } [config.systemStartup] - Enable/disable system startup shortcut.

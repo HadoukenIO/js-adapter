@@ -1,4 +1,4 @@
-This returns the native OS level Id, in Windows it will return the Windows [handle](https://msdn.microsoft.com/en-us/library/windows/desktop/aa383751(v=vs.85).aspx#HWND)
+Returns the native OS level Id. In Windows, it will return the Windows [handle](https://docs.microsoft.com/en-us/windows/desktop/WinProg/windows-data-types#HWND).
 
 # Example
 ```js
@@ -6,7 +6,7 @@ async function getWindowNativeId() {
     const app = await fin.Application.create({
         name: 'myApp',
         uuid: 'app-3',
-        url: 'https://www.openfin.co',
+        url: 'https://cdn.openfin.co/docs/javascript/stable/tutorial-Window.getNativeId.html',
         autoShow: true
     });
     await app.run();

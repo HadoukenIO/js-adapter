@@ -99,7 +99,7 @@ export interface Area {
 }
 
 /**
- * @typedef { Object } Area
+ * @typedef { object } Area
  * @property { number } height Area's height
  * @property { number } width Area's width
  * @property { number } x X coordinate of area's starting point
@@ -146,7 +146,7 @@ this animation onto the end of the animation queue.
 /**
  * Bounds is a interface that has the properties of height,
  * width, left, top which are all numbers
- * @typedef { Object } Bounds
+ * @typedef { object } Bounds
  * @property { number } height Get the application height bound
  * @property { number } width Get the application width bound
  * @property { number } top Get the application top bound
@@ -404,7 +404,8 @@ export class _Window extends EmitterBase<WindowEvents> {
     }
 
     /**
-     * Returns then running applications uuid
+     * Returns the native OS level Id.
+     * In Windows, it will return the Windows [handle](https://docs.microsoft.com/en-us/windows/desktop/WinProg/windows-data-types#HWND).
      * @return {Promise.<string>}
      * @tutorial Window.getNativeId
      */

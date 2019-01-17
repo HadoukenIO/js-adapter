@@ -6,7 +6,7 @@ async function createWin() {
     const app = await fin.Application.create({
         name: 'myApp',
         uuid: 'app-1',
-        url: 'https://www.openfin.co',
+        url: 'https://cdn.openfin.co/docs/javascript/stable/tutorial-Window.setZoomLevel.html',
         autoShow: true
     });
     await app.run();
@@ -18,5 +18,5 @@ async function setZoomLevel(number) {
     return await app.setZoomLevel(number);
 }
 
-setZoomLevel(220).then(() => console.log('Setting a  zoom level')).catch(err => console.log(err));
+setZoomLevel(4).then(() => console.log('Setting a  zoom level')).catch(err => console.log(err));
 ```

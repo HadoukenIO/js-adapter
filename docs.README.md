@@ -93,6 +93,7 @@ For a single-page reference to all application settings and configuration option
 * {@link Window#close close} _Window_
 * {@link InterApplicationBus.Channel.connect connect} _Channel_
 * {@link Application.create create} _Application_
+* {@link Notification.create create} _Notification_
 * {@link InterApplicationBus.Channel.create create} _Channel_
 * {@link Window.create create} _Window_
 * {@link Application.createFromManifest createFromManifest} _Application_

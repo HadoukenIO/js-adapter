@@ -6,7 +6,7 @@ async function hideWindow() {
     const app = await fin.Application.create({
         name: 'myApp',
         uuid: 'app-1',
-        url: 'https://www.openfin.co',
+        url: 'https://cdn.openfin.co/docs/javascript/stable/tutorial-Window.hide.html',
         autoShow: true
     });
     await app.run();

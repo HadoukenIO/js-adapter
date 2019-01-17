@@ -5,7 +5,7 @@ async function enableUserMovement() {
     const app = await fin.Application.create({
         name: 'myApp',
         uuid: 'app-3',
-        url: 'https://www.openfin.co',
+        url: 'https://cdn.openfin.co/docs/javascript/stable/tutorial-Window.enableFrame.html',
         autoShow: true
     });
     await app.run();
