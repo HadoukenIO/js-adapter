@@ -189,9 +189,6 @@ export class Application extends EmitterBase<ApplicationEvents> {
     public _manifestUrl?: string;
     private window: _Window;
 
-    /**
-     * **DO NOT USE!** Please use {@link Application.create Application.create}
-     */
     constructor(wire: Transport, public identity: Identity) {
         super(wire, ['application', identity.uuid]);
 
