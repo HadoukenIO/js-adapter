@@ -156,7 +156,7 @@ export default class _NotificationModule extends Base {
     public events = events;
 
     public create(options: any): _Notification {
-        const noteOptions = new NotificationOptions(options, this.me, this.genNoteId());
+        const noteOptions = new NotificationOptions(options, <Identity>this.me, this.genNoteId());
 
         return new _Notification(this.wire, noteOptions);
     };

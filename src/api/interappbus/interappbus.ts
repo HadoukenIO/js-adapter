@@ -46,7 +46,7 @@ export default class InterApplicationBus extends Base {
         return this.wire.sendAction('publish-message', {
             topic,
             message,
-            sourceWindowName: this.me.name
+            sourceWindowName: (<Identity>this.me).name
         }).then(() => undefined);
     }
 
@@ -66,7 +66,7 @@ export default class InterApplicationBus extends Base {
             destinationWindowName: destination.name,
             topic,
             message,
-            sourceWindowName: this.me.name
+            sourceWindowName: (<Identity>this.me).name
         }).then(() => undefined);
     }
 
@@ -92,7 +92,7 @@ export default class InterApplicationBus extends Base {
                 sourceUuid: source.uuid,
                 sourceWindowName: source.name || '*',
                 topic,
-                destinationWindowName: this.me.name
+                destinationWindowName: (<Identity>this.me).name
             });
         };
         const alreadySubscribed = () => {
@@ -120,7 +120,7 @@ export default class InterApplicationBus extends Base {
                 sourceUuid: source.uuid,
                 sourceWindowName: source.name || '*',
                 topic,
-                destinationWindowName: this.me.name
+                destinationWindowName: (<Identity>this.me).name
             });
         };
         const dontSendUnsubscription = () => {

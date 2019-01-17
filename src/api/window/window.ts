@@ -43,7 +43,7 @@ export default class _WindowModule extends Base {
      * @static
      */
     public create(options: WindowOption): Promise<_Window> {
-       const win = new _Window(this.wire, {uuid: this.me.uuid, name: options.name});
+       const win = new _Window(this.wire, {uuid: (<Identity>this.me).uuid, name: options.name});
        return win.createWindow(options);
     }
 

@@ -46,7 +46,7 @@ export default class _FrameModule extends Base {
      * @static
      */
     public getCurrent(): Promise<_Frame> {
-        return Promise.resolve(new _Frame(this.wire, this.me));
+        return Promise.resolve(new _Frame(this.wire, <Identity>this.me));
     }
 
     /**
@@ -56,7 +56,7 @@ export default class _FrameModule extends Base {
      * @static
      */
     public getCurrentSync(): _Frame {
-        return new _Frame(this.wire, this.me);
+        return new _Frame(this.wire, <Identity>this.me);
     }
 }
 

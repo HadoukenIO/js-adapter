@@ -4,6 +4,5 @@ export interface Identity {
 }
 
 export interface ExternalWindowIdentity {
-    hwnd: string;
-    pid: number;
+    nativeId: string;
 }
