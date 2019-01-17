@@ -17,7 +17,19 @@ article > ul:last-of-type {
     border: 1px dashed grey;
     background-color: ivory;
 }
+.tempheader {
+    padding: .65em;
+    text-align: left;
+    margin-top: 2em;
+    margin-bottom: 2.5em;
+    border: 1px dashed grey;
+    background-color: ivory;
+}
 </style>
+
+<div class=tempheader>
+<big>Have you been using our <b>{@link https://cdn.openfin.co/jsdocs/stable/index.html legacy API}</b> under the `fin.desktop` object?  Welcome to the new and improved V2 API!  You can now access the same classes and methods directly on the `fin` object. Please read <b>{@link INPUTLINKHERE this explanation}</b> of the differences between the legacy V1 API and the new V2 API.  </big>
+</div>
 
 Welcome to the <big>JavaScript API</big>. This API allows you to create an HTML/JavaScript application that has access to the native windowing
 environment, can communicate with other applications and has access to sandboxed system-level features.
@@ -30,6 +42,11 @@ You can treat the `fin` namespace as you would the `window`, `navigator` or `doc
 The full <big>[API Method Index](#index)</big> can be found below.
 * To find a specific method by name, simply search this page.
 * To browse the API, click one of the classes or namespaces in the sidebar at left.
+
+#### Configuration
+New applications and windows are instantiated by the respective `create` call with the following options objects: 
+* The {@link fin.Application~options Application Options object} is consumed by [Application.create](Application.create) 
+* The {@link fin.Window~options Window Options object} is consumed by [Window.create](Window.create) 
 
 <div class=dashbox>
 For a single-page reference to all application settings and configuration options, see also our <big>{@link https://openfin.co/application-config Application Config}</big> page.
@@ -52,17 +69,14 @@ For a single-page reference to all application settings and configuration option
             }
         </style>
         <script type="text/javascript">
-        document.addEventListener('DOMContentLoaded', () => {
-            //get the current version.
             fin.System.getVersion().then(version => {
                 document.querySelector('#of-version').innerText = version;
             });
-        });
         </script>
     </head>
     <body>
         <p>
-            OpenFin adapter <span id="of-version"></span>
+            OpenFin version <span id="of-version"></span>
         </p>
     </body>
 </html>
