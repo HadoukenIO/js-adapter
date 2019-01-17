@@ -6,7 +6,7 @@ async function reloadWindow() {
 		const app = await fin.Application.create({
 				name: 'myApp',
 				uuid: 'app-1',
-				url: 'https://www.google.com',
+				url: 'https://cdn.openfin.co/docs/javascript/stable/tutorial-Window.reload.html',
 				autoShow: true
 		});
 		await app.run();

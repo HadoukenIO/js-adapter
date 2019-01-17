@@ -44,6 +44,7 @@ export interface NotificationCallback {
  * are controlled by the runtime.
  * @class
  * @alias Notification
+ * @hideconstructor
  */
 // tslint:disable-next-line
 export class _Notification extends EmitterBase<NotificationEvents> {
@@ -144,6 +145,9 @@ export class _Notification extends EmitterBase<NotificationEvents> {
     }
 }
 
+/**
+ * @lends Notification
+ */
 // tslint:disable-next-line
 export default class _NotificationModule extends Base {
 
@@ -155,6 +159,13 @@ export default class _NotificationModule extends Base {
 
     public events = events;
 
+    /**
+     * Creates a new Notification.
+     * @param { object } options
+     * @return {_Notification}
+     * @tutorial Notification.create
+     * @static
+     */
     public create(options: any): _Notification {
         const noteOptions = new NotificationOptions(options, this.me, this.genNoteId());
 

@@ -5,7 +5,7 @@ async function createWin(uuid) {
     const app = await fin.Application.create({
         name: 'myApp',
         uuid: uuid,
-        url: 'https://www.openfin.co',
+        url: 'https://cdn.openfin.co/docs/javascript/stable/tutorial-Window.mergeGroups.html',
         autoShow: true
     });
     await app.run();

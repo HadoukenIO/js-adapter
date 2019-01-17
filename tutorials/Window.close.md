@@ -5,7 +5,7 @@ async function closeWindow() {
     const app = await fin.Application.create({
         name: 'myApp',
         uuid: 'app-3',
-        url: 'https://www.openfin.co',
+        url: 'https://cdn.openfin.co/docs/javascript/stable/tutorial-Window.close.html',
         autoShow: true
     });
     await app.run();

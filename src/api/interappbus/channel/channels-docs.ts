@@ -74,8 +74,9 @@ InterApplicationBus.Channel.onChannelDisconnect = function () { }
  * Returned by {@link Channel.create Channel.create}.
  * 
  * ##### Synchronous Methods
- *  * {@link Channel#ChannelProvider#register register(action, listener)}
+ *  * {@link Channel#ChannelProvider#destroy destroy()}
  *  * {@link Channel#ChannelProvider#publish publish(action, payload)}
+ *  * {@link Channel#ChannelProvider#register register(action, listener)}
  *  * {@link Channel#ChannelProvider#remove remove(action)}
  * 
  * ##### Asynchronous Methods
@@ -91,13 +92,10 @@ InterApplicationBus.Channel.onChannelDisconnect = function () { }
  *  * {@link Channel#ChannelProvider#afterAction afterAction(middleware)}
  * 
  * @memberof! Channel#
+ * @hideconstructor
  */
 class ChannelProvider {
 
-    /**
-     * <strong>Note:</strong> Do not instantiate this class directly.  
-     * Returned by {@link Channel.create Channel.create}.
-     */
     constructor() {}
 
     /**
@@ -206,6 +204,7 @@ class ChannelProvider {
  * Returned by {@link Channel.connect Channel.connect}.
  * 
  * ##### Synchronous Methods
+ *  * {@link Channel#ChannelClient#disconnect disconnect()}
  *  * {@link Channel#ChannelClient#register register(action, listener)}
  *  * {@link Channel#ChannelClient#remove remove(action)}
  * 
@@ -226,10 +225,6 @@ class ChannelProvider {
  */
 class ChannelClient {
 
-    /**
-     * <strong>Note:</strong> Do not instantiate this class directly.  
-     * Returned by {@link Channel.connect Channel.connect}.
-     */
     constructor() {}
 
     /**
