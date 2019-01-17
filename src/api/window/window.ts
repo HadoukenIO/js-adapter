@@ -38,7 +38,7 @@ export default class _WindowModule extends Base {
 
     /**
      * Creates a new Window.
-     * @param { WindowOption } options - Window creation options
+     * @param { Window~options } options - Window creation options
      * @return {Promise.<_Window>}
      * @tutorial Window.create
      * @static
@@ -99,7 +99,205 @@ export interface Area {
 }
 
 /**
- * @typedef { object } Area
+ * @typedef {object} Window~options
+ * @summary Window creation options.
+ * @desc This is the options object required by {@link Window.create Window.create}.
+ *
+ * Note that `name` is the only required property — albeit the `url` property is usually provided as well
+ * (defaults to `"about:blank"` when omitted).
+ *
+ * _This jsdoc typedef mirrors the `WindowOptions` TypeScript interface in `@types/openfin`._
+ *
+ * @property {object} [accelerator]
+ * Enable keyboard shortcuts for devtools, zoom, reload, and reload ignoring cache.
+ *
+ * @property {boolean} [accelerator.devtools=false]
+ * If `true`, enables the devtools keyboard shortcut:<br>
+ * `Ctrl` + `Shift` + `I` _(Toggles Devtools)_
+ *
+ * @property {boolean} [accelerator.reload=false]
+ * If `true`, enables the reload keyboard shortcuts:<br>
+ * `Ctrl` + `R` _(Windows)_<br>
+ * `F5` _(Windows)_<br>
+ * `Command` + `R` _(Mac)_
+ *
+ * @property {boolean} [accelerator.reloadIgnoringCache=false]
+ * If `true`, enables the reload-from-source keyboard shortcuts:<br>
+ * `Ctrl` + `Shift` + `R` _(Windows)_<br>
+ * `Shift` + `F5` _(Windows)_<br>
+ * `Command` + `Shift` + `R` _(Mac)_
+ *
+ * @property {boolean} [accelerator.zoom=false]
+ * If `true`, enables the zoom keyboard shortcuts:<br>
+ * `Ctrl` + `+` _(Zoom In)_<br>
+ * `Ctrl` + `Shift` + `+` _(Zoom In)_<br>
+ * `Ctrl` + `-` _(Zoom Out)_<br>
+ * `Ctrl` + `Shift` + `-` _(Zoom Out)_<br>
+ * `Ctrl` + `Scroll` _(Zoom In & Out)_<br>
+ * `Ctrl` + `0` _(Restore to 100%)_
+ *
+ * @property {boolean} [alwaysOnTop=false] - _Updatable._
+ * A flag to always position the window at the top of the window stack.
+ *
+ * @property {object} [api]
+ * Configurations for API injection.
+ *
+ * @property {object} [api.iframe] Configure if the the API should be injected into iframes based on domain.
+ *
+ * @property {boolean} [api.iframe.crossOriginInjection=false] Controls if the `fin` API object is present for cross origin iframes.
+ * @property {boolean} [api.iframe.sameOriginInjection=true] Controls if the `fin` API object is present for same origin iframes.
+ *
+ * @property {number} [aspectRatio=0] - _Updatable._
+ * The aspect ratio of width to height to enforce for the window. If this value is equal to or less than zero,
+ * an aspect ratio will not be enforced.
+ *
+ * @property {boolean} [autoShow=true]
+ * A flag to automatically show the window when it is created.
+ *
+ * @property {string} [backgroundColor="#FFF"]
+ * The window’s _backfill_ color as a hexadecimal value. Not to be confused with the content background color
+ * (`document.body.style.backgroundColor`),
+ * this color briefly fills a window’s (a) content area before its content is loaded as well as (b) newly exposed
+ * areas when growing a window. Setting
+ * this value to the anticipated content background color can help improve user experience.
+ * Default is white.
+ *
+ * @property {object} [contentNavigation]
+ * Restrict navigation to URLs that match a whitelisted pattern. See [here](https://developer.chrome.com/extensions/match_patterns)
+ * for more details.
+ * @property {string[]} [contentNavigation.whitelist=[]] List of whitelisted URLs.
+ *
+ * @property {boolean} [contextMenu=true] - _Updatable._
+ * A flag to show the context menu when right-clicking on a window.
+ * Gives access to the devtools for the window.
+ *
+ * @property {object} [cornerRounding] - _Updatable._
+ * Defines and applies rounded corners for a frameless window. **NOTE:** On macOS corner is not ellipse but circle rounded by the
+ *  average of _height_ and _width_.
+ * @property {number} [cornerRounding.height=0] The height in pixels.
+ * @property {number} [cornerRounding.width=0] The width in pixels.
+ *
+ * @property {string} [customData=""] - _Updatable._
+ * A field that the user can attach serializable data to to be ferried around with the window options.
+ * _When omitted, the default value of this property is the empty string (`""`)._
+ *
+ * @property {customRequestHeaders[]} [customRequestHeaders]
+ * Defines list of {@link customRequestHeaders} for requests sent by the window.
+ *
+ * @property {boolean} [defaultCentered=false]
+ * Centers the window in the primary monitor. This option overrides `defaultLeft` and `defaultTop`. When `saveWindowState` is `true`,
+ * this value will be ignored for subsequent launches in favor of the cached value. **NOTE:** On macOS _defaultCenter_ is
+ * somewhat above center vertically.
+ *
+ * @property {number} [defaultHeight=500]
+ * The default height of the window. When `saveWindowState` is `true`, this value will be ignored for subsequent launches
+ * in favor of the cached value.
+ *
+ * @property {number} [defaultLeft=100]
+ * The default left position of the window. When `saveWindowState` is `true`, this value will be ignored for subsequent
+ * launches in favor of the cached value.
+ *
+ * @property {number} [defaultTop=100]
+ * The default top position of the window. When `saveWindowState` is `true`, this value will be ignored for subsequent
+ * launches in favor of the cached value.
+ *
+ * @property {number} [defaultWidth=800]
+ * The default width of the window. When `saveWindowState` is `true`, this value will be ignored for subsequent
+ * launches in favor of the cached value.
+ *
+ * @property {boolean} [frame=true] - _Updatable._
+ * A flag to show the frame.
+ *
+ * @hidden-property {boolean} [hideOnClose=false] - A flag to allow a window to be hidden when the close button is clicked.
+ *
+ * @property {string} [icon] - _Updatable. Inheritable._
+ * A URL for the icon to be shown in the window title bar and the taskbar.
+ * _When omitted, inherits from the parent application._
+ *
+ * @property {number} [maxHeight=-1] - _Updatable._
+ * The maximum height of a window. Will default to the OS defined value if set to -1.
+ *
+ * @property {boolean} [maximizable=true] - _Updatable._
+ * A flag that lets the window be maximized.
+ *
+ * @property {number} [maxWidth=-1] - _Updatable._
+ * The maximum width of a window. Will default to the OS defined value if set to -1.
+ *
+ * @property {number} [minHeight=0] - _Updatable._
+ * The minimum height of a window.
+ *
+ * @property {boolean} [minimizable=true] - _Updatable._
+ * A flag that lets the window be minimized.
+ *
+ * @property {number} [minWidth=0] - _Updatable._
+ * The minimum width of a window.
+ *
+ * @property {string} name
+ * The name of the window.
+ *
+ * @property {number} [opacity=1.0] - _Updatable._
+ * A flag that specifies how transparent the window will be.
+ * This value is clamped between `0.0` and `1.0`.
+ *
+ * @property {preloadScript[]} [preloadScripts] - _Inheritable_
+ * A list of scripts that are eval'ed before other scripts in the page. When omitted, _inherits_
+ * from the parent application.
+ *
+ * @property {boolean} [resizable=true] - _Updatable._
+ * A flag to allow the user to resize the window.
+ *
+ * @property {object} [resizeRegion] - _Updatable._
+ * Defines a region in pixels that will respond to user mouse interaction for resizing a frameless window.
+ * @property {number} [resizeRegion.bottomRightCorner=9]
+ * The size in pixels of an additional square resizable region located at the bottom right corner of a frameless window.
+ * @property {number} [resizeRegion.size=7]
+ * The size in pixels.
+ * @property {object} [resizeRegion.sides={top:true,right:true,bottom:true,left:true}]
+ * Sides that a window can be resized from.
+ *
+ * @property {boolean} [saveWindowState=true]
+ * A flag to cache the location of the window.
+ *
+ * @property {boolean} [shadow=false]
+ * A flag to display a shadow on frameless windows.
+ * `shadow` and `cornerRounding` are mutually exclusive.
+ * On Windows 7, Aero theme is required.
+ *
+ * @property {boolean} [showTaskbarIcon=true] - _Updatable._ _Windows_.
+ * A flag to show the window's icon in the taskbar.
+ *
+ * @property {boolean} [smallWindow=false]
+ * A flag to specify a frameless window that can be be created and resized to less than 41x36px (width x height).
+ * _Note: Caveats of small windows are no Aero Snap and drag to/from maximize._
+ *
+ * @property {string} [state="normal"]
+ * The visible state of the window on creation.
+ * One of:
+ * * `"maximized"`
+ * * `"minimized"`
+ * * `"normal"`
+ *
+ * @property {string} [taskbarIconGroup=<application uuid>] - _Windows_.
+ * Specify a taskbar group for the window.
+ * _If omitted, defaults to app's uuid (`fin.desktop.Application.getCurrent().uuid`)._
+ *
+ * @property {string} [url="about:blank"]
+ * The URL of the window.
+ *
+ * @property {string} [uuid=<application uuid>]
+ * The `uuid` of the application, unique within the set of all `Application`s running in OpenFin Runtime.
+ * If omitted, defaults to the `uuid` of the application spawning the window.
+ * If given, must match the `uuid` of the  application spawning the window.
+ * In other words, the application's `uuid` is the only acceptable value, but is the default, so there's
+ * really no need to provide it.
+ *
+ * @property {boolean} [waitForPageLoad=false]
+ * When set to `true`, the window will not appear until the `window` object's `load` event fires.
+ * When set to `false`, the window will appear immediately without waiting for content to be loaded.
+ */
+
+/**
+ * @typedef { Object } Area
  * @property { number } height Area's height
  * @property { number } width Area's width
  * @property { number } x X coordinate of area's starting point
