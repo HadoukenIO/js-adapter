@@ -105,7 +105,7 @@ export class ExternalWindow extends EmitterBase<ExternalWindowEvents> {
      */
     public flash(): Promise<void> {
         return this.wire.sendAction('flash-external-window', this.identity)
-            .then(({ payload }) => payload.data);
+            .then(() => undefined);
     }
 
     /**
