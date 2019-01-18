@@ -465,7 +465,7 @@ export class Application extends EmitterBase<ApplicationEvents> {
     }
 
     /**
-     * Adds a customizable icon in the system tray and notifies the application when clicked.
+     * Adds a customizable icon in the system tray.  To listen for a click on the icon use the `tray-icon-clicked` event.
      * @param { string } iconUrl Image URL to be used as the icon
      * @return {Promise.<void>}
      * @tutorial Application.setTrayIcon

@@ -10,7 +10,7 @@ const InterApplicationBus: any = {};
 /**
  * @namespace 
  * @desc The Channel namespace allows an OpenFin application to create a channel as a {@link Channel#ChannelProvider ChannelProvider}, 
- * or connect to a channel as a {@link Channel#ChannelClient ChannelClient} (see Classes below). The "handshake" between the communication partners is 
+ * or connect to a channel as a {@link Channel#ChannelClient ChannelClient}. The "handshake" between the communication partners is 
  * simplified when using a channel.  A request to connect to a channel as a client will return a promise that resolves if/when the channel has been created. Both the 
  * provider and client can dispatch actions that have been registered on their opposites, and dispatch returns a promise that resolves with a payload from the other 
  * communication participant. There can be only one provider per channel, but many clients.  Version `9.61.35.*` or later is required for both communication partners.
