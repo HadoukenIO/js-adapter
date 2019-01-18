@@ -226,7 +226,7 @@ export class ExternalWindow extends EmitterBase<ExternalWindowEvents> {
      */
     public maximize(): Promise<void> {
         return this.wire.sendAction('maximize-external-window', this.identity)
-            .then(({ payload }) => payload.data);
+            .then(() => undefined);
     }
 
     /**
