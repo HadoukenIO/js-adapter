@@ -60,7 +60,7 @@ export class ExternalWindow extends EmitterBase<ExternalWindowEvents> {
      */
     public bringToFront(): Promise<void> {
         return this.wire.sendAction('bring-external-window-to-front', this.identity)
-            .then(({ payload }) => payload.data);
+            .then(() => undefined);
     }
 
     /**
