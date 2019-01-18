@@ -81,11 +81,11 @@ For a single-page reference to all application settings and configuration option
 * {@link Window#blur blur} _Window_
 * {@link Window#bringToFront bringToFront} _Window_
 * {@link System#clearCache clearCache} _System_
-* {@link Application#close close} _Application_
+* {@link Application#quit quit} _Application_
 * {@link Notification#close close} _Notification_
 * {@link Window#close close} _Window_
 * {@link InterApplicationBus.Channel.connect connect} _Channel_
-* {@link Application.create create} _Application_
+* {@link Application.start start} _Application_
 * {@link InterApplicationBus.Channel.create create} _Channel_
 * {@link Window.create create} _Window_
 * {@link Application.createFromManifest createFromManifest} _Application_
@@ -202,7 +202,6 @@ For a single-page reference to all application settings and configuration option
 * {@link Window#resizeTo resizeTo} _Window_
 * {@link Application#restart restart} _Application_
 * {@link Window#restore restore} _Window_
-* {@link Application#run run} _Application_
 * {@link Application#scheduleRestart scheduleRestart} _Application_
 * {@link InterApplicationBus#send send} _InterApplicationBus_
 * {@link Notification#sendMessage sendMessage} _Notification_
