@@ -289,10 +289,10 @@ export class ExternalWindow extends EmitterBase<ExternalWindowEvents> {
      */
     public resizeBy(deltaWidth: number, deltaHeight: number, anchor: AnchorType): Promise<void> {
         return this.wire.sendAction('resize-external-window-by', Object.assign({}, this.identity, {
-            deltaWidth: Math.floor(deltaWidth),
+            anchor,
             deltaHeight: Math.floor(deltaHeight),
-            anchor
-        })).then(({ payload }) => payload.data);
+            deltaWidth: Math.floor(deltaWidth)
+        })).then(() => undefined);
     }
 
     /**
