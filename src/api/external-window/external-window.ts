@@ -274,7 +274,7 @@ export class ExternalWindow extends EmitterBase<ExternalWindowEvents> {
      */
     public moveTo(left: number, top: number): Promise<void> {
         return this.wire.sendAction('move-external-window', Object.assign({}, this.identity, { left, top }))
-            .then(({ payload }) => payload.data);
+            .then(() => undefined);
     }
 
     /**
