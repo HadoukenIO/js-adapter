@@ -58,7 +58,7 @@ export interface TrayInfo {
  * _This jsdoc typedef mirrors the `ApplicationOptions` TypeScript interface in `@types/openfin`._
  *
  * **IMPORTANT NOTE:**
- * This object inherits all the properties of the window creation {@link fin.desktop.Window~options options} object,
+ * This object inherits all the properties of the window creation {@link Window~options options} object,
  * which will take priority over those of the same name that may be provided in `mainWindowOptions`.
  *
  * @property {boolean} [disableIabSecureLogging=false]
@@ -71,7 +71,7 @@ export interface TrayInfo {
  * will trigger this dialog.
  * Client response codes such as `404 Not Found` are not treated as fails as they are valid server responses.
  *
- * @property {fin.desktop.Window~options} [mainWindowOptions]
+ * @property {Window~options} [mainWindowOptions]
  * The options of the main window of the application.
  * For a description of these options, click the link (in the Type column).
  *
