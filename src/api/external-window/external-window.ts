@@ -250,7 +250,7 @@ export class ExternalWindow extends EmitterBase<ExternalWindowEvents> {
      */
     public minimize(): Promise<void> {
         return this.wire.sendAction('minimize-external-window', this.identity)
-            .then(({ payload }) => payload.data);
+            .then(() => undefined);
     }
 
     /**
