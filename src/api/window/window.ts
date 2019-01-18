@@ -1,6 +1,6 @@
 import { Base, EmitterBase } from '../base';
 import { Identity } from '../../identity';
-import Bounds from './bounds';
+import { Bounds } from '../../shapes';
 import { Application } from '../application/application';
 import Transport from '../../transport/transport';
 import { WindowEvents } from '../events/window';

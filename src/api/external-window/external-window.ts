@@ -1,8 +1,8 @@
 import { AnchorType, Transition, TransitionOptions } from '../../shapes';
 import { Base, EmitterBase } from '../base';
+import { Bounds } from '../../shapes';
 import { ExternalWindowEvents } from '../events/externalWindow';
 import { ExternalWindowIdentity } from '../../identity';
-import Bounds from './bounds';
 import Transport from '../../transport/transport';
 
  /**

@@ -47,3 +47,12 @@ type tween = 'linear' |
   'ease-in-elastic' |
   'ease-out-elastic' |
   'ease-in-out-elastic';
+
+export interface Bounds {
+  height: number;
+  width: number;
+  top: number;
+  left: number;
+  right?: number;
+  bottom?: number;
+}
