@@ -756,6 +756,15 @@ export class _Window extends EmitterBase<WindowEvents> {
     }
 
     /**
+     * Determines if the window is a main window.
+     * @return {boolean}
+     * @tutorial Window.isMainWindow
+     */
+    public isMainWindow(): boolean {
+        return this.me.uuid === this.me.name;
+    }
+
+    /**
      * Determines if the window is currently showing.
      * @return {Promise.<boolean>}
      * @tutorial Window.isShowing
@@ -766,7 +775,7 @@ export class _Window extends EmitterBase<WindowEvents> {
 
     /**
      * Joins the same window group as the specified window.
-     * @param { class } target The window whose group is to be joined
+     * @param { _Window } target The window whose group is to be joined
      * @return {Promise.<void>}
      * @tutorial Window.joinGroup
      */
@@ -808,7 +817,7 @@ export class _Window extends EmitterBase<WindowEvents> {
 
     /**
      * Merges the instance's window group with the same window group as the specified window
-     * @param { class } target The window whose group is to be merged with
+     * @param { _Window } target The window whose group is to be merged with
      * @return {Promise.<void>}
      * @tutorial Window.mergeGroups
      */
