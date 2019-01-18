@@ -182,7 +182,7 @@ export class ExternalWindow extends EmitterBase<ExternalWindowEvents> {
      */
     public hide(): Promise<void> {
         return this.wire.sendAction('hide-external-window', this.identity)
-            .then(({ payload }) => payload.data);
+            .then(() => undefined);
     }
 
     /**
