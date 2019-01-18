@@ -116,7 +116,7 @@ export class ExternalWindow extends EmitterBase<ExternalWindowEvents> {
      */
     public focus(): Promise<void> {
         return this.wire.sendAction('focus-external-window', this.identity)
-            .then(({ payload }) => payload.data);
+            .then(() => undefined);
     }
 
     /**
