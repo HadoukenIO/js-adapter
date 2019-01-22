@@ -320,7 +320,7 @@ export class ExternalWindow extends EmitterBase<ExternalWindowEvents> {
      */
     public restore(): Promise<void> {
         return this.wire.sendAction('restore-external-window', this.identity)
-            .then(({ payload }) => payload.data);
+            .then(() => undefined);
     }
 
     /**
