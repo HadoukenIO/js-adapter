@@ -331,7 +331,7 @@ export class ExternalWindow extends EmitterBase<ExternalWindowEvents> {
      */
     public setAsForeground(): Promise<void> {
         return this.wire.sendAction('set-foreground-external-window', this.identity)
-            .then(({ payload }) => payload.data);
+            .then(() => undefined);
     }
 
     /**
