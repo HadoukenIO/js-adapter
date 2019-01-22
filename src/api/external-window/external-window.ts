@@ -365,10 +365,10 @@ export class ExternalWindow extends EmitterBase<ExternalWindowEvents> {
      * @tutorial ExternalWindow.showAt
      */
     public showAt(left: number, top: number): Promise<void> {
-        return this.wire.sendAction('show-at-window', Object.assign({}, this.identity, {
+        return this.wire.sendAction('show-at-external-window', Object.assign({}, this.identity, {
             left: Math.floor(left),
             top: Math.floor(top)
-        })).then(({ payload }) => payload.data);
+        })).then(() => undefined);
     }
 
     /**
