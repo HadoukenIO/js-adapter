@@ -352,7 +352,7 @@ export class ExternalWindow extends EmitterBase<ExternalWindowEvents> {
      */
     public show(): Promise<void> {
         return this.wire.sendAction('show-external-window', this.identity)
-            .then(({ payload }) => payload.data);
+            .then(() => undefined);
     }
 
     /**
