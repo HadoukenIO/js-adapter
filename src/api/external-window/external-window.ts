@@ -342,7 +342,7 @@ export class ExternalWindow extends EmitterBase<ExternalWindowEvents> {
      */
     public setBounds(bounds: Bounds): Promise<void> {
         return this.wire.sendAction('set-external-window-bounds', Object.assign({}, this.identity, bounds))
-            .then(({ payload }) => payload.data);
+            .then(() => undefined);
     }
 
     /**
