@@ -378,6 +378,6 @@ export class ExternalWindow extends EmitterBase<ExternalWindowEvents> {
      */
     public stopFlashing(): Promise<void> {
         return this.wire.sendAction('stop-flash-external-window', this.identity)
-            .then(({ payload }) => payload.data);
+            .then(() => undefined);
     }
 }
