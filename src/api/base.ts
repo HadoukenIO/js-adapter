@@ -1,5 +1,5 @@
 import Transport from '../transport/transport';
-import { Identity, ExternalWindowIdentity } from '../identity';
+import { Identity } from '../identity';
 import { promiseMap } from '../util/promises';
 import { EventEmitter } from 'events';
 import { EmitterAccessor } from './events/emitterMap';
@@ -25,7 +25,7 @@ export class Base {
         this._topic = t;
     }
 
-    get me(): Identity | ExternalWindowIdentity {
+    get me(): Identity {
         return this.wire.me;
     }
 
@@ -40,7 +40,7 @@ export class Base {
 }
 
 export class EmitterBase<EventTypes extends BaseEventMap> extends Base {
-    protected identity: Identity | ExternalWindowIdentity;
+    protected identity: Identity;
 
     constructor(wire: Transport, private emitterAccessor: EmitterAccessor) {
         super(wire);

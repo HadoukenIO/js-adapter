@@ -2,7 +2,7 @@ import { AnchorType, Transition, TransitionOptions } from '../../shapes';
 import { Base, EmitterBase } from '../base';
 import { Bounds } from '../../shapes';
 import { ExternalWindowEvents } from '../events/externalWindow';
-import { ExternalWindowIdentity } from '../../identity';
+import { Identity } from '../../identity';
 import Transport from '../../transport/transport';
 
  /**
@@ -12,31 +12,31 @@ export default class ExternalWindowModule extends Base {
     /**
      * Asynchronously returns an external window object that represents
      * an existing external window.
-     * @param { ExternalWindowIdentity } identity
+     * @param { Identity } identity
      * @return {Promise.<ExternalWindow>}
      * @tutorial ExternalWindow.wrap
      * @static
      */
-    public async wrap(identity: ExternalWindowIdentity): Promise<ExternalWindow> {
+    public async wrap(identity: Identity): Promise<ExternalWindow> {
         return new ExternalWindow(this.wire, identity);
     }
 
     /**
      * Synchronously returns an external window object that represents an
      * existing external window.
-     * @param { ExternalWindowIdentity } identity
+     * @param { Identity } identity
      * @return {ExternalWindow}
      * @tutorial ExternalWindow.wrapSync
      * @static
      */
-    public wrapSync(identity: ExternalWindowIdentity): ExternalWindow {
+    public wrapSync(identity: Identity): ExternalWindow {
         return new ExternalWindow(this.wire, identity);
     }
 }
 
 export class ExternalWindow extends EmitterBase<ExternalWindowEvents> {
-    constructor(wire: Transport, public identity: ExternalWindowIdentity) {
-        super(wire, ['external-window', identity.nativeId]);
+    constructor(wire: Transport, public identity: Identity) {
+        super(wire, ['external-window', identity.uuid]);
     }
 
     /**
@@ -144,9 +144,9 @@ export class ExternalWindow extends EmitterBase<ExternalWindowEvents> {
                 let winGroup: Array<ExternalWindow> = [] as Array<ExternalWindow>;
 
                 if (payload.data.length) {
-                    winGroup = payload.data.map((identity: ExternalWindowIdentity) => {
-                        const { nativeId } = identity;
-                        return new ExternalWindow(this.wire, { nativeId });
+                    winGroup = payload.data.map((identity: Identity) => {
+                        const { uuid } = identity;
+                        return new ExternalWindow(this.wire, { uuid });
                     });
                 }
 
@@ -203,8 +203,7 @@ export class ExternalWindow extends EmitterBase<ExternalWindowEvents> {
      */
     public joinGroup(target: ExternalWindow): Promise<void> {
         return this.wire.sendAction('join-external-window-group', Object.assign({}, this.identity, {
-            // groupingHwnd: target.identity.name, // TODO: fix this to use external window identity
-            groupingPid: target.identity.nativeId // TODO: fix this to use external window identity
+            groupingPid: target.identity.uuid
         })).then(({ payload }) => payload.data);
     }
 
@@ -238,8 +237,7 @@ export class ExternalWindow extends EmitterBase<ExternalWindowEvents> {
      */
     public mergeGroups(target: ExternalWindow): Promise<void> {
         return this.wire.sendAction('merge-external-window-groups', Object.assign({}, this.identity, {
-            // groupingWindowName: target.identity.name // TODO: fix this to use external window identity
-            groupingUuid: target.identity.nativeId // TODO: fix this to use external window identity
+            groupingUuid: target.identity.uuid
         })).then(({ payload }) => payload.data);
     }
 
