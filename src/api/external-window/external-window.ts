@@ -94,7 +94,7 @@ export class ExternalWindow extends EmitterBase<ExternalWindowEvents> {
      * @tutorial ExternalWindow.enableUserMovement
      */
     public enableUserMovement(): Promise<void> {
-        return this.wire.sendAction('enable-externa-window-frame', this.identity)
+        return this.wire.sendAction('enable-external-window-frame', this.identity)
             .then(({ payload }) => payload.data);
     }
 
@@ -330,7 +330,7 @@ export class ExternalWindow extends EmitterBase<ExternalWindowEvents> {
      * @tutorial ExternalWindow.setAsForeground
      */
     public setAsForeground(): Promise<void> {
-        return this.wire.sendAction('set-foreground-external-window', this.identity)
+        return this.wire.sendAction('set-external-window-as-foreground', this.identity)
             .then(() => undefined);
     }
 
@@ -365,7 +365,7 @@ export class ExternalWindow extends EmitterBase<ExternalWindowEvents> {
      * @tutorial ExternalWindow.showAt
      */
     public showAt(left: number, top: number): Promise<void> {
-        return this.wire.sendAction('show-at-external-window', Object.assign({}, this.identity, {
+        return this.wire.sendAction('show-external-window-at', Object.assign({}, this.identity, {
             left: Math.floor(left),
             top: Math.floor(top)
         })).then(() => undefined);
@@ -377,7 +377,7 @@ export class ExternalWindow extends EmitterBase<ExternalWindowEvents> {
      * @tutorial ExternalWindow.stopFlashing
      */
     public stopFlashing(): Promise<void> {
-        return this.wire.sendAction('stop-flash-external-window', this.identity)
+        return this.wire.sendAction('stop-external-window-flashing', this.identity)
             .then(() => undefined);
     }
 }
