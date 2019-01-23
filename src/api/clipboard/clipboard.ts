@@ -3,7 +3,7 @@ import { WriteRequestType, WriteAnyRequestType } from './write-request';
 
 /**
  * WriteRequestType interface
- * @typedef { Object } WriteRequestType
+ * @typedef { object } WriteRequestType
  * @property { string } name The name of the running application
  * @property { string } uuid The uuid of the running application
  */

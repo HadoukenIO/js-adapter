@@ -5,7 +5,7 @@ async function getWindow() {
     const app = await fin.Application.create({
         uuid: 'app-1',
         name: 'myApp',
-        url: 'https://openfin.co',
+        url: 'https://cdn.openfin.co/docs/javascript/stable/tutorial-Application.getWindow.html',
         autoShow: true
     });
     await app.run();

@@ -17,7 +17,19 @@ article > ul:last-of-type {
     border: 1px dashed grey;
     background-color: ivory;
 }
+.tempheader {
+    padding: .65em;
+    text-align: left;
+    margin-top: 2em;
+    margin-bottom: 2.5em;
+    border: 1px dashed grey;
+    background-color: ivory;
+}
 </style>
+
+<div class=tempheader>
+<big>Have you been using our <b>{@link https://cdn.openfin.co/jsdocs/stable/index.html legacy API}</b> under the `fin.desktop` object?  Welcome to the new and improved V2 API!  You can now access the same classes and methods directly on the `fin` object. Please read <b>{@link INPUTLINKHERE this explanation}</b> of the differences between the legacy V1 API and the new V2 API.  </big>
+</div>
 
 Welcome to the <big>JavaScript API</big>. This API allows you to create an HTML/JavaScript application that has access to the native windowing
 environment, can communicate with other applications and has access to sandboxed system-level features.
@@ -30,6 +42,11 @@ You can treat the `fin` namespace as you would the `window`, `navigator` or `doc
 The full <big>[API Method Index](#index)</big> can be found below.
 * To find a specific method by name, simply search this page.
 * To browse the API, click one of the classes or namespaces in the sidebar at left.
+
+#### Configuration
+New applications and windows are instantiated by the respective `create` call with the following options objects: 
+* The {@link fin.Application~options Application Options object} is consumed by [Application.create](Application.create) 
+* The {@link fin.Window~options Window Options object} is consumed by [Window.create](Window.create) 
 
 <div class=dashbox>
 For a single-page reference to all application settings and configuration options, see also our <big>{@link https://openfin.co/application-config Application Config}</big> page.
@@ -52,40 +69,29 @@ For a single-page reference to all application settings and configuration option
             }
         </style>
         <script type="text/javascript">
-        document.addEventListener('DOMContentLoaded', () => {
-            //get the current version.
             fin.System.getVersion().then(version => {
                 document.querySelector('#of-version').innerText = version;
             });
-        });
         </script>
     </head>
     <body>
         <p>
-            OpenFin adapter <span id="of-version"></span>
+            OpenFin version <span id="of-version"></span>
         </p>
     </body>
 </html>
 ```
 
 #### Index of API Methods <span id=index></span>
-* {@link Application#addEventListener addEventListener} _Application_
-* {@link ExternalApplication#addEventListener addEventListener} _ExternalApplication_
-* {@link Frame#addEventListener addEventListener} _Frame_
-* {@link System#addEventListener addEventListener} _System_
-* {@link Window#addEventListener addEventListener} _Window_
-* {@link InterApplicationBus#addSubscribeListener addSubscribeListener} _InterApplicationBus_
-* {@link InterApplicationBus#addUnsubscribeListener addUnsubscribeListener} _InterApplicationBus_
 * {@link Window#animate animate} _Window_
 * {@link Window#authenticate authenticate} _Window_
 * {@link Window#blur blur} _Window_
 * {@link Window#bringToFront bringToFront} _Window_
 * {@link System#clearCache clearCache} _System_
-* {@link Application#quit quit} _Application_
 * {@link Notification#close close} _Notification_
 * {@link Window#close close} _Window_
 * {@link InterApplicationBus.Channel.connect connect} _Channel_
-* {@link Application.start start} _Application_
+* {@link Notification.create create} _Notification_
 * {@link InterApplicationBus.Channel.create create} _Channel_
 * {@link Window.create create} _Window_
 * {@link Application.createFromManifest createFromManifest} _Application_
@@ -156,6 +162,7 @@ For a single-page reference to all application settings and configuration option
 * {@link Application#getZoomLevel getZoomLevel} _Application_
 * {@link Window#getZoomLevel getZoomLevel} _Window_
 * {@link Window#hide hide} _Window_
+* {@link Window#isMainWindow isMainWindow} _Window_
 * {@link GlobalHotkey#isRegistered isRegistered} _GlobalHotkey_
 * {@link Application#isRunning isRunning} _Application_
 * {@link Window#isShowing isShowing} _Window_
@@ -177,6 +184,7 @@ For a single-page reference to all application settings and configuration option
 * {@link System#openUrlWithBrowser openUrlWithBrowser} _System_
 * {@link Channel#ChannelProvider#publish publish} _ChannelProvider_
 * {@link InterApplicationBus#publish publish} _InterApplicationBus_
+* {@link Application#quit quit} _Application_
 * {@link Clipboard#readHtml readHtml} _Clipboard_
 * {@link System#readRegistryValue readRegistryValue} _System_
 * {@link Clipboard#readRtf readRtf} _Clipboard_
@@ -190,14 +198,7 @@ For a single-page reference to all application settings and configuration option
 * {@link Window#reload reload} _Window_
 * {@link Channel#ChannelClient#remove remove} _ChannelClient_
 * {@link Channel#ChannelProvider#remove remove} _ChannelProvider_
-* {@link Application#removeEventListener removeEventListener} _Application_
-* {@link ExternalApplication#removeEventListener removeEventListener} _ExternalApplication_
-* {@link Frame#removeEventListener removeEventListener} _Frame_
-* {@link System#removeEventListener removeEventListener} _System_
-* {@link Window#removeEventListener removeEventListener} _Window_
-* {@link InterApplicationBus#removeSubscribeListener removeSubscribeListener} _InterApplicationBus_
 * {@link Application#removeTrayIcon removeTrayIcon} _Application_
-* {@link InterApplicationBus#removeUnsubscribeListener removeUnsubscribeListener} _InterApplicationBus_
 * {@link Window#resizeBy resizeBy} _Window_
 * {@link Window#resizeTo resizeTo} _Window_
 * {@link Application#restart restart} _Application_
@@ -216,6 +217,7 @@ For a single-page reference to all application settings and configuration option
 * {@link Window#show show} _Window_
 * {@link Window#showAt showAt} _Window_
 * {@link System#showDeveloperTools showDeveloperTools} _System_
+* {@link Application.start start} _Application_
 * {@link System#startCrashReporter startCrashReporter} _System_
 * {@link Window#stopFlashing stopFlashing} _Window_
 * {@link Window#stopNavigation stopNavigation} _Window_
@@ -239,3 +241,4 @@ For a single-page reference to all application settings and configuration option
 * {@link Clipboard#writeHtml writeHtml} _Clipboard_
 * {@link Clipboard#writeRtf writeRtf} _Clipboard_
 * {@link Clipboard#writeText writeText} _Clipboard_
+
