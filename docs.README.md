@@ -88,11 +88,9 @@ For a single-page reference to all application settings and configuration option
 * {@link Window#blur blur} _Window_
 * {@link Window#bringToFront bringToFront} _Window_
 * {@link System#clearCache clearCache} _System_
-* {@link Application#close close} _Application_
 * {@link Notification#close close} _Notification_
 * {@link Window#close close} _Window_
 * {@link InterApplicationBus.Channel.connect connect} _Channel_
-* {@link Application.create create} _Application_
 * {@link Notification.create create} _Notification_
 * {@link InterApplicationBus.Channel.create create} _Channel_
 * {@link Window.create create} _Window_
@@ -186,6 +184,7 @@ For a single-page reference to all application settings and configuration option
 * {@link System#openUrlWithBrowser openUrlWithBrowser} _System_
 * {@link Channel#ChannelProvider#publish publish} _ChannelProvider_
 * {@link InterApplicationBus#publish publish} _InterApplicationBus_
+* {@link Application#quit quit} _Application_
 * {@link Clipboard#readHtml readHtml} _Clipboard_
 * {@link System#readRegistryValue readRegistryValue} _System_
 * {@link Clipboard#readRtf readRtf} _Clipboard_
@@ -204,7 +203,6 @@ For a single-page reference to all application settings and configuration option
 * {@link Window#resizeTo resizeTo} _Window_
 * {@link Application#restart restart} _Application_
 * {@link Window#restore restore} _Window_
-* {@link Application#run run} _Application_
 * {@link Application#scheduleRestart scheduleRestart} _Application_
 * {@link InterApplicationBus#send send} _InterApplicationBus_
 * {@link Notification#sendMessage sendMessage} _Notification_
@@ -219,6 +217,7 @@ For a single-page reference to all application settings and configuration option
 * {@link Window#show show} _Window_
 * {@link Window#showAt showAt} _Window_
 * {@link System#showDeveloperTools showDeveloperTools} _System_
+* {@link Application.start start} _Application_
 * {@link System#startCrashReporter startCrashReporter} _System_
 * {@link Window#stopFlashing stopFlashing} _Window_
 * {@link Window#stopNavigation stopNavigation} _Window_

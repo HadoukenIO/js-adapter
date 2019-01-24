@@ -128,18 +128,26 @@ export default class ApplicationModule extends Base {
     public wrapSync(identity: Identity): Application {
         return new Application(this.wire, identity);
     }
-
-    /**
-     * Creates a new Application.
-     * @param { Application~options } appOptions
-     * Application creation options.
-     * @return {Promise.<Application>}
-     * @tutorial Application.create
-     * @static
-     */
+    // tslint:disable-next-line:function-name
+    private async _create(appOptions: ApplicationOption): Promise<Application> {
+        await this.wire.sendAction('create-application', appOptions);
+        return await this.wrap({ uuid: appOptions.uuid });
+    }
     public create(appOptions: ApplicationOption): Promise<Application> {
-        return this.wire.sendAction('create-application', appOptions)
-            .then(() => this.wrap({ uuid: appOptions.uuid }));
+        console.warn('Deprecation Warning: fin.Application.create is deprecated. Please use fin.Application.start');
+        return this._create(appOptions);
+    }
+    /**
+    * Creates and starts a new Application.
+    * @param { ApplicationOption } appOptions
+    * @return {Promise.<Application>}
+    * @tutorial Application.start
+    * @static
+    */
+    public async start(appOptions: ApplicationOption): Promise<Application> {
+        const app = await this._create(appOptions);
+        await this.wire.sendAction('run-application', { uuid: appOptions.uuid });
+        return app;
     }
 
     /**
@@ -163,13 +171,23 @@ export default class ApplicationModule extends Base {
     }
 
     /**
-     * Retrieves application's manifest and returns a wrapped application.
+     * Retrieves application's manifest and returns a running instance of the application.
      * @param {string} manifestUrl - The URL of app's manifest.
      * @return {Promise.<Application>}
-     * @tutorial Application.createFromManifest
+     * @tutorial Application.startFromManifest
      * @static
      */
+    public async startFromManifest(manifestUrl: string): Promise<Application> {
+        const payload: any = await this.wire.sendAction('get-application-manifest', { manifestUrl });
+        const identity = { uuid: payload.data.startup_app.uuid };
+        const app = await this.wrap(identity);
+        await this.wire.sendAction('run-application', Object.assign({
+            manifestUrl: manifestUrl
+        }, identity));
+        return app;
+    }
     public createFromManifest(manifestUrl: string): Promise<Application> {
+        console.warn('Deprecation Warning: fin.Application.createFromManifest is deprecated. Please use fin.Application.startFromManifest');
         return this.wire.sendAction('get-application-manifest', { manifestUrl })
             .then(({ payload }) => this.wrap({ uuid: payload.data.startup_app.uuid })
                 .then(app => {
@@ -306,13 +324,23 @@ export class Application extends EmitterBase<ApplicationEvents> {
 
     /**
      * Closes the application and any child windows created by the application.
+     * Cleans the application from state so it is no longer found in getAllApplications.
      * @param { boolean } [force = false] Close will be prevented from closing when force is false and
      *  ‘close-requested’ has been subscribed to for application’s main window.
      * @return {Promise.<boolean>}
-     * @tutorial Application.close
+     * @tutorial Application.quit
      */
-    public close(force: boolean = false): Promise<void> {
+    public async quit(force: boolean = false): Promise<void> {
+        await this._close(force);
+        await this.wire.sendAction('destroy-application', Object.assign({force}, this.identity));
+    }
+    //tslint:disable-next-line:function-name
+    private _close(force: boolean = false): Promise<void> {
         return this.wire.sendAction('close-application', Object.assign({}, this.identity, { force })).then(() => undefined);
+    }
+    public close(force: boolean = false): Promise<void> {
+        console.warn('Deprecation Warning: Application.close is deprecated Please use Application.quit');
+        return this._close(force);
     }
 
     /**
@@ -433,12 +461,9 @@ export class Application extends EmitterBase<ApplicationEvents> {
         return this.wire.sendAction('restart-application', this.identity).then(() => undefined);
     }
 
-    /**
-     * Runs the application. When the application is created, run must be called.
-     * @return {Promise.<void>}
-     * @tutorial Application.run
-     */
+    // tslint:disable-next-line:no-unused-variable
     public run(): Promise<void> {
+        console.warn('Deprecation Warning: Application.run is deprecated Please use fin.Application.start');
         return this.wire.sendAction('run-application', Object.assign({}, this.identity, {
             manifestUrl: this._manifestUrl
         })).then(() => undefined);
