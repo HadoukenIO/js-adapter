@@ -1,5 +1,5 @@
 [submodule "jsdoc-template"]
 	path = jsdoc-template
-	url = git@github.com:openfin/jsdoc-template.git
+	url = https://github.com/openfin/jsdoc-template.git
 	branch = master
 	ignore = all
