@@ -1,3 +1,4 @@
+# DEPRECATED use Application.quit instead
 Closes the application and any child windows created by the application.
 # Example
 ```js
