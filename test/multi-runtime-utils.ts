@@ -45,7 +45,6 @@ async function spawnRealm(version: string, realm?: string, args?: Array<string>)
                 const port = ++ws_port;
 
                 args = args || [
-                    '--enable-multi-runtime',
                     '--enable-mesh',
                     `--security-realm=${realm}`
                     // '--v=1',
