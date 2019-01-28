@@ -29,9 +29,11 @@ async function checkRvmPath() {
     return rvmPath;
 }
 
+const checkRVM = makeQueued(checkRvmPath);
+
 // tslint:disable-next-line:max-line-length
 export default async function launch(config: ConfigWithRuntime, manifestLocation: string, namedPipeName: string): Promise<ChildProcess> {
-    const rvmPath = await makeQueued(checkRvmPath);
+    const rvmPath = await checkRVM();
     return await launchRVM(config, manifestLocation, namedPipeName, rvmPath);
 }
 
