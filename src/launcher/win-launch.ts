@@ -1,6 +1,7 @@
 import * as path from 'path';
 import { ChildProcess, spawn } from 'child_process';
 import { ConfigWithRuntime } from '../transport/wire';
+import { exists } from './util';
 
 function launchRVM(config: ConfigWithRuntime, manifestLocation: string, namedPipeName: string, rvm: string): ChildProcess {
     const runtimeArgs = `--runtime-arguments=--runtime-information-channel-v6=${namedPipeName}`;
@@ -20,6 +21,11 @@ function launchRVM(config: ConfigWithRuntime, manifestLocation: string, namedPip
 
 // tslint:disable-next-line:max-line-length
 export default async function launch(config: ConfigWithRuntime, manifestLocation: string, namedPipeName: string): Promise<ChildProcess> {
-    const rvmPath = path.join(__dirname, '..', '..', 'resources', 'win', 'OpenFinRVM.exe');
+    let rvmPath: string = path.resolve(process.env.LOCALAPPDATA, 'OpenFin', 'OpenFinRVM.exe');
+
+    if (! await exists(rvmPath)) {
+        rvmPath = path.join(__dirname, '..', '..', 'resources', 'win', 'OpenFinRVM.exe');
+    }
+
     return await launchRVM(config, manifestLocation, namedPipeName, rvmPath);
 }
