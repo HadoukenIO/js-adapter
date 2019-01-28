@@ -1,3 +1,4 @@
+# DEPRECATED use Application.start instead
 Creates a new Application.
 # Example
 ```js
