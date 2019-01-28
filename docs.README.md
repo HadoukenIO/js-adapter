@@ -28,7 +28,7 @@ article > ul:last-of-type {
 </style>
 
 <div class=tempheader>
-<big>Have you been using our <b>{@link https://cdn.openfin.co/jsdocs/stable/index.html legacy API}</b> under the `fin.desktop` object?  Welcome to the new and improved V2 API!  You can now access the same classes and methods directly on the `fin` object. Please read <b>{@link INPUTLINKHERE this explanation}</b> of the differences between the legacy V1 API and the new V2 API.  </big>
+<big>Have you been using our <b>{@link https://cdn.openfin.co/jsdocs/stable/index.html legacy API}</b> under the `fin.desktop` object?  Welcome to the new and improved V2 API!  You can now access the same classes and methods directly on the `fin` object. Please read <b>{@link https://openfin.co/documentation/api-v2 this explanation}</b> of the differences between the legacy V1 API and the new V2 API.  </big>
 </div>
 
 Welcome to the <big>JavaScript API</big>. This API allows you to create an HTML/JavaScript application that has access to the native windowing
@@ -44,9 +44,9 @@ The full <big>[API Method Index](#index)</big> can be found below.
 * To browse the API, click one of the classes or namespaces in the sidebar at left.
 
 #### Configuration
-New applications and windows are instantiated by the respective `create` call with the following options objects: 
-* The {@link fin.Application~options Application Options object} is consumed by [Application.create](Application.create) 
-* The {@link fin.Window~options Window Options object} is consumed by [Window.create](Window.create) 
+New applications and windows are instantiated by the respective `start` and `create` calls with the following options objects: 
+* The {@link Application~options Application Options } object is consumed by {@link Application.start Application.start} 
+* The {@link Window~options Window Options } object is consumed by {@link Window.create Window.create} 
 
 <div class=dashbox>
 For a single-page reference to all application settings and configuration options, see also our <big>{@link https://openfin.co/application-config Application Config}</big> page.
