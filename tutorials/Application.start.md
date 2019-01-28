@@ -3,7 +3,7 @@ Creates and runs the application. There is no need to call run on an application
 ```js
 async function start() {
     return fin.Application.start({
-        name: 'myApp',
+        name: 'app-1',
         uuid: 'app-1',
         url: 'https://cdn.openfin.co/docs/javascript/stable/tutorial-Application.start.html',
         autoShow: true
