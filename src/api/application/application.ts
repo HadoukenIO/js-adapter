@@ -178,16 +178,16 @@ export default class ApplicationModule extends Base {
      * @static
      */
     public async startFromManifest(manifestUrl: string): Promise<Application> {
-        const payload: any = await this.wire.sendAction('get-application-manifest', { manifestUrl });
-        const identity = { uuid: payload.data.startup_app.uuid };
-        const app = await this.wrap(identity);
-        await this.wire.sendAction('run-application', Object.assign({
-            manifestUrl: manifestUrl
-        }, identity));
+        const app = await this._createFromManifest(manifestUrl);
+        await app.run();
         return app;
     }
     public createFromManifest(manifestUrl: string): Promise<Application> {
         console.warn('Deprecation Warning: fin.Application.createFromManifest is deprecated. Please use fin.Application.startFromManifest');
+        return this._createFromManifest(manifestUrl);
+    }
+    // tslint:disable-next-line:function-name
+    private _createFromManifest(manifestUrl: string): Promise<Application> {
         return this.wire.sendAction('get-application-manifest', { manifestUrl })
             .then(({ payload }) => this.wrap({ uuid: payload.data.startup_app.uuid })
                 .then(app => {
