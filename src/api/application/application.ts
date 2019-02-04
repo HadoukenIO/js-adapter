@@ -179,7 +179,8 @@ export default class ApplicationModule extends Base {
      */
     public async startFromManifest(manifestUrl: string): Promise<Application> {
         const app = await this._createFromManifest(manifestUrl);
-        await app.run();
+        //@ts-ignore using private method without warning.
+        await app._run();
         return app;
     }
     public createFromManifest(manifestUrl: string): Promise<Application> {
@@ -461,9 +462,12 @@ export class Application extends EmitterBase<ApplicationEvents> {
         return this.wire.sendAction('restart-application', this.identity).then(() => undefined);
     }
 
-    // tslint:disable-next-line:no-unused-variable
     public run(): Promise<void> {
         console.warn('Deprecation Warning: Application.run is deprecated Please use fin.Application.start');
+        return this._run();
+    }
+    // tslint:disable-next-line:function-name
+    private _run(): Promise<void> {
         return this.wire.sendAction('run-application', Object.assign({}, this.identity, {
             manifestUrl: this._manifestUrl
         })).then(() => undefined);
