@@ -245,7 +245,6 @@ describe('Application.', function() {
             });
         });
     });
-
     describe('createFromManifest()', () => {
 
         it('should create and run the app', () => {
@@ -258,6 +257,17 @@ describe('Application.', function() {
                     });
                 });
             });
+        });
+    });
+
+    describe('startFromManifest()', () => {
+
+        it('should create and run the app', async () => {
+            const manifestUrl = path.resolve('test/service-app.json');
+            const app = await fin.Application.startFromManifest(manifestUrl);
+            const data = await app.isRunning();
+            app.close();
+            return assert(data === true);
         });
     });
 
