@@ -1,5 +1,6 @@
 import * as path from 'path';
 import * as https from 'https';
+import * as request from 'request';
 import * as fs from 'fs';
 import { exec } from 'child_process';
 import { promisify, promiseMap } from '../util/promises';
@@ -16,17 +17,15 @@ export async function exists(path: string): Promise<Boolean> {
 
 export async function get(url: string): Promise<any> {
     return new Promise((resolve, reject) => {
-        const request = https.get(url, (response) => {
-            if (response.statusCode < 200 || response.statusCode > 299) {
+        request(url, (error, response, body) => {
+            if (error) {
+                reject(error);
+            }
+            if (response && (response.statusCode < 200 || response.statusCode > 299)) {
                 reject(new Error('Failed to load page, status code: ' + response.statusCode));
             }
-            const body: string[] = [];
-            response.on('data', (chunk: string): void => {
-                body.push(chunk);
-            });
-            response.on('end', (): void => resolve(body.join('')));
+            resolve(body);
         });
-        request.on('error', (err) => reject(err));
     });
 }
 
