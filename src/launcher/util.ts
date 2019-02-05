@@ -1,5 +1,4 @@
 import * as path from 'path';
-import * as https from 'https';
 import * as request from 'request';
 import * as fs from 'fs';
 import { exec } from 'child_process';
@@ -65,22 +64,18 @@ export async function rmDir(dirPath: string, removeSelf: boolean = true) {
 export async function downloadFile(url: string, writeLocation: string) {
     return new Promise((resolve, reject) => {
         try {
-            https.get(url, (response) => {
+            const r = request(url, (error, response, body) => {
                 if (response.statusCode !== 200) {
                     if (response.statusCode === 404) {
                         reject(new Error('Specified runtime not available for OS'));
                     } else {
                         reject(new Error('Issue Downloading ' + response.statusCode));
                     }
-                } else {
-                    const file = fs.createWriteStream(writeLocation);
-                    response.pipe(file);
-                    file.on('finish', () => {
-                        file.close();
-                        resolve();
-                    });
                 }
             });
+
+            r.pipe(fs.createWriteStream(writeLocation)).on('finish', resolve);
+
         } catch (e) {
             reject(e);
         }
