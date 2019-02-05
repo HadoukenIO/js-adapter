@@ -74,6 +74,18 @@ export async function downloadFile(url: string, writeLocation: string) {
                 }
             });
 
+            let fileSize: number;
+            let chunkCtr = 0;
+
+            r.on('response', (response) => {
+                fileSize = parseInt(response.headers['content-length'], 10);
+            });
+
+            r.on('data', (chunk) => {
+                chunkCtr += chunk.length;
+                process.stdout.write('Downloading Runtime: ' + (100.0 * chunkCtr / fileSize).toFixed(2) + '%\r');
+            });
+
             r.pipe(fs.createWriteStream(writeLocation)).on('finish', resolve);
 
         } catch (e) {
