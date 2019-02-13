@@ -14,10 +14,51 @@ export async function exists(path: string): Promise<Boolean> {
     }
 }
 
+function getProxy() {
+    const parsedUrl = new URL(proxyExists());
+    return {
+        port: parsedUrl.port,
+        host: parsedUrl.hostname,
+        username: parsedUrl.username,
+        password: parsedUrl.password
+    };
+}
+
+function proxyExists() {
+    return process.env.HTTPS_PROXY || process.env.https_proxy;
+}
+
+function getRequestOptions(url: string) {
+    const parsedUrl = new URL(url);
+
+    const options = {
+        host: parsedUrl.host,
+        path: parsedUrl.pathname,
+        port: '',
+        headers: { Host: '' }
+    };
+
+    if (proxyExists()) {
+        const proxy = getProxy();
+        options.host = proxy.host;
+        options.port = proxy.port;
+        options.path = url;
+        options.headers.Host = parsedUrl.host;
+        if (proxy.username && proxy.password) {
+            const auth = 'Basic ' + Buffer.from(proxy.username + ':' + proxy.password).toString('base64');
+            Object.assign(options.headers, { 'Proxy-Authorization': auth });
+        }
+    }
+
+    return options;
+}
+
 export async function get(url: string): Promise<any> {
     return new Promise((resolve, reject) => {
-        const request = https.get(url, (response) => {
+        const options = getRequestOptions(url);
+        const request = https.get(options, (response) => {
             if (response.statusCode < 200 || response.statusCode > 299) {
+                console.error('status code');
                 reject(new Error('Failed to load page, status code: ' + response.statusCode));
             }
             const body: string[] = [];
@@ -26,7 +67,10 @@ export async function get(url: string): Promise<any> {
             });
             response.on('end', (): void => resolve(body.join('')));
         });
-        request.on('error', (err) => reject(err));
+        request.on('error', (err) => {
+            console.error(err);
+            reject(err);
+        });
     });
 }
 
@@ -66,7 +110,9 @@ export async function rmDir(dirPath: string, removeSelf: boolean = true) {
 export async function downloadFile(url: string, writeLocation: string) {
     return new Promise((resolve, reject) => {
         try {
-            https.get(url, (response) => {
+            const options = getRequestOptions(url);
+
+            https.get(options, (response) => {
                 if (response.statusCode !== 200) {
                     if (response.statusCode === 404) {
                         reject(new Error('Specified runtime not available for OS'));
