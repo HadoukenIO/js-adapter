@@ -1,7 +1,7 @@
 Re-enables user changes to a window's size/position when using the window's frame
 # Example
 ```js
-async function enableFrame() {
+async function enableUserMovement() {
     const app = await fin.Application.create({
         name: 'myApp',
         uuid: 'app-3',
@@ -10,8 +10,8 @@ async function enableFrame() {
     });
     await app.run();
     const win = await app.getWindow();
-    return await win.enableFrame();
+    return await win.enableUserMovement();
 }
 
-enableFrame().then(() => console.log('Window is enabled')).catch(err => console.log(err));
+enableUserMovement().then(() => console.log('Window is enabled')).catch(err => console.log(err));
 ```

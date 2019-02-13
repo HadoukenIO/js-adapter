@@ -65,8 +65,8 @@ export class EmitterBase<EventTypes extends BaseEventMap> extends Base {
     public listeners = (type: string | symbol) => this.hasEmitter() ? this.getEmitter().listeners(type) : [];
     public listenerCount = (type: string | symbol) => this.hasEmitter() ? this.getEmitter().listenerCount(type) : 0;
 
-    protected registerEventListener = async <E extends Extract<keyof EventTypes, string> | string | symbol>(
-        eventType: E,
+    protected registerEventListener = async (
+        eventType: Extract<keyof EventTypes, string> | string | symbol,
         options: SubOptions = {}
     ): Promise<EventEmitter> => {
         const runtimeEvent = Object.assign({}, this.identity, {
@@ -82,8 +82,8 @@ export class EmitterBase<EventTypes extends BaseEventMap> extends Base {
         return emitter;
     }
 
-    protected deregisterEventListener = async <E extends Extract<keyof EventTypes, string> | string | symbol>(
-        eventType: E,
+    protected deregisterEventListener = async (
+        eventType: Extract<keyof EventTypes, string> | string | symbol,
         options: SubOptions = {}
     ): Promise<void | EventEmitter> => {
         if (this.hasEmitter()) {
@@ -108,14 +108,14 @@ export class EmitterBase<EventTypes extends BaseEventMap> extends Base {
         return Promise.resolve();
     }
 
-    public async on<E extends Extract<keyof EventTypes, string> | string | symbol> (
+    public on = async<E extends Extract<keyof EventTypes, string> | string | symbol> (
         eventType: E,
         listener: (
             payload: E extends keyof EventTypes ? EventTypes[E] : any,
             ...args: any[]
         ) => void,
         options?: SubOptions
-    ): Promise<this> {
+    ): Promise<this> => {
         const emitter = await this.registerEventListener(eventType, options);
         emitter.on(eventType, listener);
         return this;
@@ -123,14 +123,14 @@ export class EmitterBase<EventTypes extends BaseEventMap> extends Base {
 
     public addListener = this.on;
 
-    public async once<E extends Extract<keyof EventTypes, string> | string | symbol>(
+    public once = async<E extends Extract<keyof EventTypes, string> | string | symbol>(
         eventType: E,
         listener: (
             payload: E extends keyof EventTypes ? EventTypes[E] : any,
             ...args: any[]
         ) => void,
         options?: SubOptions
-    ): Promise<this> {
+    ): Promise<this> => {
         const deregister = () => this.deregisterEventListener(eventType);
         const emitter = await this.registerEventListener(eventType, options);
         emitter.once(eventType, deregister);
@@ -138,27 +138,27 @@ export class EmitterBase<EventTypes extends BaseEventMap> extends Base {
         return this;
     }
 
-    public async prependListener<E extends Extract<keyof EventTypes, string> | string | symbol>(
+    public prependListener = async<E extends Extract<keyof EventTypes, string> | string | symbol>(
         eventType: E,
         listener: (
             payload: E extends keyof EventTypes ? EventTypes[E] : any,
             ...args: any[]
         ) => void,
         options?: SubOptions
-    ): Promise<this> {
+    ): Promise<this> => {
         const emitter = await this.registerEventListener(eventType, options);
         emitter.prependListener(eventType, listener);
         return this;
     }
 
-    public async prependOnceListener<E extends Extract<keyof EventTypes, string> | string | symbol>(
+    public prependOnceListener = async<E extends Extract<keyof EventTypes, string> | string | symbol>(
         eventType: E,
         listener: (
             payload: E extends keyof EventTypes ? EventTypes[E] : any,
             ...args: any[]
         ) => void,
         options?: SubOptions
-    ): Promise<this> {
+    ): Promise<this> => {
         const deregister = () => this.deregisterEventListener(eventType);
         const emitter = await this.registerEventListener(eventType, options);
         emitter.prependOnceListener(eventType, listener);
@@ -166,14 +166,14 @@ export class EmitterBase<EventTypes extends BaseEventMap> extends Base {
         return this;
     }
 
-    public async removeListener<E extends Extract<keyof EventTypes, string> | string | symbol>(
+    public removeListener = async<E extends Extract<keyof EventTypes, string> | string | symbol> (
         eventType: E,
         listener: (
             payload: E extends keyof EventTypes ? EventTypes[E] : any,
             ...args: any[]
         ) => void,
         options?: SubOptions
-    ): Promise<this> {
+    ): Promise<this> => {
         const emitter = await this.deregisterEventListener(eventType, options);
         if (emitter) {
             emitter.removeListener(eventType, listener);
@@ -181,8 +181,8 @@ export class EmitterBase<EventTypes extends BaseEventMap> extends Base {
         return this;
     }
 
-    protected deregisterAllListeners = async <E extends Extract<keyof EventTypes, string> | string | symbol>
-    (eventType: E): Promise<EventEmitter | void> => {
+    protected deregisterAllListeners = async (eventType: Extract<keyof EventTypes, string> | string | symbol):
+        Promise<EventEmitter | void> => {
         const runtimeEvent = Object.assign({}, this.identity, {
             type: eventType,
             topic: this.topic
@@ -200,8 +200,8 @@ export class EmitterBase<EventTypes extends BaseEventMap> extends Base {
         }
     }
 
-    public async removeAllListeners<E extends Extract<keyof EventTypes, string> | string | symbol>(eventType?: E): Promise<this> {
-        const removeByEvent = async (event: E): Promise<void> => {
+    public removeAllListeners = async (eventType?: Extract<keyof EventTypes, string> | string | symbol): Promise<this> => {
+        const removeByEvent = async (event: Extract<keyof EventTypes, string> | string | symbol): Promise<void> => {
             const emitter = await this.deregisterAllListeners(event);
             if (emitter) {
                 emitter.removeAllListeners(event);

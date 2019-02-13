@@ -2,6 +2,7 @@ import { conn } from './connect';
 import { Fin } from '../src/main';
 import * as assert from 'assert';
 import { cleanOpenRuntimes } from './multi-runtime-utils';
+import { ExternalProcessRequestType, ExitCode } from '../src/api/system/external-process';
 
 describe('System.', function () {
     let fin: Fin;
@@ -207,19 +208,21 @@ describe('System.', function () {
         }));
     });
 
-    describe.skip('launchExternalProcess()', () => {
-        const processOptions = {
-            path: 'notepad',
-            arguments: '',
-            listener: (code: any) => { code = 'a'; }
-        };
-
+    describe('launchExternalProcess()', () => {
         it('Fulfilled', (done) => {
-            fin.System.launchExternalProcess(processOptions)
-                .then(() => {
-                    assert(true);
-                    return done();
-                });
+            const processOptions: ExternalProcessRequestType = {
+                path: 'notepad',
+                arguments: '',
+                listener: (result: ExitCode) => {
+                    assert(result.topic === 'exited', 'Expected topic is "exited"');
+                    assert(result.exitCode === 0);
+                    done();
+                }
+            };
+
+            fin.System.launchExternalProcess(processOptions).then(identity => {
+                fin.System.terminateExternalProcess({ uuid: identity.uuid, timeout: 1000, killTree: true});
+            });
         });
     });
 
