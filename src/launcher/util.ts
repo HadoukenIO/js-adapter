@@ -120,6 +120,21 @@ export async function downloadFile(url: string, writeLocation: string) {
                         reject(new Error('Issue Downloading ' + response.statusCode));
                     }
                 } else {
+                    const fileSize = parseInt(response.headers['content-length'], 10);
+                    let chunkCtr = 0;
+                    let progress: number;
+                    let output: string;
+
+                    response.on('data', (chunk) => {
+                        chunkCtr += chunk.length;
+                        progress = Math.floor(100 * chunkCtr / fileSize);
+                        output = 'Downloading Runtime: ' + progress + '%\r';
+                        if (progress === 100) {
+                            output = 'Downloading Runtime: ' + progress + '%\n';
+                        }
+                        process.stdout.write(output);
+                    });
+
                     const file = fs.createWriteStream(writeLocation);
                     response.pipe(file);
                     file.on('finish', () => {
