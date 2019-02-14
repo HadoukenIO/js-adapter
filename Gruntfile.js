@@ -44,7 +44,7 @@ module.exports = function (grunt) {
     const target = grunt.option('target');
     const shouldBuildCore = grunt.option('build-core');
     const uuid = 'testapp';
-    const args = '--enable-multi-runtime --debug=5858';
+    const args = '--inspect=9222';
     process.env.OF_VER = version;
     process.env.TEST_SERVER_PORT = serverParams.port;
 
