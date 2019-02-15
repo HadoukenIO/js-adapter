@@ -46,7 +46,7 @@ export interface TrayInfo {
 
 /**
  * @typedef {object} Application~options
- * @summary Application instantiated options.
+ * @summary Application creation options.
  * @desc This is the options object required by {@link Application.start Application.start}.
  *
  * The following options are required:
