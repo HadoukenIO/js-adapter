@@ -2,13 +2,12 @@ Flashes the window’s frame and taskbar icon until the window is activated.
 # Example
 ```js
 async function windowFlash() {
-    const app = await fin.Application.create({
+    const app = await fin.Application.start({
         name: 'myApp',
         uuid: 'app-1',
         url: 'https://cdn.openfin.co/docs/javascript/stable/tutorial-Window.flash.html',
         autoShow: true
     });
-    await app.run();
     const win = await app.getWindow();
     return await win.flash();
 }

@@ -2,13 +2,12 @@ Sets new application's shortcut configuration
 # Example
 ```js
 async function setShortcuts(config) {
-    const app = await fin.Application.create({
+    const app = await fin.Application.start({
             uuid: 'app-1',
             name: 'myApp',
             url: 'https://cdn.openfin.co/docs/javascript/stable/tutorial-Application.setShortcuts.html',
             autoShow: true
     });
-    await app.run();
     return await app.getWindow().setShortcuts(config);
 }
 

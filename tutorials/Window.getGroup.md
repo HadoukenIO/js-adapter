@@ -3,13 +3,12 @@ Retrieves an array containing wrapped fin.Windows that are grouped with this win
 # Example
 ```js
 async function getGroup() {
-    const app = await fin.Application.create({
+    const app = await fin.Application.start({
         name: 'myApp',
         uuid: 'app-1',
         url: 'https://cdn.openfin.co/docs/javascript/stable/tutorial-Window.getGroup.html',
         autoShow: true
     });
-    await app.run();
     const win = await app.getWindow();
     return await win.getGroup();
 }
