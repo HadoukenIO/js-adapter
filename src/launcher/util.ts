@@ -58,7 +58,6 @@ export async function get(url: string): Promise<any> {
         const options = getRequestOptions(url);
         const request = https.get(options, (response) => {
             if (response.statusCode < 200 || response.statusCode > 299) {
-                console.error('status code');
                 reject(new Error('Failed to load page, status code: ' + response.statusCode));
             }
             const body: string[] = [];
@@ -67,10 +66,7 @@ export async function get(url: string): Promise<any> {
             });
             response.on('end', (): void => resolve(body.join('')));
         });
-        request.on('error', (err) => {
-            console.error(err);
-            reject(err);
-        });
+        request.on('error', (err) => reject(err));
     });
 }
 
