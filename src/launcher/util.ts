@@ -153,7 +153,7 @@ export async function resolveRuntimeVersion(versionOrChannel: string): Promise<s
         if (4 - mustMatch.length > 0) {
             //    tslint:disable-next-line:no-backbone-get-set-outside-model
             const res = await get('https://cdn.openfin.co/release/runtimeVersions');
-            const versions = res.split('\r\n');
+            const versions = res.split('\n');
             const match = first(versions, (v: string) => v.split('.').slice(0, mustMatch.length).join('.') === mustMatch.join('.'));
             if (match) {
                 return match;
