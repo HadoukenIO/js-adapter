@@ -178,16 +178,17 @@ export default class ApplicationModule extends Base {
      * @static
      */
     public async startFromManifest(manifestUrl: string): Promise<Application> {
-        const payload: any = await this.wire.sendAction('get-application-manifest', { manifestUrl });
-        const identity = { uuid: payload.data.startup_app.uuid };
-        const app = await this.wrap(identity);
-        await this.wire.sendAction('run-application', Object.assign({
-            manifestUrl: manifestUrl
-        }, identity));
+        const app = await this._createFromManifest(manifestUrl);
+        //@ts-ignore using private method without warning.
+        await app._run();
         return app;
     }
     public createFromManifest(manifestUrl: string): Promise<Application> {
         console.warn('Deprecation Warning: fin.Application.createFromManifest is deprecated. Please use fin.Application.startFromManifest');
+        return this._createFromManifest(manifestUrl);
+    }
+    // tslint:disable-next-line:function-name
+    private _createFromManifest(manifestUrl: string): Promise<Application> {
         return this.wire.sendAction('get-application-manifest', { manifestUrl })
             .then(({ payload }) => this.wrap({ uuid: payload.data.startup_app.uuid })
                 .then(app => {
@@ -461,9 +462,12 @@ export class Application extends EmitterBase<ApplicationEvents> {
         return this.wire.sendAction('restart-application', this.identity).then(() => undefined);
     }
 
-    // tslint:disable-next-line:no-unused-variable
     public run(): Promise<void> {
         console.warn('Deprecation Warning: Application.run is deprecated Please use fin.Application.start');
+        return this._run();
+    }
+    // tslint:disable-next-line:function-name
+    private _run(): Promise<void> {
         return this.wire.sendAction('run-application', Object.assign({}, this.identity, {
             manifestUrl: this._manifestUrl
         })).then(() => undefined);

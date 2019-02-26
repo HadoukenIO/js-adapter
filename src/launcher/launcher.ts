@@ -65,6 +65,6 @@ export default class Launcher {
     }
 
     private winLaunch(config: ConfigWithRuntime, manifestLocation: string, namedPipeName: string) {
-        return winLaunch(config, manifestLocation, namedPipeName, this.Installer_Work_Dir);
+        return winLaunch(config, manifestLocation, namedPipeName);
     }
 }
