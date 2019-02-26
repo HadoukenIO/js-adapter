@@ -14,7 +14,7 @@ export async function exists(path: string): Promise<Boolean> {
     }
 }
 
-function getProxy() {
+export function getProxy() {
     const parsedUrl = new URL(proxyExists());
     return {
         port: parsedUrl.port,
@@ -28,7 +28,7 @@ function proxyExists() {
     return process.env.HTTPS_PROXY || process.env.https_proxy;
 }
 
-function getRequestOptions(url: string) {
+export function getRequestOptions(url: string) {
     const parsedUrl = new URL(url);
 
     const options = {
