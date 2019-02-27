@@ -490,6 +490,15 @@ export class _Window extends EmitterBase<WindowEvents> {
                 });
             });
 
+            //set defaults:
+            if (options.waitForPageLoad === void 0) {
+                options.waitForPageLoad = false;
+            }
+
+            if (options.autoShow === void 0) {
+                options.autoShow = true;
+            }
+
             const windowCreation = this.wire.environment.createChildWindow(options);
             Promise.all([pageResponse, windowCreation]).then((resolvedArr: any[]) => {
                 const pageResolve = resolvedArr[0];
@@ -845,6 +854,7 @@ export class _Window extends EmitterBase<WindowEvents> {
      * @tutorial Window.moveBy
      */
     public moveBy(deltaLeft: number, deltaTop: number): Promise<void> {
+        console.warn('Hey, this has been deprecated');
         return this.wire.sendAction('move-window-by', Object.assign({}, this.identity, { deltaLeft, deltaTop })).then(() => undefined);
     }
 
