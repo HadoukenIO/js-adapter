@@ -81,6 +81,7 @@ describe('Launcher', () => {
             });
             it('reads the https_proxy var', () => {
                 let result: boolean;
+
                 const compare = {
                     host: 'openfin.co',
                     path: 'http://example.com',
@@ -95,9 +96,8 @@ describe('Launcher', () => {
                     process.env.https_proxy = 'https://foo:bar@openfin.co:5555';
                     result = testProxy('http://example.com', compare);
                     delete process.env.https_proxy;
-                } else {
-                    result = testProxy('https://example.com', compare);
                 }
+
                 assert(result);
             });
         });
@@ -142,9 +142,7 @@ async function testVersion(input: string, expected: string | Function): Promise<
 
 function testProxy(url: string, compare: object) {
     const stringRequest = JSON.stringify(getRequestOptions(url));
-
     const stringOptions = JSON.stringify(compare);
-
     return stringRequest === stringOptions;
 }
 
