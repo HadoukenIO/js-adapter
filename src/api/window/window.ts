@@ -853,7 +853,6 @@ export class _Window extends EmitterBase<WindowEvents> {
      * @tutorial Window.moveBy
      */
     public moveBy(deltaLeft: number, deltaTop: number): Promise<void> {
-        console.warn('Hey, this has been deprecated');
         return this.wire.sendAction('move-window-by', Object.assign({}, this.identity, { deltaLeft, deltaTop })).then(() => undefined);
     }
 
