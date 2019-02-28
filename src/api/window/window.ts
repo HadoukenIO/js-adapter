@@ -494,7 +494,6 @@ export class _Window extends EmitterBase<WindowEvents> {
             if (options.waitForPageLoad === void 0) {
                 options.waitForPageLoad = false;
             }
-
             if (options.autoShow === void 0) {
                 options.autoShow = true;
             }
