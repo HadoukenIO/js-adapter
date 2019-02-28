@@ -130,6 +130,13 @@ export default class ApplicationModule extends Base {
     }
     // tslint:disable-next-line:function-name
     private async _create(appOptions: ApplicationOption): Promise<Application> {
+        //set defaults:
+        if (appOptions.waitForPageLoad === void 0) {
+            appOptions.waitForPageLoad = false;
+        }
+        if (appOptions.autoShow === void 0) {
+            appOptions.autoShow = true;
+        }
         await this.wire.sendAction('create-application', appOptions);
         return await this.wrap({ uuid: appOptions.uuid });
     }
