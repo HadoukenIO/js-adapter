@@ -4,6 +4,7 @@ import { ChildProcess, spawn } from 'child_process';
 import { ConfigWithRuntime } from '../transport/wire';
 import { promisify } from '../util/promises';
 import { resolveRuntimeVersion, rmDir, downloadFile, unzip, resolveDir, exists } from './util';
+import { startServices } from './services';
 
 const mkdir = promisify(fs.mkdir);
 
@@ -93,6 +94,9 @@ export default async function launch(config: ConfigWithRuntime, osConfig: OsConf
         if (config.runtime.verboseLogging) {
             args.push('--v=1');
             args.push('--attach-console');
+        }
+        if (typeof config.services !== undefined && config.services != null) {
+            await startServices(config.services);
         }
         return spawn(runtimePath, args);
     } catch (e) {
