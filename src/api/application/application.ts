@@ -47,12 +47,12 @@ export interface TrayInfo {
 /**
  * @typedef {object} Application~options
  * @summary Application creation options.
- * @desc This is the options object required by {@link Application.create Application.create}.
+ * @desc This is the options object required by {@link Application.start Application.start}.
  *
  * The following options are required:
- * * `uuid` is required in the app manifest as well as by {@link Application.create Application.create}
- * * `name` is optional in the app manifest but required by {@link Application.create Application.create}
- * * `url` is optional in both the app manifest {@link Application.create Application.create} and  but is usually given
+ * * `uuid` is required in the app manifest as well as by {@link Application.start Application.start}
+ * * `name` is optional in the app manifest but required by {@link Application.start Application.start}
+ * * `url` is optional in both the app manifest {@link Application.start Application.start} and  but is usually given
  * (defaults to `"about:blank"` when omitted).
  *
  * _This jsdoc typedef mirrors the `ApplicationOptions` TypeScript interface in `@types/openfin`._

@@ -26,15 +26,13 @@ async function launchApp() {
     const version = await fin.System.getVersion();
     console.log("Connected to Hadouken version", version);
 
-    const app = await fin.Application.create({
-	name: "adapter-test-app",
-	url: 'http://hadouken.io/',
-	uuid: "adapter-test-app",
-	autoShow: true,
-	nonPersistent : true
+    await fin.Application.start({
+        name: "adapter-test-app",
+        url: 'http://hadouken.io/',
+        uuid: "adapter-test-app",
+        autoShow: true,
+        nonPersistent : true
     });
-
-    await app.run();
 }
 
 launchApp().then(() => {
@@ -61,15 +59,13 @@ async function launchApp() {
     const version = await fin.System.getVersion();
     console.log("Connected to Hadouken version", version);
 
-    const app = await fin.Application.create({
+    await fin.Application.start({
         name: "adapter-test-app",
         url: 'http://hadouken.io/',
         uuid: "adapter-test-app",
         autoShow: true,
         nonPersistent : true
     });
-
-    await app.run();
 }
 
 launchApp().then(() => {

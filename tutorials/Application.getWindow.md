@@ -2,13 +2,12 @@ Returns an instance of the main Window of the application
 # Example
 ```js
 async function getWindow() {
-    const app = await fin.Application.create({
+    const app = await fin.Application.start({
         uuid: 'app-1',
         name: 'myApp',
         url: 'https://cdn.openfin.co/docs/javascript/stable/tutorial-Application.getWindow.html',
         autoShow: true
     });
-    await app.run();
     return await app.getWindow();
 }
 

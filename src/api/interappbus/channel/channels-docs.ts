@@ -209,7 +209,7 @@ class ChannelProvider {
  *  * {@link Channel#ChannelClient#remove remove(action)}
  * 
  * ##### Asynchronous Methods
- *  * {@link Channel#ChannelClient#dispatch dispatch(to, action, payload)}
+ *  * {@link Channel#ChannelClient#dispatch dispatch(action, payload)}
  * 
  * ##### Middleware
  * Middleware functions receive the following arguments: (action, payload, senderId). 

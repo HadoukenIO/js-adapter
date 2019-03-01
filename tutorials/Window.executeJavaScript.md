@@ -2,13 +2,12 @@ Executes Javascript on the window, restricted to windows you own or windows owne
 # Example
 ```js
 async function executeJavaScript(code) {
-    const app = await fin.Application.create({
+    const app = await fin.Application.start({
         name: 'myApp',
         uuid: 'app-1',
         url: 'https://cdn.openfin.co/docs/javascript/stable/tutorial-Window.executeJavaScript.html',
         autoShow: true
     });
-    await app.run();
     const win = await app.getWindow();
     return await win.executeJavaScript(code);
 }

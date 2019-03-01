@@ -3,13 +3,12 @@ Will bring the window to the front of the entire stack and give it focus
 # Example
 ```js
 async function createWin() {
-    const app = await fin.Application.create({
+    const app = await fin.Application.start({
         name: 'myApp',
         uuid: 'app-1',
         url: 'https://cdn.openfin.co/docs/javascript/stable/tutorial-Window.setAsForeground.html',
         autoShow: true
     });
-    await app.run();
     return await app.getWindow();
 }
 
