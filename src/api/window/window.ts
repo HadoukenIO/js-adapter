@@ -525,7 +525,7 @@ export class _Window extends EmitterBase<WindowEvents> {
     }
 
     /**
-     * Gets the current bounds (top, left, width, height) of the window.
+     * Gets the current bounds (top, bottom, right, left, width, height) of the window.
      * @return {Promise.<Bounds>}
      * @tutorial Window.getBounds
     */
@@ -659,7 +659,7 @@ export class _Window extends EmitterBase<WindowEvents> {
     }
 
     /**
-     * Flashes the window’s frame and taskbar icon until stopFlashing is called.
+     * Flashes the window’s frame and taskbar icon until stopFlashing is called or until a focus event is fired.
      * @return {Promise.<void>}
      * @tutorial Window.flash
      */
@@ -677,8 +677,8 @@ export class _Window extends EmitterBase<WindowEvents> {
     }
 
     /**
-     * Retrieves an array containing wrapped fin.desktop.Windows that are grouped with this
-     * window. If a window is not in a group an empty array is returned. Please note that
+     * Retrieves an array containing wrapped fin.Windows that are grouped with this window.
+     * If a window is not in a group an empty array is returned. Please note that
      * calling window is included in the result array.
      * @return {Promise.<Array<_Window>>}
      * @tutorial Window.getGroup
