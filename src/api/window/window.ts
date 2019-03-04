@@ -279,7 +279,7 @@ export interface Area {
  *
  * @property {string} [taskbarIconGroup=<application uuid>] - _Windows_.
  * Specify a taskbar group for the window.
- * _If omitted, defaults to app's uuid (`fin.desktop.Application.getCurrent().uuid`)._
+ * _If omitted, defaults to app's uuid (`fin.Application.getCurrentSync().identity.uuid`)._
  *
  * @property {string} [url="about:blank"]
  * The URL of the window.
