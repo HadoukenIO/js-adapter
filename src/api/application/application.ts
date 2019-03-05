@@ -142,7 +142,7 @@ export default class ApplicationModule extends Base {
     }
 
     /**
-    * DEPRECATED method to creat a new Application. Use {@link Application.start} instead.
+    * DEPRECATED method to create a new Application. Use {@link Application.start} instead.
     * @param { ApplicationOption } appOptions
     * @return {Promise.<Application>}
     * @tutorial Application.create
