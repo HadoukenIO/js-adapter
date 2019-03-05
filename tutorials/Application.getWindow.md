@@ -1,4 +1,4 @@
-Returns an instance of the main Window of the application
+Retrieves an instance of the main Window of the application
 # Example
 ```js
 async function getWindow() {
