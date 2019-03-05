@@ -13,8 +13,8 @@ async function createWin() {
 }
 
 async function showAt(left, top) {
-    const app = await createWin();
-    return await app.showAt(left, top)
+    const win = await createWin();
+    return await win.showAt(left, top)
 }
 
 showAt(580, 300).then(() => console.log('Showing at')).catch(err => console.log(err));

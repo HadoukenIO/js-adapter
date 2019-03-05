@@ -13,8 +13,8 @@ async function createWin() {
 }
 
 async function restore() {
-    const app = await createWin();
-    return await app.restore();
+    const win = await createWin();
+    return await win.restore();
 }
 
 restore().then(() => console.log('Restored')).catch(err => console.log(err));

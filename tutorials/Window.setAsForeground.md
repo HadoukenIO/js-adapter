@@ -13,8 +13,8 @@ async function createWin() {
 }
 
 async function setAsForeground() {
-    const app = await createWin();
-    return await app.setAsForeground()
+    const win = await createWin();
+    return await win.setAsForeground()
 }
 
 setAsForeground().then(() => console.log('In the foreground')).catch(err => console.log(err));

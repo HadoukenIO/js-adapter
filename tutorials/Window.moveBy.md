@@ -13,8 +13,8 @@ async function createWin() {
 }
 
 async function moveBy(left, top) {
-    const app = await createWin();
-    return await app.moveBy(left, top);
+    const win = await createWin();
+    return await win.moveBy(left, top);
 }
 
 moveBy(580, 300).then(() => console.log('Moved')).catch(err => console.log(err));

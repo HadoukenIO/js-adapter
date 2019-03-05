@@ -1,4 +1,6 @@
-Retrieves an array containing wrapped fin.Windows that are grouped with this window
+Retrieves an array containing wrapped fin.Windows that are grouped with this window.
+If a window is not in a group an empty array is returned. Please note that
+calling window is included in the result array.
 
 # Example
 ```js

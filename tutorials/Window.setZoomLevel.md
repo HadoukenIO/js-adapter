@@ -13,8 +13,8 @@ async function createWin() {
 }
 
 async function setZoomLevel(number) {
-    const app = await createWin();
-    return await app.setZoomLevel(number);
+    const win = await createWin();
+    return await win.setZoomLevel(number);
 }
 
 setZoomLevel(4).then(() => console.log('Setting a  zoom level')).catch(err => console.log(err));

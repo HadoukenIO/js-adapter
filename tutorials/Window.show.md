@@ -13,8 +13,8 @@ async function createWin() {
 }
 
 async function show() {
-    const app = await createWin();
-    return await app.show()
+    const win = await createWin();
+    return await app.win()
 }
 
 show().then(() => console.log('Showing')).catch(err => console.log(err));

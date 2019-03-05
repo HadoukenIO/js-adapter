@@ -153,7 +153,7 @@ export default class ApplicationModule extends Base {
     }
     /**
     * Creates and starts a new Application.
-    * @param { ApplicationOption } appOptions
+    * @param { Application~options } appOptions
     * @return {Promise.<Application>}
     * @tutorial Application.start
     * @static
