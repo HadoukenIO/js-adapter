@@ -140,6 +140,13 @@ export default class ApplicationModule extends Base {
         await this.wire.sendAction('create-application', appOptions);
         return await this.wrap({ uuid: appOptions.uuid });
     }
+
+    /**
+    * DEPRECATED method to creat a new Application. Use {@link Application.start} instead.
+    * @param { ApplicationOption } appOptions
+    * @return {Promise.<Application>}
+    * @tutorial Application.create
+    */
     public create(appOptions: ApplicationOption): Promise<Application> {
         console.warn('Deprecation Warning: fin.Application.create is deprecated. Please use fin.Application.start');
         return this._create(appOptions);
@@ -469,6 +476,12 @@ export class Application extends EmitterBase<ApplicationEvents> {
         return this.wire.sendAction('restart-application', this.identity).then(() => undefined);
     }
 
+    /**
+     * DEPRECATED method to run the application.
+     * Needed when starting application via {@link Application.create}, but NOT needed when starting via {@link Application.start}.
+     * @return {Promise.<void>}
+     * @tutorial Application.run
+     */
     public run(): Promise<void> {
         console.warn('Deprecation Warning: Application.run is deprecated Please use fin.Application.start');
         return this._run();
@@ -513,7 +526,7 @@ export class Application extends EmitterBase<ApplicationEvents> {
     }
 
     /**
-     * Sets new application's shortcut configuration.
+     * Sets new application's shortcut configuration. Windows only.
      * @param { ShortCutConfig } config New application's shortcut configuration.
      * @param { boolean } [config.desktop] - Enable/disable desktop shortcut.
      * @param { boolean } [config.startMenu] - Enable/disable start menu shortcut.
