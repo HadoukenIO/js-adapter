@@ -45,7 +45,7 @@ export interface TrayInfo {
 }
 
 /**
- * @typedef {object} Application~options
+ * @typedef {object} ApplicationOption
  * @summary Application creation options.
  * @desc This is the options object required by {@link Application.start Application.start}.
  *
@@ -55,7 +55,7 @@ export interface TrayInfo {
  * * `url` is optional in both the app manifest {@link Application.start Application.start} and  but is usually given
  * (defaults to `"about:blank"` when omitted).
  *
- * _This jsdoc typedef mirrors the `ApplicationOptions` TypeScript interface in `@types/openfin`._
+ * _This jsdoc typedef mirrors the `ApplicationOption` TypeScript interface in `@types/openfin`._
  *
  * **IMPORTANT NOTE:**
  * This object inherits all the properties of the window creation {@link Window~options options} object,
@@ -153,7 +153,7 @@ export default class ApplicationModule extends Base {
     }
     /**
     * Creates and starts a new Application.
-    * @param { Application~options } appOptions
+    * @param { ApplicationOption } appOptions
     * @return {Promise.<Application>}
     * @tutorial Application.start
     * @static
