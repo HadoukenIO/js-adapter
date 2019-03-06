@@ -52,7 +52,7 @@ InterApplicationBus.Channel.connect = function (options:any) { }
  * 
  * Listen for newly created channels.
  * @param {Channel~ConnectionEvent} listener - callback to execute.
- * @tutorial channel.onChannelConnect
+ * @tutorial Channel.onChannelConnect
  */
 InterApplicationBus.Channel.onChannelConnect = function () { }
 
@@ -60,7 +60,7 @@ InterApplicationBus.Channel.onChannelConnect = function () { }
  * 
  * Listen for channel disconnections.
  * @param {Channel~ConnectionEvent} listener - callback to execute.
- * @tutorial channel.onChannelDisconnect
+ * @tutorial Channel.onChannelDisconnect
  */
 InterApplicationBus.Channel.onChannelDisconnect = function () { }
 
@@ -209,7 +209,7 @@ class ChannelProvider {
  *  * {@link Channel#ChannelClient#remove remove(action)}
  * 
  * ##### Asynchronous Methods
- *  * {@link Channel#ChannelClient#dispatch dispatch(to, action, payload)}
+ *  * {@link Channel#ChannelClient#dispatch dispatch(action, payload)}
  * 
  * ##### Middleware
  * Middleware functions receive the following arguments: (action, payload, senderId). 

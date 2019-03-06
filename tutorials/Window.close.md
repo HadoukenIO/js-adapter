@@ -2,13 +2,12 @@ Closes the window
 # Example
 ```js
 async function closeWindow() {
-    const app = await fin.Application.create({
+    const app = await fin.Application.start({
         name: 'myApp',
         uuid: 'app-3',
         url: 'https://cdn.openfin.co/docs/javascript/stable/tutorial-Window.close.html',
         autoShow: true
     });
-    await app.run();
     const win = await app.getWindow();
     return await win.close();
 }

@@ -1,4 +1,4 @@
-# DEPRECATED use Application.start instead
+# DEPRECATED use {@link Application.start} instead
 Runs the application. When the application is created, run must be called.
 # Example
 ```js

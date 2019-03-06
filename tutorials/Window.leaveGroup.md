@@ -2,13 +2,12 @@ Leaves the current window group so that the window can be move independently of 
 # Example
 ```js
 async function createWin(uuid) {
-    const app = await fin.Application.create({
+    const app = await fin.Application.start({
         name: 'myApp',
         uuid: uuid,
         url: 'https://cdn.openfin.co/docs/javascript/stable/tutorial-Window.leaveGroup.html',
         autoShow: true
     });
-    await app.run();
     return await app.getWindow();
 }
 

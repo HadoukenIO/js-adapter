@@ -490,6 +490,14 @@ export class _Window extends EmitterBase<WindowEvents> {
                 });
             });
 
+            //set defaults:
+            if (options.waitForPageLoad === void 0) {
+                options.waitForPageLoad = false;
+            }
+            if (options.autoShow === void 0) {
+                options.autoShow = true;
+            }
+
             const windowCreation = this.wire.environment.createChildWindow(options);
             Promise.all([pageResponse, windowCreation]).then((resolvedArr: any[]) => {
                 const pageResolve = resolvedArr[0];

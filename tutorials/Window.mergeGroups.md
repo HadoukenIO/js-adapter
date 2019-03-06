@@ -2,13 +2,12 @@ Merges the instance's window group with the same window group as the specified w
 # Example
 ```js
 async function createWin(uuid) {
-    const app = await fin.Application.create({
+    const app = await fin.Application.start({
         name: 'myApp',
         uuid: uuid,
         url: 'https://cdn.openfin.co/docs/javascript/stable/tutorial-Window.mergeGroups.html',
         autoShow: true
     });
-    await app.run();
     return await app.getWindow();
 }
 
