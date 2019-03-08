@@ -1,8 +1,9 @@
+import { _Window } from '../window/window';
 import { AnchorType, Transition, TransitionOptions } from '../../shapes';
 import { Base, EmitterBase } from '../base';
 import { Bounds } from '../../shapes';
 import { ExternalWindowEvents } from '../events/externalWindow';
-import { Identity } from '../../identity';
+import { GroupWindowIdentity, Identity } from '../../identity';
 import Transport from '../../transport/transport';
 
  /**
@@ -135,23 +136,22 @@ export class ExternalWindow extends EmitterBase<ExternalWindowEvents> {
      * Retrieves an array containing wrapped external windows that are grouped
      * with this external window. If a window is not in a group an empty array
      * is returned.
-     * @return {Promise.<Array<ExternalWindow>>}
+     * @return {Promise.<Array<ExternalWindow|_Window>>}
      * @tutorial ExternalWindow.getGroup
      */
-    public getGroup(): Promise<Array<ExternalWindow>> {
-        return this.wire.sendAction('get-external-window-group', this.identity)
-            .then(({ payload }) => {
-                // tslint:disable-next-line
-                let winGroup: Array<ExternalWindow> = [] as Array<ExternalWindow>;
+    public async getGroup(): Promise<Array<ExternalWindow | _Window>> {
+        const { payload: { data } } = await this.wire.sendAction('get-external-window-group', this.identity);
 
-                if (payload.data.length) {
-                    winGroup = payload.data.map((identity: Identity) => {
-                        const { uuid } = identity;
-                        return new ExternalWindow(this.wire, { uuid });
-                    });
-                }
+        if (!data.length) {
+            return [];
+        }
 
-                return winGroup;
+        return data.map(({ uuid, name, isExternalWindow }: GroupWindowIdentity) => {
+            if (isExternalWindow) {
+                return new ExternalWindow(this.wire, { uuid });
+            } else {
+                return new _Window(this.wire, { uuid, name });
+            }
         });
     }
 
