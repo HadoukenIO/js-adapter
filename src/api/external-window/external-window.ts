@@ -215,9 +215,8 @@ export class ExternalWindow extends EmitterBase<ExternalWindowEvents> {
      * @return {Promise.<void>}
      * @tutorial ExternalWindow.leaveGroup
      */
-    public leaveGroup(): Promise<void> {
-        return this.wire.sendAction('leave-external-window-group', this.identity)
-            .then(({ payload }) => payload.data);
+    public async leaveGroup(): Promise<void> {
+        await this.wire.sendAction('leave-external-window-group', this.identity);
     }
 
     /**
