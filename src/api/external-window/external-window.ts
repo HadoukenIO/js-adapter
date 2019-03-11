@@ -202,10 +202,11 @@ export class ExternalWindow extends EmitterBase<ExternalWindowEvents> {
      * @return {Promise.<void>}
      * @tutorial ExternalWindow.joinGroup
      */
-    public joinGroup(target: ExternalWindow): Promise<void> {
-        return this.wire.sendAction('join-external-window-group', Object.assign({}, this.identity, {
-            groupingPid: target.identity.uuid
-        })).then(({ payload }) => payload.data);
+    public async joinGroup(target: ExternalWindow): Promise<void> {
+        const { identity: { uuid, name } } = target;
+        const targetIdentity = { groupingUuid: uuid, groupingWindowName: name };
+        const payload = { ...this.identity, ...targetIdentity };
+        await this.wire.sendAction('join-external-window-group', payload);
     }
 
     /**
