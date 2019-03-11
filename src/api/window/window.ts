@@ -810,11 +810,11 @@ export class _Window extends EmitterBase<WindowEvents> {
 
     /**
      * Joins the same window group as the specified window.
-     * @param { _Window } target The window whose group is to be joined
+     * @param { _Window | ExternalWindow } target The window whose group is to be joined
      * @return {Promise.<void>}
      * @tutorial Window.joinGroup
      */
-    public joinGroup(target: _Window): Promise<void> {
+    public joinGroup(target: _Window | ExternalWindow): Promise<void> {
         return this.wire.sendAction('join-window-group', Object.assign({}, this.identity, {
             groupingUuid: target.identity.uuid,
             groupingWindowName: target.identity.name
@@ -852,11 +852,11 @@ export class _Window extends EmitterBase<WindowEvents> {
 
     /**
      * Merges the instance's window group with the same window group as the specified window
-     * @param { _Window } target The window whose group is to be merged with
+     * @param { _Window | ExternalWindow } target The window whose group is to be merged with
      * @return {Promise.<void>}
      * @tutorial Window.mergeGroups
      */
-    public mergeGroups(target: _Window): Promise<void> {
+    public mergeGroups(target: _Window | ExternalWindow): Promise<void> {
         return this.wire.sendAction('merge-window-groups', Object.assign({}, this.identity, {
             groupingUuid: target.identity.uuid,
             groupingWindowName: target.identity.name

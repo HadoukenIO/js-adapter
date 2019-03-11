@@ -198,11 +198,11 @@ export class ExternalWindow extends EmitterBase<ExternalWindowEvents> {
 
     /**
      * Joins the same window group as the specified window.
-     * @param { class } target The window whose group is to be joined
+     * @param { _Window | ExternalWindow } target The window whose group is to be joined
      * @return {Promise.<void>}
      * @tutorial ExternalWindow.joinGroup
      */
-    public async joinGroup(target: ExternalWindow): Promise<void> {
+    public async joinGroup(target: ExternalWindow | _Window): Promise<void> {
         const { identity: { uuid, name } } = target;
         const targetIdentity = { groupingUuid: uuid, groupingWindowName: name };
         const payload = { ...this.identity, ...targetIdentity };
@@ -230,16 +230,16 @@ export class ExternalWindow extends EmitterBase<ExternalWindowEvents> {
     }
 
     /**
-     * Merges the instance's external window group with the same window group
-     * as the specified window.
-     * @param { class } target The window whose group is to be merged with
+     * Merges the instance's window group with the same window group as the specified window
+     * @param { _Window | ExternalWindow } target The window whose group is to be merged with
      * @return {Promise.<void>}
      * @tutorial ExternalWindow.mergeGroups
      */
-    public mergeGroups(target: ExternalWindow): Promise<void> {
-        return this.wire.sendAction('merge-external-window-groups', Object.assign({}, this.identity, {
-            groupingUuid: target.identity.uuid
-        })).then(({ payload }) => payload.data);
+    public async mergeGroups(target: ExternalWindow | _Window): Promise<void> {
+        const { identity: { uuid, name } } = target;
+        const targetIdentity = { groupingUuid: uuid, groupingWindowName: name };
+        const payload = { ...this.identity, ...targetIdentity };
+        await this.wire.sendAction('merge-external-window-groups', payload);
     }
 
     /**
