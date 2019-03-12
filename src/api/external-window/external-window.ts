@@ -39,6 +39,7 @@ export class ExternalWindow extends EmitterBase<ExternalWindowEvents> {
     constructor(wire: Transport, public identity: Identity) {
         super(wire, ['external-window', identity.uuid]);
         this.topic = 'external-window';
+        this.wire.sendAction('register-native-external-window', this.identity);
     }
 
     /**
