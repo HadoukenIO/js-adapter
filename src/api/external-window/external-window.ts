@@ -6,9 +6,9 @@ import { ExternalWindowEvents } from '../events/externalWindow';
 import { GroupWindowIdentity, Identity } from '../../identity';
 import Transport from '../../transport/transport';
 
- /**
-  * @lends ExternalWindow
-  */
+/**
+ * @lends ExternalWindow
+ */
 export default class ExternalWindowModule extends Base {
     /**
      * Asynchronously returns an external window object that represents
@@ -49,11 +49,10 @@ export class ExternalWindow extends EmitterBase<ExternalWindowEvents> {
      * @return {Promise.<void>}
      * @tutorial Window.animate
      */
-    public animate(transitions: Transition, options: TransitionOptions): Promise<void> {
-        return this.wire.sendAction('animate-external-window', Object.assign({}, this.identity, {
-            transitions,
-            options
-        })).then(({ payload }) => payload.data);
+    public async animate(transitions: Transition, options: TransitionOptions): Promise<void> {
+        const payload = { ...this.identity, transitions, options };
+        const { payload: { data } } = await this.wire.sendAction('animate-external-window', payload);
+        return data;
     }
 
     /**
@@ -61,9 +60,8 @@ export class ExternalWindow extends EmitterBase<ExternalWindowEvents> {
      * @return {Promise.<void>}
      * @tutorial ExternalWindow.bringToFront
      */
-    public bringToFront(): Promise<void> {
-        return this.wire.sendAction('bring-external-window-to-front', this.identity)
-            .then(() => undefined);
+    public async bringToFront(): Promise<void> {
+        await this.wire.sendAction('bring-external-window-to-front', this.identity);
     }
 
     /**
@@ -71,12 +69,9 @@ export class ExternalWindow extends EmitterBase<ExternalWindowEvents> {
      * @return {Promise.<void>}
      * @tutorial ExternalWindow.close
     */
-    public close(): Promise<void> {
-        return this.wire.sendAction('close-external-window', this.identity)
-            .then(() => {
-                Object.setPrototypeOf(this, null);
-                return undefined;
-            });
+    public async close(): Promise<void> {
+        await this.wire.sendAction('close-external-window', this.identity);
+        Object.setPrototypeOf(this, null);
     }
 
     /**
@@ -85,9 +80,9 @@ export class ExternalWindow extends EmitterBase<ExternalWindowEvents> {
      * @return {Promise.<void>}
      * @tutorial ExternalWindow.disableUserMovement
      */
-    public disableUserMovement(): Promise<void> {
-        return this.wire.sendAction('disable-external-window-frame', this.identity)
-            .then(({ payload }) => payload.data);
+    public async disableUserMovement(): Promise<void> {
+        const { payload: { data } } = await this.wire.sendAction('disable-external-window-frame', this.identity);
+        return data;
     }
 
     /**
@@ -96,9 +91,9 @@ export class ExternalWindow extends EmitterBase<ExternalWindowEvents> {
      * @return {Promise.<void>}
      * @tutorial ExternalWindow.enableUserMovement
      */
-    public enableUserMovement(): Promise<void> {
-        return this.wire.sendAction('enable-external-window-frame', this.identity)
-            .then(({ payload }) => payload.data);
+    public async enableUserMovement(): Promise<void> {
+        const { payload: { data } } = await this.wire.sendAction('enable-external-window-frame', this.identity);
+        return data;
     }
 
     /**
@@ -106,9 +101,8 @@ export class ExternalWindow extends EmitterBase<ExternalWindowEvents> {
      * @return {Promise.<void>}
      * @tutorial ExternalWindow.flash
      */
-    public flash(): Promise<void> {
-        return this.wire.sendAction('flash-external-window', this.identity)
-            .then(() => undefined);
+    public async flash(): Promise<void> {
+        await this.wire.sendAction('flash-external-window', this.identity);
     }
 
     /**
@@ -117,9 +111,8 @@ export class ExternalWindow extends EmitterBase<ExternalWindowEvents> {
      * @emits ExternalWindow#focused
      * @tutorial ExternalWindow.focus
      */
-    public focus(): Promise<void> {
-        return this.wire.sendAction('focus-external-window', this.identity)
-            .then(() => undefined);
+    public async focus(): Promise<void> {
+        await this.wire.sendAction('focus-external-window', this.identity);
     }
 
     /**
@@ -127,10 +120,9 @@ export class ExternalWindow extends EmitterBase<ExternalWindowEvents> {
      * @return {Promise.<Bounds>}
      * @tutorial ExternalWindow.getBounds
     */
-    public getBounds(): Promise<Bounds> {
-        return this.wire.sendAction('get-external-window-bounds', this.identity)
-            // tslint:disable-next-line
-            .then(({ payload }) => payload.data as Bounds);
+    public async getBounds(): Promise<Bounds> {
+        const { payload: { data } } = await this.wire.sendAction('get-external-window-bounds', this.identity);
+        return data;
     }
 
     /**
@@ -161,9 +153,9 @@ export class ExternalWindow extends EmitterBase<ExternalWindowEvents> {
      * @return {Promise.<any>}
      * @tutorial Window.getInfo
      */
-    public getInfo(): Promise<any> {
-        return this.wire.sendAction('get-external-window-info', this.identity)
-            .then(({ payload }) => payload.data);
+    public async getInfo(): Promise<any> {
+        const { payload: { data } } = await this.wire.sendAction('get-external-window-info', this.identity);
+        return data;
     }
 
     /**
@@ -172,9 +164,9 @@ export class ExternalWindow extends EmitterBase<ExternalWindowEvents> {
      * @return {Promise.<string>}
      * @tutorial ExternalWindow.getState
      */
-    public getState(): Promise<string> {
-        return this.wire.sendAction('get-external-window-state', this.identity)
-            .then(({ payload }) => payload.data);
+    public async getState(): Promise<string> {
+        const { payload: { data } } = await this.wire.sendAction('get-external-window-state', this.identity);
+        return data;
     }
 
     /**
@@ -182,9 +174,8 @@ export class ExternalWindow extends EmitterBase<ExternalWindowEvents> {
      * @return {Promise.<void>}
      * @tutorial ExternalWindow.hide
      */
-    public hide(): Promise<void> {
-        return this.wire.sendAction('hide-external-window', this.identity)
-            .then(() => undefined);
+    public async hide(): Promise<void> {
+        await this.wire.sendAction('hide-external-window', this.identity);
     }
 
     /**
@@ -192,9 +183,9 @@ export class ExternalWindow extends EmitterBase<ExternalWindowEvents> {
      * @return {Promise.<boolean>}
      * @tutorial ExternalWindow.isShowing
      */
-    public isShowing(): Promise<boolean> {
-        return this.wire.sendAction('is-external-window-showing', this.identity)
-            .then(({ payload }) => payload.data);
+    public async isShowing(): Promise<boolean> {
+        const { payload: { data } } = await this.wire.sendAction('is-external-window-showing', this.identity);
+        return data;
     }
 
     /**
@@ -225,9 +216,8 @@ export class ExternalWindow extends EmitterBase<ExternalWindowEvents> {
      * @return {Promise.<void>}
      * @tutorial ExternalWindow.maximize
      */
-    public maximize(): Promise<void> {
-        return this.wire.sendAction('maximize-external-window', this.identity)
-            .then(() => undefined);
+    public async maximize(): Promise<void> {
+        await this.wire.sendAction('maximize-external-window', this.identity);
     }
 
     /**
@@ -248,9 +238,8 @@ export class ExternalWindow extends EmitterBase<ExternalWindowEvents> {
      * @return {Promise.<void>}
      * @tutorial ExternalWindow.minimize
      */
-    public minimize(): Promise<void> {
-        return this.wire.sendAction('minimize-external-window', this.identity)
-            .then(() => undefined);
+    public async minimize(): Promise<void> {
+        await this.wire.sendAction('minimize-external-window', this.identity);
     }
 
     /**
@@ -260,9 +249,9 @@ export class ExternalWindow extends EmitterBase<ExternalWindowEvents> {
      * @return {Promise.<void>}
      * @tutorial ExternalWindow.moveBy
      */
-    public moveBy(deltaLeft: number, deltaTop: number): Promise<void> {
-        return this.wire.sendAction('move-external-window-by', Object.assign({}, this.identity, { deltaLeft, deltaTop }))
-            .then(() => undefined);
+    public async moveBy(deltaLeft: number, deltaTop: number): Promise<void> {
+        const payload = { ...this.identity, deltaLeft, deltaTop }
+        await this.wire.sendAction('move-external-window-by', payload);
     }
 
     /**
@@ -272,9 +261,9 @@ export class ExternalWindow extends EmitterBase<ExternalWindowEvents> {
      * @return {Promise.<void>}
      * @tutorial ExternalWindow.moveTo
      */
-    public moveTo(left: number, top: number): Promise<void> {
-        return this.wire.sendAction('move-external-window', Object.assign({}, this.identity, { left, top }))
-            .then(() => undefined);
+    public async moveTo(left: number, top: number): Promise<void> {
+        const payload = { ...this.identity, left, top };
+        await this.wire.sendAction('move-external-window', payload);
     }
 
     /**
@@ -287,12 +276,14 @@ export class ExternalWindow extends EmitterBase<ExternalWindowEvents> {
      * @return {Promise.<void>}
      * @tutorial ExternalWindow.resizeBy
      */
-    public resizeBy(deltaWidth: number, deltaHeight: number, anchor: AnchorType): Promise<void> {
-        return this.wire.sendAction('resize-external-window-by', Object.assign({}, this.identity, {
+    public async resizeBy(deltaWidth: number, deltaHeight: number, anchor: AnchorType): Promise<void> {
+        const payload = {
+            ...this.identity,
             anchor,
             deltaHeight: Math.floor(deltaHeight),
             deltaWidth: Math.floor(deltaWidth)
-        })).then(() => undefined);
+        };
+        await this.wire.sendAction('resize-external-window-by', payload);
     }
 
     /**
@@ -305,12 +296,14 @@ export class ExternalWindow extends EmitterBase<ExternalWindowEvents> {
      * @return {Promise.<void>}
      * @tutorial ExternalWindow.resizeTo
      */
-    public resizeTo(width: number, height: number, anchor: AnchorType): Promise<void> {
-        return this.wire.sendAction('resize-external-window', Object.assign({}, this.identity, {
+    public async resizeTo(width: number, height: number, anchor: AnchorType): Promise<void> {
+        const payload = {
+            ...this.identity,
             anchor,
             height: Math.floor(height),
             width: Math.floor(width)
-        })).then(() => undefined);
+        }
+        await this.wire.sendAction('resize-external-window', payload);
     }
 
     /**
@@ -318,9 +311,8 @@ export class ExternalWindow extends EmitterBase<ExternalWindowEvents> {
      * @return {Promise.<void>}
      * @tutorial ExternalWindow.restore
      */
-    public restore(): Promise<void> {
-        return this.wire.sendAction('restore-external-window', this.identity)
-            .then(() => undefined);
+    public async restore(): Promise<void> {
+        await this.wire.sendAction('restore-external-window', this.identity);
     }
 
     /**
@@ -329,9 +321,8 @@ export class ExternalWindow extends EmitterBase<ExternalWindowEvents> {
      * @return {Promise.<void>}
      * @tutorial ExternalWindow.setAsForeground
      */
-    public setAsForeground(): Promise<void> {
-        return this.wire.sendAction('set-external-window-as-foreground', this.identity)
-            .then(() => undefined);
+    public async setAsForeground(): Promise<void> {
+        await this.wire.sendAction('set-external-window-as-foreground', this.identity);
     }
 
     /**
@@ -340,9 +331,9 @@ export class ExternalWindow extends EmitterBase<ExternalWindowEvents> {
      * @return {Promise.<void>}
      * @tutorial ExternalWindow.setBounds
      */
-    public setBounds(bounds: Bounds): Promise<void> {
-        return this.wire.sendAction('set-external-window-bounds', Object.assign({}, this.identity, bounds))
-            .then(() => undefined);
+    public async setBounds(bounds: Bounds): Promise<void> {
+        const payload = { ...this.identity, bounds };
+        await this.wire.sendAction('set-external-window-bounds', payload);
     }
 
     /**
@@ -350,9 +341,8 @@ export class ExternalWindow extends EmitterBase<ExternalWindowEvents> {
      * @return {Promise.<void>}
      * @tutorial ExternalWindow.show
      */
-    public show(): Promise<void> {
-        return this.wire.sendAction('show-external-window', this.identity)
-            .then(() => undefined);
+    public async show(): Promise<void> {
+        await this.wire.sendAction('show-external-window', this.identity);
     }
 
     /**
@@ -364,11 +354,13 @@ export class ExternalWindow extends EmitterBase<ExternalWindowEvents> {
      * @return {Promise.<void>}
      * @tutorial ExternalWindow.showAt
      */
-    public showAt(left: number, top: number): Promise<void> {
-        return this.wire.sendAction('show-external-window-at', Object.assign({}, this.identity, {
+    public async showAt(left: number, top: number): Promise<void> {
+        const payload = {
+            ...this.identity,
             left: Math.floor(left),
             top: Math.floor(top)
-        })).then(() => undefined);
+        }
+        await this.wire.sendAction('show-external-window-at', payload);
     }
 
     /**
@@ -376,8 +368,7 @@ export class ExternalWindow extends EmitterBase<ExternalWindowEvents> {
      * @return {Promise.<void>}
      * @tutorial ExternalWindow.stopFlashing
      */
-    public stopFlashing(): Promise<void> {
-        return this.wire.sendAction('stop-external-window-flashing', this.identity)
-            .then(() => undefined);
+    public async stopFlashing(): Promise<void> {
+        await this.wire.sendAction('stop-external-window-flashing', this.identity);
     }
 }
