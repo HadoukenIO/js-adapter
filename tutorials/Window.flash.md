@@ -1,4 +1,5 @@
-Flashes the window’s frame and taskbar icon until the window is activated.
+Flashes the window’s frame and taskbar icon until the window is activated. **NOTE:** On macOS _flash_ only works on inactive windows.
+
 # Example
 ```js
 async function windowFlash() {
