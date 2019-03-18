@@ -24,7 +24,7 @@ export default class OpenFinEnvironment implements Environment {
             const opt = JSON.parse(JSON.stringify(options));
             const ABOUT_BLANK = 'about:blank';
 
-            if (!name || typeof name !== 'string') {
+            if (!opt.name || typeof opt.name !== 'string') {
                 return reject(new Error('Window must have a name'));
             }
 
