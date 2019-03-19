@@ -81,7 +81,7 @@ export class ExternalWindow extends EmitterBase<ExternalWindowEvents> {
      * @tutorial ExternalWindow.disableUserMovement
      */
     public async disableUserMovement(): Promise<void> {
-        const { payload: { data } } = await this.wire.sendAction('disable-external-window-frame', this.identity);
+        const { payload: { data } } = await this.wire.sendAction('disable-external-window-user-movement', this.identity);
         return data;
     }
 
@@ -92,7 +92,7 @@ export class ExternalWindow extends EmitterBase<ExternalWindowEvents> {
      * @tutorial ExternalWindow.enableUserMovement
      */
     public async enableUserMovement(): Promise<void> {
-        const { payload: { data } } = await this.wire.sendAction('enable-external-window-frame', this.identity);
+        const { payload: { data } } = await this.wire.sendAction('enable-external-window-user-movement', this.identity);
         return data;
     }
 
@@ -250,7 +250,7 @@ export class ExternalWindow extends EmitterBase<ExternalWindowEvents> {
      * @tutorial ExternalWindow.moveBy
      */
     public async moveBy(deltaLeft: number, deltaTop: number): Promise<void> {
-        const payload = { ...this.identity, deltaLeft, deltaTop }
+        const payload = { ...this.identity, deltaLeft, deltaTop };
         await this.wire.sendAction('move-external-window-by', payload);
     }
 
@@ -302,7 +302,7 @@ export class ExternalWindow extends EmitterBase<ExternalWindowEvents> {
             anchor,
             height: Math.floor(height),
             width: Math.floor(width)
-        }
+        };
         await this.wire.sendAction('resize-external-window', payload);
     }
 
@@ -359,7 +359,7 @@ export class ExternalWindow extends EmitterBase<ExternalWindowEvents> {
             ...this.identity,
             left: Math.floor(left),
             top: Math.floor(top)
-        }
+        };
         await this.wire.sendAction('show-external-window-at', payload);
     }
 
