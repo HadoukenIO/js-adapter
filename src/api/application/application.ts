@@ -146,6 +146,7 @@ export default class ApplicationModule extends Base {
     * @param { ApplicationOption } appOptions
     * @return {Promise.<Application>}
     * @tutorial Application.create
+    * @ignore
     */
     public create(appOptions: ApplicationOption): Promise<Application> {
         console.warn('Deprecation Warning: fin.Application.create is deprecated. Please use fin.Application.start');
@@ -481,6 +482,7 @@ export class Application extends EmitterBase<ApplicationEvents> {
      * Needed when starting application via {@link Application.create}, but NOT needed when starting via {@link Application.start}.
      * @return {Promise.<void>}
      * @tutorial Application.run
+     * @ignore
      */
     public run(): Promise<void> {
         console.warn('Deprecation Warning: Application.run is deprecated Please use fin.Application.start');
