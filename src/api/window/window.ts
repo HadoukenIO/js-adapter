@@ -971,7 +971,8 @@ export class _Window extends EmitterBase<WindowEvents> {
     }
 
     /**
-     * Updates the window using the passed options
+     * Updates the window using the passed options.
+     * Values that are objects are deep-merged, overwriting only the values that are provided.
      * @param {*} options Changes a window's options that were defined upon creation. See tutorial
      * @return {Promise.<void>}
      * @tutorial Window.updateOptions
@@ -1011,7 +1012,7 @@ export class _Window extends EmitterBase<WindowEvents> {
     }
 
     /**
-     * Navigates the window to a specified URL.
+     * Navigates the window to a specified URL. The url must contain the protocol prefix such as http:// or https://.
      * @param {string} url - The URL to navigate the window to.
      * @return {Promise.<void>}
      * @tutorial Window.navigate
