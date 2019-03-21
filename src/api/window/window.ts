@@ -971,7 +971,7 @@ export class _Window extends EmitterBase<WindowEvents> {
     }
 
     /**
-     * Updates the window using the passed options. 
+     * Updates the window using the passed options.
      * Values that are objects are deep-merged, overwriting only the values that are provided.
      * @param {*} options Changes a window's options that were defined upon creation. See tutorial
      * @return {Promise.<void>}
