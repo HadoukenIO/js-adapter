@@ -1,4 +1,4 @@
-Gets the current bounds (top, left, width, height) of the window
+Gets the current bounds (top, bottom, right, left, width, height) of the window.
 
 # Example
 ```js

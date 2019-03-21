@@ -1,4 +1,4 @@
-Instructs the RVM to schedule one restart of the application.
+Instructs the RVM to schedule one restart of the application once upon a complete shutdown.
 # Example
 ```js
 async function scheduleRestart() {
@@ -6,5 +6,5 @@ async function scheduleRestart() {
     return await app.scheduleRestart();
 }
 
-scheduleRestart().then(() => console.log('Application is schedule to restart')).catch(err => console.log(err));
+scheduleRestart().then(() => console.log('Application is scheduled to restart')).catch(err => console.log(err));
 ```

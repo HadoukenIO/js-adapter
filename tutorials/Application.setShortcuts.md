@@ -1,14 +1,9 @@
-Sets new application's shortcut configuration
+Sets new shortcut configuration for current application. Application has to be launched with a manifest and has to have shortcut configuration (icon url, name, etc.) in its manifest to be able to change shortcut states. Windows only.
 # Example
 ```js
 async function setShortcuts(config) {
-    const app = await fin.Application.start({
-            uuid: 'app-1',
-            name: 'myApp',
-            url: 'https://cdn.openfin.co/docs/javascript/stable/tutorial-Application.setShortcuts.html',
-            autoShow: true
-    });
-    return await app.getWindow().setShortcuts(config);
+    const app = await fin.Application.getCurrent();
+    return app.setShortcuts(config);
 }
 
 setShortcuts({

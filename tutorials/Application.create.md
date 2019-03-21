@@ -1,4 +1,4 @@
-# DEPRECATED use Application.start instead
+# DEPRECATED use {@link Application.start} instead
 Creates a new Application.
 # Example
 ```js

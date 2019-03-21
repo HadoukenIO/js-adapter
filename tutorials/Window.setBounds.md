@@ -13,8 +13,8 @@ async function createWin() {
 }
 
 async function setBounds(bounds) {
-    const app = await createWin();
-    return await app.setBounds();
+    const win = await createWin();
+    return await win.setBounds();
 }
 
 setBounds({

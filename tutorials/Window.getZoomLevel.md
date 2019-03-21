@@ -13,8 +13,8 @@ async function createWin() {
 }
 
 async function getZoomLevel() {
-    const app = await createWin();
-    return await app.getZoomLevel();
+    const win = await createWin();
+    return await win.getZoomLevel();
 }
 
 getZoomLevel().then(zoomLevel => console.log(zoomLevel)).catch(err => console.log(err));

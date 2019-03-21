@@ -1,5 +1,16 @@
 Gets an information object for the window.
 
+#### Response
+```js
+{
+    "canNavigateBack":false,
+    "canNavigateForward":false,
+    "preloadScripts":[],
+    "title":"JSDoc: Tutorial: Window.getInfo",
+    "url":"https://cdn.openfin.co/docs/javascript/stable/tutorial-Window.getInfo.html"
+}
+```
+
 # Example
 ```js
 async function getInfo() {

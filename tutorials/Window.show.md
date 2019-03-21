@@ -7,14 +7,14 @@ async function createWin() {
         name: 'myApp',
         uuid: 'app-1',
         url: 'https://cdn.openfin.co/docs/javascript/stable/tutorial-Window.show.html',
-        autoShow: true
+        autoShow: false
     });
     return await app.getWindow();
 }
 
 async function show() {
-    const app = await createWin();
-    return await app.show()
+    const win = await createWin();
+    return await win.show()
 }
 
 show().then(() => console.log('Showing')).catch(err => console.log(err));

@@ -45,7 +45,7 @@ export interface TrayInfo {
 }
 
 /**
- * @typedef {object} Application~options
+ * @typedef {object} ApplicationOption
  * @summary Application creation options.
  * @desc This is the options object required by {@link Application.start Application.start}.
  *
@@ -55,7 +55,7 @@ export interface TrayInfo {
  * * `url` is optional in both the app manifest {@link Application.start Application.start} and  but is usually given
  * (defaults to `"about:blank"` when omitted).
  *
- * _This jsdoc typedef mirrors the `ApplicationOptions` TypeScript interface in `@types/openfin`._
+ * _This jsdoc typedef mirrors the `ApplicationOption` TypeScript interface in `@types/openfin`._
  *
  * **IMPORTANT NOTE:**
  * This object inherits all the properties of the window creation {@link Window~options options} object,
@@ -140,6 +140,14 @@ export default class ApplicationModule extends Base {
         await this.wire.sendAction('create-application', appOptions);
         return await this.wrap({ uuid: appOptions.uuid });
     }
+
+    /**
+    * DEPRECATED method to create a new Application. Use {@link Application.start} instead.
+    * @param { ApplicationOption } appOptions
+    * @return {Promise.<Application>}
+    * @tutorial Application.create
+    * @ignore
+    */
     public create(appOptions: ApplicationOption): Promise<Application> {
         console.warn('Deprecation Warning: fin.Application.create is deprecated. Please use fin.Application.start');
         return this._create(appOptions);
@@ -469,6 +477,13 @@ export class Application extends EmitterBase<ApplicationEvents> {
         return this.wire.sendAction('restart-application', this.identity).then(() => undefined);
     }
 
+    /**
+     * DEPRECATED method to run the application.
+     * Needed when starting application via {@link Application.create}, but NOT needed when starting via {@link Application.start}.
+     * @return {Promise.<void>}
+     * @tutorial Application.run
+     * @ignore
+     */
     public run(): Promise<void> {
         console.warn('Deprecation Warning: Application.run is deprecated Please use fin.Application.start');
         return this._run();
@@ -513,7 +528,7 @@ export class Application extends EmitterBase<ApplicationEvents> {
     }
 
     /**
-     * Sets new application's shortcut configuration.
+     * Sets new application's shortcut configuration. Windows only.
      * @param { ShortCutConfig } config New application's shortcut configuration.
      * @param { boolean } [config.desktop] - Enable/disable desktop shortcut.
      * @param { boolean } [config.startMenu] - Enable/disable start menu shortcut.

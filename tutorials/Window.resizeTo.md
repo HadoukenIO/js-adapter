@@ -13,8 +13,8 @@ async function createWin() {
 }
 
 async function resizeTo(left, top, anchor) {
-    const app = await createWin();
-    return await app.resizeTo(left, top, );
+    const win = await createWin();
+    return await win.resizeTo(left, top, anchor);
 }
 
 resizeTo(580, 300, 'top-left').then(() => console.log('Resized')).catch(err => console.log(err));
