@@ -1,4 +1,5 @@
-Updates the window using the passed options
+Updates the window using the passed options. Values that are objects are deep-merged, overwriting only the values that are provided.
+
 # Example
 ```js
 async function updateOptions() {

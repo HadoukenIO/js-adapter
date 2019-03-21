@@ -1,4 +1,4 @@
-Navigates the window to a specified URL.
+Navigates the window to a specified URL. The url must contain the protocol prefix such as http:// or https://.
 
 # Example
 ```js
