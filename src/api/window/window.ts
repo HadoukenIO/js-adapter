@@ -1012,7 +1012,7 @@ export class _Window extends EmitterBase<WindowEvents> {
     }
 
     /**
-     * Navigates the window to a specified URL.
+     * Navigates the window to a specified URL. The url must contain the protocol prefix such as http:// or https://.
      * @param {string} url - The URL to navigate the window to.
      * @return {Promise.<void>}
      * @tutorial Window.navigate
