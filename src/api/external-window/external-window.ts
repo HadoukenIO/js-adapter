@@ -51,8 +51,7 @@ export class ExternalWindow extends EmitterBase<ExternalWindowEvents> {
      */
     public async animate(transitions: Transition, options: TransitionOptions): Promise<void> {
         const payload = { ...this.identity, transitions, options };
-        const { payload: { data } } = await this.wire.sendAction('animate-external-window', payload);
-        return data;
+        await this.wire.sendAction('animate-external-window', payload);
     }
 
     /**
@@ -81,8 +80,7 @@ export class ExternalWindow extends EmitterBase<ExternalWindowEvents> {
      * @tutorial ExternalWindow.disableUserMovement
      */
     public async disableUserMovement(): Promise<void> {
-        const { payload: { data } } = await this.wire.sendAction('disable-external-window-user-movement', this.identity);
-        return data;
+        await this.wire.sendAction('disable-external-window-user-movement', this.identity);
     }
 
     /**
@@ -92,8 +90,7 @@ export class ExternalWindow extends EmitterBase<ExternalWindowEvents> {
      * @tutorial ExternalWindow.enableUserMovement
      */
     public async enableUserMovement(): Promise<void> {
-        const { payload: { data } } = await this.wire.sendAction('enable-external-window-user-movement', this.identity);
-        return data;
+        await this.wire.sendAction('enable-external-window-user-movement', this.identity);
     }
 
     /**
