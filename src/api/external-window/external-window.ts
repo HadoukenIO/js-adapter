@@ -156,6 +156,16 @@ export class ExternalWindow extends EmitterBase<ExternalWindowEvents> {
     }
 
     /**
+     * Gets an external window's options.
+     * @return {Promise.<any>}
+     * @tutorial Window.getOptions
+     */
+    public async getOptions(): Promise<any> {
+        const { payload: { data } } = await this.wire.sendAction('get-external-window-options', this.identity);
+        return data;
+    }
+
+    /**
      * Gets the current state ("minimized", "maximized", or "restored") of
      * the external window.
      * @return {Promise.<string>}
