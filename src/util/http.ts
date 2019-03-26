@@ -2,6 +2,48 @@ import { parse } from 'url';
 import { IncomingMessage } from 'http';
 import * as fs from 'fs';
 
+const getProxyVar = () => {
+    return process.env.HTTPS_PROXY ||
+        process.env.https_proxy ||
+        process.env.HTTP_PROXY ||
+        process.env.http_proxy;
+};
+
+export const getProxy = () => {
+    const parsedUrl = new URL(getProxyVar());
+    return {
+        port: parsedUrl.port,
+        host: parsedUrl.hostname,
+        username: parsedUrl.username,
+        password: parsedUrl.password
+    };
+};
+
+export const getRequestOptions = (url: string) => {
+    const parsedUrl = new URL(url);
+
+    const options = {
+        host: parsedUrl.hostname,
+        path: parsedUrl.pathname,
+        port: parsedUrl.port,
+        headers: { Host: '' }
+    };
+
+    if (getProxyVar()) {
+        const proxy = getProxy();
+        options.host = proxy.host;
+        options.port = proxy.port;
+        options.path = url;
+        options.headers.Host = parsedUrl.host;
+        if (proxy.username && proxy.password) {
+            const auth = 'Basic ' + Buffer.from(proxy.username + ':' + proxy.password).toString('base64');
+            Object.assign(options.headers, { 'Proxy-Authorization': auth });
+        }
+    }
+
+    return options;
+};
+
 export const fetch = async (url: string): Promise<string> => {
     const proto = (parse(url).protocol.slice(0, -1)) === 'http' ? 'http' : 'https';
     const fetcher = await import(proto);
@@ -28,7 +70,8 @@ export const downloadFile = async (url: string, writeLocation: string) => {
         try {
             const options = getRequestOptions(url);
             fetcher.get(options, (response: IncomingMessage) => {
-                const fileSize = parseInt(response.headers['content-length'], 10);
+                const fileSize: number = parseInt(response.headers['content-length'], 10);
+                const filename: string = url.substring(url.lastIndexOf('/') + 1);
                 let chunkCtr = 0;
                 let progress: number;
                 let output: string;
@@ -36,9 +79,9 @@ export const downloadFile = async (url: string, writeLocation: string) => {
                 response.on('data', (chunk) => {
                     chunkCtr += chunk.length;
                     progress = Math.floor(100 * chunkCtr / fileSize);
-                    output = 'Downloading Runtime: ' + progress + '%\r';
+                    output = `Downloading Runtime ${filename}: ${progress}%\r`;
                     if (progress === 100) {
-                        output = 'Downloading Runtime: ' + progress + '%\n';
+                        output = `Downloading Runtime ${filename}: ${progress}%\n`;
                     }
                     process.stdout.write(output);
                 });
@@ -55,48 +98,6 @@ export const downloadFile = async (url: string, writeLocation: string) => {
         }
     });
 };
-
-export const getProxy = () => {
-    const parsedUrl = new URL(getProxyVar());
-    return {
-        port: parsedUrl.port,
-        host: parsedUrl.hostname,
-        username: parsedUrl.username,
-        password: parsedUrl.password
-    };
-}
-
-const getProxyVar = () => {
-    return process.env.HTTPS_PROXY ||
-        process.env.https_proxy ||
-        process.env.HTTP_PROXY ||
-        process.env.http_proxy;
-}
-
-export const getRequestOptions = (url: string) => {
-    const parsedUrl = new URL(url);
-
-    const options = {
-        host: parsedUrl.hostname,
-        path: parsedUrl.pathname,
-        port: parsedUrl.port,
-        headers: { Host: '' }
-    };
-
-    if (getProxyVar()) {
-        const proxy = getProxy();
-        options.host = proxy.host;
-        options.port = proxy.port;
-        options.path = url;
-        options.headers.Host = parsedUrl.host;
-        if (proxy.username && proxy.password) {
-            const auth = 'Basic ' + Buffer.from(proxy.username + ':' + proxy.password).toString('base64');
-            Object.assign(options.headers, { 'Proxy-Authorization': auth });
-        }
-    }
-
-    return options;
-}
 
 export const fetchJson = async (url: string): Promise<any> => {
     const res = await fetch(url);
