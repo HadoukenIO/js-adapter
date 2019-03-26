@@ -16,7 +16,7 @@ function launchRVM(config: ConfigWithRuntime, manifestLocation: string, namedPip
     } if (config.assetsUrl) {
         rvmArgs.push(`--assetsUrl=${config.assetsUrl}`);
     }
-    return spawn(rvm, rvmArgs, { stdio: ['pipe', 'ignore', 'pipe'] });
+    return spawn(rvm, rvmArgs, { stdio: ['pipe', 'ignore', 'pipe'], detached: true });
 }
 
 async function checkRvmPath() {
