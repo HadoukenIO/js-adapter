@@ -32,6 +32,16 @@ export interface WindowReloadedEvent<Topic, Type> extends WindowEvent<Topic, Typ
     url: string;
 }
 
+export interface WindowOptionsChanged<Topic, Type> extends WindowEvent<Topic, Type> {
+    diff: WindowOptionDiffObject[];
+}
+
+export interface WindowOptionDiffObject {
+    optionName: string;
+    oldVal: any;
+    newVal: any;
+}
+
 export interface WindowExternalProcessExitedEvent<Topic, Type> extends WindowEvent<Topic, Type> {
     processUuid: string;
     exitCode: number;

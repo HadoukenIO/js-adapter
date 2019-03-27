@@ -96,6 +96,7 @@ fin.System.removeAllListeners("monitor-info-changed");
 * window-initialized (see {@tutorial Window.addEventListener})
 * window-maximized (see {@tutorial Window.addEventListener})
 * window-minimized (see {@tutorial Window.addEventListener})
+* window-options-changed (see {@tutorial Window.addEventListener})
 * window-navigation-rejected (see {@tutorial Window.addEventListener})
 * window-not-responding (see {@tutorial Window.addEventListener})
 * window-preload-scripts-state-changed (see {@tutorial Window.addEventListener})

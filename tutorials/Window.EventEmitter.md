@@ -96,6 +96,7 @@ finWindow.removeAllListeners("bounds-changed");
 * initialized
 * maximized
 * minimized
+* options-changed
 * navigation-rejected
 * preload-scripts-state-changed
 * preload-scripts-state-changing
@@ -525,6 +526,23 @@ Generated when a window is minimized.
     topic: "window",
     type: "minimized",
     uuid: "AppUUID" //(string) the UUID of the application the window belongs to.
+}
+```
+
+Generated after window options are changed using the window.updateOptions method.
+```js
+{
+    name: "windowOne", //the name of the window.
+    topic: "window",
+    type: "options-changed",
+    uuid: "AppUUID" //(string) the UUID of the application the window belongs to.
+    diff: [ // an array containing all changed options
+        {   
+            optionName: "opacity" // a valid window option name
+            oldVal: 0.5,
+            newVal: 0.7
+        }
+    ] 
 }
 ```
 
