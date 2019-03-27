@@ -339,7 +339,7 @@ export class ExternalWindow extends EmitterBase<ExternalWindowEvents> {
      * @tutorial ExternalWindow.setBounds
      */
     public async setBounds(bounds: Bounds): Promise<void> {
-        const payload = { ...this.identity, bounds };
+        const payload = { ...this.identity, ...bounds };
         await this.wire.sendAction('set-external-window-bounds', payload);
     }
 
@@ -377,5 +377,16 @@ export class ExternalWindow extends EmitterBase<ExternalWindowEvents> {
      */
     public async stopFlashing(): Promise<void> {
         await this.wire.sendAction('stop-external-window-flashing', this.identity);
+    }
+
+    /**
+     * Updates the external window using the passed options
+     * @param {*} options Changes an external window's options
+     * @return {Promise.<void>}
+     * @tutorial ExternalWindow.updateOptions
+     */
+    public async updateOptions(options: any): Promise<void> {
+        const payload = { ...this.identity, options };
+        await this.wire.sendAction('update-external-window-options', payload);
     }
 }
