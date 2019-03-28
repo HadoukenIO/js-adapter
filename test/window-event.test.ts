@@ -8,7 +8,7 @@ import { Application } from '../src/api/application/application';
 import { cleanOpenRuntimes } from './multi-runtime-utils';
 
 // tslint:disable-next-line:no-function-expression
-describe.only('Window.', function() {
+describe('Window.', function() {
 
     let fin: Fin;
     let app: Application;
