@@ -764,6 +764,15 @@ export class _Window extends EmitterBase<WindowEvents> {
     }
 
     /**
+     * Gets the [Window Object](https://developer.mozilla.org/en-US/docs/Web/API/Window) previously getNativeWindow
+     * @return {object}
+     * @tutorial Window.getWebWindow
+     */
+    public getWebWindow(): Window {
+        return this.wire.environment.getWebWindow(this.identity);
+    }
+
+    /**
      * Determines if the window is a main window.
      * @return {boolean}
      * @tutorial Window.isMainWindow
