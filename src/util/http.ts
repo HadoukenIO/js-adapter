@@ -70,22 +70,6 @@ export const downloadFile = async (url: string, writeLocation: string) => {
         try {
             const options = getRequestOptions(url);
             fetcher.get(options, (response: IncomingMessage) => {
-                const fileSize: number = parseInt(response.headers['content-length'], 10);
-                const filename: string = url.substring(url.lastIndexOf('/') + 1);
-                let chunkCtr = 0;
-                let progress: number;
-                let output: string;
-
-                response.on('data', (chunk) => {
-                    chunkCtr += chunk.length;
-                    progress = Math.floor(100 * chunkCtr / fileSize);
-                    output = `Downloading Runtime ${filename}: ${progress}%\r`;
-                    if (progress === 100) {
-                        output = `Downloading Runtime ${filename}: ${progress}%\n`;
-                    }
-                    process.stdout.write(output);
-                });
-
                 const file = fs.createWriteStream(writeLocation);
                 response.pipe(file);
                 file.on('finish', () => {
