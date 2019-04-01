@@ -98,7 +98,7 @@ export default async function launch(config: ConfigWithRuntime, osConfig: OsConf
         if (typeof config.services !== undefined && config.services != null) {
             await startServices(config.services);
         }
-        return spawn(runtimePath, args, { stdio: ['pipe', 'ignore', 'pipe'], detached: true });
+        return spawn(runtimePath, args);
     } catch (e) {
         console.error('Failed to launch\n', e);
         throw e;
