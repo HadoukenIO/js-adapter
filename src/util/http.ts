@@ -28,8 +28,9 @@ export const getRequestOptions = (url: string) => {
         port: parsedUrl.port,
         headers: { Host: '' }
     };
-
-    if (getProxyVar() && options.host !== 'localhost') {
+    console.warn(options.host);
+    console.warn(options.host.substring(0, 3));
+    if (getProxyVar() && options.host !== 'localhost' && options.host.substring(0, 3) !== '127') {
         const proxy = getProxy();
         options.host = proxy.host;
         options.port = proxy.port;
