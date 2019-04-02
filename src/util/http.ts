@@ -29,12 +29,12 @@ export const getRequestOptions = (url: string) => {
         headers: { Host: '' }
     };
 
-    if (getProxyVar()) {
+    if (getProxyVar() && options.host !== 'localhost') {
         const proxy = getProxy();
         options.host = proxy.host;
         options.port = proxy.port;
         options.path = url;
-        options.headers.Host = parsedUrl.host;
+        options.headers.Host = parsedUrl.hostname;
         if (proxy.username && proxy.password) {
             const auth = 'Basic ' + Buffer.from(proxy.username + ':' + proxy.password).toString('base64');
             Object.assign(options.headers, { 'Proxy-Authorization': auth });
@@ -45,12 +45,17 @@ export const getRequestOptions = (url: string) => {
 };
 
 export const fetch = async (url: string): Promise<string> => {
-    const proto = (parse(url).protocol.slice(0, -1)) === 'http' ? 'http' : 'https';
+    const requestUrl = getProxyVar() ? getProxyVar() : url;
+    const proto = (parse(requestUrl).protocol.slice(0, -1)) === 'http' ? 'http' : 'https';
     const fetcher = await import(proto);
     return new Promise<string>((resolve, reject) => {
         const options = getRequestOptions(url);
+        console.warn(proto);
+        console.warn('#####FETCH######');
+        console.warn(options);
         const request = fetcher.get(options, (response: IncomingMessage) => {
             if (response.statusCode < 200 || response.statusCode > 299) {
+                console.warn(response.statusCode);
                 reject(new Error(`Failed to load url: ${url}, status code:${response.statusCode}`));
             }
             const body: string[] = [];
@@ -59,16 +64,23 @@ export const fetch = async (url: string): Promise<string> => {
             });
             response.on('end', (): void => resolve(body.join('')));
         });
-        request.on('error', (err: any) => reject(err));
+        request.on('error', (err: any) => {
+            console.warn(err);
+            reject(err);
+        });
     });
 };
 
 export const downloadFile = async (url: string, writeLocation: string) => {
-    const proto = (parse(url).protocol.slice(0, -1)) === 'http' ? 'http' : 'https';
+    const requestUrl = getProxyVar() ? getProxyVar() : url;
+    const proto = (parse(requestUrl).protocol.slice(0, -1)) === 'http' ? 'http' : 'https';
     const fetcher = await import(proto);
     return new Promise((resolve, reject) => {
         try {
             const options = getRequestOptions(url);
+            console.warn(proto);
+            console.warn('#####DOWNLOAD FILE######');
+            console.warn(options);
             fetcher.get(options, (response: IncomingMessage) => {
                 const file = fs.createWriteStream(writeLocation);
                 response.pipe(file);
@@ -85,5 +97,6 @@ export const downloadFile = async (url: string, writeLocation: string) => {
 
 export const fetchJson = async (url: string): Promise<any> => {
     const res = await fetch(url);
+    console.warn(res);
     return JSON.parse(res);
 };
