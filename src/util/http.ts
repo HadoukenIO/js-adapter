@@ -52,7 +52,6 @@ export const fetch = async (url: string): Promise<string> => {
         const options = getRequestOptions(url);
         const request = fetcher.get(options, (response: IncomingMessage) => {
             if (response.statusCode < 200 || response.statusCode > 299) {
-                console.warn(response.statusCode);
                 reject(new Error(`Failed to load url: ${url}, status code:${response.statusCode}`));
             }
             const body: string[] = [];
