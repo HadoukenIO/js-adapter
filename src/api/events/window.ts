@@ -1,5 +1,6 @@
 import { CrashedEvent } from './application';
 import {WindowEvent, BaseEventMap} from './base';
+import { WindowOption } from '../window/windowOption';
 
 export type SpecificWindowEvent<Type> = WindowEvent<'window', Type>;
 
@@ -32,14 +33,14 @@ export interface WindowReloadedEvent<Topic, Type> extends WindowEvent<Topic, Typ
     url: string;
 }
 
-export interface WindowOptionsChanged<Topic, Type> extends WindowEvent<Topic, Type> {
-    diff: WindowOptionDiffObject[];
+export interface WindowOptionsChangedEvent<Topic, Type> extends WindowEvent<Topic, Type> {
+    diff: WindowOptionDiff<keyof WindowOption>[]
 }
 
-export interface WindowOptionDiffObject {
-    optionName: string;
-    oldVal: any;
-    newVal: any;
+export interface WindowOptionDiff<Type extends keyof WindowOption> {
+    optionName: Type;
+    oldVal: WindowOption[Type];
+    newVal: WindowOption[Type];
 }
 
 export interface WindowExternalProcessExitedEvent<Topic, Type> extends WindowEvent<Topic, Type> {
@@ -153,6 +154,7 @@ export interface WindowEventMapping<Topic = string, Type = string> extends BaseE
     'maximized': WindowEvent<Topic, Type>;
     'minimized': WindowEvent<Topic, Type>;
     'navigation-rejected': WindowNavigationRejectedEvent<Topic, Type>;
+    'options-changed': WindowOptionsChangedEvent<Topic, Type>;
     'preload-scripts-state-changed': WindowPreloadScriptsStateChangeEvent<Topic, Type>;
     'preload-scripts-state-changing': WindowPreloadScriptsStateChangeEvent<Topic, Type>;
     'resource-load-failed': WindowResourceLoadFailedEvent<Topic, Type>;
@@ -186,6 +188,7 @@ export interface PropagatedWindowEventMapping<Topic = string, Type = string> ext
     'window-maximized': WindowEvent<Topic, Type>;
     'window-minimized': WindowEvent<Topic, Type>;
     'window-navigation-rejected': WindowNavigationRejectedEvent<Topic, Type>;
+    'window-options-changed': WindowOptionsChangedEvent<Topic, Type>;
     'window-preload-scripts-state-changed': WindowPreloadScriptsStateChangeEvent<Topic, Type>;
     'window-preload-scripts-state-changing': WindowPreloadScriptsStateChangedEvent<Topic, Type>;
     'window-resource-load-failed': WindowResourceLoadFailedEvent<Topic, Type>;
