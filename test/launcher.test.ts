@@ -6,7 +6,7 @@ import Launcher from '../src/launcher/launcher';
 import { download, getRuntimePath, OsConfig, getUrl } from '../src/launcher/nix-launch';
 import { resolveRuntimeVersion, rmDir } from '../src/launcher/util';
 import { promiseMap } from '../src/util/promises';
-import { getRequestOptions } from '../src/util/http';
+import { getRequestOptions, fetchJson } from '../src/util/http';
 
 describe('Launcher', () => {
     describe('Resolve Runtime', () => {
@@ -100,6 +100,15 @@ describe('Launcher', () => {
                 }
 
                 assert(result);
+            });
+            it('fetches a json with proxy set', async () => {
+                if (!process.env.http_proxy) {
+                    const appJson = await fetchJson('https://cdn.openfin.co/services/openfin/layouts/1.0.0/app.json');
+                    process.env.http_proxy = 'http://openfin:haveagood1@proxy.openfin.co:3128';
+                    const appJsonWithProxy = await fetchJson('https://cdn.openfin.co/services/openfin/layouts/1.0.0/app.json');
+                    delete process.env.https_proxy;
+                    assert(appJson, appJsonWithProxy);
+                }
             });
         });
     } else if (os.platform() === 'linux') {
