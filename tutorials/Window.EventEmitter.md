@@ -542,7 +542,14 @@ Generated after window options are changed using the window.updateOptions method
             oldVal: 0.5,
             newVal: 0.7
         }
-    ] 
+    ],
+    options: { // The updated options object.
+        opacity: 0.7,
+        minHeight: 300,
+        maxHeight: 600
+        // ...
+    },
+    invalidOptions: ['someInvalidOptionName'] // A list of invalid option names in the call
 }
 ```
 
