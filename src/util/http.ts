@@ -50,9 +50,6 @@ export const fetch = async (url: string): Promise<string> => {
     const fetcher = await import(proto);
     return new Promise<string>((resolve, reject) => {
         const options = getRequestOptions(url);
-        console.warn(proto);
-        console.warn('#####FETCH######');
-        console.warn(options);
         const request = fetcher.get(options, (response: IncomingMessage) => {
             if (response.statusCode < 200 || response.statusCode > 299) {
                 console.warn(response.statusCode);
@@ -78,9 +75,6 @@ export const downloadFile = async (url: string, writeLocation: string) => {
     return new Promise((resolve, reject) => {
         try {
             const options = getRequestOptions(url);
-            console.warn(proto);
-            console.warn('#####DOWNLOAD FILE######');
-            console.warn(options);
             fetcher.get(options, (response: IncomingMessage) => {
                 const file = fs.createWriteStream(writeLocation);
                 response.pipe(file);
@@ -97,6 +91,5 @@ export const downloadFile = async (url: string, writeLocation: string) => {
 
 export const fetchJson = async (url: string): Promise<any> => {
     const res = await fetch(url);
-    console.warn(res);
     return JSON.parse(res);
 };
