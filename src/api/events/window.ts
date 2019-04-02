@@ -34,7 +34,7 @@ export interface WindowReloadedEvent<Topic, Type> extends WindowEvent<Topic, Typ
 }
 
 export interface WindowOptionsChangedEvent<Topic, Type> extends WindowEvent<Topic, Type> {
-    diff: WindowOptionDiff<keyof WindowOption>[]
+    diff: WindowOptionDiff<keyof WindowOption>[];
 }
 
 export interface WindowOptionDiff<OptionName extends keyof WindowOption> {
