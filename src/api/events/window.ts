@@ -37,10 +37,10 @@ export interface WindowOptionsChangedEvent<Topic, Type> extends WindowEvent<Topi
     diff: WindowOptionDiff<keyof WindowOption>[]
 }
 
-export interface WindowOptionDiff<Type extends keyof WindowOption> {
-    optionName: Type;
-    oldVal: WindowOption[Type];
-    newVal: WindowOption[Type];
+export interface WindowOptionDiff<OptionName extends keyof WindowOption> {
+    optionName: OptionName;
+    oldVal: WindowOption[OptionName];
+    newVal: WindowOption[OptionName];
 }
 
 export interface WindowExternalProcessExitedEvent<Topic, Type> extends WindowEvent<Topic, Type> {
