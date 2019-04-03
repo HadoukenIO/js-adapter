@@ -59,7 +59,7 @@ InterApplicationBus.Channel.onChannelConnect = function () { }
 /**
  * 
  * Listen for channel disconnections.
- * @param {Channel~ConnectionEvent} listener - callback to execute.
+ * @param {InterApplicationBus.Channel~ConnectionEvent} listener - callback to execute.
  * @tutorial Channel.onChannelDisconnect
  */
 InterApplicationBus.Channel.onChannelDisconnect = function () { }
@@ -151,7 +151,7 @@ class ChannelProvider {
      * 
      * Register a listener that is called on every new client disconnection.
      * It is passed the disconnection event of the disconnecting client.
-     * @param {Channel~ConnectionEvent} listener 
+     * @param {InterApplicationBus.Channel~ConnectionEvent} listener 
      * @tutorial Channel.tutorial
      */
     onDisconnection() { }
@@ -264,7 +264,7 @@ class ChannelClient {
      * 
      * Register a listener that is called on channel disconnection.
      * It is passed the disconnection event of the disconnecting channel.
-     * @param {Channel~ConnectionEvent} listener 
+     * @param {InterApplicationBus.Channel~ConnectionEvent} listener 
      * @tutorial Channel.tutorial
      */
     onDisconnection() { }
