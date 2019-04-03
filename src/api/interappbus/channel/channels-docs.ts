@@ -10,7 +10,7 @@ const InterApplicationBus: any = {};
 /**
  * @namespace 
  * @desc The Channel namespace allows an OpenFin application to create a channel as a {@link Channel#ChannelProvider ChannelProvider}, 
- * or connect to a channel as a {@link Channel#ChannelClient ChannelClient} (see Classes below). The "handshake" between the communication partners is 
+ * or connect to a channel as a {@link Channel#ChannelClient ChannelClient}. The "handshake" between the communication partners is 
  * simplified when using a channel.  A request to connect to a channel as a client will return a promise that resolves if/when the channel has been created. Both the 
  * provider and client can dispatch actions that have been registered on their opposites, and dispatch returns a promise that resolves with a payload from the other 
  * communication participant. There can be only one provider per channel, but many clients.  Version `9.61.35.*` or later is required for both communication partners.
@@ -74,8 +74,9 @@ InterApplicationBus.Channel.onChannelDisconnect = function () { }
  * Returned by {@link Channel.create Channel.create}.
  * 
  * ##### Synchronous Methods
- *  * {@link Channel#ChannelProvider#register register(action, listener)}
+ *  * {@link Channel#ChannelProvider#destroy destroy()}
  *  * {@link Channel#ChannelProvider#publish publish(action, payload)}
+ *  * {@link Channel#ChannelProvider#register register(action, listener)}
  *  * {@link Channel#ChannelProvider#remove remove(action)}
  * 
  * ##### Asynchronous Methods
@@ -91,13 +92,10 @@ InterApplicationBus.Channel.onChannelDisconnect = function () { }
  *  * {@link Channel#ChannelProvider#afterAction afterAction(middleware)}
  * 
  * @memberof! Channel#
+ * @hideconstructor
  */
 class ChannelProvider {
 
-    /**
-     * <strong>Note:</strong> Do not instantiate this class directly.  
-     * Returned by {@link Channel.create Channel.create}.
-     */
     constructor() {}
 
     /**
@@ -206,6 +204,7 @@ class ChannelProvider {
  * Returned by {@link Channel.connect Channel.connect}.
  * 
  * ##### Synchronous Methods
+ *  * {@link Channel#ChannelClient#disconnect disconnect()}
  *  * {@link Channel#ChannelClient#register register(action, listener)}
  *  * {@link Channel#ChannelClient#remove remove(action)}
  * 
@@ -226,10 +225,6 @@ class ChannelProvider {
  */
 class ChannelClient {
 
-    /**
-     * <strong>Note:</strong> Do not instantiate this class directly.  
-     * Returned by {@link Channel.connect Channel.connect}.
-     */
     constructor() {}
 
     /**

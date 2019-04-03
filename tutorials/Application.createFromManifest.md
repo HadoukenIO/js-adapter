@@ -1,3 +1,4 @@
+# DEPRECATED use Application.startFromManifest instead
 Retrieves application's manifest and returns a wrapped application.
 # Example
 ```js

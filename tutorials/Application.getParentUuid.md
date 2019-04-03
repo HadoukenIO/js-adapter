@@ -5,7 +5,7 @@ async function getParentUuid() {
     const app = await fin.Application.create({
         uuid: 'app-1',
         name: 'myApp',
-        url: 'https://openfin.co',
+        url: 'https://cdn.openfin.co/docs/javascript/stable/tutorial-Application.getParentUuid.html',
         autoShow: true
     });
     await app.run();
