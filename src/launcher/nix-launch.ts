@@ -3,7 +3,8 @@ import * as path from 'path';
 import { ChildProcess, spawn } from 'child_process';
 import { ConfigWithRuntime } from '../transport/wire';
 import { promisify } from '../util/promises';
-import { resolveRuntimeVersion, rmDir, downloadFile, unzip, resolveDir, exists } from './util';
+import { resolveRuntimeVersion, rmDir, unzip, resolveDir, exists } from './util';
+import { downloadFile } from '../util/http';
 import { startServices } from './services';
 
 const mkdir = promisify(fs.mkdir);
