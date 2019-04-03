@@ -61,7 +61,6 @@ export const fetch = async (url: string): Promise<string> => {
             response.on('end', (): void => resolve(body.join('')));
         });
         request.on('error', (err: any) => {
-            console.warn(err);
             reject(err);
         });
     });
