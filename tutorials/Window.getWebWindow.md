@@ -1,4 +1,4 @@
-Returns the [Window Object](https://developer.mozilla.org/en-US/docs/Web/API/Window) that is available via the global web context and returned by the Window interface's [open()](https://developer.mozilla.org/en-US/docs/Web/API/Window/open) method. The target window needs to be in the same render process and same domain (same OpenFin Application).
+Returns the [Window Object](https://developer.mozilla.org/en-US/docs/Web/API/Window) that represents the web context of the target window. This is the same object that you would get from calling [window.open()](https://developer.mozilla.org/en-US/docs/Web/API/Window/open) in a standard web context. The target window needs to be in the same application as the requesting window as well as comply with [same-origin](https://developer.mozilla.org/en-US/docs/Web/Security/Same-origin_policy) policy requirements.
 
 
 #### Injecting content into an empty window.
@@ -9,11 +9,9 @@ In this example we create a blank child window and populte it with some simple h
         const winName = `child-window-${Date.now()}`;
         const win = await fin.Window.create({
             name: winName,
-            url: 'about:blank',
-            autoShow: false
+            url: 'about:blank'
         });
-        win.getWebWindow().document.body.append = '<h1>Hello World</h1>';
-        await win.show();
+        win.getWebWindow().document.write('<h1>Hello World</h1>');
     } catch (err) {
         console.error(err);
     }
@@ -21,7 +19,7 @@ In this example we create a blank child window and populte it with some simple h
 ```
 
 #### Cloning DOM elements from the parent window
-In this example we get clone an `h3` element from the parent window.
+In this example we clone an `h3` element from the parent window.
 ```js
 (async ()=> {
     try {
@@ -43,8 +41,7 @@ In this example we are using the [lit-html](https://lit-html.polymer-project.org
     try {
         const win = await fin.Window.create({
             name: `child-window-${Date.now()}`,
-            url: 'about:blank',
-            autoShow: false
+            url: 'about:blank'
         });
         const template = html`
             <div>
@@ -52,7 +49,6 @@ In this example we are using the [lit-html](https://lit-html.polymer-project.org
                 <button @click=${()=> console.log('Hello World!')}>log to the console</button>
             </div>`;
         render(template, win.getWebWindow().document.body);
-        await win.show();
 
     } catch (err) {
         console.error(err);
