@@ -41,7 +41,7 @@ InterApplicationBus.Channel.create = function () { }
  * Connect to a channel.  Returns a promise for a {@link Channel#ChannelClient ChannelClient} instance for that channel.
  * If you wish to send a payload to the provider, add a payload property to the options argument.
  * @param {string} channelName - Name of the target channel.
- * @param {Channel~ConnectOptions} options - Connection options.
+ * @param {InterApplicationBus.Channel~ConnectOptions} options - Connection options.
  * @returns {Promise<Channel#ChannelClient>} Returns promise that resolves with an instance of {@link Channel#ChannelClient ChannelClient}.
  * @tutorial Channel.tutorial
 
@@ -51,7 +51,7 @@ InterApplicationBus.Channel.connect = function (options:any) { }
 /**
  * 
  * Listen for newly created channels.
- * @param {Channel~ConnectionEvent} listener - callback to execute.
+ * @param {InterApplicationBus.Channel~ConnectionEvent} listener - callback to execute.
  * @tutorial Channel.onChannelConnect
  */
 InterApplicationBus.Channel.onChannelConnect = function () { }
@@ -332,7 +332,7 @@ class ChannelClient {
 */
 /** 
  * Callback for onChannelConnect or onChannelDisconnect.
- * @typedef {object} Channel~ConnectionEvent
+ * @typedef {object} InterApplicationBus.Channel~ConnectionEvent
  * @property {string} channelId - Identifier of the channel.
  * @property {string} uuid - Channel provider uuid.
  * @property {string} [name] - Channel provider name.
@@ -340,7 +340,8 @@ class ChannelClient {
  */
 
 /** 
- * @typedef {object} Channel~ConnectOptions
+ * Options provided on a client connection to a channel.
+ * @typedef {object} InterApplicationBus.Channel~ConnectOptions
  * @property {*} [payload] - Payload to pass to ChannelProvider onConnection action.
  * @property {boolean} [wait=true] - If true will wait for ChannelProvider to connect. If false will fail if ChannelProvider is not found.
  * 
