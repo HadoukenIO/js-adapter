@@ -52,7 +52,7 @@ export default class InterApplicationBus extends Base {
 
     /**
      * Sends a message to a specific application on a specific topic.
-     * @param { Identity } destination The uuid of the application to which the message is sent
+     * @param { Identity } destination The identity of the application to which the message is sent
      * @param { string } topic The topic on which the message is sent
      * @param { any } message The message to be sent. Can be either a primitive data
      * type (string, number, or boolean) or composite data type (object, array) that
@@ -61,6 +61,9 @@ export default class InterApplicationBus extends Base {
      * @tutorial InterApplicationBus.send
     */
     public send(destination: Identity, topic: string, message: any): Promise<void> {
+        if (typeof destination !== 'object' || typeof destination.uuid !== 'string') {
+            throw new Error('The destination is not a valid identity object');
+        }
         return this.wire.sendAction('send-message', {
             destinationUuid: destination.uuid,
             destinationWindowName: destination.name,
