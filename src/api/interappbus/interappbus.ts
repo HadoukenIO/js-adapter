@@ -62,7 +62,7 @@ export default class InterApplicationBus extends Base {
     */
     public send(destination: Identity, topic: string, message: any): Promise<void> {
         if (typeof destination !== 'object' || typeof destination.uuid !== 'string') {
-            throw new Error('The destination is not a valid identity object');
+            return Promise.reject('The destination is not a valid identity object');
         }
         return this.wire.sendAction('send-message', {
             destinationUuid: destination.uuid,
