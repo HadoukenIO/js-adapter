@@ -41,6 +41,10 @@ export default class _FrameModule extends Base {
      * @static
      */
     public wrapSync(identity: Identity): _Frame {
+        const errorMsg = validateIdentity(identity);
+        if (errorMsg) {
+            throw new Error(errorMsg);
+        }
         return new _Frame(this.wire, identity);
     }
 

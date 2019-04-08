@@ -38,6 +38,10 @@ export default class _WindowModule extends Base {
      * @static
      */
     public wrapSync(identity: Identity): _Window {
+        const errorMsg = validateIdentity(identity);
+        if (errorMsg) {
+            throw new Error(errorMsg);
+        }
         return new _Window(this.wire, identity);
     }
 
