@@ -7,6 +7,7 @@ import Transport from '../../transport/transport';
 import Bounds from '../window/bounds';
 import { ApplicationEvents } from '../events/application';
 import { ApplicationOption } from './applicationOption';
+import { validateIdentity } from '../../util/validate';
 
 export interface TrayIconClickReply extends Point, Reply<'application', 'tray-icon-clicked'> {
     button: number;
@@ -115,6 +116,10 @@ export default class ApplicationModule extends Base {
      * @static
      */
     public wrap(identity: Identity): Promise<Application> {
+        const errorMsg = validateIdentity(identity);
+        if (errorMsg) {
+            return Promise.reject(errorMsg);
+        }
         return Promise.resolve(new Application(this.wire, identity));
     }
 

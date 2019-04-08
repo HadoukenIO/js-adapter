@@ -2,6 +2,7 @@ import { Base, EmitterBase } from '../base';
 import { Identity } from '../../identity';
 import Transport from '../../transport/transport';
 import { FrameEvents } from '../events/frame';
+import { validateIdentity } from '../../util/validate';
 
 export type EntityType = 'window' | 'iframe' | 'external connection' | 'unknown';
 
@@ -25,6 +26,10 @@ export default class _FrameModule extends Base {
      * @static
      */
     public wrap(identity: Identity): Promise<_Frame> {
+        const errorMsg = validateIdentity(identity);
+        if (errorMsg) {
+            return Promise.reject(errorMsg);
+        }
         return Promise.resolve(new _Frame(this.wire, identity));
     }
 

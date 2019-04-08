@@ -4,6 +4,7 @@ import Transport, { Message } from '../../transport/transport';
 import RefCounter from '../../util/ref-counter';
 import { EventEmitter } from 'events';
 import { Channel } from './channel/index';
+import { validateIdentity } from '../../util/validate';
 
 /**
  * A messaging bus that allows for pub/sub messaging between different applications.
@@ -61,8 +62,9 @@ export default class InterApplicationBus extends Base {
      * @tutorial InterApplicationBus.send
     */
     public send(destination: Identity, topic: string, message: any): Promise<void> {
-        if (typeof destination !== 'object' || typeof destination.uuid !== 'string') {
-            return Promise.reject('The destination is not a valid identity object');
+        const errorMsg = validateIdentity(destination);
+        if (errorMsg) {
+            return Promise.reject(errorMsg);
         }
         return this.wire.sendAction('send-message', {
             destinationUuid: destination.uuid,
