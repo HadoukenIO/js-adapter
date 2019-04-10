@@ -529,20 +529,23 @@ Generated when a window is minimized.
 }
 ```
 
-Generated after window options are changed using the window.updateOptions method.
+Generated after window options are changed using the window.updateOptions method. Will not fire if the diff object is empty.
 ```js
 {
     name: "windowOne", //the name of the window.
     topic: "window",
     type: "options-changed",
     uuid: "AppUUID" //(string) the UUID of the application the window belongs to.
-    diff: [ // an array containing all changed options
-        {   
-            optionName: "opacity" // a valid window option name
+    diff: { // an object containing all changed options.
+        "opacity": {   // a valid window option name
             oldVal: 0.5,
             newVal: 0.7
+        },
+        "minHeight": {
+            oldVal: 300,
+            newVal: 400
         }
-    ],
+    },
     options: { // The updated options object.
         opacity: 0.7,
         minHeight: 300,

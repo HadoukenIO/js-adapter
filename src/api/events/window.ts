@@ -1,6 +1,6 @@
 import { CrashedEvent } from './application';
 import {WindowEvent, BaseEventMap} from './base';
-import { WindowOption } from '../window/windowOption';
+import { WindowOptionDiff } from '../window/windowOption';
 
 export type SpecificWindowEvent<Type> = WindowEvent<'window', Type>;
 
@@ -34,13 +34,7 @@ export interface WindowReloadedEvent<Topic, Type> extends WindowEvent<Topic, Typ
 }
 
 export interface WindowOptionsChangedEvent<Topic, Type> extends WindowEvent<Topic, Type> {
-    diff: WindowOptionDiff<keyof WindowOption>[];
-}
-
-export interface WindowOptionDiff<OptionName extends keyof WindowOption> {
-    optionName: OptionName;
-    oldVal: WindowOption[OptionName];
-    newVal: WindowOption[OptionName];
+    diff: WindowOptionDiff;
 }
 
 export interface WindowExternalProcessExitedEvent<Topic, Type> extends WindowEvent<Topic, Type> {
