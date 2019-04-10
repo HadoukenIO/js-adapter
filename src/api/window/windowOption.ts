@@ -52,4 +52,4 @@ export type WindowOptionDiff = {
         oldVal: WindowOption[key];
         newVal: WindowOption[key];
     }
-}
+};
