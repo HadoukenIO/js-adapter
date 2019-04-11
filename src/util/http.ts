@@ -1,5 +1,5 @@
 import { parse } from 'url';
-import { IncomingMessage } from 'http';
+import { IncomingMessage, ClientRequestArgs } from 'http';
 import * as fs from 'fs';
 
 const getProxyVar = () => {
@@ -22,26 +22,24 @@ export const getProxy = () => {
 export const getRequestOptions = (url: string) => {
     const parsedUrl = new URL(url);
 
-    const options = {
-        host: parsedUrl.hostname,
-        path: parsedUrl.pathname,
-        port: parsedUrl.port,
-        headers: { Host: '' }
-    };
-
-    if (getProxyVar() && options.host !== 'localhost' && options.host.substring(0, 3) !== '127') {
+    if (getProxyVar() && parsedUrl.hostname !== 'localhost' && parsedUrl.hostname.substring(0, 3) !== '127') {
+        const options: ClientRequestArgs = {};
         const proxy = getProxy();
+
         options.host = proxy.host;
         options.port = proxy.port;
         options.path = url;
-        options.headers.Host = parsedUrl.hostname;
+        options.headers = { 'Host': parsedUrl.hostname };
+
         if (proxy.username && proxy.password) {
             const auth = 'Basic ' + Buffer.from(proxy.username + ':' + proxy.password).toString('base64');
             Object.assign(options.headers, { 'Proxy-Authorization': auth });
         }
-    }
 
-    return options;
+        return options;
+    } else {
+        return parsedUrl;
+    }
 };
 
 export const fetch = async (url: string): Promise<string> => {
