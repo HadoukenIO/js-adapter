@@ -506,6 +506,16 @@ export class _Window extends EmitterBase<WindowEvents> {
                 } else {
                     reject(pageResolve);
                 }
+                try {
+                    // this is to enforce a 5.0 contract that the child's main function
+                    // will not fire before the parent's success callback on creation.
+                    // if the child window is not accessible (CORS) this contract does
+                    // not hold.
+                    const webWindow: any = this.getWebWindow();
+                    webWindow.fin.__internal_.openerSuccessCBCalled();
+                } catch (e) {
+                    //console.error(e);
+                }
             });
         });
     }
