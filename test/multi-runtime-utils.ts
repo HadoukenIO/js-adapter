@@ -13,7 +13,7 @@ import { delayPromise } from './delay-promise';
 const appConfig = JSON.parse(fs.readFileSync(path.resolve('test/app.json')).toString());
 
 let uuidNum = 0;
-
+export const testVersion: string = appConfig.runtime.version;
 let runtimes: Array<RuntimeProcess> = [];
 
 let ws_port = 8690;
@@ -29,14 +29,14 @@ export interface RuntimeProcess {
     runtime: any;
 }
 
-async function spawnRealm(version: string, realm?: string, args?: Array<string>): Promise<any> {
+async function spawnRealm(version: string, realmArg?: string, args?: Array<string>): Promise<any> {
 
     return new Promise((resolve, reject) => {
         resolveOpenFinVersion(version).then(async function(returnedVersion: string) {
             try {
                 const realmArg = args && args.find(str => str.indexOf('security-realm') > -1);
                 const realmValue = realmArg && realmArg.split('=')[1];
-                const realm = realmValue ? realmValue : `test_realm_${ Math.random() }`;
+                const realm = realmArg || realmValue ? realmValue : `test_realm_${ Math.random() }`;
                 const ofCacheFolder = await cachePath();
                 const cacheDir = path.resolve(ofCacheFolder, realm);
                 const appConfig = generateAppConfig();
@@ -123,9 +123,8 @@ export function getPort(fin: Fin): string {
     return fin.wire.wire.wire.url.split(':').slice(-1)[0];
 }
 
-function generateAppConfig(): any {
-    // tslint:disable-next-line
-    const uuid = `uuid-${uuidNum++}`;
+// tslint:disable-next-line
+function generateAppConfig(uuid = `uuid-${uuidNum++}`): any {
 
     return {
         uuid,
