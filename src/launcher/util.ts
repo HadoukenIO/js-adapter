@@ -1,5 +1,4 @@
 import * as path from 'path';
-import * as https from 'https';
 import * as fs from 'fs';
 import { exec } from 'child_process';
 import { promisify, promiseMap } from '../util/promises';
@@ -48,31 +47,6 @@ export async function rmDir(dirPath: string, removeSelf: boolean = true) {
     }
 }
 
-export async function downloadFile(url: string, writeLocation: string) {
-    return new Promise((resolve, reject) => {
-        try {
-            https.get(url, (response) => {
-                if (response.statusCode !== 200) {
-                    if (response.statusCode === 404) {
-                        reject(new Error('Specified runtime not available for OS'));
-                    } else {
-                        reject(new Error('Issue Downloading ' + response.statusCode));
-                    }
-                } else {
-                    const file = fs.createWriteStream(writeLocation);
-                    response.pipe(file);
-                    file.on('finish', () => {
-                        file.close();
-                        resolve();
-                    });
-                }
-            });
-        } catch (e) {
-            reject(e);
-        }
-    });
-}
-
 export async function resolveRuntimeVersion(versionOrChannel: string): Promise<string> {
     const splitVersion = versionOrChannel.split('.');
     const isVersion = splitVersion.length > 1 && splitVersion.every(x => x === '*' || /^\d+$/.test(x));
@@ -81,7 +55,7 @@ export async function resolveRuntimeVersion(versionOrChannel: string): Promise<s
         if (4 - mustMatch.length > 0) {
             //    tslint:disable-next-line:no-backbone-get-set-outside-model
             const res = await fetch('https://cdn.openfin.co/release/runtimeVersions');
-            const versions = res.split('\r\n');
+            const versions = res.split('\n');
             const match = first(versions, (v: string) => v.split('.').slice(0, mustMatch.length).join('.') === mustMatch.join('.'));
             if (match) {
                 return match;

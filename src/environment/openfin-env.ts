@@ -1,6 +1,7 @@
 import { Environment } from './environment';
 import { NewConnectConfig } from '../transport/wire';
 import { NotImplementedError } from '../transport/transport-errors';
+import { Identity } from '../identity';
 
 declare var fin: any;
 
@@ -66,5 +67,9 @@ export default class OpenFinEnvironment implements Environment {
 
     public isWindowExists = (uuid: string, name: string): boolean => {
         return fin.__internal_.windowExists(uuid, name);
+    }
+
+    public getWebWindow = (identity: Identity): Window => {
+        return fin.__internal_.getWebWindow(identity.name);
     }
 }

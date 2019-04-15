@@ -1,4 +1,5 @@
 import { NewConnectConfig } from '../transport/wire';
+import { Identity } from '../identity';
 
 export interface Environment {
     writeToken(path: string, token: string): Promise<string>;
@@ -7,6 +8,7 @@ export interface Environment {
     getRandomId(): string;
     createChildWindow(options: any): Promise<any>;
     isWindowExists(uuid: string, name: string) : boolean;
+    getWebWindow(identity: Identity): Window;
 }
 
 export const notImplementedEnvErrorMsg = 'Not implemented in this environment';
