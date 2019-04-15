@@ -514,7 +514,7 @@ export class _Window extends EmitterBase<WindowEvents> {
                     const webWindow: any = this.getWebWindow();
                     webWindow.fin.__internal_.openerSuccessCBCalled();
                 } catch (e) {
-                    //console.error(e);
+                    // tslint:disable-next-line
                 }
             });
         });
