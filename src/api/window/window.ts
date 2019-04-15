@@ -25,7 +25,7 @@ export default class _WindowModule extends Base {
     public async wrap(identity: Identity): Promise<_Window> {
         const errorMsg = validateIdentity(identity);
         if (errorMsg) {
-            return Promise.reject(errorMsg);
+            throw new Error(errorMsg);
         }
         return new _Window(this.wire, identity);
     }

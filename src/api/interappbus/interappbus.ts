@@ -61,18 +61,18 @@ export default class InterApplicationBus extends Base {
      * @return {Promise.<void>}
      * @tutorial InterApplicationBus.send
     */
-    public send(destination: Identity, topic: string, message: any): Promise<void> {
+    public async send(destination: Identity, topic: string, message: any): Promise<void> {
         const errorMsg = validateIdentity(destination);
         if (errorMsg) {
-            return Promise.reject(errorMsg);
+            throw new Error(errorMsg);
         }
-        return this.wire.sendAction('send-message', {
+        await this.wire.sendAction('send-message', {
             destinationUuid: destination.uuid,
             destinationWindowName: destination.name,
             topic,
             message,
             sourceWindowName: this.me.name
-        }).then(() => undefined);
+        });
     }
 
     /**

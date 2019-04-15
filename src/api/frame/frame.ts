@@ -25,12 +25,12 @@ export default class _FrameModule extends Base {
      * @tutorial Frame.wrap
      * @static
      */
-    public wrap(identity: Identity): Promise<_Frame> {
+    public async wrap(identity: Identity): Promise<_Frame> {
         const errorMsg = validateIdentity(identity);
         if (errorMsg) {
-            return Promise.reject(errorMsg);
+            throw new Error(errorMsg);
         }
-        return Promise.resolve(new _Frame(this.wire, identity));
+        return new _Frame(this.wire, identity);
     }
 
     /**

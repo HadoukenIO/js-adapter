@@ -115,12 +115,12 @@ export default class ApplicationModule extends Base {
      * @tutorial Application.wrap
      * @static
      */
-    public wrap(identity: Identity): Promise<Application> {
+    public async wrap(identity: Identity): Promise<Application> {
         const errorMsg = validateIdentity(identity);
         if (errorMsg) {
-            return Promise.reject(errorMsg);
+            throw new Error(errorMsg);
         }
-        return Promise.resolve(new Application(this.wire, identity));
+        return new Application(this.wire, identity);
     }
 
     /**
