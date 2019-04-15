@@ -1,6 +1,7 @@
 import { parse } from 'url';
 import { IncomingMessage } from 'http';
 import * as fs from 'fs';
+import { URL } from 'url';
 
 const getProxyVar = () => {
     return process.env.HTTPS_PROXY ||
