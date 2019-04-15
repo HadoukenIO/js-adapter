@@ -69,7 +69,6 @@ describe('Window.', function() {
             };
 
             const expectedDiffObject = {
-                optionName,
                 oldVal: 1,
                 newVal: 0
             };
@@ -77,7 +76,7 @@ describe('Window.', function() {
             return win.updateOptions(optionToUpdate)
                 .then(() => delayPromise())
                 .then(() => spy.args[0][0])
-                .then(payload => assert.deepEqual(payload.diff[0], expectedDiffObject));
+                .then(payload => assert.deepEqual(payload.diff[optionName], expectedDiffObject));
         });
     });
 });
