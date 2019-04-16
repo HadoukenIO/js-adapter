@@ -1119,4 +1119,20 @@ export default class System extends EmitterBase<SystemEvents> {
     public registerExternalConnection(uuid: string): Promise<ExternalConnection> {
         return this.wire.sendAction('register-external-connection', {uuid}).then(({ payload }) => payload.data);
     }
+
+    /**
+     * Returns the value of the blob blah blah
+     */
+    public async getServiceConfiguration(identifier: {name: string}): Promise<any /*ServiceConfiguration*/> {
+        if (typeof identifier.name !== 'string') {
+            throw new Error('Must provide an object with a `name` property having a string value');
+        }
+        const { name } = identifier;
+        return this.wire.sendAction('get-service-configuration', {name});
+    }
+}
+
+interface ServiceConfiguration {
+    name: string;
+    config: any;
 }
