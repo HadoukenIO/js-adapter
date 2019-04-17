@@ -20,7 +20,6 @@ export const getProxy = () => {
 };
 
 export const getRequestOptions = (url: string) => {
-    console.warn(url);
     const parsedUrl = new URL(url);
     let options;
 
@@ -40,7 +39,7 @@ export const getRequestOptions = (url: string) => {
     } else {
         options = parsedUrl;
     }
-    console.warn(options);
+
     return options;
 };
 
