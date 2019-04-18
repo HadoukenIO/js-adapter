@@ -4,6 +4,7 @@ import Transport, { Message } from '../../transport/transport';
 import RefCounter from '../../util/ref-counter';
 import { EventEmitter } from 'events';
 import { Channel } from './channel/index';
+import { validateIdentity } from '../../util/validate';
 
 /**
  * A messaging bus that allows for pub/sub messaging between different applications.
@@ -52,7 +53,7 @@ export default class InterApplicationBus extends Base {
 
     /**
      * Sends a message to a specific application on a specific topic.
-     * @param { Identity } destination The uuid of the application to which the message is sent
+     * @param { Identity } destination The identity of the application to which the message is sent
      * @param { string } topic The topic on which the message is sent
      * @param { any } message The message to be sent. Can be either a primitive data
      * type (string, number, or boolean) or composite data type (object, array) that
@@ -60,14 +61,18 @@ export default class InterApplicationBus extends Base {
      * @return {Promise.<void>}
      * @tutorial InterApplicationBus.send
     */
-    public send(destination: Identity, topic: string, message: any): Promise<void> {
-        return this.wire.sendAction('send-message', {
+    public async send(destination: Identity, topic: string, message: any): Promise<void> {
+        const errorMsg = validateIdentity(destination);
+        if (errorMsg) {
+            throw new Error(errorMsg);
+        }
+        await this.wire.sendAction('send-message', {
             destinationUuid: destination.uuid,
             destinationWindowName: destination.name,
             topic,
             message,
             sourceWindowName: this.me.name
-        }).then(() => undefined);
+        });
     }
 
     /**

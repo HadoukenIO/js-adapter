@@ -8,6 +8,7 @@ import { WindowEvents } from '../events/window';
 import { AnchorType } from './anchor-type';
 import { WindowOption } from './windowOption';
 import { EntityType } from '../frame/frame';
+import { validateIdentity } from '../../util/validate';
 
 /**
  * @lends Window
@@ -22,6 +23,10 @@ export default class _WindowModule extends Base {
      * @static
      */
     public async wrap(identity: Identity): Promise<_Window> {
+        const errorMsg = validateIdentity(identity);
+        if (errorMsg) {
+            throw new Error(errorMsg);
+        }
         return new _Window(this.wire, identity);
     }
 
@@ -33,6 +38,10 @@ export default class _WindowModule extends Base {
      * @static
      */
     public wrapSync(identity: Identity): _Window {
+        const errorMsg = validateIdentity(identity);
+        if (errorMsg) {
+            throw new Error(errorMsg);
+        }
         return new _Window(this.wire, identity);
     }
 
