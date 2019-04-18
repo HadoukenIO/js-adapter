@@ -263,8 +263,11 @@ import { _Window } from '../window/window';
 /**
  * ProcessInfo interface
  * @typedef { object } ProcessInfo
+ * @property { string } name The parent application's name
+ * @property { string } uuid The parent application's uuid
+ * @property { string } type The process type: 'Browser', 'Tab' or 'GPU'
+ * @property { number } processId The native process identifier
  * @property { numder } cpuUsage The percentage of total CPU usage
- * @property { string } name The application name
  * @property { number } nonPagedPoolUsage The current nonpaged pool usage in bytes
  * @property { number } pageFaultCount The number of page faults
  * @property { number } pagedPoolUsage The current paged pool usage in bytes
@@ -273,8 +276,6 @@ import { _Window } from '../window/window';
  * @property { number } peakPagedPoolUsage The peak paged pool usage in bytes
  * @property { number } peakPagefileUsage The peak value in bytes of pagefileUsage during the lifetime of this process
  * @property { number } peakWorkingSetSize The peak working set size in bytes
- * @property { number } processId The native process identifier
- * @property { string } uuid The application UUID
  * @property { nubmer } workingSetSize The current working set size (both shared and private data) in bytes
  */
 
