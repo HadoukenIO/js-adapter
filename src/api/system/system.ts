@@ -772,9 +772,9 @@ export default class System extends EmitterBase<SystemEvents> {
     }
 
     /**
-     * Retrieves an array of all of the runtime processes that are currently
-     * running. Each element in the array is an object containing the uuid
-     * and the name of the application to which the process belongs.
+     * Retrieves an array of all the processes that are currently running across all runtimes 
+     * Each process has a type, identifying information and diagnostic process information.
+     * Note: chrome debugger tool fires up it's own tab process.
      * @return {Promise.Array.<ProcessInfo>}
      * @tutorial System.getProcessList
      */
