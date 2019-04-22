@@ -772,7 +772,7 @@ export default class System extends EmitterBase<SystemEvents> {
     }
 
     /**
-     * Retrieves an array of all the processes that are currently running across all runtimes 
+     * Retrieves an array of all the processes that are currently running across all runtimes
      * Each process has a type, identifying information and diagnostic process information.
      * Note: chrome debugger tool fires up it's own tab process.
      * @return {Promise.Array.<ProcessInfo>}
