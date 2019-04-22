@@ -514,7 +514,8 @@ export class _Window extends EmitterBase<WindowEvents> {
                     const webWindow: any = this.getWebWindow();
                     webWindow.fin.__internal_.openerSuccessCBCalled();
                 } catch (e) {
-                    console.error(e);
+                    //common for main windows, we do not want to expose this error. here just to have a debug target.
+                    //console.error(e);
                 }
             });
         });
