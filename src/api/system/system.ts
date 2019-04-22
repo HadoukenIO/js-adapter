@@ -712,9 +712,8 @@ export default class System extends EmitterBase<SystemEvents> {
     }
 
     /**
-     * Get current focused external window.
+     * Get currently focused external window.
      * @return {Promise.<Identity>}
-     * @tutorial System.getFocusedExternalWindow
      */
     public async getFocusedExternalWindow(): Promise<Identity> {
         const { payload: { data } } = await this.wire.sendAction('get-focused-external-window');
@@ -1051,9 +1050,9 @@ export default class System extends EmitterBase<SystemEvents> {
     }
 
     /**
-     * Retrieves an array of data (e.g. uuid, bounds) for all external windows.
+     * Retrieves an array of objects representing information about currently
+     * running user-friendly native windows on the system.
      * @return {Promise.Array.<Identity>}
-     * @tutorial System.getAllExternalWindows
      */
     public getAllExternalWindows(): Promise<Array<Identity>> {
         return this.wire.sendAction('get-all-external-windows')
