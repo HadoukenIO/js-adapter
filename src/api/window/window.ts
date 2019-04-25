@@ -526,7 +526,7 @@ export class _Window extends EmitterBase<WindowEvents> {
                     //common for main windows, we do not want to expose this error. here just to have a debug target.
                     //console.error(e);
                 }
-            });
+            }).catch(reject);
         });
     }
 
