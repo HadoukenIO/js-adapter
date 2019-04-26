@@ -13,7 +13,7 @@ import { RuntimeInfo } from './runtime-info';
 import { Entity, EntityInfo } from './entity';
 import { HostSpecs } from './host-specs';
 import { ExternalProcessRequestType , TerminateExternalRequestType, ExternalConnection, ExitCode,
-    ExternalProcessInfo } from './external-process';
+    ExternalProcessInfo, ServiceConfiguration } from './external-process';
 import Transport from '../../transport/transport';
 import { CookieInfo, CookieOption } from './cookie';
 import { RegistryInfo } from './registry-info';
@@ -417,6 +417,12 @@ import { _Window } from '../window/window';
  * @property { Array<WindowDetail> } childWindows The array of child windows details
  * @property { WindowDetail } mainWindow The main window detail
  * @property { string } uuid The uuid of the application
+ */
+
+ /**
+ * Service identifier
+ * @typedef { object } ServiceIdentifier
+ * @property { string } name The name of the service
  */
 
 /**
@@ -1121,18 +1127,18 @@ export default class System extends EmitterBase<SystemEvents> {
     }
 
     /**
-     * Returns the value of the blob blah blah
+     * Returns the json blob found in the [desktop owner settings](https://openfin.co/documentation/desktop-owner-settings/)
+     * for the specified service.
+     * More information about desktop services can be found [here](https://developers.openfin.co/docs/desktop-services).
+     * @param { ServiceIdentifier } serviceIdentifier An object containing a name key that identifies the service.
+     * @return {Promise.<ServiceConfiguration>}
+     * @tutorial System.getServiceConfiguration
      */
-    public async getServiceConfiguration(identifier: {name: string}): Promise<any /*ServiceConfiguration*/> {
+    public async getServiceConfiguration(identifier: {name: string}): Promise<ServiceConfiguration> {
         if (typeof identifier.name !== 'string') {
             throw new Error('Must provide an object with a `name` property having a string value');
         }
         const { name } = identifier;
-        return this.wire.sendAction('get-service-configuration', {name});
+        return this.wire.sendAction('get-service-configuration', {name}).then(({ payload }) => payload.data);
     }
-}
-
-interface ServiceConfiguration {
-    name: string;
-    config: any;
 }
