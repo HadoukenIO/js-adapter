@@ -6,7 +6,7 @@ import Launcher from '../src/launcher/launcher';
 import { download, getRuntimePath, OsConfig, getUrl } from '../src/launcher/nix-launch';
 import { resolveRuntimeVersion, rmDir } from '../src/launcher/util';
 import { promiseMap } from '../src/util/promises';
-import { getRequestOptions, fetchJson } from '../src/util/http';
+import { fetchJson } from '../src/util/http';
 
 describe('Launcher', () => {
     describe('Resolve Runtime', () => {
@@ -69,37 +69,6 @@ describe('Launcher', () => {
                 await rmDir(location, false);
                 const mockConf: OsConfig = { urlPath: 'mac/x64', manifestLocation: '', namedPipeName: '', executablePath: '' };
                 await doesntThrowAsync(async () => await download(version, location, mockConf));
-            });
-
-            it('parses proxy env variable', () => {
-                const compare = {
-                    host: 'openfin.co',
-                    path: '/',
-                    port: '',
-                    headers: { Host: '' }
-                };
-                assert(testProxy('https://openfin.co', compare));
-            });
-            it('reads the https_proxy var', () => {
-                let result: boolean;
-
-                const compare = {
-                    host: 'openfin.co',
-                    path: 'http://example.com',
-                    port: '5555',
-                    headers:
-                    {
-                        Host: 'example.com',
-                        'Proxy-Authorization': 'Basic Zm9vOmJhcg=='
-                    }
-                };
-                if (!process.env.https_proxy) {
-                    process.env.https_proxy = 'https://foo:bar@openfin.co:5555';
-                    result = testProxy('http://example.com', compare);
-                    delete process.env.https_proxy;
-                }
-
-                assert(result);
             });
             it('fetches a json with proxy set', async () => {
                 if (!process.env.http_proxy) {
@@ -171,10 +140,4 @@ async function doesntThrowAsync(fn: Function) {
     } finally {
         assert.throws(f, /Didn't Throw!asdfasgsafdasdf/);
     }
-}
-
-function testProxy(url: string, compare: object) {
-    const stringRequest = JSON.stringify(getRequestOptions(url));
-    const stringOptions = JSON.stringify(compare);
-    return stringRequest === stringOptions;
 }
