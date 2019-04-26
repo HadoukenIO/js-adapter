@@ -336,6 +336,7 @@ import { _Window } from '../window/window';
  * @property { nubmer } port The runtime websocket port
  * @property { string } securityRealm The runtime security realm
  * @property { string } version The runtime version
+ * @property { object } args the command line argument used to start the Runtime
  */
 
 /**
