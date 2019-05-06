@@ -945,7 +945,7 @@ export class _Window extends EmitterBase<WindowEvents> {
      * @tutorial Window.resizeBy
      */
     public resizeBy(deltaWidth: number, deltaHeight: number, anchor: AnchorType,
-        options: WindowMovementOptions = { moveIndependently: true }): Promise<void> {
+        options: WindowMovementOptions = { moveIndependently: false }): Promise<void> {
         return this.wire.sendAction('resize-window-by', Object.assign({}, this.identity, {
             deltaWidth: Math.floor(deltaWidth),
             deltaHeight: Math.floor(deltaHeight),
