@@ -1001,7 +1001,7 @@ export class _Window extends EmitterBase<WindowEvents> {
      * @tutorial Window.setBounds
      */
     public setBounds(bounds: Bounds, options: WindowMovementOptions = { moveIndependently: false }): Promise<void> {
-        return this.wire.sendAction('set-window-bounds', Object.assign({}, this.identity, { bounds, options })).then(() => undefined);
+        return this.wire.sendAction('set-window-bounds', Object.assign({}, this.identity, { ...bounds, options })).then(() => undefined);
     }
 
     /**
