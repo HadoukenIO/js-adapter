@@ -425,6 +425,10 @@ import { _Window } from '../window/window';
  * @property { string } name The name of the service
  */
 
+ interface ServiceIdentifier {
+     name: string;
+ }
+
 /**
  * An object representing the core of OpenFin Runtime. Allows the developer
  * to perform system-level actions, such as accessing logs, viewing processes,
@@ -1134,11 +1138,11 @@ export default class System extends EmitterBase<SystemEvents> {
      * @return {Promise.<ServiceConfiguration>}
      * @tutorial System.getServiceConfiguration
      */
-    public async getServiceConfiguration(identifier: {name: string}): Promise<ServiceConfiguration> {
-        if (typeof identifier.name !== 'string') {
+    public async getServiceConfiguration(serviceIdentifier: ServiceIdentifier): Promise<ServiceConfiguration> {
+        if (typeof serviceIdentifier.name !== 'string') {
             throw new Error('Must provide an object with a `name` property having a string value');
         }
-        const { name } = identifier;
+        const { name } = serviceIdentifier;
         return this.wire.sendAction('get-service-configuration', {name}).then(({ payload }) => payload.data);
     }
 }
