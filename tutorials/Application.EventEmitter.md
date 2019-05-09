@@ -119,6 +119,8 @@ app.removeAllListeners("closed");
 * window-start-load
 * window-user-movement-disabled (see {@tutorial Window.addListener})
 * window-user-movement-enabled (see {@tutorial Window.addListener})
+* window-will-move (see {@tutorial Window.addListener})
+* window-will-resize (see {@tutorial Window.addListener})
 
 ### Application Events
 

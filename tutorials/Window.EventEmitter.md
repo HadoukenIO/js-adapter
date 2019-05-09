@@ -108,6 +108,8 @@ finWindow.removeAllListeners("bounds-changed");
 * shown
 * user-movement-disabled
 * user-movement-enabled
+* will-move
+* will-resize
 
 ### Window Events
 
@@ -720,5 +722,39 @@ Generated when a window's user movement becomes enabled.
     topic: "window",
     type: "user-movement-enabled",
     uuid: "AppUUID" //(string) the UUID of the application the window belongs to.
+}
+```
+
+#### will-move
+Generated when a window is moved by the user.  For use with monitor scaling that is not 100%.  Bounds are given in physical pixels (not adjusted for monitor scale factor).
+```js
+//This response has the following shape:
+{
+    height: 300,      //the new height of the window.
+    left: 300,        //the left-most coordinate of the window.
+    monitorScaleFactor: 1.5 //the scaling factor of the monitor
+    name: "windowName", //(string) the name of the window.
+    top: 300,         //the top-most coordinate of the window.
+    topic: "window",
+    type: "will-move",
+    uuid: "appUUID",  //the UUID of the application the window belongs to.
+    width: 300        //the new width of the window.
+}
+```
+
+#### will-resize
+Generated when a window is resized by the user.  For use with monitor scaling that is not 100%.  Bounds are given in physical pixels (not adjusted for monitor scale factor).
+```js
+//This response has the following shape:
+{
+    height: 300,      //the new height of the window.
+    left: 300,        //the left-most coordinate of the window.
+    monitorScaleFactor: 1.5 //the scaling factor of the monitor
+    name: "windowName", //(string) the name of the window.
+    top: 300,         //the top-most coordinate of the window.
+    topic: "window",
+    type: "will-resize",
+    uuid: "appUUID",  //the UUID of the application the window belongs to.
+    width: 300        //the new width of the window.
 }
 ```
