@@ -712,6 +712,16 @@ export default class System extends EmitterBase<SystemEvents> {
     }
 
     /**
+     * Get currently focused external window.
+     * @return {Promise.<Identity>}
+     * @experimental
+     */
+    public async getFocusedExternalWindow(): Promise<Identity> {
+        const { payload: { data } } = await this.wire.sendAction('get-focused-external-window');
+        return data;
+    }
+
+    /**
      * Retrieves the contents of the log with the specified filename.
      * @param { GetLogRequestType } options A object that id defined by the GetLogRequestType interface
      * @return {Promise.<string>}
@@ -1037,6 +1047,17 @@ export default class System extends EmitterBase<SystemEvents> {
      */
     public getAllExternalApplications(): Promise<Array<Identity>> {
         return this.wire.sendAction('get-all-external-applications')
+            .then(({ payload }) => payload.data);
+    }
+
+    /**
+     * Retrieves an array of objects representing information about currently
+     * running user-friendly native windows on the system.
+     * @return {Promise.Array.<Identity>}
+     * @experimental
+     */
+    public getAllExternalWindows(): Promise<Array<Identity>> {
+        return this.wire.sendAction('get-all-external-windows')
             .then(({ payload }) => payload.data);
     }
 

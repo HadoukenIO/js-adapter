@@ -1,13 +1,13 @@
 import { Base, EmitterBase } from '../base';
-import { Identity } from '../../identity';
-import Bounds from './bounds';
-import { Transition, TransitionOptions } from './transition';
+import { Identity, GroupWindowIdentity } from '../../identity';
+import { Bounds } from '../../shapes';
 import { Application } from '../application/application';
 import Transport from '../../transport/transport';
 import { WindowEvents } from '../events/window';
-import { AnchorType } from './anchor-type';
+import { AnchorType, Transition, TransitionOptions } from '../../shapes';
 import { WindowOption } from './windowOption';
 import { EntityType } from '../frame/frame';
+import { ExternalWindow } from '../external-window/external-window';
 import { validateIdentity } from '../../util/validate';
 
 /**
@@ -530,16 +530,14 @@ export class _Window extends EmitterBase<WindowEvents> {
         });
     }
 
-    private windowListFromNameList(identityList: Array<Identity>): Array<_Window> {
-        const windowList: Array<_Window> = [];
-
-        identityList.forEach(identity => {
-            windowList.push(new _Window(this.wire, {
-                uuid: identity.uuid,
-                name: identity.name
-            }));
+    private windowListFromNameList(identityList: Array<GroupWindowIdentity>): Array<_Window | ExternalWindow> {
+        return identityList.map(({ uuid, name, isExternalWindow }) => {
+            if (isExternalWindow) {
+                return new ExternalWindow(this.wire, { uuid });
+            } else {
+                return new _Window(this.wire, { uuid, name });
+            }
         });
-        return windowList;
     }
 
     /**
@@ -708,15 +706,15 @@ export class _Window extends EmitterBase<WindowEvents> {
      * Retrieves an array containing wrapped fin.Windows that are grouped with this window.
      * If a window is not in a group an empty array is returned. Please note that
      * calling window is included in the result array.
-     * @return {Promise.<Array<_Window>>}
+     * @return {Promise.<Array<_Window|ExternalWindow>>}
      * @tutorial Window.getGroup
      */
-    public getGroup(): Promise<Array<_Window>> {
+    public getGroup(): Promise<Array<_Window|ExternalWindow>> {
         return this.wire.sendAction('get-window-group', Object.assign({}, this.identity, {
             crossApp: true // cross app group supported
         })).then(({ payload }) => {
             // tslint:disable-next-line
-            let winGroup: Array<_Window> = [] as Array<_Window>;
+            let winGroup: Array<_Window|ExternalWindow> = [] as Array<_Window|ExternalWindow>;
 
             if (payload.data.length) {
                 winGroup = this.windowListFromNameList(payload.data);
@@ -812,11 +810,11 @@ export class _Window extends EmitterBase<WindowEvents> {
 
     /**
      * Joins the same window group as the specified window.
-     * @param { _Window } target The window whose group is to be joined
+     * @param { _Window | ExternalWindow } target The window whose group is to be joined
      * @return {Promise.<void>}
      * @tutorial Window.joinGroup
      */
-    public joinGroup(target: _Window): Promise<void> {
+    public joinGroup(target: _Window | ExternalWindow): Promise<void> {
         return this.wire.sendAction('join-window-group', Object.assign({}, this.identity, {
             groupingUuid: target.identity.uuid,
             groupingWindowName: target.identity.name
@@ -854,11 +852,11 @@ export class _Window extends EmitterBase<WindowEvents> {
 
     /**
      * Merges the instance's window group with the same window group as the specified window
-     * @param { _Window } target The window whose group is to be merged with
+     * @param { _Window | ExternalWindow } target The window whose group is to be merged with
      * @return {Promise.<void>}
      * @tutorial Window.mergeGroups
      */
-    public mergeGroups(target: _Window): Promise<void> {
+    public mergeGroups(target: _Window | ExternalWindow): Promise<void> {
         return this.wire.sendAction('merge-window-groups', Object.assign({}, this.identity, {
             groupingUuid: target.identity.uuid,
             groupingWindowName: target.identity.name
