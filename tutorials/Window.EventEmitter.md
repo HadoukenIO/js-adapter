@@ -743,7 +743,7 @@ Generated when a window is moved by the user.  For use with monitor scaling that
 ```
 
 #### will-resize
-Generated when a window is resized by the user.  For use with monitor scaling that is not 100%.  Bounds are given in physical pixels (not adjusted for monitor scale factor).
+Generated when a window is resized by the user.  For use with monitor scaling that is not 100%.  Bounds are given in physical pixels (not adjusted for monitor scale factor).  The event will fire when a user resize is blocked by window options such as maxWidth or minHeight but not if the window is not resizable.  
 ```js
 //This response has the following shape:
 {
