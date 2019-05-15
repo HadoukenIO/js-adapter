@@ -145,6 +145,21 @@ export interface Area {
  * `Ctrl` + `Scroll` _(Zoom In & Out)_<br>
  * `Ctrl` + `0` _(Restore to 100%)_
  *
+ * @property {object} [alphaMask] - _Experimental._  _Updatable._
+ * <br>
+ * alphaMask turns anything of matching RGB value transparent.
+ * <br>
+ * Caveats:
+ * * runtime key --disable-gpu is required. Note: Unclear behavior on remote Desktop support
+ * * User cannot click-through transparent regions
+ * * Not supported on Mac
+ * * Windows Aero must be enabled
+ * * Won't make visual sense on Pixel-pushed environments such as Citrix
+ * * Not supported on rounded corner windows
+ * @property {number} [alphaMask.red=-1] 0-255
+ * @property {number} [alphaMask.green=-1] 0-255
+ * @property {number} [alphaMask.blue=-1] 0-255
+ *
  * @property {boolean} [alwaysOnTop=false] - _Updatable._
  * A flag to always position the window at the top of the window stack.
  *
@@ -155,6 +170,8 @@ export interface Area {
  *
  * @property {boolean} [api.iframe.crossOriginInjection=false] Controls if the `fin` API object is present for cross origin iframes.
  * @property {boolean} [api.iframe.sameOriginInjection=true] Controls if the `fin` API object is present for same origin iframes.
+ *
+ * @property {string} [applicationIcon = ""] - _Deprecated_ - use `icon` instead.
  *
  * @property {number} [aspectRatio=0] - _Updatable._
  * The aspect ratio of width to height to enforce for the window. If this value is equal to or less than zero,
@@ -179,6 +196,12 @@ export interface Area {
  * @property {boolean} [contextMenu=true] - _Updatable._
  * A flag to show the context menu when right-clicking on a window.
  * Gives access to the devtools for the window.
+ *
+ * @property {object} [contextMenuSettings] - _Updatable._
+ * Configure the context menu when right-clicking on a window.
+ * @property {boolean} [contextMenuSettings.enable=true] Should the context menu display on right click.
+ * @property {boolean} [contextMenuSettings.devtools=true] Should the context menu contain a button for opening devtools.
+ * @property {boolean} [contextMenuSettings.reload=true] Should the context menu contain a button for reloading the page.
  *
  * @property {object} [cornerRounding] - _Updatable._
  * Defines and applies rounded corners for a frameless window. **NOTE:** On macOS corner is not ellipse but circle rounded by the
@@ -285,6 +308,8 @@ export interface Area {
  * * `"maximized"`
  * * `"minimized"`
  * * `"normal"`
+ *
+ * @property {string} [taskbarIcon=string] - Deprecated - use `icon` instead._Windows_.
  *
  * @property {string} [taskbarIconGroup=<application uuid>] - _Windows_.
  * Specify a taskbar group for the window.
