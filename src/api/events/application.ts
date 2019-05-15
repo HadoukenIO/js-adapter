@@ -1,6 +1,6 @@
 import { WindowEvent, BaseEventMap, ApplicationEvent } from './base';
 import { WindowAlertRequestedEvent, WindowAuthRequestedEvent, WindowEndLoadEvent, PropagatedWindowEvents } from './window';
-import Bounds from '../window/bounds';
+import { Bounds } from '../../shapes';
 
 export interface CrashedEvent {
     reason: 'normal-termination' | 'abnormal-termination' | 'killed' | 'crashed' | 'still-running' | 'launch-failed' | 'out-of-memory';
