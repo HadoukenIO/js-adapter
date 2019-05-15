@@ -1,5 +1,5 @@
 import { parse } from 'url';
-import { IncomingMessage } from 'http';
+import { IncomingMessage, ClientRequestArgs } from 'http';
 import * as fs from 'fs';
 import { URL } from 'url';
 
@@ -22,24 +22,23 @@ export const getProxy = () => {
 
 export const getRequestOptions = (url: string) => {
     const parsedUrl = new URL(url);
+    let options;
 
-    const options = {
-        host: parsedUrl.hostname,
-        path: parsedUrl.pathname,
-        port: parsedUrl.port,
-        headers: { Host: '' }
-    };
-
-    if (getProxyVar() && options.host !== 'localhost' && options.host.substring(0, 3) !== '127') {
+    if (getProxyVar() && parsedUrl.hostname !== 'localhost' && parsedUrl.hostname.substring(0, 3) !== '127') {
+        options = <ClientRequestArgs>{};
         const proxy = getProxy();
+
         options.host = proxy.host;
         options.port = proxy.port;
         options.path = url;
-        options.headers.Host = parsedUrl.hostname;
+        options.headers = { 'Host': parsedUrl.hostname };
+
         if (proxy.username && proxy.password) {
             const auth = 'Basic ' + Buffer.from(proxy.username + ':' + proxy.password).toString('base64');
             Object.assign(options.headers, { 'Proxy-Authorization': auth });
         }
+    } else {
+        options = parsedUrl;
     }
 
     return options;
@@ -50,7 +49,7 @@ export const fetch = async (url: string): Promise<string> => {
     const proto = (parse(requestUrl).protocol.slice(0, -1)) === 'http' ? 'http' : 'https';
     const fetcher = await import(proto);
     return new Promise<string>((resolve, reject) => {
-        const options = getRequestOptions(url);
+        const options: URL | ClientRequestArgs = getRequestOptions(url);
         const request = fetcher.get(options, (response: IncomingMessage) => {
             if (response.statusCode < 200 || response.statusCode > 299) {
                 reject(new Error(`Failed to load url: ${url}, status code:${response.statusCode}`));
@@ -73,7 +72,7 @@ export const downloadFile = async (url: string, writeLocation: string) => {
     const fetcher = await import(proto);
     return new Promise((resolve, reject) => {
         try {
-            const options = getRequestOptions(url);
+            const options: URL | ClientRequestArgs = getRequestOptions(url);
             fetcher.get(options, (response: IncomingMessage) => {
                 const file = fs.createWriteStream(writeLocation);
                 response.pipe(file);

@@ -208,6 +208,13 @@ describe('System.', function () {
         }));
     });
 
+    describe('getRuntimeInfo()', () => {
+
+        it('has args as part of the Runtime Info Object', () => fin.System.getRuntimeInfo().then(runtimeInfo => {
+            assert(typeof (runtimeInfo.args) === 'object');
+        }));
+    });
+
     describe('launchExternalProcess()', () => {
         it('Fulfilled', (done) => {
             const processOptions: ExternalProcessRequestType = {
