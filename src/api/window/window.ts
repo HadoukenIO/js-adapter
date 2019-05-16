@@ -343,6 +343,11 @@ interface WindowMovementOptions {
  */
 
 /**
+ * @typedef { Object } WindowMovementOptions
+ * @property { boolean } moveIndependently - Move a window indpendently of its group or along with its group. Defaults to false.
+ */
+
+/**
  * @typedef {object} Transition
  * @property {Opacity} opacity - The Opacity transition
  * @property {Position} position - The Position transition
