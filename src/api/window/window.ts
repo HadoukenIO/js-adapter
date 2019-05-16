@@ -335,7 +335,7 @@ interface WindowMovementOptions {
  */
 
 /**
- * @typedef { Object } Area
+ * @typedef { object } Area
  * @property { number } height Area's height
  * @property { number } width Area's width
  * @property { number } x X coordinate of area's starting point
@@ -343,7 +343,7 @@ interface WindowMovementOptions {
  */
 
 /**
- * @typedef { Object } WindowMovementOptions
+ * @typedef { object } WindowMovementOptions
  * @property { boolean } moveIndependently - Move a window indpendently of its group or along with its group. Defaults to false.
  */
 
