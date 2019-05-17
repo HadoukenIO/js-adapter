@@ -1,6 +1,7 @@
 /* tslint:disable:no-invalid-this no-function-expression insecure-random mocha-no-side-effect-code no-empty */
+import { conn } from './connect';
 import {connect, Fin} from '../src/main';
-import { TEST_TIMEOUT } from './multi-runtime-utils';
+import { kill,  TEST_TIMEOUT } from './multi-runtime-utils';
 import * as fs from 'fs';
 import * as path from 'path';
 import * as assert from 'assert';
@@ -15,6 +16,7 @@ before(async function () {
         startup_app: { uuid: 'TESTSERVICE', name: 'TESTSERVICE', 'nonPersistent' : true }
     });
     fs.writeFileSync(servicePath, serviceConf);
+    base.runtime.arguments += ' --security-realm=services-test';
     const conf = JSON.stringify({
         ...base,
         startup_app: null,
@@ -27,9 +29,15 @@ describe('desktop-services', function () {
     let fin: Fin;
     it('can launch an app with a service', async function () {
        fin = await connect({ manifestUrl: appPath, uuid: 'service-test-app', nonPersistent: true });
-       const service = fin.Application.wrapSync({uuid: 'TESTSERVICE' });
+       const testFin = await conn();
+       const service = testFin.Application.wrapSync({uuid: 'TESTSERVICE' });
        const isRunning = await service.isRunning();
        assert(isRunning, 'Expected service to be running');
 
     });
+
+    after(async () => {
+        await kill(fin);
+    });
+
 });
