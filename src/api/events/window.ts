@@ -167,8 +167,8 @@ export interface WindowEventMapping<Topic = string, Type = string> extends BaseE
     'shown': WindowEvent<Topic, Type>;
     'user-movement-disabled': WindowEvent<Topic, Type>;
     'user-movement-enabled': WindowEvent<Topic, Type>;
-    'will-move': WindowEvent<Topic, Type>;
-    'will-resize': WindowEvent<Topic, Type>;
+    'will-move': WillMoveOrResize<Topic, Type>;
+    'will-resize': WillMoveOrResize<Topic, Type>;
 }
 
 export interface PropagatedWindowEventMapping<Topic = string, Type = string> extends BaseEventMap {
