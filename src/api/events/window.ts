@@ -202,8 +202,8 @@ export interface PropagatedWindowEventMapping<Topic = string, Type = string> ext
     'window-shown': WindowEvent<Topic, Type>;
     'window-user-movement-disabled': WindowEvent<Topic, Type>;
     'window-user-movement-enabled': WindowEvent<Topic, Type>;
-    'window-will-move': WindowEvent<Topic, Type>;
-    'window-will-resize': WindowEvent<Topic, Type>;
+    'window-will-move': WillMoveOrResize<Topic, Type>;
+    'window-will-resize': WillMoveOrResize<Topic, Type>;
 }
 
 // This is the type we should be using. It takes the more generic mapping and applies the proper Topic and Type to each event
