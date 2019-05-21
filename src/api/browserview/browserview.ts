@@ -1,8 +1,8 @@
-import { WebContents } from "../webcontents/webcontents";
-import { BaseEventMap } from "../events/base";
-import Transport from "../../transport/transport";
-import { Identity } from "../../identity";
-import { Base } from "../base";
+import { WebContents } from '../webcontents/webcontents';
+import { BaseEventMap } from '../events/base';
+import Transport from '../../transport/transport';
+import { Identity } from '../../identity';
+import { Base } from '../base';
 interface AutoResizeOptions {
     /**
      * If true, the view's width will grow and shrink together with the window. false
@@ -27,7 +27,7 @@ export class BrowserViewModule extends Base {
     public async create(options: BrowserViewCreationOptions) {
         const uuid = this.wire.me.uuid;
         await this.wire.sendAction('create-browser-view' , {...options, uuid})
-        return this.wrapSync({uuid, options.name});
+        return this.wrapSync({uuid, name: options.name});
     }
     public wrapSync(identity: Identity) {
         return new BrowserView(this.wire, identity);
@@ -35,13 +35,13 @@ export class BrowserViewModule extends Base {
 }
 
 export class BrowserView extends WebContents<BaseEventMap> {
-    constructor(wire: Transport, identity: Identity) {
+    constructor(wire: Transport, public identity: Identity) {
         super(wire, identity, 'browserview');
     }
-    public attach (target: Identity) {
+    public attach = async (target: Identity) => {
         await this.wire.sendAction('attach-browser-view', {target, ...this.identity})
     }
-    public setBounds(bounds: any) {
+    public setBounds = async (bounds: any) => {
         await this.wire.sendAction('set-browser-view-bounds', {bounds, ...this.identity})
     }
 

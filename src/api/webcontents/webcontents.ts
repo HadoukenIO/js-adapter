@@ -4,7 +4,7 @@ import { Identity } from '../../identity';
 import Transport from '../../transport/transport';
 
 export class WebContents<T extends BaseEventMap> extends EmitterBase<T> {
-    constructor(wire: Transport, identity: Identity, public entityType: string,) {
+    constructor(wire: Transport, identity: Identity, public entityType: string) {
         super(wire, [entityType, identity.uuid, identity.name]);
     }
     public executeJavaScript(code: string): Promise<void> {
