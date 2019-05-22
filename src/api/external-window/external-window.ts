@@ -39,7 +39,9 @@ export default class ExternalWindowModule extends Base {
  * @classdesc An ExternalWindow object representing an adopted native window
  * on the system. Allows the developer to call actions on external windows as
  * well as listen to external window events.
+ * It has the ability to listen for <a href="tutorial-ExternalWindow.EventEmitter.html"> external window specific events</a>.
  * @class
+ * @alias ExternalWindow
  * @hideconstructor
  */
 export class ExternalWindow extends EmitterBase<ExternalWindowEvents> {

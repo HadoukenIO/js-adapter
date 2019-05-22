@@ -135,15 +135,16 @@ Generated at the beginning of a user-driven change to a window's size or positio
 ```js
 {
 
-    height: 2,      //the height of the window prior to change.
-    left: 2,        //the left-most coordinate of the window prior to change.
-    name: "windowName", //(string) the name of the window.
-    top: 2,         //the top-most coordinate of the window prior to change.
+    height: 2,              //the height of the window prior to change.
+    left: 2,                //the left-most coordinate of the window prior to change.
+    name: "windowName",     //(string) the name of the window.
+    reason: "self"          //the reason for the bounds change: 'animation' | 'group-animation' | 'self' | 'group'      
+    top: 2,                 //the top-most coordinate of the window prior to change.
     topic: "window",
     type: "begin-user-bounds-changing",
-    uuid: "appUUID",//the UUID of the application the window belongs to.
-    width: 2,       //the width of the window prior to change.
-    windowState: "normal" // the state of the window: "minimized", "normal", or "maximized"
+    uuid: "appUUID",        //the UUID of the application the window belongs to.
+    width: 2,               //the width of the window prior to change.
+    windowState: "normal"   //the state of the window: "minimized", "normal", or "maximized"
 }
 ```
 
@@ -260,7 +261,7 @@ Generated when a window has crashed.
 ```
 
 #### disabled-movement-bounds-changed
-Generated when the window movement is disabled after all prevent user changes in window's size and/or position have completed.
+Generated after a change to a window's size and/or position is attempted while window movement is disabled.
 ```js
 //This response has the following shape:
 {
@@ -282,7 +283,7 @@ Generated when the window movement is disabled after all prevent user changes in
 ```
 
 #### disabled-movement-bounds-changing
-Generated when the window movement is disabled during prevented user changes to a window's size and/or position.
+Generated while a change to a window's size and/or position is attempted while window movement is disabled.
 ```js
 //This response has the following shape:
 {
@@ -462,8 +463,8 @@ Generated when a window joins/leaves a group and/or when the group a window is a
         }
     ],
     sourceWindowAppUuid: "appUUID", //The UUID of the application the sourceWindow belongs to The source window is the window in which (merge/join/leave)group(s) was called.
-    sourceWindowName: "sourceWindowName", the name of the sourcewindow. The source window is the window in which (merge/join/leave)group(s) was called.
-    targetGroup: [ //All the windows in the group the targetWindow orginated from
+    sourceWindowName: "sourceWindowName", //the name of the sourceWindow. The source window is the window in which (merge/join/leave)group(s) was called.
+    targetGroup: [ //All the windows in the group the targetWindow originated from
         {
             appUuid: "appUUID", //The UUID of the application this window entry belongs to.
             windowName: "windowName" //The name of this window entry.
@@ -529,6 +530,7 @@ Generated when a window is minimized.
 }
 ```
 
+#### options-changed
 Generated after window options are changed using the window.updateOptions method. Will not fire if the diff object is empty.
 ```js
 {
