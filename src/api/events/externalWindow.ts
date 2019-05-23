@@ -1,24 +1,25 @@
-import { ExternalWindowEvent, BaseEventMap } from './base';
+import { WindowEvent, BaseEventMap } from './base';
+import { WindowBeginBoundsChangingEvent, WindowBoundsChange, WindowGroupChanged, WindowHiddenEvent} from './window';
 
 export interface ExternalWindowEventMapping<Topic = string, Type = string> extends BaseEventMap {
-    'begin-user-bounds-changing': ExternalWindowEvent<Topic, Type>;
-    'blurred': ExternalWindowEvent<Topic, Type>;
-    'bounds-changed': ExternalWindowEvent<Topic, Type>;
-    'bounds-changing': ExternalWindowEvent<Topic, Type>;
-    'closed': ExternalWindowEvent<Topic, Type>;
-    'closing': ExternalWindowEvent<Topic, Type>;
-    'disabled-movement-bounds-changed': ExternalWindowEvent<Topic, Type>;
-    'disabled-movement-bounds-changing': ExternalWindowEvent<Topic, Type>;
-    'end-user-bounds-changing': ExternalWindowEvent<Topic, Type>;
-    'focused': ExternalWindowEvent<Topic, Type>;
-    'group-changed': ExternalWindowEvent<Topic, Type>;
-    'hidden': ExternalWindowEvent<Topic, Type>;
-    'maximized': ExternalWindowEvent<Topic, Type>;
-    'minimized': ExternalWindowEvent<Topic, Type>;
-    'restored': ExternalWindowEvent<Topic, Type>;
-    'shown': ExternalWindowEvent<Topic, Type>;
-    'user-movement-disabled': ExternalWindowEvent<Topic, Type>;
-    'user-movement-enabled': ExternalWindowEvent<Topic, Type>;
+    'begin-user-bounds-changing': WindowBeginBoundsChangingEvent<Topic, Type>;
+    'blurred': WindowEvent<Topic, Type>;
+    'bounds-changed': WindowBoundsChange<Topic, Type>;
+    'bounds-changing': WindowBoundsChange<Topic, Type>;
+    'closed': WindowEvent<Topic, Type>;
+    'closing': WindowEvent<Topic, Type>;
+    'disabled-movement-bounds-changed': WindowBoundsChange<Topic, Type>;
+    'disabled-movement-bounds-changing': WindowBoundsChange<Topic, Type>;
+    'end-user-bounds-changing': WindowBeginBoundsChangingEvent<Topic, Type>;
+    'focused': WindowEvent<Topic, Type>;
+    'group-changed': WindowGroupChanged<Topic, Type>;
+    'hidden': WindowHiddenEvent<Topic, Type>;
+    'maximized': WindowEvent<Topic, Type>;
+    'minimized': WindowEvent<Topic, Type>;
+    'restored': WindowEvent<Topic, Type>;
+    'shown': WindowEvent<Topic, Type>;
+    'user-movement-disabled': WindowEvent<Topic, Type>;
+    'user-movement-enabled': WindowEvent<Topic, Type>;
 }
 
 export type ExternalWindowEvents = {
