@@ -1,4 +1,6 @@
 Removes focus from the window
+<br>__note__: This method is not applicable for <a href="ExternalWindow.html"> External Windows</a>.
+
 # Example
 ```js
 async function blurWindow() {

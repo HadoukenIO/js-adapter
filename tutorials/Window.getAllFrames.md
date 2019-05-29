@@ -1,5 +1,6 @@
 Retrieves an array of frame info objects representing the main frame and any
 iframes that are currently on the page.
+<br>__note__: This method is not applicable for <a href="ExternalWindow.html"> External Windows</a>.
 
 # Example
 ```js

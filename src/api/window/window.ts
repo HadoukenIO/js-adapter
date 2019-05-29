@@ -1035,8 +1035,8 @@ export class _Window extends EmitterBase<WindowEvents> {
 
     /**
      * Provides credentials to authentication requests
-     * @param { string } userName userName to provide to the authentication challange
-     * @param { string } password password to provide to the authentication challange
+     * @param { string } userName userName to provide to the authentication challenge
+     * @param { string } password password to provide to the authentication challenge
      * @return {Promise.<void>}
      * @tutorial Window.authenticate
      */

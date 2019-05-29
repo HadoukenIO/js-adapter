@@ -1,4 +1,5 @@
 Stops any current navigation the window is performing.
+<br>__note__: This method is not applicable for <a href="ExternalWindow.html"> External Windows</a>.
 
 # Example
 ```js
