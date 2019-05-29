@@ -203,12 +203,17 @@ export function killByruntime(runtimeProcess: RuntimeProcess) {
     runtimeProcess.runtime.kill();
 }
 
-async function closeAndClean(runtimeProcess: RuntimeProcess): Promise<void> {
-    killByruntime(runtimeProcess);
-    // give some time for rvm process to be killed
-    await delayPromise(DELAY_MS);
-    const cachePath = await realmCachePath(runtimeProcess.realm);
-    rimraf.sync(cachePath);
+async function closeAndClean(runtimeProcess: RuntimeProcess): Promise<void | object> {
+    return new Promise(async (resolve, reject) => {
+        killByruntime(runtimeProcess);
+        const cachePath = await realmCachePath(runtimeProcess.realm);
+        rimraf(cachePath, (err) => {
+            if (err) {
+                reject(err);
+            }
+            resolve();
+        });
+    });
 }
 
 export async function launchAndConnect(version: string = process.env.OF_VER,
