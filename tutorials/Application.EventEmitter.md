@@ -85,40 +85,40 @@ app.removeAllListeners("closed");
 * window-alert-requested
 * window-auth-requested
 * window-blurred
-* window-bounds-changed (see {@tutorial Window.addListener})
-* window-bounds-changing (see {@tutorial Window.addListener})
+* window-bounds-changed (see {@tutorial Window.EventEmitter})
+* window-bounds-changing (see {@tutorial Window.EventEmitter})
 * window-closed
 * window-closing
 * window-crashed
 * window-created
-* window-disabled-movement-bounds-changed (see {@tutorial Window.addListener})
-* window-disabled-movement-bounds-changing (see {@tutorial Window.addListener})
+* window-disabled-movement-bounds-changed (see {@tutorial Window.EventEmitter})
+* window-disabled-movement-bounds-changing (see {@tutorial Window.EventEmitter})
 * window-embedded (see {@tutorial Window.addListener})
 * window-end-load
-* window-external-process-exited (see {@tutorial Window.addListener})
-* window-external-process-started (see {@tutorial Window.addListener})
-* window-file-download-completed (see {@tutorial Window.addListener})
-* window-file-download-progress (see {@tutorial Window.addListener})
-* window-file-download-started (see {@tutorial Window.addListener})
+* window-external-process-exited (see {@tutorial Window.EventEmitter})
+* window-external-process-started (see {@tutorial Window.EventEmitter})
+* window-file-download-completed (see {@tutorial Window.EventEmitter})
+* window-file-download-progress (see {@tutorial Window.EventEmitter})
+* window-file-download-started (see {@tutorial Window.EventEmitter})
 * window-focused
-* window-group-changed (see {@tutorial Window.addListener})
-* window-hidden (see {@tutorial Window.addListener})
-* window-initialized (see {@tutorial Window.addListener})
-* window-maximized (see {@tutorial Window.addListener})
-* window-minimized (see {@tutorial Window.addListener})
-* window-options-changed (see {@tutorial Window.addEventListener})
+* window-group-changed (see {@tutorial Window.EventEmitter})
+* window-hidden (see {@tutorial Window.EventEmitter})
+* window-initialized (see {@tutorial Window.EventEmitter})
+* window-maximized (see {@tutorial Window.EventEmitter})
+* window-minimized (see {@tutorial Window.EventEmitter})
+* window-options-changed (see {@tutorial Window.EventEmitter})
 * window-navigation-rejected
 * window-not-responding
-* window-preload-scripts-state-changed (see {@tutorial Window.addListener})
-* window-preload-scripts-state-changing (see {@tutorial Window.addListener})
+* window-preload-scripts-state-changed (see {@tutorial Window.EventEmitter})
+* window-preload-scripts-state-changing (see {@tutorial Window.EventEmitter})
 * window-reloaded
 * window-responding
-* window-restored (see {@tutorial Window.addListener})
+* window-restored (see {@tutorial Window.EventEmitter})
 * window-show-requested
-* window-shown (see {@tutorial Window.addListener})
+* window-shown (see {@tutorial Window.EventEmitter})
 * window-start-load
-* window-user-movement-disabled (see {@tutorial Window.addListener})
-* window-user-movement-enabled (see {@tutorial Window.addListener})
+* window-user-movement-disabled (see {@tutorial Window.EventEmitter})
+* window-user-movement-enabled (see {@tutorial Window.EventEmitter})
 
 ### Application Events
 
