@@ -107,6 +107,10 @@ export interface Area {
     y: number;
 }
 
+interface WindowMovementOptions {
+    moveIndependently: boolean;
+}
+
 /**
  * @typedef {object} Window~options
  * @summary Window creation options.
@@ -331,11 +335,16 @@ export interface Area {
  */
 
 /**
- * @typedef { Object } Area
+ * @typedef { object } Area
  * @property { number } height Area's height
  * @property { number } width Area's width
  * @property { number } x X coordinate of area's starting point
  * @property { number } y Y coordinate of area's starting point
+ */
+
+/**
+ * @typedef { object } WindowMovementOptions
+ * @property { boolean } moveIndependently - Move a window independently of its group or along with its group. Defaults to false.
  */
 
 /**
@@ -901,22 +910,32 @@ export class _Window extends EmitterBase<WindowEvents> {
      * Moves the window by a specified amount.
      * @param { number } deltaLeft The change in the left position of the window
      * @param { number } deltaTop The change in the top position of the window
+     * @param { WindowMovementOptions } options Optional parameters to modify window movement
      * @return {Promise.<void>}
      * @tutorial Window.moveBy
      */
-    public moveBy(deltaLeft: number, deltaTop: number): Promise<void> {
-        return this.wire.sendAction('move-window-by', Object.assign({}, this.identity, { deltaLeft, deltaTop })).then(() => undefined);
+    public moveBy(deltaLeft: number, deltaTop: number, options: WindowMovementOptions = { moveIndependently: false }): Promise<void> {
+        return this.wire.sendAction('move-window-by', Object.assign({}, this.identity, {
+            deltaLeft,
+            deltaTop,
+            options
+        })).then(() => undefined);
     }
 
     /**
      * Moves the window to a specified location.
      * @param { number } left The left position of the window
      * @param { number } top The top position of the window
+     * @param { WindowMovementOptions } options Optional parameters to modify window movement
      * @return {Promise.<void>}
      * @tutorial Window.moveTo
      */
-    public moveTo(left: number, top: number): Promise<void> {
-        return this.wire.sendAction('move-window', Object.assign({}, this.identity, { left, top })).then(() => undefined);
+    public moveTo(left: number, top: number, options: WindowMovementOptions = { moveIndependently: false }): Promise<void> {
+        return this.wire.sendAction('move-window', Object.assign({}, this.identity, {
+            left,
+            top,
+            options
+        })).then(() => undefined);
     }
 
     /**
@@ -926,14 +945,17 @@ export class _Window extends EmitterBase<WindowEvents> {
      * @param { AnchorType } anchor Specifies a corner to remain fixed during the resize.
      * Can take the values: "top-left", "top-right", "bottom-left", or "bottom-right".
      * If undefined, the default is "top-left"
+     * @param { WindowMovementOptions } options Optional parameters to modify window movement
      * @return {Promise.<void>}
      * @tutorial Window.resizeBy
      */
-    public resizeBy(deltaWidth: number, deltaHeight: number, anchor: AnchorType): Promise<void> {
+    public resizeBy(deltaWidth: number, deltaHeight: number, anchor: AnchorType,
+        options: WindowMovementOptions = { moveIndependently: false }): Promise<void> {
         return this.wire.sendAction('resize-window-by', Object.assign({}, this.identity, {
             deltaWidth: Math.floor(deltaWidth),
             deltaHeight: Math.floor(deltaHeight),
-            anchor
+            anchor,
+            options
         })).then(() => undefined);
     }
 
@@ -944,14 +966,17 @@ export class _Window extends EmitterBase<WindowEvents> {
      * @param { AnchorType } anchor Specifies a corner to remain fixed during the resize.
      * Can take the values: "top-left", "top-right", "bottom-left", or "bottom-right".
      * If undefined, the default is "top-left"
+     * @param { WindowMovementOptions } options Optional parameters to modify window movement
      * @return {Promise.<void>}
      * @tutorial Window.resizeTo
      */
-    public resizeTo(width: number, height: number, anchor: AnchorType): Promise<void> {
+    public resizeTo(width: number, height: number, anchor: AnchorType,
+        options: WindowMovementOptions = { moveIndependently: false }): Promise<void> {
         return this.wire.sendAction('resize-window', Object.assign({}, this.identity, {
             width: Math.floor(width),
             height: Math.floor(height),
-            anchor
+            anchor,
+            options
         })).then(() => undefined);
     }
 
@@ -976,11 +1001,12 @@ export class _Window extends EmitterBase<WindowEvents> {
     /**
      * Sets the window's size and position.
      * @property { Bounds } bounds This is a * @type {string} name - name of the window.object that holds the propertys of
+     * @param { WindowMovementOptions } options Optional parameters to modify window movement
      * @return {Promise.<void>}
      * @tutorial Window.setBounds
      */
-    public setBounds(bounds: Bounds): Promise<void> {
-        return this.wire.sendAction('set-window-bounds', Object.assign({}, this.identity, bounds)).then(() => undefined);
+    public setBounds(bounds: Bounds, options: WindowMovementOptions = { moveIndependently: false }): Promise<void> {
+        return this.wire.sendAction('set-window-bounds', Object.assign({}, this.identity, { ...bounds, options })).then(() => undefined);
     }
 
     /**
@@ -1002,14 +1028,17 @@ export class _Window extends EmitterBase<WindowEvents> {
      * @param { number } top The right position of the window
      * @param { boolean } force Show will be prevented from closing when force is false and
      * ‘show-requested’ has been subscribed to for application’s main window
+     * @param { WindowMovementOptions } options Optional parameters to modify window movement
      * @return {Promise.<void>}
      * @tutorial Window.showAt
      */
-    public showAt(left: number, top: number, force: boolean = false): Promise<void> {
+    public showAt(left: number, top: number, force: boolean = false,
+        options: WindowMovementOptions = { moveIndependently: false }): Promise<void> {
         return this.wire.sendAction('show-at-window', Object.assign({}, this.identity, {
             force,
             left: Math.floor(left),
-            top: Math.floor(top)
+            top: Math.floor(top),
+            options
         })).then(() => undefined);
     }
 

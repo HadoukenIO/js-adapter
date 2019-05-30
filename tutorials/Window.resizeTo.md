@@ -1,5 +1,13 @@
 Resizes the window to the specified dimensions
 
+### Options Object
+
+```js
+{
+    moveIndependently: true // Move a window indpendently of its group or along with its group. Defaults to false.
+}
+```
+
 # Example
 ```js
 async function createWin() {
@@ -14,7 +22,10 @@ async function createWin() {
 
 async function resizeTo(left, top, anchor) {
     const win = await createWin();
-    return await win.resizeTo(left, top, anchor);
+    const options = {
+        moveIndependently: false
+    }
+    return await win.resizeTo(left, top, anchor, options);
 }
 
 resizeTo(580, 300, 'top-left').then(() => console.log('Resized')).catch(err => console.log(err));

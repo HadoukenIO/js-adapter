@@ -1,5 +1,13 @@
 Sets the window's size and position
 
+### Options Object
+
+```js
+{
+    moveIndependently: true // Move a window indpendently of its group or along with its group. Defaults to false.
+}
+```
+
 # Example
 ```js
 async function createWin() {
@@ -14,7 +22,10 @@ async function createWin() {
 
 async function setBounds(bounds) {
     const win = await createWin();
-    return await win.setBounds();
+    const options = {
+        moveIndependently: false
+    }
+    return await win.setBounds(bounds, options);
 }
 
 setBounds({
