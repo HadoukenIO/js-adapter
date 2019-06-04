@@ -315,6 +315,10 @@ export interface Area {
  * Specify a taskbar group for the window.
  * _If omitted, defaults to app's uuid (`fin.Application.getCurrentSync().identity.uuid`)._
  *
+ * @property {string} [transparent=boolean] - Deprecated - use `opacity` instead.
+ * Specify a taskbar group for the window.
+ * _If omitted, defaults to app's uuid (`fin.Application.getCurrentSync().identity.uuid`)._
+ * 
  * @property {string} [url="about:blank"]
  * The URL of the window.
  *

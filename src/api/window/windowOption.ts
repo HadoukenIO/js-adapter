@@ -40,6 +40,7 @@ export interface WindowOption {
     smallWindow?: boolean;
     state?: string;
     taskbarIconGroup?: string;
+    transparent?: Boolean;
     url?: string;
     uuid?: string;
     waitForPageLoad?: boolean;
