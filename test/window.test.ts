@@ -430,8 +430,11 @@ describe('Window.', function() {
     });
 
     describe('navigateBack()', () => {
-
-        it('Fulfilled', () => testWindow.navigateBack().then(() => assert(true)));
+        it('Fulfilled',
+            () => testWindow.navigate('https://www.google.com')
+                .then(() => testWindow.navigateBack())
+                .then(() => testWindow.getInfo())
+                .then(({url}) => assert(url === appConfigTemplate.url)));
     });
 
     describe('navigateForward()', () => {
