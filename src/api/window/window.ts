@@ -108,6 +108,10 @@ export interface Area {
     y: number;
 }
 
+interface WindowMovementOptions {
+    moveIndependently: boolean;
+}
+
 /**
  * @typedef {object} Window~options
  * @summary Window creation options.
@@ -146,6 +150,21 @@ export interface Area {
  * `Ctrl` + `Scroll` _(Zoom In & Out)_<br>
  * `Ctrl` + `0` _(Restore to 100%)_
  *
+ * @property {object} [alphaMask] - _Experimental._  _Updatable._
+ * <br>
+ * alphaMask turns anything of matching RGB value transparent.
+ * <br>
+ * Caveats:
+ * * runtime key --disable-gpu is required. Note: Unclear behavior on remote Desktop support
+ * * User cannot click-through transparent regions
+ * * Not supported on Mac
+ * * Windows Aero must be enabled
+ * * Won't make visual sense on Pixel-pushed environments such as Citrix
+ * * Not supported on rounded corner windows
+ * @property {number} [alphaMask.red=-1] 0-255
+ * @property {number} [alphaMask.green=-1] 0-255
+ * @property {number} [alphaMask.blue=-1] 0-255
+ *
  * @property {boolean} [alwaysOnTop=false] - _Updatable._
  * A flag to always position the window at the top of the window stack.
  *
@@ -156,6 +175,8 @@ export interface Area {
  *
  * @property {boolean} [api.iframe.crossOriginInjection=false] Controls if the `fin` API object is present for cross origin iframes.
  * @property {boolean} [api.iframe.sameOriginInjection=true] Controls if the `fin` API object is present for same origin iframes.
+ *
+ * @property {string} [applicationIcon = ""] - _Deprecated_ - use `icon` instead.
  *
  * @property {number} [aspectRatio=0] - _Updatable._
  * The aspect ratio of width to height to enforce for the window. If this value is equal to or less than zero,
@@ -180,6 +201,12 @@ export interface Area {
  * @property {boolean} [contextMenu=true] - _Updatable._
  * A flag to show the context menu when right-clicking on a window.
  * Gives access to the devtools for the window.
+ *
+ * @property {object} [contextMenuSettings] - _Updatable._
+ * Configure the context menu when right-clicking on a window.
+ * @property {boolean} [contextMenuSettings.enable=true] Should the context menu display on right click.
+ * @property {boolean} [contextMenuSettings.devtools=true] Should the context menu contain a button for opening devtools.
+ * @property {boolean} [contextMenuSettings.reload=true] Should the context menu contain a button for reloading the page.
  *
  * @property {object} [cornerRounding] - _Updatable._
  * Defines and applies rounded corners for a frameless window. **NOTE:** On macOS corner is not ellipse but circle rounded by the
@@ -287,6 +314,8 @@ export interface Area {
  * * `"minimized"`
  * * `"normal"`
  *
+ * @property {string} [taskbarIcon=string] - Deprecated - use `icon` instead._Windows_.
+ *
  * @property {string} [taskbarIconGroup=<application uuid>] - _Windows_.
  * Specify a taskbar group for the window.
  * _If omitted, defaults to app's uuid (`fin.Application.getCurrentSync().identity.uuid`)._
@@ -307,11 +336,16 @@ export interface Area {
  */
 
 /**
- * @typedef { Object } Area
+ * @typedef { object } Area
  * @property { number } height Area's height
  * @property { number } width Area's width
  * @property { number } x X coordinate of area's starting point
  * @property { number } y Y coordinate of area's starting point
+ */
+
+/**
+ * @typedef { object } WindowMovementOptions
+ * @property { boolean } moveIndependently - Move a window independently of its group or along with its group. Defaults to false.
  */
 
 /**
@@ -931,22 +965,32 @@ export class _Window extends WebContents<WindowEvents> {
      * Moves the window by a specified amount.
      * @param { number } deltaLeft The change in the left position of the window
      * @param { number } deltaTop The change in the top position of the window
+     * @param { WindowMovementOptions } options Optional parameters to modify window movement
      * @return {Promise.<void>}
      * @tutorial Window.moveBy
      */
-    public moveBy(deltaLeft: number, deltaTop: number): Promise<void> {
-        return this.wire.sendAction('move-window-by', Object.assign({}, this.identity, { deltaLeft, deltaTop })).then(() => undefined);
+    public moveBy(deltaLeft: number, deltaTop: number, options: WindowMovementOptions = { moveIndependently: false }): Promise<void> {
+        return this.wire.sendAction('move-window-by', Object.assign({}, this.identity, {
+            deltaLeft,
+            deltaTop,
+            options
+        })).then(() => undefined);
     }
 
     /**
      * Moves the window to a specified location.
      * @param { number } left The left position of the window
      * @param { number } top The top position of the window
+     * @param { WindowMovementOptions } options Optional parameters to modify window movement
      * @return {Promise.<void>}
      * @tutorial Window.moveTo
      */
-    public moveTo(left: number, top: number): Promise<void> {
-        return this.wire.sendAction('move-window', Object.assign({}, this.identity, { left, top })).then(() => undefined);
+    public moveTo(left: number, top: number, options: WindowMovementOptions = { moveIndependently: false }): Promise<void> {
+        return this.wire.sendAction('move-window', Object.assign({}, this.identity, {
+            left,
+            top,
+            options
+        })).then(() => undefined);
     }
 
     /**
@@ -956,14 +1000,17 @@ export class _Window extends WebContents<WindowEvents> {
      * @param { AnchorType } anchor Specifies a corner to remain fixed during the resize.
      * Can take the values: "top-left", "top-right", "bottom-left", or "bottom-right".
      * If undefined, the default is "top-left"
+     * @param { WindowMovementOptions } options Optional parameters to modify window movement
      * @return {Promise.<void>}
      * @tutorial Window.resizeBy
      */
-    public resizeBy(deltaWidth: number, deltaHeight: number, anchor: AnchorType): Promise<void> {
+    public resizeBy(deltaWidth: number, deltaHeight: number, anchor: AnchorType,
+        options: WindowMovementOptions = { moveIndependently: false }): Promise<void> {
         return this.wire.sendAction('resize-window-by', Object.assign({}, this.identity, {
             deltaWidth: Math.floor(deltaWidth),
             deltaHeight: Math.floor(deltaHeight),
-            anchor
+            anchor,
+            options
         })).then(() => undefined);
     }
 
@@ -974,14 +1021,17 @@ export class _Window extends WebContents<WindowEvents> {
      * @param { AnchorType } anchor Specifies a corner to remain fixed during the resize.
      * Can take the values: "top-left", "top-right", "bottom-left", or "bottom-right".
      * If undefined, the default is "top-left"
+     * @param { WindowMovementOptions } options Optional parameters to modify window movement
      * @return {Promise.<void>}
      * @tutorial Window.resizeTo
      */
-    public resizeTo(width: number, height: number, anchor: AnchorType): Promise<void> {
+    public resizeTo(width: number, height: number, anchor: AnchorType,
+        options: WindowMovementOptions = { moveIndependently: false }): Promise<void> {
         return this.wire.sendAction('resize-window', Object.assign({}, this.identity, {
             width: Math.floor(width),
             height: Math.floor(height),
-            anchor
+            anchor,
+            options
         })).then(() => undefined);
     }
 
@@ -1006,11 +1056,12 @@ export class _Window extends WebContents<WindowEvents> {
     /**
      * Sets the window's size and position.
      * @property { Bounds } bounds This is a * @type {string} name - name of the window.object that holds the propertys of
+     * @param { WindowMovementOptions } options Optional parameters to modify window movement
      * @return {Promise.<void>}
      * @tutorial Window.setBounds
      */
-    public setBounds(bounds: Bounds): Promise<void> {
-        return this.wire.sendAction('set-window-bounds', Object.assign({}, this.identity, bounds)).then(() => undefined);
+    public setBounds(bounds: Bounds, options: WindowMovementOptions = { moveIndependently: false }): Promise<void> {
+        return this.wire.sendAction('set-window-bounds', Object.assign({}, this.identity, { ...bounds, options })).then(() => undefined);
     }
 
     /**
@@ -1032,14 +1083,17 @@ export class _Window extends WebContents<WindowEvents> {
      * @param { number } top The right position of the window
      * @param { boolean } force Show will be prevented from closing when force is false and
      * ‘show-requested’ has been subscribed to for application’s main window
+     * @param { WindowMovementOptions } options Optional parameters to modify window movement
      * @return {Promise.<void>}
      * @tutorial Window.showAt
      */
-    public showAt(left: number, top: number, force: boolean = false): Promise<void> {
+    public showAt(left: number, top: number, force: boolean = false,
+        options: WindowMovementOptions = { moveIndependently: false }): Promise<void> {
         return this.wire.sendAction('show-at-window', Object.assign({}, this.identity, {
             force,
             left: Math.floor(left),
-            top: Math.floor(top)
+            top: Math.floor(top),
+            options
         })).then(() => undefined);
     }
 
