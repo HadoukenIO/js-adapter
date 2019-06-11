@@ -3,6 +3,7 @@ import { BaseEventMap } from '../events/base';
 import Transport from '../../transport/transport';
 import { Identity } from '../../identity';
 import { Base } from '../base';
+import { RectangleBase } from '../../../../src/browser/rectangle';
 interface AutoResizeOptions {
     /**
      * If true, the view's width will grow and shrink together with the window. false
@@ -21,6 +22,8 @@ export interface BrowserViewOptions {
 export interface BrowserViewCreationOptions extends BrowserViewOptions {
     name: string;
     url: string;
+    target: Identity;
+    bounds?: RectangleBase;
 }
 
 export class BrowserViewModule extends Base {
@@ -38,9 +41,9 @@ export class BrowserView extends WebContents<BaseEventMap> {
     constructor(wire: Transport, public identity: Identity) {
         super(wire, identity, 'browserview');
     }
-    public attach = async (target: Identity) => {
-        await this.wire.sendAction('attach-browser-view', {target, ...this.identity})
-    }
+    // public attach = async (target: Identity) => {
+    //     await this.wire.sendAction('attach-browser-view', {target, ...this.identity})
+    // }
     public setBounds = async (bounds: any) => {
         await this.wire.sendAction('set-browser-view-bounds', {bounds, ...this.identity})
     }
