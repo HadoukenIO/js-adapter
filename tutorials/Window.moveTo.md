@@ -1,5 +1,13 @@
 Moves the window to a specified location
 
+### Options Object
+
+```js
+{
+    moveIndependently: true // Move a window indpendently of its group or along with its group. Defaults to false.
+}
+```
+
 # Example
 ```js
 async function createWin() {
@@ -14,7 +22,10 @@ async function createWin() {
 
 async function moveTo(left, top) {
     const win = await createWin();
-    return await win.moveTo(left, top)
+    const options = {
+        moveIndependently: false
+    }
+    return await win.moveTo(left, top, options)
 }
 
 moveTo(580, 300).then(() => console.log('Moved')).catch(err => console.log(err))

@@ -285,8 +285,8 @@ describe('Window.', function() {
                 return testWindow.moveBy(1, 1)
                     .then(() => testWindow.getBounds()
                         .then(data => {
-                            return assert(data.top === bounds.top + 1, `Expected ${data.top} to be ${bounds.top + 1}`) &&
-                                assert(data.left === bounds.left + 1, `Expected ${data.top} to be ${bounds.top + 1}`);
+                            assert(data.top === bounds.top + 1, `Expected ${data.top} to be ${bounds.top + 1}`);
+                            assert(data.left === bounds.left + 1, `Expected ${data.top} to be ${bounds.top + 1}`);
                         }));
             });
 
@@ -300,8 +300,8 @@ describe('Window.', function() {
             return testWindow.moveTo(10, 10)
                 .then(() => testWindow.getBounds()
                     .then(data => {
-                        return assert(data.top === 10, `Expected ${data.top} to be 10`) &&
-                            assert(data.left === 10, `Expected ${data.left} to be 10`);
+                        assert(data.top === 10, `Expected ${data.top} to be 10`);
+                        assert(data.left === 10, `Expected ${data.left} to be 10`);
                     }));
         });
 
@@ -387,8 +387,8 @@ describe('Window.', function() {
             return testWindow.showAt(10, 10)
                 .then(() => testWindow.getBounds()
                     .then(data => {
-                        return assert(data.top === 10, `Expected ${data.top} to be 10`) &&
-                            assert(data.left === 10, `Expected ${data.left} to be 10`);
+                        assert(data.top === 10, `Expected ${data.top} to be 10`);
+                        assert(data.left === 10, `Expected ${data.left} to be 10`);
                     }));
         });
     });
@@ -430,8 +430,11 @@ describe('Window.', function() {
     });
 
     describe('navigateBack()', () => {
-
-        it('Fulfilled', () => testWindow.navigateBack().then(() => assert(true)));
+        it('Fulfilled',
+            () => testWindow.navigate('https://www.google.com')
+                .then(() => testWindow.navigateBack())
+                .then(() => testWindow.getInfo())
+                .then(({url}) => assert(url === appConfigTemplate.url)));
     });
 
     describe('navigateForward()', () => {
