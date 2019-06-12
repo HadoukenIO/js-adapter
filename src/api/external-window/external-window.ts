@@ -19,18 +19,26 @@ export default class ExternalWindowModule extends Base {
      * @experimental
      */
     public async wrap(identity: Identity): Promise<ExternalWindow> {
+        await this.wire.sendAction('register-native-external-window', identity);
         return new ExternalWindow(this.wire, identity);
     }
 
     /**
      * Synchronously returns an external window object that represents an
      * existing external window.
+     * This method is intended for debugging / experimentation only and should not be
+     * used in production. It will not handle errors gracefully in cases such as an attempt
+     * to wrap a non-existent window.
+     * Use `ExternalWindow.wrap` instead.
      * @param { Identity } identity
      * @return {ExternalWindow}
      * @static
      * @experimental
      */
     public wrapSync(identity: Identity): ExternalWindow {
+        console.warn('ExternalWindow.wrapSync is only intended for debugging and may not handle errors properly.'
+            + '\nUse ExternalWindow.wrap instead.');
+        this.wire.sendAction('register-native-external-window', identity);
         return new ExternalWindow(this.wire, identity);
     }
 }
@@ -46,7 +54,6 @@ export class ExternalWindow extends EmitterBase<ExternalWindowEvents> {
     constructor(wire: Transport, public identity: Identity) {
         super(wire, ['external-window', identity.uuid]);
         this.topic = 'external-window';
-        this.wire.sendAction('register-native-external-window', this.identity);
     }
 
     /**
