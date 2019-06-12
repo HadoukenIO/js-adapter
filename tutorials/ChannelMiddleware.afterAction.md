@@ -6,12 +6,15 @@ Register middleware that fires after the action. If the action does not return t
     const provider = await fin.InterApplicationBus.Channel.create('channelName');
 
     await provider.register('provider-action', (payload, identity) => {
-        console.log(payload);
+        return {
+            echo: payload
+        };
     });
 
     await provider.afterAction((action, payload, identity) => {
-        //payload is only available if the action registered returns the payload object.
-        console.log(action, payload, identity);
+        //the payload can be altered here before handling the action.
+        payload.sent = date.now();
+        return payload;
     });
 
 })();
@@ -23,12 +26,15 @@ Register middleware that fires after the action. If the action does not return t
     const client = await fin.InterApplicationBus.Channel.connect('channelName');
 
     await client.register('client-action', (payload, identity) => {
-        console.log(payload);
+        return {
+            echo: payload
+        };
     });
 
-    await client.beforeAction((action, payload, identity) => {
-        //payload is only available if the action registered returns the payload object.
-        console.log(action, payload, identity);
+    await client.afterAction((action, payload, identity) => {
+        //the payload can be altered here before handling the action.
+        payload.sent = date.now();
+        return payload;
     });
 
 })();

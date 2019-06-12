@@ -5,12 +5,12 @@ Registers a default action. This is used any time an action that has not been re
 (async ()=> {
     const provider = await fin.InterApplicationBus.Channel.create('channelName');
 
-    await provider.register('provider-action', (payload, identity) => {
-        console.log(payload);
-    });
-
     await provider.setDefaultAction((action, payload, identity) => {
         console.log(`Client with identity ${JSON.stringify(identity)} has attempted to dispatch unregistered action: ${action}.`);
+
+        return {
+            echo: payload
+        };
     });
 
 })();
@@ -21,12 +21,12 @@ Registers a default action. This is used any time an action that has not been re
 (async ()=> {
     const client = await fin.InterApplicationBus.Channel.connect('channelName');
 
-    await client.register('client-action', (payload, identity) => {
-        console.log(payload);
-    });
-
     await client.setDefaultAction((action, payload, identity) => {
         console.log(`Provider with identity ${JSON.stringify(identity)} has attempted to dispatch unregistered action: ${action}.`);
+
+        return {
+            echo: payload
+        };
     });
 
 })();

@@ -6,7 +6,9 @@ Register middleware that fires before the action.
     const provider = await fin.InterApplicationBus.Channel.create('channelName');
 
     provider.register('provider-action', (payload, identity) => {
-        console.log(payload);
+        return {
+            echo: payload
+        };
     });
 
     provider.beforeAction((action, payload, identity) => {
@@ -24,11 +26,13 @@ Register middleware that fires before the action.
     const client = await fin.InterApplicationBus.Channel.connect('channelName');
 
     client.register('provider-action', (payload, identity) => {
-        console.log(payload);
+        return {
+            echo: payload
+        };
     });
 
     client.beforeAction((action, payload, identity) => {
-        //we can decorate the payload
+        //The payload can be altered here before handling the action.
         payload.received = date.now();
         return payload;
     });

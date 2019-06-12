@@ -8,6 +8,9 @@ Register an error handler. This is called before responding on any error.
     provider.register('provider-action', (payload, identity) => {
         console.log(payload);
         throw new Error('Action error');
+        return {
+            echo: payload
+        };
     });
 
     provider.onError((action, error, identity) => {
@@ -26,6 +29,9 @@ Register an error handler. This is called before responding on any error.
     client.register('client-action', (payload, identity) => {
         console.log(payload);
         throw new Error('Action error');
+        return {
+            echo: payload
+        };
     });
 
     client.onError((action, error, identity) => {

@@ -7,6 +7,9 @@ Remove an action by action name.
 
     await provider.register('provider-action', (payload, identity) => {
         console.log(payload);
+        return {
+            echo: payload
+        };
     });
 
     await provider.remove('provider-action');
@@ -21,6 +24,9 @@ Remove an action by action name.
 
     await client.register('client-action', (payload, identity) => {
         console.log(payload);
+        return {
+            echo: payload
+        };
     });
 
     await client.remove('client-action');

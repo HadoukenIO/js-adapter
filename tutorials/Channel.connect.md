@@ -24,6 +24,9 @@ async function makeClient(channelName) {
        // register a callback for a topic to which the channel provider can dispatch an action
        console.log('Action dispatched by provider: ', JSON.stringify(identity));
        console.log('Payload sent in dispatch: ', JSON.stringify(payload));
+       return {
+           echo: payload
+       };
    });
 }
 

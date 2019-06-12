@@ -20,6 +20,9 @@ A map of client connections is updated automatically on client connection and di
        // register a callback for a 'topic' to which clients can dispatch an action
        console.log('Action dispatched by client: ', JSON.stringify(identity));
        console.log('Payload sent in dispatch: ', JSON.stringify(payload));
+       return {
+           echo: payload
+       };
    });
 })();
 ```
