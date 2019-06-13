@@ -10,3 +10,14 @@ Register a listener that is called on every new client connection. It is passed 
     });
 })();
 ```
+
+### Reject connection example
+```js
+(async ()=> {
+    const provider = await fin.InterApplicationBus.Channel.create('channelName');
+
+    provider.onConnection(identity => {
+        throw new Error('Connection Rejected');
+    });
+})();
+```

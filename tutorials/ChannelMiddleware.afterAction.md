@@ -12,7 +12,7 @@ Register middleware that fires after the action. If the action does not return t
     });
 
     await provider.afterAction((action, payload, identity) => {
-        //the payload can be altered here before handling the action.
+        //the payload can be altered here after handling the action but before sending an acknowledgement.
         payload.sent = date.now();
         return payload;
     });
@@ -32,7 +32,7 @@ Register middleware that fires after the action. If the action does not return t
     });
 
     await client.afterAction((action, payload, identity) => {
-        //the payload can be altered here before handling the action.
+        //the payload can be altered here after handling the action but before sending an acknowledgement.
         payload.sent = date.now();
         return payload;
     });

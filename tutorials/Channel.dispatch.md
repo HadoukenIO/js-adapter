@@ -7,8 +7,9 @@ Dispatch an action to a specified client. Returns a promise for the result of ex
 (async ()=> {
     const provider = await fin.InterApplicationBus.Channel.create('channelName');
 
-    await provider.onConnection(async (identity, payload) => {
-        await provider.dispatch(identity, 'welcome-action', 'Hello, World!');
+    await provider.register('provider-action', async (payload, identity) => {
+        console.log(payload, identity);
+        return await provider.dispatch(identity, 'client-action', 'Hello, World!');
     });
 })();
 ```
@@ -20,6 +21,14 @@ Dispatch the given action to the channel provider. Returns a promise that resolv
 (async ()=> {
     const client = await fin.InterApplicationBus.Channel.connect('channelName');
 
-    await client.dispatch('provider-action', 'Hello From the client');
+    await client.register('client-action', (payload, identity) => {
+        console.log(payload, identity);
+        return {
+            echo: payload
+        };
+    });
+
+    const providerResponse = await client.dispatch('provider-action', { message: 'Hello From the client'});
+    console.log(providerResponse);
 })();
 ```

@@ -2,7 +2,7 @@ A channel can be created with a unique channel name by calling `Channel.create`.
 
 The caller can also set an onConnection and/or onDisconnection listener that will execute on any new channel connection/disconnection attempt from a channel client. To reject a connection, simply throw an error in the onConnection listener.  The default behavior is to accept all new connections.
 
-A map of client connections is updated automatically on client connection and disconnection and saved in the [read-only] `connections` property on the channelProvider bus.  The channel will exist until the provider destroys it or disconnects by closing or destroying the context (navigating or reloading). To setup a channel as a channelProvider, call `Channel.create` with a unique channel name. A map of client connections is updated automatically on client connection and disconnection.Create to a channel.
+A map of client connections is updated automatically on client connection and disconnection and saved in the [read-only] `connections` property on the channelProvider bus.  The channel will exist until the provider destroys it or disconnects by closing or destroying the context (navigating or reloading). To setup a channel as a channelProvider, call `Channel.create` with a unique channel name. A map of client connections is updated automatically on client connection and disconnection.
 
 ### Example
 ```js
