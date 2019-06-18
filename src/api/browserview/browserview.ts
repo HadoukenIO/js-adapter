@@ -47,5 +47,9 @@ export class BrowserView extends WebContents<BaseEventMap> {
     public setBounds = async (bounds: any) => {
         await this.wire.sendAction('set-browser-view-bounds', {bounds, ...this.identity})
     }
+    public getInfo = async () => {
+        const ack = await this.wire.sendAction('get-browser-view-info', {...this.identity});
+        return ack.payload.data;
+    }
 
 }
