@@ -3,7 +3,6 @@ import { BaseEventMap } from '../events/base';
 import Transport from '../../transport/transport';
 import { Identity } from '../../identity';
 import { Base } from '../base';
-import { RectangleBase } from '../../../../src/browser/rectangle';
 interface AutoResizeOptions {
     /**
      * If true, the view's width will grow and shrink together with the window. false
@@ -23,7 +22,12 @@ export interface BrowserViewCreationOptions extends BrowserViewOptions {
     name: string;
     url: string;
     target: Identity;
-    bounds?: RectangleBase;
+    bounds?: {
+        x: number;
+        y: number;
+        width: number;
+        height: number;
+    };
 }
 
 export class BrowserViewModule extends Base {
