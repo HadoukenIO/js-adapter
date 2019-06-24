@@ -1,4 +1,4 @@
-import { Base, EmitterBase } from '../base';
+import { Base } from '../base';
 import { Identity, GroupWindowIdentity } from '../../identity';
 import { Bounds } from '../../shapes';
 import { Application } from '../application/application';
@@ -9,6 +9,7 @@ import { WindowOption } from './windowOption';
 import { EntityType } from '../frame/frame';
 import { ExternalWindow } from '../external-window/external-window';
 import { validateIdentity } from '../../util/validate';
+import { WebContents } from '../webcontents/webcontents';
 
 /**
  * @lends Window
@@ -408,10 +409,10 @@ this animation onto the end of the animation queue.
  */
 // The window.Window name is taken
 // tslint:disable-next-line
-export class _Window extends EmitterBase<WindowEvents> {
+export class _Window extends WebContents<WindowEvents> {
 
     constructor(wire: Transport, public identity: Identity) {
-        super(wire, ['window', identity.uuid, identity.name]);
+        super(wire, identity, 'window');
     }
 
     /**
@@ -497,6 +498,61 @@ export class _Window extends EmitterBase<WindowEvents> {
      * @instance
      * @tutorial Window.EventEmitter
      */
+/**
+* Returns the zoom level of the window.
+* @function getZoomLevel
+* @memberOf Window
+* @instance
+* @return {Promise.<number>}
+* @tutorial Window.getZoomLevel
+*/
+
+/**
+ * Sets the zoom level of the window.
+ * @param { number } level The zoom level
+ * @function setZoomLevel
+ * @memberOf Window
+ * @instance
+ * @return {Promise.<void>}
+ * @tutorial Window.setZoomLevel
+ */
+
+/**
+ * Navigates the window to a specified URL. The url must contain the protocol prefix such as http:// or https://.
+ * @param {string} url - The URL to navigate the window to.
+ * @function navigate
+ * @memberOf Window
+ * @instance
+ * @return {Promise.<void>}
+ * @tutorial Window.navigate
+ */
+
+/**
+ * Navigates the window back one page.
+ * @function navigateBack
+ * @memberOf Window
+ * @instance
+ * @return {Promise.<void>}
+ * @tutorial Window.navigateBack
+ */
+
+/**
+ * Navigates the window forward one page.
+ * @function navigateForward
+ * @memberOf Window
+ * @instance
+ * @return {Promise.<void>}
+ * @tutorial Window.navigateForward
+ */
+
+/**
+ * Stops any current navigation the window is performing.
+ * @function stopNavigation
+ * @memberOf Window
+ * @instance
+ * @return {Promise.<void>}
+ * @tutorial Window.stopNavigation
+ */
 
     // create a new window
     public createWindow(options: WindowOption): Promise<_Window> {
@@ -710,13 +766,12 @@ export class _Window extends EmitterBase<WindowEvents> {
      * Executes Javascript on the window, restricted to windows you own or windows owned by
      * applications you have created.
      * @param { string } code JavaScript code to be executed on the window.
+     * @function executeJavaScript
+     * @memberOf Window
+     * @instance
      * @return {Promise.<void>}
      * @tutorial Window.executeJavaScript
      */
-    public executeJavaScript(code: string): Promise<void> {
-        return this.wire.sendAction('execute-javascript-in-window', Object.assign({}, this.identity, { code }))
-            .then(() => undefined);
-    }
 
     /**
      * Flashes the window’s frame and taskbar icon until stopFlashing is called or until a focus event is fired.
@@ -1071,62 +1126,6 @@ export class _Window extends EmitterBase<WindowEvents> {
      */
     public authenticate(userName: string, password: string): Promise<void> {
         return this.wire.sendAction('window-authenticate', Object.assign({}, this.identity, { userName, password })).then(() => undefined);
-    }
-
-    /**
-     * Returns the zoom level of the window.
-     * @return {Promise.<number>}
-     * @tutorial Window.getZoomLevel
-     */
-    public getZoomLevel(): Promise<number> {
-        return this.wire.sendAction('get-zoom-level', this.identity).then(({ payload }) => payload.data);
-    }
-
-    /**
-     * Sets the zoom level of the window.
-     * @param { number } level The zoom level
-     * @return {Promise.<void>}
-     * @tutorial Window.setZoomLevel
-     */
-    public setZoomLevel(level: number): Promise<void> {
-        return this.wire.sendAction('set-zoom-level', Object.assign({}, this.identity, { level })).then(() => undefined);
-    }
-
-    /**
-     * Navigates the window to a specified URL. The url must contain the protocol prefix such as http:// or https://.
-     * @param {string} url - The URL to navigate the window to.
-     * @return {Promise.<void>}
-     * @tutorial Window.navigate
-     */
-    public navigate(url: string): Promise<void> {
-        return this.wire.sendAction('navigate-window', Object.assign({}, this.identity, { url })).then(() => undefined);
-    }
-
-    /**
-     * Navigates the window back one page.
-     * @return {Promise.<void>}
-     * @tutorial Window.navigateBack
-     */
-    public navigateBack(): Promise<void> {
-        return this.wire.sendAction('navigate-window-back', Object.assign({}, this.identity)).then(() => undefined);
-    }
-
-    /**
-     * Navigates the window forward one page.
-     * @return {Promise.<void>}
-     * @tutorial Window.navigateForward
-     */
-    public async navigateForward(): Promise<void> {
-        await this.wire.sendAction('navigate-window-forward', Object.assign({}, this.identity));
-    }
-
-    /**
-     * Stops any current navigation the window is performing.
-     * @return {Promise.<void>}
-     * @tutorial Window.stopNavigation
-     */
-    public stopNavigation(): Promise<void> {
-        return this.wire.sendAction('stop-window-navigation', Object.assign({}, this.identity)).then(() => undefined);
     }
 
 }
