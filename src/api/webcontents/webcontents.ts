@@ -11,6 +11,7 @@ export class WebContents<T extends BaseEventMap> extends EmitterBase<T> {
         return this.wire.sendAction('execute-javascript-in-window', Object.assign({}, this.identity, { code }))
             .then(() => undefined);
     }
+    
     public getZoomLevel(): Promise<number> {
         return this.wire.sendAction('get-zoom-level', this.identity).then(({ payload }) => payload.data);
     }
