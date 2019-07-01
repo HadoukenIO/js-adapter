@@ -1,5 +1,4 @@
 Shows the Chromium Developer Tools
-<br>__note__: This method is not applicable for <a href="ExternalWindow.html"> External Windows</a>.
 
 # Example
 ```js

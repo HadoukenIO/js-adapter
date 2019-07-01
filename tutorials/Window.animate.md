@@ -1,5 +1,4 @@
 Performs the specified window transitions.
-<br>__note__: This method is not applicable for <a href="ExternalWindow.html"> External Windows</a>.
 
 ### Transition Types
 

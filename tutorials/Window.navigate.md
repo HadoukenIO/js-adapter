@@ -1,5 +1,4 @@
 Navigates the window to a specified URL. The url must contain the protocol prefix such as http:// or https://.
-<br>__note__: This method is not applicable for <a href="ExternalWindow.html"> External Windows</a>.
 
 # Example
 ```js

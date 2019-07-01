@@ -1,5 +1,4 @@
 Returns the native OS level Id. In Windows, it will return the Windows [handle](https://docs.microsoft.com/en-us/windows/desktop/WinProg/windows-data-types#HWND).
-<br>__note__: This method is not applicable for <a href="ExternalWindow.html"> External Windows</a>.
 
 # Example
 ```js

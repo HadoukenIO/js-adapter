@@ -1,5 +1,4 @@
 Navigates the window forward one page.
-<br>__note__: This method is not applicable for <a href="ExternalWindow.html"> External Windows</a>.
 
 # Example
 ```js

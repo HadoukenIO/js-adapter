@@ -1,5 +1,4 @@
 Executes Javascript on the window, restricted to windows you own or windows owned by applications you have created.
-<br>__note__: This method is not applicable for <a href="ExternalWindow.html"> External Windows</a>.
 
 # Example
 ```js

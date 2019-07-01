@@ -1,26 +1,29 @@
-import { WindowEvent, BaseEventMap } from './base';
-import { WindowBeginBoundsChangingEvent, WindowBoundsChange, WindowGroupChanged, WindowHiddenEvent} from './window';
+import { BaseEventMap } from './base';
+import { WindowEventMapping } from './window';
 
-export interface ExternalWindowEventMapping<Topic = string, Type = string> extends BaseEventMap {
-    'begin-user-bounds-changing': WindowBeginBoundsChangingEvent<Topic, Type>;
-    'blurred': WindowEvent<Topic, Type>;
-    'bounds-changed': WindowBoundsChange<Topic, Type>;
-    'bounds-changing': WindowBoundsChange<Topic, Type>;
-    'closed': WindowEvent<Topic, Type>;
-    'closing': WindowEvent<Topic, Type>;
-    'disabled-movement-bounds-changed': WindowBoundsChange<Topic, Type>;
-    'disabled-movement-bounds-changing': WindowBoundsChange<Topic, Type>;
-    'end-user-bounds-changing': WindowBeginBoundsChangingEvent<Topic, Type>;
-    'focused': WindowEvent<Topic, Type>;
-    'group-changed': WindowGroupChanged<Topic, Type>;
-    'hidden': WindowHiddenEvent<Topic, Type>;
-    'maximized': WindowEvent<Topic, Type>;
-    'minimized': WindowEvent<Topic, Type>;
-    'restored': WindowEvent<Topic, Type>;
-    'shown': WindowEvent<Topic, Type>;
-    'user-movement-disabled': WindowEvent<Topic, Type>;
-    'user-movement-enabled': WindowEvent<Topic, Type>;
-}
+type ExternalWindowEventMapping<Topic = string, Type = string> =
+    BaseEventMap &
+    Pick<
+        WindowEventMapping,
+        'begin-user-bounds-changing' |
+        'blurred' |
+        'bounds-changed' |
+        'bounds-changing' |
+        'closed' |
+        'closing' |
+        'disabled-movement-bounds-changed' |
+        'disabled-movement-bounds-changing' |
+        'end-user-bounds-changing' |
+        'focused' |
+        'group-changed' |
+        'hidden' |
+        'maximized' |
+        'minimized' |
+        'restored' |
+        'shown' |
+        'user-movement-disabled' |
+        'user-movement-enabled'
+    >;
 
 export type ExternalWindowEvents = {
     [Type in keyof ExternalWindowEventMapping]: ExternalWindowEventMapping<'external-window', Type>[Type];

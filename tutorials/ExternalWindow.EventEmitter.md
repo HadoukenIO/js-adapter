@@ -7,7 +7,7 @@ Adds a listener to the end of the listeners array for the specified event.
 const externalWindows = await fin.System.getAllExternalWindows();
 const notepadWin = externalWindows.find(win => win.name === 'Notepad'); // assuming only one instance of notepad is open
 
-notepadWin.addListener("bounds-changed", function(event) {
+const callback = await notepadWin.addListener("bounds-changed", function(event) {
     console.log("The window has been moved or resized.");
 });
 ```
@@ -18,7 +18,7 @@ Adds a listener to the end of the listeners array for the specified event.
 const externalWindows = await fin.System.getAllExternalWindows(); 
 const notepadWin = externalWindows.find(win => win.name === 'Notepad'); // assuming only one instance of notepad is open
 
-notepadWin.on("bounds-changed", function(event) {
+const callback = await notepadWin.on("bounds-changed", function(event) {
     console.log("The window has been moved or resized.");
 });
 ```
@@ -29,7 +29,7 @@ Adds a one time listener for the event. The listener is invoked only the first t
 const externalWindows = await fin.System.getAllExternalWindows(); 
 const notepadWin = externalWindows.find(win => win.name === 'Notepad'); // assuming only one instance of notepad is open
 
-notepadWin.once("bounds-changed", function(event) {
+const callback = await notepadWin.once("bounds-changed", function(event) {
     console.log("The window has been moved or resized.");
 });
 ```
@@ -40,7 +40,7 @@ Adds a listener to the beginning of the listeners array for the specified event.
 const externalWindows = await fin.System.getAllExternalWindows(); 
 const notepadWin = externalWindows.find(win => win.name === 'Notepad'); // assuming only one instance of notepad is open
 
-notepadWin.prependListener("bounds-changed", function(event) {
+const callback = await notepadWin.prependListener("bounds-changed", function(event) {
     console.log("The window has been moved or resized.");
 });
 ```
@@ -51,7 +51,7 @@ Adds a one time listener for the event. The listener is invoked only the first t
 const externalWindows = await fin.System.getAllExternalWindows(); 
 const notepadWin = externalWindows.find(win => win.name === 'Notepad'); // assuming only one instance of notepad is open
 
-notepadWin.prependOnceListener("bounds-changed", function(event) {
+const callback = await notepadWin.prependOnceListener("bounds-changed", function(event) {
     console.log("The window has been moved or resized.");
 });
 ```
@@ -62,7 +62,7 @@ Remove a listener from the listener array for the specified event. Caution: Call
 const externalWindows = await fin.System.getAllExternalWindows(); 
 const notepadWin = externalWindows.find(win => win.name === 'Notepad'); // assuming only one instance of notepad is open
 
-const callback = function(event) {
+const callback = await function(event) {
     // ... do something once
     notepadWin.removeListener("bounds-changed", callback);
 };
