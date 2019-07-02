@@ -1,4 +1,3 @@
-import { Identity } from '../../identity';
 import { FrameEvent } from './frame';
 
 //This file exports base event types to level specific events
@@ -20,8 +19,6 @@ export interface ApplicationEvent<Topic, Type> extends BaseEvent<Topic, Type> {
 export interface WindowEvent<Topic, Type> extends ApplicationEvent<Topic, Type> {
     name: string;
 }
-
-export interface ExternalWindowEvent<Topic, Type> extends BaseEvent<Topic, Type>, Identity {}
 
 export function getTopic(e: RuntimeEvent<any>)  {
     switch (e.topic) {
