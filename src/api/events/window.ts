@@ -125,6 +125,12 @@ export interface WindowGroupChanged<Topic, Type> extends WindowEvent<Topic, Type
     targetWindowName: string;
 }
 
+export interface WindowPerformanceReport<Topic, Type> extends WindowEvent<Topic, Type> {
+    timing: typeof window.performance.timing;
+    timeOrigin: typeof window.performance.timeOrigin;
+    navigation: typeof window.performance.navigation;
+}
+
 export interface WindowEventMapping<Topic = string, Type = string> extends BaseEventMap {
     'auth-requested': WindowAuthRequestedEvent<Topic, Type>;
     'begin-user-bounds-changing': WindowBeginBoundsChangingEvent<Topic, Type>;
@@ -149,6 +155,7 @@ export interface WindowEventMapping<Topic = string, Type = string> extends BaseE
     'minimized': WindowEvent<Topic, Type>;
     'navigation-rejected': WindowNavigationRejectedEvent<Topic, Type>;
     'options-changed': WindowOptionsChangedEvent<Topic, Type>;
+    'performance-report': WindowPerformanceReport<Topic, Type>;
     'preload-scripts-state-changed': WindowPreloadScriptsStateChangeEvent<Topic, Type>;
     'preload-scripts-state-changing': WindowPreloadScriptsStateChangeEvent<Topic, Type>;
     'resource-load-failed': WindowResourceLoadFailedEvent<Topic, Type>;
@@ -183,6 +190,7 @@ export interface PropagatedWindowEventMapping<Topic = string, Type = string> ext
     'window-minimized': WindowEvent<Topic, Type>;
     'window-navigation-rejected': WindowNavigationRejectedEvent<Topic, Type>;
     'window-options-changed': WindowOptionsChangedEvent<Topic, Type>;
+    'window-performance-report': WindowPerformanceReport<Topic, Type>;
     'window-preload-scripts-state-changed': WindowPreloadScriptsStateChangeEvent<Topic, Type>;
     'window-preload-scripts-state-changing': WindowPreloadScriptsStateChangedEvent<Topic, Type>;
     'window-resource-load-failed': WindowResourceLoadFailedEvent<Topic, Type>;

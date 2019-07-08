@@ -1,5 +1,5 @@
 import { WindowEvent, BaseEventMap, ApplicationEvent } from './base';
-import { WindowAlertRequestedEvent, WindowAuthRequestedEvent, WindowEndLoadEvent, PropagatedWindowEvents } from './window';
+import { WindowAlertRequestedEvent, WindowAuthRequestedEvent, WindowEndLoadEvent, PropagatedWindowEvents, WindowPerformanceReport } from './window';
 import { Bounds } from '../../shapes';
 
 export interface CrashedEvent {
@@ -34,6 +34,7 @@ export interface ApplicationEventMapping<Topic = string, Type = string> extends 
     'window-created': WindowEvent<Topic, Type>;
     'window-end-load': WindowEndLoadEvent<Topic, Type>;
     'window-not-responding': WindowEvent<Topic, Type>;
+    'window-performance-report': WindowPerformanceReport<Topic, Type>;
     'window-responding': WindowEvent<Topic, Type>;
     'window-show-requested': WindowEvent<Topic, Type>;
     'window-start-load': WindowEvent<Topic, Type>;
@@ -52,6 +53,7 @@ export interface PropagatedApplicationEventMapping<Topic = string, Type = string
     'window-created': WindowEvent<Topic, Type>;
     'window-end-load': WindowEndLoadEvent<Topic, Type>;
     'window-not-responding': WindowEvent<Topic, Type>;
+    'window-performance-report': WindowPerformanceReport<Topic, Type>;
     'window-responding': WindowEvent<Topic, Type>;
     'window-start-load': WindowEvent<Topic, Type>;
 }
