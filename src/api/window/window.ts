@@ -54,8 +54,8 @@ export default class _WindowModule extends Base {
      * @static
      */
     public create(options: WindowOption): Promise<_Window> {
-       const win = new _Window(this.wire, {uuid: this.me.uuid, name: options.name});
-       return win.createWindow(options);
+        const win = new _Window(this.wire, { uuid: this.me.uuid, name: options.name });
+        return win.createWindow(options);
     }
 
     /**
@@ -498,61 +498,61 @@ export class _Window extends WebContents<WindowEvents> {
      * @instance
      * @tutorial Window.EventEmitter
      */
-/**
-* Returns the zoom level of the window.
-* @function getZoomLevel
-* @memberOf Window
-* @instance
-* @return {Promise.<number>}
-* @tutorial Window.getZoomLevel
-*/
+    /**
+    * Returns the zoom level of the window.
+    * @function getZoomLevel
+    * @memberOf Window
+    * @instance
+    * @return {Promise.<number>}
+    * @tutorial Window.getZoomLevel
+    */
 
-/**
- * Sets the zoom level of the window.
- * @param { number } level The zoom level
- * @function setZoomLevel
- * @memberOf Window
- * @instance
- * @return {Promise.<void>}
- * @tutorial Window.setZoomLevel
- */
+    /**
+     * Sets the zoom level of the window.
+     * @param { number } level The zoom level
+     * @function setZoomLevel
+     * @memberOf Window
+     * @instance
+     * @return {Promise.<void>}
+     * @tutorial Window.setZoomLevel
+     */
 
-/**
- * Navigates the window to a specified URL. The url must contain the protocol prefix such as http:// or https://.
- * @param {string} url - The URL to navigate the window to.
- * @function navigate
- * @memberOf Window
- * @instance
- * @return {Promise.<void>}
- * @tutorial Window.navigate
- */
+    /**
+     * Navigates the window to a specified URL. The url must contain the protocol prefix such as http:// or https://.
+     * @param {string} url - The URL to navigate the window to.
+     * @function navigate
+     * @memberOf Window
+     * @instance
+     * @return {Promise.<void>}
+     * @tutorial Window.navigate
+     */
 
-/**
- * Navigates the window back one page.
- * @function navigateBack
- * @memberOf Window
- * @instance
- * @return {Promise.<void>}
- * @tutorial Window.navigateBack
- */
+    /**
+     * Navigates the window back one page.
+     * @function navigateBack
+     * @memberOf Window
+     * @instance
+     * @return {Promise.<void>}
+     * @tutorial Window.navigateBack
+     */
 
-/**
- * Navigates the window forward one page.
- * @function navigateForward
- * @memberOf Window
- * @instance
- * @return {Promise.<void>}
- * @tutorial Window.navigateForward
- */
+    /**
+     * Navigates the window forward one page.
+     * @function navigateForward
+     * @memberOf Window
+     * @instance
+     * @return {Promise.<void>}
+     * @tutorial Window.navigateForward
+     */
 
-/**
- * Stops any current navigation the window is performing.
- * @function stopNavigation
- * @memberOf Window
- * @instance
- * @return {Promise.<void>}
- * @tutorial Window.stopNavigation
- */
+    /**
+     * Stops any current navigation the window is performing.
+     * @function stopNavigation
+     * @memberOf Window
+     * @instance
+     * @return {Promise.<void>}
+     * @tutorial Window.stopNavigation
+     */
 
     // create a new window
     public createWindow(options: WindowOption): Promise<_Window> {
@@ -686,11 +686,11 @@ export class _Window extends WebContents<WindowEvents> {
      * @return {Promise.<void>}
      * @tutorial Window.animate
      */
-    public animate(transitions: Transition, options: TransitionOptions ): Promise<void> {
-        return this.wire.sendAction('animate-window', Object.assign({}, this.identity, {
-           transitions,
-           options
-        })).then(() => undefined);
+    public animate(transitions: Transition, options: TransitionOptions): Promise<void> {
+        return this.wire.sendAction('animate-window', Object.assign({}, {
+            transitions,
+            options
+        }, this.identity)).then(() => undefined);
     }
 
     /**
@@ -710,7 +710,7 @@ export class _Window extends WebContents<WindowEvents> {
      * @tutorial Window.close
     */
     public close(force: boolean = false): Promise<void> {
-        return this.wire.sendAction('close-window', Object.assign({}, this.identity, { force }))
+        return this.wire.sendAction('close-window', Object.assign({}, { force }, this.identity))
             .then(() => {
                 Object.setPrototypeOf(this, null);
                 return undefined;
@@ -798,12 +798,12 @@ export class _Window extends WebContents<WindowEvents> {
      * @return {Promise.<Array<_Window|ExternalWindow>>}
      * @tutorial Window.getGroup
      */
-    public getGroup(): Promise<Array<_Window|ExternalWindow>> {
-        return this.wire.sendAction('get-window-group', Object.assign({}, this.identity, {
+    public getGroup(): Promise<Array<_Window | ExternalWindow>> {
+        return this.wire.sendAction('get-window-group', Object.assign({}, {
             crossApp: true // cross app group supported
-        })).then(({ payload }) => {
+        }, this.identity)).then(({ payload }) => {
             // tslint:disable-next-line
-            let winGroup: Array<_Window|ExternalWindow> = [] as Array<_Window|ExternalWindow>;
+            let winGroup: Array<_Window | ExternalWindow> = [] as Array<_Window | ExternalWindow>;
 
             if (payload.data.length) {
                 winGroup = this.windowListFromNameList(payload.data);
@@ -817,7 +817,7 @@ export class _Window extends WebContents<WindowEvents> {
      * @return {Promise.<WindowInfo>}
      * @tutorial Window.getInfo
      */
-    public getInfo():  Promise<WindowInfo> {
+    public getInfo(): Promise<WindowInfo> {
         return this.wire.sendAction('get-window-info', this.identity).then(({ payload }) => payload.data);
     }
 
@@ -856,7 +856,7 @@ export class _Window extends WebContents<WindowEvents> {
      * @tutorial Window.getSnapshot
      */
     public async getSnapshot(area?: Area): Promise<string> {
-        const req = Object.assign({}, this.identity, { area });
+        const req = Object.assign({}, { area }, this.identity);
         const res = await this.wire.sendAction('get-window-snapshot', req);
         return res.payload.data;
     }
@@ -904,10 +904,10 @@ export class _Window extends WebContents<WindowEvents> {
      * @tutorial Window.joinGroup
      */
     public joinGroup(target: _Window | ExternalWindow): Promise<void> {
-        return this.wire.sendAction('join-window-group', Object.assign({}, this.identity, {
+        return this.wire.sendAction('join-window-group', Object.assign({}, {
             groupingUuid: target.identity.uuid,
             groupingWindowName: target.identity.name
-        })).then(() => undefined);
+        }, this.identity)).then(() => undefined);
     }
 
     /**
@@ -916,9 +916,9 @@ export class _Window extends WebContents<WindowEvents> {
      * @tutorial Window.reload
      */
     public reload(ignoreCache: boolean = false): Promise<void> {
-        return this.wire.sendAction('reload-window', Object.assign({}, this.identity, {
+        return this.wire.sendAction('reload-window', Object.assign({}, {
             ignoreCache
-        })).then(() => undefined);
+        }, this.identity)).then(() => undefined);
     }
 
     /**
@@ -946,10 +946,10 @@ export class _Window extends WebContents<WindowEvents> {
      * @tutorial Window.mergeGroups
      */
     public mergeGroups(target: _Window | ExternalWindow): Promise<void> {
-        return this.wire.sendAction('merge-window-groups', Object.assign({}, this.identity, {
+        return this.wire.sendAction('merge-window-groups', Object.assign({}, {
             groupingUuid: target.identity.uuid,
             groupingWindowName: target.identity.name
-        })).then(() => undefined);
+        }, this.identity)).then(() => undefined);
     }
 
     /**
@@ -970,11 +970,11 @@ export class _Window extends WebContents<WindowEvents> {
      * @tutorial Window.moveBy
      */
     public moveBy(deltaLeft: number, deltaTop: number, options: WindowMovementOptions = { moveIndependently: false }): Promise<void> {
-        return this.wire.sendAction('move-window-by', Object.assign({}, this.identity, {
+        return this.wire.sendAction('move-window-by', Object.assign({}, {
             deltaLeft,
             deltaTop,
             options
-        })).then(() => undefined);
+        }, this.identity)).then(() => undefined);
     }
 
     /**
@@ -986,11 +986,11 @@ export class _Window extends WebContents<WindowEvents> {
      * @tutorial Window.moveTo
      */
     public moveTo(left: number, top: number, options: WindowMovementOptions = { moveIndependently: false }): Promise<void> {
-        return this.wire.sendAction('move-window', Object.assign({}, this.identity, {
+        return this.wire.sendAction('move-window', Object.assign({}, {
             left,
             top,
             options
-        })).then(() => undefined);
+        }, this.identity)).then(() => undefined);
     }
 
     /**
@@ -1006,12 +1006,12 @@ export class _Window extends WebContents<WindowEvents> {
      */
     public resizeBy(deltaWidth: number, deltaHeight: number, anchor: AnchorType,
         options: WindowMovementOptions = { moveIndependently: false }): Promise<void> {
-        return this.wire.sendAction('resize-window-by', Object.assign({}, this.identity, {
+        return this.wire.sendAction('resize-window-by', Object.assign({}, {
             deltaWidth: Math.floor(deltaWidth),
             deltaHeight: Math.floor(deltaHeight),
             anchor,
             options
-        })).then(() => undefined);
+        }, this.identity)).then(() => undefined);
     }
 
     /**
@@ -1027,12 +1027,12 @@ export class _Window extends WebContents<WindowEvents> {
      */
     public resizeTo(width: number, height: number, anchor: AnchorType,
         options: WindowMovementOptions = { moveIndependently: false }): Promise<void> {
-        return this.wire.sendAction('resize-window', Object.assign({}, this.identity, {
+        return this.wire.sendAction('resize-window', Object.assign({}, {
             width: Math.floor(width),
             height: Math.floor(height),
             anchor,
             options
-        })).then(() => undefined);
+        }, this.identity)).then(() => undefined);
     }
 
     /**
@@ -1061,7 +1061,7 @@ export class _Window extends WebContents<WindowEvents> {
      * @tutorial Window.setBounds
      */
     public setBounds(bounds: Bounds, options: WindowMovementOptions = { moveIndependently: false }): Promise<void> {
-        return this.wire.sendAction('set-window-bounds', Object.assign({}, this.identity, { ...bounds, options })).then(() => undefined);
+        return this.wire.sendAction('set-window-bounds', Object.assign({}, { ...bounds, options }, this.identity)).then(() => undefined);
     }
 
     /**
@@ -1072,7 +1072,7 @@ export class _Window extends WebContents<WindowEvents> {
      * @tutorial Window.show
      */
     public show(force: boolean = false): Promise<void> {
-        return this.wire.sendAction('show-window', Object.assign({}, this.identity, { force })).then(() => undefined);
+        return this.wire.sendAction('show-window', Object.assign({}, { force }, this.identity)).then(() => undefined);
     }
 
     /**
@@ -1089,12 +1089,12 @@ export class _Window extends WebContents<WindowEvents> {
      */
     public showAt(left: number, top: number, force: boolean = false,
         options: WindowMovementOptions = { moveIndependently: false }): Promise<void> {
-        return this.wire.sendAction('show-at-window', Object.assign({}, this.identity, {
+        return this.wire.sendAction('show-at-window', Object.assign({}, {
             force,
             left: Math.floor(left),
             top: Math.floor(top),
             options
-        })).then(() => undefined);
+        }, this.identity)).then(() => undefined);
     }
 
     /**
@@ -1114,7 +1114,7 @@ export class _Window extends WebContents<WindowEvents> {
      * @tutorial Window.updateOptions
      */
     public updateOptions(options: any): Promise<void> {
-        return this.wire.sendAction('update-window-options', Object.assign({}, this.identity, { options })).then(() => undefined);
+        return this.wire.sendAction('update-window-options', Object.assign({}, { options }, this.identity)).then(() => undefined);
     }
 
     /**
@@ -1125,7 +1125,7 @@ export class _Window extends WebContents<WindowEvents> {
      * @tutorial Window.authenticate
      */
     public authenticate(userName: string, password: string): Promise<void> {
-        return this.wire.sendAction('window-authenticate', Object.assign({}, this.identity, { userName, password })).then(() => undefined);
+        return this.wire.sendAction('window-authenticate', Object.assign({}, { userName, password }, this.identity)).then(() => undefined);
     }
 
 }
