@@ -447,3 +447,4 @@ Generated when a child window starts loading.
     type: "window-start-load",
     uuid: "454C7F31-A915-4EA2-83F2-CFA655453C52" // the UUID of the application
 }
+```
