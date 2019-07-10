@@ -1,5 +1,6 @@
 import { WindowEvent, BaseEventMap, ApplicationEvent } from './base';
-import { WindowAlertRequestedEvent, WindowAuthRequestedEvent, WindowEndLoadEvent, PropagatedWindowEvents, WindowPerformanceReport } from './window';
+import { WindowAlertRequestedEvent, WindowAuthRequestedEvent, WindowEndLoadEvent,
+    PropagatedWindowEvents, WindowPerformanceReport } from './window';
 import { Bounds } from '../../shapes';
 
 export interface CrashedEvent {
