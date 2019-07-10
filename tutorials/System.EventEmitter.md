@@ -99,6 +99,7 @@ fin.System.removeAllListeners("monitor-info-changed");
 * window-options-changed (see {@tutorial Window.EventEmitter})
 * window-navigation-rejected (see {@tutorial Window.EventEmitter})
 * window-not-responding (see {@tutorial Window.EventEmitter})
+* window-performance-report (see {@tutorial Window.EventEmitter})
 * window-preload-scripts-state-changed (see {@tutorial Window.EventEmitter})
 * window-preload-scripts-state-changing (see {@tutorial Window.EventEmitter})
 * window-reloaded (see {@tutorial Window.EventEmitter})
@@ -348,45 +349,5 @@ Generated when a window gains focus.
     topic: "system",
     type: "window-focused",
     uuid: "454C7F31-A915-4EA2-83F2-CFA655453C52" // the UUID of the application
-}
-```
-
-#### window-performance-report
-Generated when a window finishes loading. Provides performance and navigation data.
-```js
-//This response has the following shape:
-{
-    topic: "system",
-    type: "window-performance-report",
-    uuid: "appUUID", //(string) the UUID of the application the window belongs to.
-    name: "windowName",
-    navigation: {
-        redirectCount: 0,
-        type: 0
-    },
-    timeOrigin: 1561991787065.651,
-    timing: {
-        connectEnd: 0,
-        connectStart: 0,
-        domComplete: 1561991787504,
-        domContentLoadedEventEnd: 1561991787503,
-        domContentLoadedEventStart: 1561991787503,
-        domInteractive: 1561991787503,
-        domLoading: 1561991787283,
-        domainLookupEnd: 0,
-        domainLookupStart: 0,
-        fetchStart: 0,
-        loadEventEnd: 0,
-        loadEventStart: 1561991787504,
-        navigationStart: 1561991787065,
-        redirectEnd: 0,
-        redirectStart: 0,
-        requestStart: 0,
-        responseEnd: 1561991787282,
-        responseStart: 0,
-        secureConnectionStart: 0,
-        unloadEventEnd: 0,
-        unloadEventStart: 0
-    }
 }
 ```

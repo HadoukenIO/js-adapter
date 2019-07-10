@@ -98,6 +98,7 @@ finWindow.removeAllListeners("bounds-changed");
 * minimized
 * options-changed
 * navigation-rejected
+* performance-report
 * preload-scripts-state-changed
 * preload-scripts-state-changing
 * reloaded
