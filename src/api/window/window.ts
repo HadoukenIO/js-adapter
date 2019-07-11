@@ -1,10 +1,9 @@
 import { Base } from '../base';
 import { Identity, GroupWindowIdentity } from '../../identity';
-import { Bounds } from '../../shapes';
 import { Application } from '../application/application';
 import Transport from '../../transport/transport';
 import { WindowEvents } from '../events/window';
-import { AnchorType, Transition, TransitionOptions } from '../../shapes';
+import { AnchorType, Bounds, Transition, TransitionOptions } from '../../shapes';
 import { WindowOption } from './windowOption';
 import { EntityType } from '../frame/frame';
 import { ExternalWindow } from '../external-window/external-window';
