@@ -20,7 +20,7 @@ export interface FrameInfo {
 // tslint:disable-next-line
 export default class _FrameModule extends Base {
     public frameIdentity: any;
-    constructor(wire: Transport){
+    constructor(wire: Transport) {
         super(wire);
         this.frameIdentity = fin.__internal_.entityInfo;
     }
