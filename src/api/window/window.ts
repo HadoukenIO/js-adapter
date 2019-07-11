@@ -214,7 +214,7 @@ interface WindowMovementOptions {
  * @property {number} [cornerRounding.height=0] The height in pixels.
  * @property {number} [cornerRounding.width=0] The width in pixels.
  *
- * @property {string} [customData=""] - _Updatable._
+ * @property {any} [customData=""] - _Updatable._
  * A field that the user can attach serializable data to to be ferried around with the window options.
  * _When omitted, the default value of this property is the empty string (`""`)._
  *
