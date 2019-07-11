@@ -1,3 +1,4 @@
+declare var fin: any;
 import { Base, EmitterBase } from '../base';
 import { Identity } from '../../identity';
 import Transport from '../../transport/transport';
@@ -18,6 +19,12 @@ export interface FrameInfo {
  */
 // tslint:disable-next-line
 export default class _FrameModule extends Base {
+    public frameIdentity: any;
+    constructor(wire: Transport){
+        super(wire);
+        this.frameIdentity = fin.__internal_.entityInfo;
+    }
+
     /**
      * Asynchronously returns a reference to the specified frame. The frame does not have to exist
      * @param {Identity} identity - the identity of the frame you want to wrap
@@ -55,7 +62,7 @@ export default class _FrameModule extends Base {
      * @static
      */
     public getCurrent(): Promise<_Frame> {
-        return Promise.resolve(new _Frame(this.wire, this.me));
+        return Promise.resolve(new _Frame(this.wire, this.frameIdentity));
     }
 
     /**
@@ -65,7 +72,7 @@ export default class _FrameModule extends Base {
      * @static
      */
     public getCurrentSync(): _Frame {
-        return new _Frame(this.wire, this.me);
+        return new _Frame(this.wire, this.frameIdentity);
     }
 }
 
