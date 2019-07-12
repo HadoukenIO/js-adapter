@@ -1,9 +1,10 @@
-declare var fin: any;
+declare const fin: any;
 import { Base, EmitterBase } from '../base';
 import { Identity } from '../../identity';
 import Transport from '../../transport/transport';
 import { FrameEvents } from '../events/frame';
 import { validateIdentity } from '../../util/validate';
+import { EntityInfo } from '../system/entity';
 
 export type EntityType = 'window' | 'iframe' | 'external connection' | 'unknown';
 
@@ -19,7 +20,7 @@ export interface FrameInfo {
  */
 // tslint:disable-next-line
 export default class _FrameModule extends Base {
-    public frameIdentity: any;
+    private frameIdentity: EntityInfo & { [x: string]: any };
     constructor(wire: Transport) {
         super(wire);
         this.frameIdentity = fin.__internal_.entityInfo;
