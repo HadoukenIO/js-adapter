@@ -1,10 +1,9 @@
-declare const fin: any;
 import { Base, EmitterBase } from '../base';
 import { Identity } from '../../identity';
 import Transport from '../../transport/transport';
 import { FrameEvents } from '../events/frame';
 import { validateIdentity } from '../../util/validate';
-import { EntityInfo } from '../system/entity';
+import { currentEntityInfo } from '../../environment/openfin-renderer-api';
 
 export type EntityType = 'window' | 'iframe' | 'external connection' | 'unknown';
 
@@ -20,11 +19,6 @@ export interface FrameInfo {
  */
 // tslint:disable-next-line
 export default class _FrameModule extends Base {
-    private frameIdentity: EntityInfo & { [x: string]: any };
-    constructor(wire: Transport) {
-        super(wire);
-        this.frameIdentity = fin.__internal_.entityInfo;
-    }
 
     /**
      * Asynchronously returns a reference to the specified frame. The frame does not have to exist
@@ -63,7 +57,7 @@ export default class _FrameModule extends Base {
      * @static
      */
     public getCurrent(): Promise<_Frame> {
-        return Promise.resolve(new _Frame(this.wire, this.frameIdentity));
+        return Promise.resolve(new _Frame(this.wire, currentEntityInfo));
     }
 
     /**
@@ -73,7 +67,7 @@ export default class _FrameModule extends Base {
      * @static
      */
     public getCurrentSync(): _Frame {
-        return new _Frame(this.wire, this.frameIdentity);
+        return new _Frame(this.wire, currentEntityInfo);
     }
 }
 
