@@ -2,7 +2,6 @@ import { Environment } from './environment';
 import { NewConnectConfig } from '../transport/wire';
 import { NotImplementedError } from '../transport/transport-errors';
 import { Identity } from '../identity';
-import { EntityInfo } from '../api/system/entity';
 
 declare var fin: any;
 
@@ -74,7 +73,7 @@ export default class OpenFinEnvironment implements Environment {
         return fin.__internal_.getWebWindow(identity.name);
     }
 
-    public getCurrentEntity = (): EntityInfo & { [x: string]: any } => {
+    public getCurrentEntityIdentity = (): Identity => {
         return fin.__internal_.entityInfo;
     }
 }

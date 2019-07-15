@@ -40,8 +40,8 @@ export default class NodeEnvironment implements Environment {
     public getWebWindow = (identity: Identity): Window => {
         throw new NotSupportedError('Not supported outside of OpenFin web context');
     }
-    
-    public getCurrentEntity = (): EntityInfo & { [x: string]: any } => {
+
+    public getCurrentEntityIdentity = (): Identity => {
         throw new NotImplementedError(notImplementedEnvErrorMsg);
     }
 }
