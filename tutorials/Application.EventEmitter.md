@@ -109,6 +109,7 @@ app.removeAllListeners("closed");
 * window-options-changed (see {@tutorial Window.EventEmitter})
 * window-navigation-rejected
 * window-not-responding
+* window-performance-report (see {@tutorial Window.EventEmitter})
 * window-preload-scripts-state-changed (see {@tutorial Window.EventEmitter})
 * window-preload-scripts-state-changing (see {@tutorial Window.EventEmitter})
 * window-reloaded

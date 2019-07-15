@@ -98,6 +98,7 @@ finWindow.removeAllListeners("bounds-changed");
 * minimized
 * options-changed
 * navigation-rejected
+* performance-report
 * preload-scripts-state-changed
 * preload-scripts-state-changing
 * reloaded
@@ -722,5 +723,45 @@ Generated when a window's user movement becomes enabled.
     topic: "window",
     type: "user-movement-enabled",
     uuid: "AppUUID" //(string) the UUID of the application the window belongs to.
+}
+```
+
+#### performance-report
+Generated when window finishes loading. Provides performance and navigation data.
+```js
+//This response has the following shape:
+{
+    topic: "window",
+    type: "performance-report",
+    uuid: "appUUID", //(string) the UUID of the application the window belongs to.
+    name: "windowName",
+    navigation: {
+        redirectCount: 0,
+        type: 0
+    },
+    timeOrigin: 1561991787065.651,
+    timing: {
+        connectEnd: 0,
+        connectStart: 0,
+        domComplete: 1561991787504,
+        domContentLoadedEventEnd: 1561991787503,
+        domContentLoadedEventStart: 1561991787503,
+        domInteractive: 1561991787503,
+        domLoading: 1561991787283,
+        domainLookupEnd: 0,
+        domainLookupStart: 0,
+        fetchStart: 0,
+        loadEventEnd: 0,
+        loadEventStart: 1561991787504,
+        navigationStart: 1561991787065,
+        redirectEnd: 0,
+        redirectStart: 0,
+        requestStart: 0,
+        responseEnd: 1561991787282,
+        responseStart: 0,
+        secureConnectionStart: 0,
+        unloadEventEnd: 0,
+        unloadEventStart: 0
+    }
 }
 ```
