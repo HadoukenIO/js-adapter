@@ -1,10 +1,11 @@
 import { writeFile } from 'fs';
 import { randomBytes } from 'crypto';
-import { Environment } from './environment';
+import { Environment, notImplementedEnvErrorMsg } from './environment';
 import { PortDiscovery } from '../transport/port-discovery';
 import { NewConnectConfig } from '../transport/wire';
 import { NotImplementedError, NotSupportedError } from '../transport/transport-errors';
 import { Identity } from '../identity';
+import { EntityInfo } from '../api/system/entity';
 
 export default class NodeEnvironment implements Environment {
     private messageCounter = 0;
@@ -38,5 +39,9 @@ export default class NodeEnvironment implements Environment {
     }
     public getWebWindow = (identity: Identity): Window => {
         throw new NotSupportedError('Not supported outside of OpenFin web context');
+    }
+    
+    public getCurrentEntity = (): EntityInfo & { [x: string]: any } => {
+        throw new NotImplementedError(notImplementedEnvErrorMsg);
     }
 }

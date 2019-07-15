@@ -3,7 +3,6 @@ import { Identity } from '../../identity';
 import Transport from '../../transport/transport';
 import { FrameEvents } from '../events/frame';
 import { validateIdentity } from '../../util/validate';
-import { currentEntityInfo } from '../../environment/openfin-renderer-api';
 
 export type EntityType = 'window' | 'iframe' | 'external connection' | 'unknown';
 
@@ -57,7 +56,7 @@ export default class _FrameModule extends Base {
      * @static
      */
     public getCurrent(): Promise<_Frame> {
-        return Promise.resolve(new _Frame(this.wire, currentEntityInfo));
+        return Promise.resolve(new _Frame(this.wire, this.wire.environment.getCurrentEntity()));
     }
 
     /**
@@ -67,7 +66,7 @@ export default class _FrameModule extends Base {
      * @static
      */
     public getCurrentSync(): _Frame {
-        return new _Frame(this.wire, currentEntityInfo);
+        return new _Frame(this.wire, this.wire.environment.getCurrentEntity());
     }
 }
 

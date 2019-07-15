@@ -7,4 +7,3 @@ export const CORE_MESSAGE_CHANNEL = fin.__internal_.ipcconfig.channels.CORE_MESS
 export const outboundTopic = 'of-window-message';
 export const inboundTopic = `${CORE_MESSAGE_CHANNEL}-${routingId}`;
 export const currentWindowIdentity = fin.__internal_.getWindowIdentity();
-export const currentEntityInfo = fin.__internal_.entityInfo;
