@@ -5,7 +5,6 @@ import { PortDiscovery } from '../transport/port-discovery';
 import { NewConnectConfig } from '../transport/wire';
 import { NotImplementedError, NotSupportedError } from '../transport/transport-errors';
 import { Identity } from '../identity';
-import { EntityInfo } from '../api/system/entity';
 
 export default class NodeEnvironment implements Environment {
     private messageCounter = 0;
