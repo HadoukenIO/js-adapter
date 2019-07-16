@@ -59,10 +59,5 @@ describe('Frame.', () => {
         it('exists', () => {
             assert(typeof fin.Frame.getCurrentSync === 'function');
         });
-
-        it('should return Frame', () => {
-            const returnVal = fin.Frame.getCurrentSync();
-            assert(returnVal instanceof _Frame);
-        });
     });
 });
