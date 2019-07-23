@@ -80,11 +80,12 @@ export interface Api {
     iframe?: {
         crossOriginInjection?: boolean;
         sameOriginInjection?: boolean;
-    }
+    };
 }
 
 export interface ContentNavigation {
     whitelist?: string[];
+    blacklist?: string[];
 }
 
 export interface CornerRounding {
