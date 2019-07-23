@@ -1,4 +1,5 @@
 Performs the specified window transitions.
+
 ### Transition Types
 
 #### Opacity
@@ -89,3 +90,4 @@ animateWindow()
     .then(() => console.log('Animation done'))
     .catch(err => console.error(err));
 ```
+

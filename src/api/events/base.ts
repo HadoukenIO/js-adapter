@@ -6,6 +6,7 @@ export type RuntimeEvent<Topic = string, Type = string> =
     Topic extends 'window' ? WindowEvent<Topic, Type> :
     Topic extends 'frame' ? FrameEvent<Type> :
     Topic extends 'application' ? ApplicationEvent<Topic, Type>:
+    Topic extends 'external-window' ? ApplicationEvent<Topic, Type>:
     BaseEvent<Topic, Type>;
 
 export interface BaseEvent<Topic, Type> {

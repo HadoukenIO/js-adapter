@@ -12,6 +12,7 @@
             "out/src/api/application",
             "out/src/api/notification",
             "out/src/api/external-application",
+            "out/src/api/external-window",
             "out/src/api/frame",
             "out/src/api/global-hotkey"
         ]

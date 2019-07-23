@@ -1,6 +1,5 @@
 Returns the [Window Object](https://developer.mozilla.org/en-US/docs/Web/API/Window) that represents the web context of the target window. This is the same object that you would get from calling [window.open()](https://developer.mozilla.org/en-US/docs/Web/API/Window/open) in a standard web context. The target window needs to be in the same application as the requesting window as well as comply with [same-origin](https://developer.mozilla.org/en-US/docs/Web/Security/Same-origin_policy) policy requirements.
 
-
 #### Injecting content into an empty window.
 In this example we create a blank child window and populte it with some simple html.
 ```js

@@ -1,14 +1,15 @@
-import { Base, EmitterBase } from '../base';
-import { Identity } from '../../identity';
-import Bounds from './bounds';
-import { Transition, TransitionOptions } from './transition';
+import { Base } from '../base';
+import { Identity, GroupWindowIdentity } from '../../identity';
+import { Bounds } from '../../shapes';
 import { Application } from '../application/application';
 import Transport from '../../transport/transport';
 import { WindowEvents } from '../events/window';
-import { AnchorType } from './anchor-type';
+import { AnchorType, Transition, TransitionOptions } from '../../shapes';
 import { WindowOption } from './windowOption';
 import { EntityType } from '../frame/frame';
+import { ExternalWindow } from '../external-window/external-window';
 import { validateIdentity } from '../../util/validate';
+import { WebContents } from '../webcontents/webcontents';
 
 /**
  * @lends Window
@@ -53,8 +54,8 @@ export default class _WindowModule extends Base {
      * @static
      */
     public create(options: WindowOption): Promise<_Window> {
-       const win = new _Window(this.wire, {uuid: this.me.uuid, name: options.name});
-       return win.createWindow(options);
+        const win = new _Window(this.wire, { uuid: this.me.uuid, name: options.name });
+        return win.createWindow(options);
     }
 
     /**
@@ -107,6 +108,10 @@ export interface Area {
     y: number;
 }
 
+interface WindowMovementOptions {
+    moveIndependently: boolean;
+}
+
 /**
  * @typedef {object} Window~options
  * @summary Window creation options.
@@ -145,6 +150,21 @@ export interface Area {
  * `Ctrl` + `Scroll` _(Zoom In & Out)_<br>
  * `Ctrl` + `0` _(Restore to 100%)_
  *
+ * @property {object} [alphaMask] - _Experimental._  _Updatable._
+ * <br>
+ * alphaMask turns anything of matching RGB value transparent.
+ * <br>
+ * Caveats:
+ * * runtime key --disable-gpu is required. Note: Unclear behavior on remote Desktop support
+ * * User cannot click-through transparent regions
+ * * Not supported on Mac
+ * * Windows Aero must be enabled
+ * * Won't make visual sense on Pixel-pushed environments such as Citrix
+ * * Not supported on rounded corner windows
+ * @property {number} [alphaMask.red=-1] 0-255
+ * @property {number} [alphaMask.green=-1] 0-255
+ * @property {number} [alphaMask.blue=-1] 0-255
+ *
  * @property {boolean} [alwaysOnTop=false] - _Updatable._
  * A flag to always position the window at the top of the window stack.
  *
@@ -155,6 +175,8 @@ export interface Area {
  *
  * @property {boolean} [api.iframe.crossOriginInjection=false] Controls if the `fin` API object is present for cross origin iframes.
  * @property {boolean} [api.iframe.sameOriginInjection=true] Controls if the `fin` API object is present for same origin iframes.
+ *
+ * @property {string} [applicationIcon = ""] - _Deprecated_ - use `icon` instead.
  *
  * @property {number} [aspectRatio=0] - _Updatable._
  * The aspect ratio of width to height to enforce for the window. If this value is equal to or less than zero,
@@ -179,6 +201,12 @@ export interface Area {
  * @property {boolean} [contextMenu=true] - _Updatable._
  * A flag to show the context menu when right-clicking on a window.
  * Gives access to the devtools for the window.
+ *
+ * @property {object} [contextMenuSettings] - _Updatable._
+ * Configure the context menu when right-clicking on a window.
+ * @property {boolean} [contextMenuSettings.enable=true] Should the context menu display on right click.
+ * @property {boolean} [contextMenuSettings.devtools=true] Should the context menu contain a button for opening devtools.
+ * @property {boolean} [contextMenuSettings.reload=true] Should the context menu contain a button for reloading the page.
  *
  * @property {object} [cornerRounding] - _Updatable._
  * Defines and applies rounded corners for a frameless window. **NOTE:** On macOS corner is not ellipse but circle rounded by the
@@ -286,6 +314,8 @@ export interface Area {
  * * `"minimized"`
  * * `"normal"`
  *
+ * @property {string} [taskbarIcon=string] - Deprecated - use `icon` instead._Windows_.
+ *
  * @property {string} [taskbarIconGroup=<application uuid>] - _Windows_.
  * Specify a taskbar group for the window.
  * _If omitted, defaults to app's uuid (`fin.Application.getCurrentSync().identity.uuid`)._
@@ -306,11 +336,16 @@ export interface Area {
  */
 
 /**
- * @typedef { Object } Area
+ * @typedef { object } Area
  * @property { number } height Area's height
  * @property { number } width Area's width
  * @property { number } x X coordinate of area's starting point
  * @property { number } y Y coordinate of area's starting point
+ */
+
+/**
+ * @typedef { object } WindowMovementOptions
+ * @property { boolean } moveIndependently - Move a window independently of its group or along with its group. Defaults to false.
  */
 
 /**
@@ -374,10 +409,10 @@ this animation onto the end of the animation queue.
  */
 // The window.Window name is taken
 // tslint:disable-next-line
-export class _Window extends EmitterBase<WindowEvents> {
+export class _Window extends WebContents<WindowEvents> {
 
     constructor(wire: Transport, public identity: Identity) {
-        super(wire, ['window', identity.uuid, identity.name]);
+        super(wire, identity, 'window');
     }
 
     /**
@@ -463,6 +498,61 @@ export class _Window extends EmitterBase<WindowEvents> {
      * @instance
      * @tutorial Window.EventEmitter
      */
+    /**
+    * Returns the zoom level of the window.
+    * @function getZoomLevel
+    * @memberOf Window
+    * @instance
+    * @return {Promise.<number>}
+    * @tutorial Window.getZoomLevel
+    */
+
+    /**
+     * Sets the zoom level of the window.
+     * @param { number } level The zoom level
+     * @function setZoomLevel
+     * @memberOf Window
+     * @instance
+     * @return {Promise.<void>}
+     * @tutorial Window.setZoomLevel
+     */
+
+    /**
+     * Navigates the window to a specified URL. The url must contain the protocol prefix such as http:// or https://.
+     * @param {string} url - The URL to navigate the window to.
+     * @function navigate
+     * @memberOf Window
+     * @instance
+     * @return {Promise.<void>}
+     * @tutorial Window.navigate
+     */
+
+    /**
+     * Navigates the window back one page.
+     * @function navigateBack
+     * @memberOf Window
+     * @instance
+     * @return {Promise.<void>}
+     * @tutorial Window.navigateBack
+     */
+
+    /**
+     * Navigates the window forward one page.
+     * @function navigateForward
+     * @memberOf Window
+     * @instance
+     * @return {Promise.<void>}
+     * @tutorial Window.navigateForward
+     */
+
+    /**
+     * Stops any current navigation the window is performing.
+     * @function stopNavigation
+     * @memberOf Window
+     * @instance
+     * @return {Promise.<void>}
+     * @tutorial Window.stopNavigation
+     */
 
     // create a new window
     public createWindow(options: WindowOption): Promise<_Window> {
@@ -530,16 +620,14 @@ export class _Window extends EmitterBase<WindowEvents> {
         });
     }
 
-    private windowListFromNameList(identityList: Array<Identity>): Array<_Window> {
-        const windowList: Array<_Window> = [];
-
-        identityList.forEach(identity => {
-            windowList.push(new _Window(this.wire, {
-                uuid: identity.uuid,
-                name: identity.name
-            }));
+    private windowListFromNameList(identityList: Array<GroupWindowIdentity>): Array<_Window | ExternalWindow> {
+        return identityList.map(({ uuid, name, isExternalWindow }) => {
+            if (isExternalWindow) {
+                return new ExternalWindow(this.wire, { uuid });
+            } else {
+                return new _Window(this.wire, { uuid, name });
+            }
         });
-        return windowList;
     }
 
     /**
@@ -598,11 +686,11 @@ export class _Window extends EmitterBase<WindowEvents> {
      * @return {Promise.<void>}
      * @tutorial Window.animate
      */
-    public animate(transitions: Transition, options: TransitionOptions ): Promise<void> {
-        return this.wire.sendAction('animate-window', Object.assign({}, this.identity, {
-           transitions,
-           options
-        })).then(() => undefined);
+    public animate(transitions: Transition, options: TransitionOptions): Promise<void> {
+        return this.wire.sendAction('animate-window', Object.assign({}, {
+            transitions,
+            options
+        }, this.identity)).then(() => undefined);
     }
 
     /**
@@ -622,7 +710,7 @@ export class _Window extends EmitterBase<WindowEvents> {
      * @tutorial Window.close
     */
     public close(force: boolean = false): Promise<void> {
-        return this.wire.sendAction('close-window', Object.assign({}, this.identity, { force }))
+        return this.wire.sendAction('close-window', Object.assign({}, { force }, this.identity))
             .then(() => {
                 Object.setPrototypeOf(this, null);
                 return undefined;
@@ -678,13 +766,12 @@ export class _Window extends EmitterBase<WindowEvents> {
      * Executes Javascript on the window, restricted to windows you own or windows owned by
      * applications you have created.
      * @param { string } code JavaScript code to be executed on the window.
+     * @function executeJavaScript
+     * @memberOf Window
+     * @instance
      * @return {Promise.<void>}
      * @tutorial Window.executeJavaScript
      */
-    public executeJavaScript(code: string): Promise<void> {
-        return this.wire.sendAction('execute-javascript-in-window', Object.assign({}, this.identity, { code }))
-            .then(() => undefined);
-    }
 
     /**
      * Flashes the window’s frame and taskbar icon until stopFlashing is called or until a focus event is fired.
@@ -708,15 +795,15 @@ export class _Window extends EmitterBase<WindowEvents> {
      * Retrieves an array containing wrapped fin.Windows that are grouped with this window.
      * If a window is not in a group an empty array is returned. Please note that
      * calling window is included in the result array.
-     * @return {Promise.<Array<_Window>>}
+     * @return {Promise.<Array<_Window|ExternalWindow>>}
      * @tutorial Window.getGroup
      */
-    public getGroup(): Promise<Array<_Window>> {
-        return this.wire.sendAction('get-window-group', Object.assign({}, this.identity, {
+    public getGroup(): Promise<Array<_Window | ExternalWindow>> {
+        return this.wire.sendAction('get-window-group', Object.assign({}, {
             crossApp: true // cross app group supported
-        })).then(({ payload }) => {
+        }, this.identity)).then(({ payload }) => {
             // tslint:disable-next-line
-            let winGroup: Array<_Window> = [] as Array<_Window>;
+            let winGroup: Array<_Window | ExternalWindow> = [] as Array<_Window | ExternalWindow>;
 
             if (payload.data.length) {
                 winGroup = this.windowListFromNameList(payload.data);
@@ -730,7 +817,7 @@ export class _Window extends EmitterBase<WindowEvents> {
      * @return {Promise.<WindowInfo>}
      * @tutorial Window.getInfo
      */
-    public getInfo():  Promise<WindowInfo> {
+    public getInfo(): Promise<WindowInfo> {
         return this.wire.sendAction('get-window-info', this.identity).then(({ payload }) => payload.data);
     }
 
@@ -769,7 +856,7 @@ export class _Window extends EmitterBase<WindowEvents> {
      * @tutorial Window.getSnapshot
      */
     public async getSnapshot(area?: Area): Promise<string> {
-        const req = Object.assign({}, this.identity, { area });
+        const req = Object.assign({}, { area }, this.identity);
         const res = await this.wire.sendAction('get-window-snapshot', req);
         return res.payload.data;
     }
@@ -812,15 +899,15 @@ export class _Window extends EmitterBase<WindowEvents> {
 
     /**
      * Joins the same window group as the specified window.
-     * @param { _Window } target The window whose group is to be joined
+     * @param { _Window | ExternalWindow } target The window whose group is to be joined
      * @return {Promise.<void>}
      * @tutorial Window.joinGroup
      */
-    public joinGroup(target: _Window): Promise<void> {
-        return this.wire.sendAction('join-window-group', Object.assign({}, this.identity, {
+    public joinGroup(target: _Window | ExternalWindow): Promise<void> {
+        return this.wire.sendAction('join-window-group', Object.assign({}, {
             groupingUuid: target.identity.uuid,
             groupingWindowName: target.identity.name
-        })).then(() => undefined);
+        }, this.identity)).then(() => undefined);
     }
 
     /**
@@ -829,9 +916,9 @@ export class _Window extends EmitterBase<WindowEvents> {
      * @tutorial Window.reload
      */
     public reload(ignoreCache: boolean = false): Promise<void> {
-        return this.wire.sendAction('reload-window', Object.assign({}, this.identity, {
+        return this.wire.sendAction('reload-window', Object.assign({}, {
             ignoreCache
-        })).then(() => undefined);
+        }, this.identity)).then(() => undefined);
     }
 
     /**
@@ -854,15 +941,15 @@ export class _Window extends EmitterBase<WindowEvents> {
 
     /**
      * Merges the instance's window group with the same window group as the specified window
-     * @param { _Window } target The window whose group is to be merged with
+     * @param { _Window | ExternalWindow } target The window whose group is to be merged with
      * @return {Promise.<void>}
      * @tutorial Window.mergeGroups
      */
-    public mergeGroups(target: _Window): Promise<void> {
-        return this.wire.sendAction('merge-window-groups', Object.assign({}, this.identity, {
+    public mergeGroups(target: _Window | ExternalWindow): Promise<void> {
+        return this.wire.sendAction('merge-window-groups', Object.assign({}, {
             groupingUuid: target.identity.uuid,
             groupingWindowName: target.identity.name
-        })).then(() => undefined);
+        }, this.identity)).then(() => undefined);
     }
 
     /**
@@ -878,22 +965,32 @@ export class _Window extends EmitterBase<WindowEvents> {
      * Moves the window by a specified amount.
      * @param { number } deltaLeft The change in the left position of the window
      * @param { number } deltaTop The change in the top position of the window
+     * @param { WindowMovementOptions } options Optional parameters to modify window movement
      * @return {Promise.<void>}
      * @tutorial Window.moveBy
      */
-    public moveBy(deltaLeft: number, deltaTop: number): Promise<void> {
-        return this.wire.sendAction('move-window-by', Object.assign({}, this.identity, { deltaLeft, deltaTop })).then(() => undefined);
+    public moveBy(deltaLeft: number, deltaTop: number, options: WindowMovementOptions = { moveIndependently: false }): Promise<void> {
+        return this.wire.sendAction('move-window-by', Object.assign({}, {
+            deltaLeft,
+            deltaTop,
+            options
+        }, this.identity)).then(() => undefined);
     }
 
     /**
      * Moves the window to a specified location.
      * @param { number } left The left position of the window
      * @param { number } top The top position of the window
+     * @param { WindowMovementOptions } options Optional parameters to modify window movement
      * @return {Promise.<void>}
      * @tutorial Window.moveTo
      */
-    public moveTo(left: number, top: number): Promise<void> {
-        return this.wire.sendAction('move-window', Object.assign({}, this.identity, { left, top })).then(() => undefined);
+    public moveTo(left: number, top: number, options: WindowMovementOptions = { moveIndependently: false }): Promise<void> {
+        return this.wire.sendAction('move-window', Object.assign({}, {
+            left,
+            top,
+            options
+        }, this.identity)).then(() => undefined);
     }
 
     /**
@@ -903,15 +1000,18 @@ export class _Window extends EmitterBase<WindowEvents> {
      * @param { AnchorType } anchor Specifies a corner to remain fixed during the resize.
      * Can take the values: "top-left", "top-right", "bottom-left", or "bottom-right".
      * If undefined, the default is "top-left"
+     * @param { WindowMovementOptions } options Optional parameters to modify window movement
      * @return {Promise.<void>}
      * @tutorial Window.resizeBy
      */
-    public resizeBy(deltaWidth: number, deltaHeight: number, anchor: AnchorType): Promise<void> {
-        return this.wire.sendAction('resize-window-by', Object.assign({}, this.identity, {
+    public resizeBy(deltaWidth: number, deltaHeight: number, anchor: AnchorType,
+        options: WindowMovementOptions = { moveIndependently: false }): Promise<void> {
+        return this.wire.sendAction('resize-window-by', Object.assign({}, {
             deltaWidth: Math.floor(deltaWidth),
             deltaHeight: Math.floor(deltaHeight),
-            anchor
-        })).then(() => undefined);
+            anchor,
+            options
+        }, this.identity)).then(() => undefined);
     }
 
     /**
@@ -921,15 +1021,18 @@ export class _Window extends EmitterBase<WindowEvents> {
      * @param { AnchorType } anchor Specifies a corner to remain fixed during the resize.
      * Can take the values: "top-left", "top-right", "bottom-left", or "bottom-right".
      * If undefined, the default is "top-left"
+     * @param { WindowMovementOptions } options Optional parameters to modify window movement
      * @return {Promise.<void>}
      * @tutorial Window.resizeTo
      */
-    public resizeTo(width: number, height: number, anchor: AnchorType): Promise<void> {
-        return this.wire.sendAction('resize-window', Object.assign({}, this.identity, {
+    public resizeTo(width: number, height: number, anchor: AnchorType,
+        options: WindowMovementOptions = { moveIndependently: false }): Promise<void> {
+        return this.wire.sendAction('resize-window', Object.assign({}, {
             width: Math.floor(width),
             height: Math.floor(height),
-            anchor
-        })).then(() => undefined);
+            anchor,
+            options
+        }, this.identity)).then(() => undefined);
     }
 
     /**
@@ -953,11 +1056,12 @@ export class _Window extends EmitterBase<WindowEvents> {
     /**
      * Sets the window's size and position.
      * @property { Bounds } bounds This is a * @type {string} name - name of the window.object that holds the propertys of
+     * @param { WindowMovementOptions } options Optional parameters to modify window movement
      * @return {Promise.<void>}
      * @tutorial Window.setBounds
      */
-    public setBounds(bounds: Bounds): Promise<void> {
-        return this.wire.sendAction('set-window-bounds', Object.assign({}, this.identity, bounds)).then(() => undefined);
+    public setBounds(bounds: Bounds, options: WindowMovementOptions = { moveIndependently: false }): Promise<void> {
+        return this.wire.sendAction('set-window-bounds', Object.assign({}, { ...bounds, options }, this.identity)).then(() => undefined);
     }
 
     /**
@@ -968,7 +1072,7 @@ export class _Window extends EmitterBase<WindowEvents> {
      * @tutorial Window.show
      */
     public show(force: boolean = false): Promise<void> {
-        return this.wire.sendAction('show-window', Object.assign({}, this.identity, { force })).then(() => undefined);
+        return this.wire.sendAction('show-window', Object.assign({}, { force }, this.identity)).then(() => undefined);
     }
 
     /**
@@ -979,15 +1083,18 @@ export class _Window extends EmitterBase<WindowEvents> {
      * @param { number } top The right position of the window
      * @param { boolean } force Show will be prevented from closing when force is false and
      * ‘show-requested’ has been subscribed to for application’s main window
+     * @param { WindowMovementOptions } options Optional parameters to modify window movement
      * @return {Promise.<void>}
      * @tutorial Window.showAt
      */
-    public showAt(left: number, top: number, force: boolean = false): Promise<void> {
-        return this.wire.sendAction('show-at-window', Object.assign({}, this.identity, {
+    public showAt(left: number, top: number, force: boolean = false,
+        options: WindowMovementOptions = { moveIndependently: false }): Promise<void> {
+        return this.wire.sendAction('show-at-window', Object.assign({}, {
             force,
             left: Math.floor(left),
-            top: Math.floor(top)
-        })).then(() => undefined);
+            top: Math.floor(top),
+            options
+        }, this.identity)).then(() => undefined);
     }
 
     /**
@@ -1007,74 +1114,18 @@ export class _Window extends EmitterBase<WindowEvents> {
      * @tutorial Window.updateOptions
      */
     public updateOptions(options: any): Promise<void> {
-        return this.wire.sendAction('update-window-options', Object.assign({}, this.identity, { options })).then(() => undefined);
+        return this.wire.sendAction('update-window-options', Object.assign({}, { options }, this.identity)).then(() => undefined);
     }
 
     /**
      * Provides credentials to authentication requests
-     * @param { string } userName userName to provide to the authentication challange
-     * @param { string } password password to provide to the authentication challange
+     * @param { string } userName userName to provide to the authentication challenge
+     * @param { string } password password to provide to the authentication challenge
      * @return {Promise.<void>}
      * @tutorial Window.authenticate
      */
     public authenticate(userName: string, password: string): Promise<void> {
-        return this.wire.sendAction('window-authenticate', Object.assign({}, this.identity, { userName, password })).then(() => undefined);
-    }
-
-    /**
-     * Returns the zoom level of the window.
-     * @return {Promise.<number>}
-     * @tutorial Window.getZoomLevel
-     */
-    public getZoomLevel(): Promise<number> {
-        return this.wire.sendAction('get-zoom-level', this.identity).then(({ payload }) => payload.data);
-    }
-
-    /**
-     * Sets the zoom level of the window.
-     * @param { number } level The zoom level
-     * @return {Promise.<void>}
-     * @tutorial Window.setZoomLevel
-     */
-    public setZoomLevel(level: number): Promise<void> {
-        return this.wire.sendAction('set-zoom-level', Object.assign({}, this.identity, { level })).then(() => undefined);
-    }
-
-    /**
-     * Navigates the window to a specified URL. The url must contain the protocol prefix such as http:// or https://.
-     * @param {string} url - The URL to navigate the window to.
-     * @return {Promise.<void>}
-     * @tutorial Window.navigate
-     */
-    public navigate(url: string): Promise<void> {
-        return this.wire.sendAction('navigate-window', Object.assign({}, this.identity, { url })).then(() => undefined);
-    }
-
-    /**
-     * Navigates the window back one page.
-     * @return {Promise.<void>}
-     * @tutorial Window.navigateBack
-     */
-    public navigateBack(): Promise<void> {
-        return this.wire.sendAction('navigate-window-back', Object.assign({}, this.identity)).then(() => undefined);
-    }
-
-    /**
-     * Navigates the window forward one page.
-     * @return {Promise.<void>}
-     * @tutorial Window.navigateForward
-     */
-    public async navigateForward(): Promise<void> {
-        await this.wire.sendAction('navigate-window-forward', Object.assign({}, this.identity));
-    }
-
-    /**
-     * Stops any current navigation the window is performing.
-     * @return {Promise.<void>}
-     * @tutorial Window.stopNavigation
-     */
-    public stopNavigation(): Promise<void> {
-        return this.wire.sendAction('stop-window-navigation', Object.assign({}, this.identity)).then(() => undefined);
+        return this.wire.sendAction('window-authenticate', Object.assign({}, { userName, password }, this.identity)).then(() => undefined);
     }
 
 }

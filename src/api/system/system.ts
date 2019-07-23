@@ -13,7 +13,7 @@ import { RuntimeInfo } from './runtime-info';
 import { Entity, EntityInfo } from './entity';
 import { HostSpecs } from './host-specs';
 import { ExternalProcessRequestType , TerminateExternalRequestType, ExternalConnection, ExitCode,
-    ExternalProcessInfo } from './external-process';
+    ExternalProcessInfo, ServiceConfiguration } from './external-process';
 import Transport from '../../transport/transport';
 import { CookieInfo, CookieOption } from './cookie';
 import { RegistryInfo } from './registry-info';
@@ -420,6 +420,16 @@ import { _Window } from '../window/window';
  * @property { string } uuid The uuid of the application
  */
 
+ /**
+ * Service identifier
+ * @typedef { object } ServiceIdentifier
+ * @property { string } name The name of the service
+ */
+
+ interface ServiceIdentifier {
+     name: string;
+ }
+
 /**
  * An object representing the core of OpenFin Runtime. Allows the developer
  * to perform system-level actions, such as accessing logs, viewing processes,
@@ -709,6 +719,16 @@ export default class System extends EmitterBase<SystemEvents> {
      */
     public getFocusedWindow(): Promise<WindowInfo> {
         return this.wire.sendAction('get-focused-window').then(({ payload }) => payload.data);
+    }
+
+    /**
+     * Get currently focused external window.
+     * @return {Promise.<Identity>}
+     * @experimental
+     */
+    public async getFocusedExternalWindow(): Promise<Identity> {
+        const { payload: { data } } = await this.wire.sendAction('get-focused-external-window');
+        return data;
     }
 
     /**
@@ -1041,6 +1061,17 @@ export default class System extends EmitterBase<SystemEvents> {
     }
 
     /**
+     * Retrieves an array of objects representing information about currently
+     * running user-friendly native windows on the system.
+     * @return {Promise.Array.<Identity>}
+     * @experimental
+     */
+    public getAllExternalWindows(): Promise<Array<Identity>> {
+        return this.wire.sendAction('get-all-external-windows')
+            .then(({ payload }) => payload.data);
+    }
+
+    /**
      * Retrieves app asset information.
      * @param { AppAssetRequest } options
      * @return {Promise.<AppAssetInfo>}
@@ -1119,5 +1150,21 @@ export default class System extends EmitterBase<SystemEvents> {
      */
     public registerExternalConnection(uuid: string): Promise<ExternalConnection> {
         return this.wire.sendAction('register-external-connection', {uuid}).then(({ payload }) => payload.data);
+    }
+
+    /**
+     * Returns the json blob found in the [desktop owner settings](https://openfin.co/documentation/desktop-owner-settings/)
+     * for the specified service.
+     * More information about desktop services can be found [here](https://developers.openfin.co/docs/desktop-services).
+     * @param { ServiceIdentifier } serviceIdentifier An object containing a name key that identifies the service.
+     * @return {Promise.<ServiceConfiguration>}
+     * @tutorial System.getServiceConfiguration
+     */
+    public async getServiceConfiguration(serviceIdentifier: ServiceIdentifier): Promise<ServiceConfiguration> {
+        if (typeof serviceIdentifier.name !== 'string') {
+            throw new Error('Must provide an object with a `name` property having a string value');
+        }
+        const { name } = serviceIdentifier;
+        return this.wire.sendAction('get-service-configuration', {name}).then(({ payload }) => payload.data);
     }
 }

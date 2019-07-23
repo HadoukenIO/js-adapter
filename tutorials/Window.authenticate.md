@@ -1,4 +1,5 @@
 Provides credentials to authentication requests
+
 # Example
 ```js
 fin.Application.wrap({uuid: 'OpenfinPOC'}).then(app => {

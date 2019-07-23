@@ -1,5 +1,13 @@
 Shows the window if it is hidden at the specified location
 
+### Options Object
+
+```js
+{
+    moveIndependently: true // Move a window indpendently of its group or along with its group. Defaults to false.
+}
+```
+
 # Example
 ```js
 async function createWin() {
@@ -14,7 +22,10 @@ async function createWin() {
 
 async function showAt(left, top) {
     const win = await createWin();
-    return await win.showAt(left, top)
+    const options = {
+        moveIndependently: false
+    }
+    return await win.showAt(left, top, options)
 }
 
 showAt(580, 300).then(() => console.log('Showing at')).catch(err => console.log(err));

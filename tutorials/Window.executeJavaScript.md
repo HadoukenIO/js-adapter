@@ -1,4 +1,5 @@
 Executes Javascript on the window, restricted to windows you own or windows owned by applications you have created.
+
 # Example
 ```js
 async function executeJavaScript(code) {
