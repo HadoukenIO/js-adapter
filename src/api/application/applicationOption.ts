@@ -22,7 +22,7 @@ export interface ApplicationOption {
     contentNavigation?: object;
     contextMenu?: boolean;
     cornerRounding?: object;
-    customData?: string;
+    customData?: any;
     customRequestHeaders?: Array<CustomRequestHeaders>;
     defaultCentered?: boolean;
     defaultHeight?: number;
