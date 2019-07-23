@@ -1,10 +1,9 @@
 import { Base } from '../base';
 import { Identity, GroupWindowIdentity } from '../../identity';
-import { Bounds } from '../../shapes';
 import { Application } from '../application/application';
 import Transport from '../../transport/transport';
 import { WindowEvents } from '../events/window';
-import { AnchorType, Transition, TransitionOptions } from '../../shapes';
+import { AnchorType, Bounds, Transition, TransitionOptions } from '../../shapes';
 import { WindowOption } from './windowOption';
 import { EntityType } from '../frame/frame';
 import { ExternalWindow } from '../external-window/external-window';
@@ -194,10 +193,12 @@ interface WindowMovementOptions {
  * Default is white.
  *
  * @property {object} [contentNavigation]
- * Restrict navigation to URLs that match a whitelisted pattern. See [here](https://developer.chrome.com/extensions/match_patterns)
- * for more details.
+ * Restrict navigation to URLs that match a whitelisted pattern.
+ * In the lack of a whitelist, navigation to URLs that match a blacklisted pattern would be prohibited.
+ * See [here](https://developer.chrome.com/extensions/match_patterns) for more details.
  * @property {string[]} [contentNavigation.whitelist=[]] List of whitelisted URLs.
- *
+ * @property {string[]} [contentNavigation.blacklist=[]] List of blacklisted URLs.
+
  * @property {boolean} [contextMenu=true] - _Updatable._
  * A flag to show the context menu when right-clicking on a window.
  * Gives access to the devtools for the window.
@@ -214,7 +215,7 @@ interface WindowMovementOptions {
  * @property {number} [cornerRounding.height=0] The height in pixels.
  * @property {number} [cornerRounding.width=0] The width in pixels.
  *
- * @property {string} [customData=""] - _Updatable._
+ * @property {any} [customData=""] - _Updatable._
  * A field that the user can attach serializable data to to be ferried around with the window options.
  * _When omitted, the default value of this property is the empty string (`""`)._
  *
