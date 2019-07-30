@@ -193,10 +193,12 @@ interface WindowMovementOptions {
  * Default is white.
  *
  * @property {object} [contentNavigation]
- * Restrict navigation to URLs that match a whitelisted pattern. See [here](https://developer.chrome.com/extensions/match_patterns)
- * for more details.
+ * Restrict navigation to URLs that match a whitelisted pattern.
+ * In the lack of a whitelist, navigation to URLs that match a blacklisted pattern would be prohibited.
+ * See [here](https://developer.chrome.com/extensions/match_patterns) for more details.
  * @property {string[]} [contentNavigation.whitelist=[]] List of whitelisted URLs.
- *
+ * @property {string[]} [contentNavigation.blacklist=[]] List of blacklisted URLs.
+
  * @property {boolean} [contextMenu=true] - _Updatable._
  * A flag to show the context menu when right-clicking on a window.
  * Gives access to the devtools for the window.
