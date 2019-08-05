@@ -899,7 +899,7 @@ export class _Window extends WebContents<WindowEvents> {
     }
 
     /**
-     * Joins the same window group as the specified window.
+     * Joins the same window group as the specified window. Joining a group with native windows is currently not supported.
      * @param { _Window | ExternalWindow } target The window whose group is to be joined
      * @return {Promise.<void>}
      * @tutorial Window.joinGroup
