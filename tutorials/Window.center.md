@@ -1,4 +1,4 @@
-Center a window
+Moves the window to the center of the current screen.
 
 # Example
 ```js
