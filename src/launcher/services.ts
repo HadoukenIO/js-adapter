@@ -10,7 +10,7 @@ export interface AppDirectoryEntry {
 
 export const lookupServiceUrl = async (serviceName: string) => {
     if (appDirectoryHost.length > 0) {
-        const appUrl = `${appDirectoryHost}/api/v1/apps/${serviceName}`;
+        const appUrl = `${appDirectoryHost}/api/v1/apps/services.${serviceName}`;
         const mani = await fetchJson(appUrl);
         return mani.manifest_url;
     }
