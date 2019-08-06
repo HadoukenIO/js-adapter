@@ -1,27 +1,42 @@
 import { conn } from './connect';
 import * as assert from 'assert';
-import { Fin, Frame } from '../src/main';
+import { Fin, Application } from '../src/main';
 import { cleanOpenRuntimes } from './multi-runtime-utils';
 import { _Frame } from '../src/api/frame/frame';
+import * as path from 'path';
 
 describe('Frame.', () => {
     let fin: Fin;
-    let testFrame: Frame;
+    let testFrame: _Frame;
+    let testApp: Application;
+    let counter: number = 0;
 
     before(async () => {
         await cleanOpenRuntimes();
         fin = await conn();
     });
 
-    beforeEach(() => {
-        return fin.Frame.getCurrent().then(f => testFrame = f);
+    beforeEach(async () => {
+        testApp = await fin.Application.start({
+            name: `adapter-test-app-frame-${counter}`,
+            url: path.resolve('test/assets/frame.html'),
+            // tslint:disable-next-line
+            uuid: `adapter-test-app-frame-${counter++}`,
+            accelerator: {
+                devtools: true
+            }
+        });
+        const win = await fin.Window.wrap({ ...testApp.identity, name: testApp.identity.uuid });
+        const frameIdentity = (await win.getAllFrames()).filter(frame => frame.entityType === 'iframe')[0];
+        testFrame = fin.Frame.wrapSync(frameIdentity);
     });
+    afterEach(() => testApp.close());
 
     describe('getInfo()', () => {
-
-        it('Fulfilled', () => testFrame.getInfo().then(info => {
-            assert(typeof(info) === 'object');
-        }));
+        it('Fulfilled', async () => {
+            const info = await testFrame.getInfo();
+            assert(typeof (info) === 'object');
+        });
     });
 
     describe('wrapSync()', () => {
@@ -44,17 +59,5 @@ describe('Frame.', () => {
         it('exists', () => {
             assert(typeof fin.Frame.getCurrentSync === 'function');
         });
-
-        it('should return Frame', () => {
-            const returnVal = fin.Frame.getCurrentSync();
-            assert(returnVal instanceof _Frame);
-        });
     });
-
-    /*
-    describe('getParentWindow()', () => {
-        // core has to check if app exists or not
-        it('Fulfilled', () => testFrame.getParentWindow().then(winInfo => assert(typeof(winInfo) === 'object')));
-    });
-    */
 });
