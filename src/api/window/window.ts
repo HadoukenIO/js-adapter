@@ -663,6 +663,15 @@ export class _Window extends WebContents<WindowEvents> {
     }
 
     /**
+     * Centers the window on its current screen.
+     * @return {Promise.<void>}
+     * @tutorial Window.center
+     */
+    public center(): Promise<void> {
+        return this.wire.sendAction('center-window', this.identity).then(() => undefined);
+    }
+
+    /**
      * Removes focus from the window.
      * @return {Promise.<void>}
      * @tutorial Window.blur
