@@ -1,5 +1,7 @@
 Moves the window to the center of the current screen.
 
+Note: Does not have an effect on minimized or maximized windows.
+
 # Example
 ```js
 async function centerWindow() {
