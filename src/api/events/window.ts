@@ -1,6 +1,7 @@
 import { CrashedEvent } from './application';
 import {WindowEvent, BaseEventMap} from './base';
 import { WindowOptionDiff } from '../window/windowOption';
+import { WebContentsEventMapping } from './webcontents';
 
 export type SpecificWindowEvent<Type> = WindowEvent<'window', Type>;
 
@@ -73,24 +74,6 @@ export interface WindowPreloadScriptsStateChangedEvent<Topic, Type> extends Wind
     preloadScripts: (PreloadScriptInfo & any)[];
 }
 
-export interface WindowResourceLoadFailedEvent<Topic, Type> extends WindowEvent<Topic, Type> {
-    errorCode: number;
-    errorDescription: string;
-    validatedURL: string;
-    isMainFrame: boolean;
-}
-
-export interface WindowResourceResponseReceivedEvent<Topic, Type> extends WindowEvent<Topic, Type> {
-    status: boolean;
-    newUrl: string;
-    originalUrl: string;
-    httpResponseCode: number;
-    requestMethod: string;
-    referrer: string;
-    headers: any;
-    resourceType: 'mainFrame' | 'subFrame' | 'styleSheet' | 'script' | 'image' | 'object' | 'xhr' | 'other';
-}
-
 export interface WindowBeginBoundsChangingEvent<Topic, Type> extends WindowEvent<Topic, Type> {
     height: number;
     left: number;
@@ -139,7 +122,7 @@ export interface WindowPerformanceReport<Topic, Type> extends WindowEvent<Topic,
     navigation: typeof window.performance.navigation;
 }
 
-export interface WindowEventMapping<Topic = string, Type = string> extends BaseEventMap {
+export interface WindowEventMapping<Topic = string, Type = string> extends WebContentsEventMapping {
     'auth-requested': WindowAuthRequestedEvent<Topic, Type>;
     'begin-user-bounds-changing': WindowBeginBoundsChangingEvent<Topic, Type>;
     'blurred': WindowEvent<Topic, Type>;
@@ -166,8 +149,6 @@ export interface WindowEventMapping<Topic = string, Type = string> extends BaseE
     'performance-report': WindowPerformanceReport<Topic, Type>;
     'preload-scripts-state-changed': WindowPreloadScriptsStateChangeEvent<Topic, Type>;
     'preload-scripts-state-changing': WindowPreloadScriptsStateChangeEvent<Topic, Type>;
-    'resource-load-failed': WindowResourceLoadFailedEvent<Topic, Type>;
-    'resource-response-received': WindowResourceResponseReceivedEvent<Topic, Type>;
     'reloaded': WindowReloadedEvent<Topic, Type>;
     'restored': WindowEvent<Topic, Type>;
     'show-requested': WindowEvent<Topic, Type>;
@@ -201,8 +182,6 @@ export interface PropagatedWindowEventMapping<Topic = string, Type = string> ext
     'window-performance-report': WindowPerformanceReport<Topic, Type>;
     'window-preload-scripts-state-changed': WindowPreloadScriptsStateChangeEvent<Topic, Type>;
     'window-preload-scripts-state-changing': WindowPreloadScriptsStateChangedEvent<Topic, Type>;
-    'window-resource-load-failed': WindowResourceLoadFailedEvent<Topic, Type>;
-    'window-resource-response-received': WindowResourceResponseReceivedEvent<Topic, Type>;
     'window-reloaded': WindowReloadedEvent<Topic, Type>;
     'window-restored': WindowEvent<Topic, Type>;
     'window-shown': WindowEvent<Topic, Type>;
