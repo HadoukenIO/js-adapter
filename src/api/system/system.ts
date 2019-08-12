@@ -843,7 +843,9 @@ export default class System extends EmitterBase<SystemEvents> {
     }
 
     /**
-     * Runs an executable or batch file.
+     * Runs an executable or batch file.<br>
+     * Note: This method is restricted by default and must be enabled via
+     * <a href="https://developers.openfin.co/docs/api-security">API security settings</a>.
      * @param { ExternalProcessRequestType } options A object that is defined in the ExternalProcessRequestType interface
      * @return {Promise.<Identity>}
      * @tutorial System.launchExternalProcess
@@ -905,7 +907,9 @@ export default class System extends EmitterBase<SystemEvents> {
 
     /**
      * Attempt to close an external process. The process will be terminated if it
-     * has not closed after the elapsed timeout in milliseconds.
+     * has not closed after the elapsed timeout in milliseconds.<br>
+     * Note: This method is restricted by default and must be enabled via
+     * <a href="https://developers.openfin.co/docs/api-security">API security settings</a>.
      * @param { TerminateExternalRequestType } options A object defined in the TerminateExternalRequestType interface
      * @return {Promise.<void>}
      * @tutorial System.terminateExternalProcess
@@ -926,7 +930,9 @@ export default class System extends EmitterBase<SystemEvents> {
     }
 
     /**
-     * Downloads the given application asset
+     * Downloads the given application asset<br>
+     * Note: This method is restricted by default and must be enabled via
+     * <a href="https://developers.openfin.co/docs/api-security">API security settings</a>.
      * @param { AppAssetInfo } appAsset App asset object
      * @return {Promise.<void>}
      * @tutorial System.downloadAsset
@@ -1062,7 +1068,9 @@ export default class System extends EmitterBase<SystemEvents> {
 
     /**
      * Retrieves an array of objects representing information about currently
-     * running user-friendly native windows on the system.
+     * running user-friendly native windows on the system.<br>
+     * Note: This method is restricted by default and must be enabled via
+     * <a href="https://developers.openfin.co/docs/api-security">API security settings</a>.
      * @return {Promise.Array.<Identity>}
      * @experimental
      */
@@ -1126,7 +1134,9 @@ export default class System extends EmitterBase<SystemEvents> {
     }
 
     /**
-     * Reads the specifed value from the registry.
+     * Reads the specifed value from the registry.<br>
+     * Note: This method is restricted by default and must be enabled via
+     * <a href="https://developers.openfin.co/docs/api-security">API security settings</a>.
      * @param { string } rootKey - The registry root key.
      * @param { string } subkey - The registry key.
      * @param { string } value - The registry value name.
