@@ -5,6 +5,7 @@ Gets an information object for the window.
 {
     "canNavigateBack":false,
     "canNavigateForward":false,
+    "isUserMovementEnabled":true,
     "preloadScripts":[],
     "title":"JSDoc: Tutorial: Window.getInfo",
     "url":"https://cdn.openfin.co/docs/javascript/stable/tutorial-Window.getInfo.html"
