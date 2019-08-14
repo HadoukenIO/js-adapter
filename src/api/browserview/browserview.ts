@@ -55,9 +55,15 @@ export class BrowserView extends WebContents<BaseEventMap> {
     constructor(wire: Transport, public identity: Identity) {
         super(wire, identity, 'browserview');
     }
-    // public attach = async (target: Identity) => {
-    //     await this.wire.sendAction('attach-browser-view', {target, ...this.identity})
-    // }
+    public attach = async (target: Identity) => {
+        await this.wire.sendAction('attach-browser-view', {target, ...this.identity});
+    }
+    public show = async (target: Identity) => {
+        await this.wire.sendAction('show-browser-view', { target, ...this.identity });
+    }
+    public hide = async (target: Identity) => {
+        await this.wire.sendAction('hide-browser-view', { target, ...this.identity });
+    }
     public setBounds = async (bounds: any) => {
         await this.wire.sendAction('set-browser-view-bounds', {bounds, ...this.identity});
     }
@@ -65,5 +71,4 @@ export class BrowserView extends WebContents<BaseEventMap> {
         const ack = await this.wire.sendAction('get-browser-view-info', {...this.identity});
         return ack.payload.data;
     }
-
 }
