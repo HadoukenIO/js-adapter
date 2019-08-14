@@ -745,7 +745,7 @@ export default class System extends EmitterBase<SystemEvents> {
      * @tutorial System.getInstalledRuntimes
      */
     // incompatible with standalone node process.
-    public getInstalledRuntimes() : Promise<InstalledRuntimes> {
+    public getInstalledRuntimes() : Promise<string[]> {
         return this.wire.sendAction('get-installed-runtimes')
             .then(({ payload }) => payload.data.runtimes);
     }
