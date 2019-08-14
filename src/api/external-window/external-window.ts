@@ -218,7 +218,7 @@ export class ExternalWindow extends EmitterBase<ExternalWindowEvents> {
     }
 
     /**
-     * Joins the same window group as the specified window.
+     * Joins the same window group as the specified window. Currently unsupported (method will nack).
      * @param { _Window | ExternalWindow } target The window whose group is to be joined
      * @return {Promise.<void>}
      * @experimental
