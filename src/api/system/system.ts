@@ -9,7 +9,6 @@ import { ProxyInfo, ProxyConfig } from './proxy';
 import { ProcessInfo } from './process';
 import { AppAssetInfo, AppAssetRequest, RuntimeDownloadOptions, RuntimeDownloadProgress } from './download-asset';
 import { RVMInfo } from './rvm';
-import { InstalledRuntimes} from './installed-runtimes';
 import { RuntimeInfo } from './runtime-info';
 import { Entity, EntityInfo } from './entity';
 import { HostSpecs } from './host-specs';
