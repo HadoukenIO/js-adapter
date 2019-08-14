@@ -9,6 +9,7 @@ import { ProxyInfo, ProxyConfig } from './proxy';
 import { ProcessInfo } from './process';
 import { AppAssetInfo, AppAssetRequest, RuntimeDownloadOptions, RuntimeDownloadProgress } from './download-asset';
 import { RVMInfo } from './rvm';
+import { InstalledRuntimes} from './installed-runtimes';
 import { RuntimeInfo } from './runtime-info';
 import { Entity, EntityInfo } from './entity';
 import { HostSpecs } from './host-specs';
@@ -198,6 +199,13 @@ import { _Window } from '../window/window';
  * @typedef { object } Identity
  * @property { string } name The name of the application
  * @property { string } uuid The uuid of the application
+ */
+
+ /**
+ * InstalledRuntimes interface
+ * @typedef { object } InstalledRuntimes
+ * @property { string } action The name of action: "get-installed-runtimes"
+ * @property { Array<string> } runtimes The version numbers of each installed runtime
  */
 
 /**
@@ -729,6 +737,17 @@ export default class System extends EmitterBase<SystemEvents> {
     public async getFocusedExternalWindow(): Promise<Identity> {
         const { payload: { data } } = await this.wire.sendAction('get-focused-external-window');
         return data;
+    }
+
+    /**
+     * Returns an array of all the installed runtime versions in an object.
+     * @return {Promise.<InstalledRuntimes>}
+     * @tutorial System.getInstalledRuntimes
+     */
+    // incompatible with standalone node process.
+    public getInstalledRuntimes() : Promise<InstalledRuntimes> {
+        return this.wire.sendAction('get-installed-runtimes')
+            .then(({ payload }) => payload.data.runtimes);
     }
 
     /**
