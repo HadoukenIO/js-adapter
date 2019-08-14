@@ -741,7 +741,7 @@ export default class System extends EmitterBase<SystemEvents> {
 
     /**
      * Returns an array of all the installed runtime versions in an object.
-     * @return {Promise.<InstalledRuntimes>}
+     * @return {Promise.<string[]>}
      * @tutorial System.getInstalledRuntimes
      */
     // incompatible with standalone node process.
