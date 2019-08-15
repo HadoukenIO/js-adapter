@@ -35,4 +35,10 @@ export class WebContents<T extends BaseEventMap> extends EmitterBase<T> {
     public stopNavigation(): Promise<void> {
         return this.wire.sendAction('stop-window-navigation', Object.assign({}, this.identity)).then(() => undefined);
     }
+
+    public reload(ignoreCache: boolean = false): Promise<void> {
+        return this.wire.sendAction('reload-window', Object.assign({}, {
+            ignoreCache
+        }, this.identity)).then(() => undefined);
+    }
 }
