@@ -862,7 +862,8 @@ export default class System extends EmitterBase<SystemEvents> {
     }
 
     /**
-     * Runs an executable or batch file.
+     * Runs an executable or batch file. A path to the file must be included in options.
+     * <br> A uuid may be optionally provided. If not provided, OpenFin will create a uuid for the new process.
      * @param { ExternalProcessRequestType } options A object that is defined in the ExternalProcessRequestType interface
      * @return {Promise.<Identity>}
      * @tutorial System.launchExternalProcess
@@ -872,7 +873,8 @@ export default class System extends EmitterBase<SystemEvents> {
     }
 
     /**
-     * Monitors a running process.
+     * Monitors a running process. A pid for the process must be included in options.
+     * <br> A uuid may be optionally provided. If not provided, OpenFin will create a uuid for the new process.
      * @param { ExternalProcessInfo } options See tutorial for more details
      * @return {Promise.<Identity>}
      * @tutorial System.monitorExternalProcess
