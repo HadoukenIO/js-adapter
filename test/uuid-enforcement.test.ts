@@ -15,7 +15,10 @@ const newManifestPath = (uuid: string) => path.resolve(`test/uuid-enforcement-ap
 const createManifest = (uuid: string, securityRealm = `uuid-enforcement-realm-${realmCount += 1}`) => {
     const manifest = {
         startup_app: { uuid, name: uuid },
-        runtime: { version: testVersion, securityRealm }
+        runtime: {
+            version: testVersion,
+            arguments: '--enable-mesh --security-realm=' + securityRealm
+        }
     };
     manifestPath = newManifestPath(uuid);
     fs.writeFileSync(manifestPath, JSON.stringify(manifest));
