@@ -176,6 +176,17 @@ export default class ApplicationModule extends Base {
     }
 
     /**
+     * Runs an array of applications from manifest.
+     * @param { applications } Array<Identity & { manifestUrl: string }>
+     * @return {Promise.<void>}
+     * @static
+     * @experimental
+     */
+    public startManyManifests(applications: Array<Identity & { manifestUrl: string }>): Promise<void> {
+        return this.wire.sendAction('run-applications', { applications }).then(() => undefined);
+    }
+
+    /**
      * Asynchronously returns an Application object that represents the current application
      * @return {Promise.<Application>}
      * @tutorial Application.getCurrent
