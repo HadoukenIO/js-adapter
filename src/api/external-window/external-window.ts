@@ -2,7 +2,7 @@ import { _Window } from '../window/window';
 import { AnchorType, Bounds } from '../../shapes';
 import { Base, EmitterBase } from '../base';
 import { ExternalWindowEvents } from '../events/externalWindow';
-import { GroupWindowIdentity, Identity } from '../../identity';
+import { GroupWindowIdentity, Identity, ExternalWindowIdentity } from '../../identity';
 import Transport from '../../transport/transport';
 
 /**
@@ -16,11 +16,13 @@ export default class ExternalWindowModule extends Base {
      * @return {Promise.<ExternalWindow>}
      * @static
      * @experimental
-     * @tutorial Window.wrap
+     * @tutorial ExternalWindow.wrap
      */
-    public async wrap(identity: Identity): Promise<ExternalWindow> {
-        await this.wire.sendAction('register-native-external-window', identity);
-        return new ExternalWindow(this.wire, identity);
+    public async wrap(identity: ExternalWindowIdentity): Promise<ExternalWindow> {
+        const responseFromCore = await this.wire.sendAction('register-native-external-window', identity);
+        const { payload: { data: { uuid, name, nativeId } } } = responseFromCore;
+        const finalIdentity = { uuid, name, nativeId };
+        return new ExternalWindow(this.wire, finalIdentity);
     }
 
     /**
@@ -51,8 +53,8 @@ export default class ExternalWindowModule extends Base {
  * External Windows are useful for grouping, moving and resizing non-openfin applications
  * as well as listening to events that are dispatched by these applications.<br>
  * They are also compatible with OpenFin's Layouts service to facilitate
- * a complete positional control over all running applications.<br>
- * External Windows has the ability to listen for <a href="tutorial-ExternalWindow.EventEmitter.html"> external window specific events</a>.
+ * complete positional control over all running applications.<br>
+ * External Windows has the ability to listen for <a href="tutorial-ExternalWindow.EventEmitter.html"> external window-specific events</a>.
  * @class
  * @alias ExternalWindow
  * @hideconstructor
