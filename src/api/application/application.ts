@@ -182,7 +182,7 @@ export default class ApplicationModule extends Base {
      * @static
      * @experimental
      */
-    public startManyManifests(applications: Array<Identity & { manifestUrl: string }>): Promise<void> {
+    public async startManyManifests(applications: Array<Identity & { manifestUrl: string }>): Promise<void> {
         return this.wire.sendAction('run-applications', { applications }).then(() => undefined);
     }
 
