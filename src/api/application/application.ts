@@ -176,7 +176,7 @@ export default class ApplicationModule extends Base {
     }
 
     /**
-     * Runs an array of applications from manifest.
+     * Asynchronously runs an array of applications from manifest.
      * @param { applications } Array<Identity & { manifestUrl: string }>
      * @return {Promise.<void>}
      * @static
