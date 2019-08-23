@@ -183,7 +183,7 @@ export default class ApplicationModule extends Base {
     /**
      * Asynchronously starts a batch of applications given an array of application identifiers and manifestUrls.
      * Returns once the RVM is finished attempting to launch the applications.
-     * @param { Array.<ManifestInfo}> } applications
+     * @param { Array.<ManifestInfo> } applications
      * @return {Promise.<void>}
      * @static
      * @tutorial Application.startManyManifests
