@@ -1,5 +1,5 @@
 Asynchronously starts a batch of applications given an array of application identifiers and manifestUrls.
-Returns once the RVM receives the message, not when the applications are running.
+Returns once the RVM is finished attempting to launch the applications.
 # Example
 ```js
 
