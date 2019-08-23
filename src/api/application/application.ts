@@ -176,10 +176,12 @@ export default class ApplicationModule extends Base {
     }
 
     /**
-     * Asynchronously runs an array of applications from manifest.
+     * Asynchronously starts a batch of applications given an array of application identifiers and manifestUrls.
+     * Returns once the RVM receives the message, not when the applications are running.
      * @param { applications } Array<Identity & { manifestUrl: string }>
      * @return {Promise.<void>}
      * @static
+     * @tutorial Application.startManyManifests
      * @experimental
      */
     public async startManyManifests(applications: Array<Identity & { manifestUrl: string }>): Promise<void> {
