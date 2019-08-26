@@ -112,7 +112,7 @@ class Transport extends EventEmitter {
      */
     public READY_STATE = READY_STATE;
 
-    public sendAction(action: string, payload: any = {}, uncorrelated: boolean = false): Promise<Message<any>> {
+    public sendAction<T = any>(action: string, payload: any = {}, uncorrelated: boolean = false): Promise<Message<T>> {
         return new Promise((resolve, reject) => {
             const id = this.environment.getNextMessageId();
             const msg = {

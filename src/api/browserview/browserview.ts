@@ -3,6 +3,7 @@ import { BaseEventMap } from '../events/base';
 import Transport from '../../transport/transport';
 import { Identity } from '../../identity';
 import { Base } from '../base';
+import { _Window } from '../window/window';
 export interface AutoResizeOptions {
     /**
      * If true, the view's width will grow and shrink together with the window. false
@@ -70,5 +71,16 @@ export class BrowserView extends WebContents<BaseEventMap> {
     public getInfo = async () => {
         const ack = await this.wire.sendAction('get-browser-view-info', {...this.identity});
         return ack.payload.data;
+    } 
+    
+    /**
+    * Retrieves the window the view is currently attached to.
+    * @experimental
+    * @return {Promise.Array.<_Window>}
+    * @tutorial BrowserView.getCurrentWindow
+    */
+    public getCurrentWindow = async () => {
+        const ack = await this.wire.sendAction('get-view-window', {...this.identity});
+        return new _Window(this.wire, ack.payload.data);
     }
 }
