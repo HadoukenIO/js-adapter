@@ -45,6 +45,11 @@ export interface TrayInfo {
     y: number;
 }
 
+export interface ManifestInfo {
+    uuid: string;
+    manifestUrl: string;
+}
+
 /**
  * @typedef {object} ApplicationOption
  * @summary Application creation options.
@@ -173,6 +178,19 @@ export default class ApplicationModule extends Base {
         const app = await this._create(appOptions);
         await this.wire.sendAction('run-application', { uuid: appOptions.uuid });
         return app;
+    }
+
+    /**
+     * Asynchronously starts a batch of applications given an array of application identifiers and manifestUrls.
+     * Returns once the RVM is finished attempting to launch the applications.
+     * @param { Array.<ManifestInfo> } applications
+     * @return {Promise.<void>}
+     * @static
+     * @tutorial Application.startManyManifests
+     * @experimental
+     */
+    public async startManyManifests(applications: Array<ManifestInfo>): Promise<void> {
+        return this.wire.sendAction('run-applications', { applications }).then(() => undefined);
     }
 
     /**

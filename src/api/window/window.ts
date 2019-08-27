@@ -555,6 +555,15 @@ export class _Window extends WebContents<WindowEvents> {
      * @tutorial Window.stopNavigation
      */
 
+    /**
+    * Reloads the window current page
+    * @function reload
+    * @memberOf Window
+    * @instance
+    * @return {Promise.<void>}
+    * @tutorial Window.reload
+    */
+
     // create a new window
     public createWindow(options: WindowOption): Promise<_Window> {
         return new Promise((resolve, reject) => {
@@ -918,17 +927,6 @@ export class _Window extends WebContents<WindowEvents> {
         return this.wire.sendAction('join-window-group', Object.assign({}, {
             groupingUuid: target.identity.uuid,
             groupingWindowName: target.identity.name
-        }, this.identity)).then(() => undefined);
-    }
-
-    /**
-     * Reloads the window current page
-     * @return {Promise.<void>}
-     * @tutorial Window.reload
-     */
-    public reload(ignoreCache: boolean = false): Promise<void> {
-        return this.wire.sendAction('reload-window', Object.assign({}, {
-            ignoreCache
         }, this.identity)).then(() => undefined);
     }
 

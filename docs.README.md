@@ -98,14 +98,12 @@ For a single-page reference to all application settings and configuration option
 * {@link Window.create create} _Window_
 * {@link Application.createFromManifest createFromManifest} _Application_
 * {@link System#deleteCacheOnExit deleteCacheOnExit} _System_
-* {@link ExternalWindow#disableUserMovement disableUserMovement} _ExternalWindow_
 * {@link Window#disableUserMovement disableUserMovement} _Window_
 * {@link Channel#ChannelClient#dispatch dispatch} _ChannelClient_
 * {@link Channel#ChannelProvider#dispatch dispatch} _ChannelProvider_
 * {@link System#downloadAsset downloadAsset} _System_
 * {@link System#downloadPreloadScripts downloadPreloadScripts} _System_
 * {@link System#downloadRuntime downloadRuntime} _System_
-* {@link ExternalWindow#enableUserMovement enableUserMovement} _ExternalWindow_
 * {@link Window#enableUserMovement enableUserMovement} _Window_
 * {@link Window#executeJavaScript executeJavaScript} _Window_
 * {@link System#exit exit} _System_
@@ -267,7 +265,6 @@ For a single-page reference to all application settings and configuration option
 * {@link Window.wrap wrap} _Window_
 * {@link Application.wrapSync wrapSync} _Application_
 * {@link ExternalApplication.wrapSync wrapSync} _ExternalApplication_
-* {@link ExternalWindow.wrapSync wrapSync} _ExternalWindow_
 * {@link Frame.wrapSync wrapSync} _Frame_
 * {@link Window.wrapSync wrapSync} _Window_
 * {@link Clipboard#write write} _Clipboard_
