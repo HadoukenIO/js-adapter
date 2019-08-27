@@ -11,7 +11,9 @@ import Transport from '../../transport/transport';
 export default class ExternalWindowModule extends Base {
     /**
      * Asynchronously returns an external window object that represents
-     * an existing external window.
+     * an existing external window.<br>
+     * Note: This method is restricted by default and must be enabled via
+     * <a href="https://developers.openfin.co/docs/api-security">API security settings</a>.
      * @param { Identity } identity
      * @return {Promise.<ExternalWindow>}
      * @static
