@@ -34,10 +34,7 @@ const newUuid = () => `duplicatedUuid${uuidCount += 1}`;
 let runningApps: Application[] = [];
 
 async function cleanupRunningApps() {
-    const asyncQuit = async (app: Application) => {
-        return await app.quit();
-    };
-    runningApps.map(app => asyncQuit(app));
+    await Promise.all(runningApps.map(app => app.quit().catch(() => undefined)));
     runningApps = [];
     return;
 }
