@@ -861,8 +861,9 @@ export default class System extends EmitterBase<SystemEvents> {
     }
 
     /**
-     * Runs an executable or batch file.<br>
-     * Note: This method is restricted by default and must be enabled via
+     * Runs an executable or batch file. A path to the file must be included in options.
+     * <br> A uuid may be optionally provided. If not provided, OpenFin will create a uuid for the new process.
+     * <br> Note: This method is restricted by default and must be enabled via
      * <a href="https://developers.openfin.co/docs/api-security">API security settings</a>.
      * @param { ExternalProcessRequestType } options A object that is defined in the ExternalProcessRequestType interface
      * @return {Promise.<Identity>}
@@ -873,7 +874,8 @@ export default class System extends EmitterBase<SystemEvents> {
     }
 
     /**
-     * Monitors a running process.
+     * Monitors a running process. A pid for the process must be included in options.
+     * <br> A uuid may be optionally provided. If not provided, OpenFin will create a uuid for the new process.
      * @param { ExternalProcessInfo } options See tutorial for more details
      * @return {Promise.<Identity>}
      * @tutorial System.monitorExternalProcess
