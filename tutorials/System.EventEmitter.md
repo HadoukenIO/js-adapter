@@ -109,6 +109,8 @@ fin.System.removeAllListeners("monitor-info-changed");
 * window-start-load (see {@tutorial Window.EventEmitter})
 * window-user-movement-disabled (see {@tutorial Window.EventEmitter})
 * window-user-movement-enabled (see {@tutorial Window.EventEmitter})
+* window-will-move (see {@tutorial Window.EventEmitter})
+* window-will-resize (see {@tutorial Window.EventEmitter})
 
 ### System Events
 
