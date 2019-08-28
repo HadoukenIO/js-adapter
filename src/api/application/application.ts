@@ -358,11 +358,12 @@ export class Application extends EmitterBase<ApplicationEvents> {
      */
     public async quit(force: boolean = false): Promise<void> {
         await this._close(force);
-        await this.wire.sendAction('destroy-application', Object.assign({force}, this.identity));
+        await this.wire.sendAction('destroy-application', Object.assign({ force }, this.identity));
     }
     //tslint:disable-next-line:function-name
     private _close(force: boolean = false): Promise<void> {
-        return this.wire.sendAction('close-application', Object.assign({}, this.identity, { force })).then(() => undefined);
+        return this.wire.sendAction('close-application', Object.assign({}, { force }, this.identity))
+            .then(() => undefined);
     }
     public close(force: boolean = false): Promise<void> {
         console.warn('Deprecation Warning: Application.close is deprecated Please use Application.quit');
@@ -379,7 +380,7 @@ export class Application extends EmitterBase<ApplicationEvents> {
             .then(({ payload }) => {
                 const identityList: Array<Identity> = [];
                 payload.data.forEach((winName: string) => {
-                    identityList.push({uuid: this.identity.uuid, name: winName});
+                    identityList.push({ uuid: this.identity.uuid, name: winName });
                 });
                 return this.windowListFromIdentityList(identityList);
             });
@@ -393,19 +394,19 @@ export class Application extends EmitterBase<ApplicationEvents> {
      */
     public getGroups(): Promise<Array<Array<_Window>>> {
         const winGroups: Array<Array<_Window>> = <Array<Array<_Window>>>[];
-        return this.wire.sendAction('get-application-groups', Object.assign({}, this.identity, {
-                crossApp: true // cross app group supported
-            })).then(({ payload }) => {
-                payload.data.forEach((windowList: any[], index: number) => {
-                    const identityList: Array<Identity> = [];
-                    windowList.forEach(winInfo => {
-                        identityList.push({uuid: winInfo.uuid, name: winInfo.windowName});
-                    });
-                    winGroups[index] = this.windowListFromIdentityList(identityList);
+        return this.wire.sendAction('get-application-groups', Object.assign({}, {
+            crossApp: true // cross app group supported
+        }, this.identity)).then(({ payload }) => {
+            payload.data.forEach((windowList: any[], index: number) => {
+                const identityList: Array<Identity> = [];
+                windowList.forEach(winInfo => {
+                    identityList.push({ uuid: winInfo.uuid, name: winInfo.windowName });
                 });
-
-                return winGroups;
+                winGroups[index] = this.windowListFromIdentityList(identityList);
             });
+
+            return winGroups;
+        });
     }
 
     /**
@@ -466,7 +467,8 @@ export class Application extends EmitterBase<ApplicationEvents> {
     * @tutorial Application.registerUser
     */
     public registerUser(userName: string, appName: string): Promise<void> {
-        return this.wire.sendAction('register-user', Object.assign({}, this.identity, {userName, appName})).then(() => undefined);
+        return this.wire.sendAction('register-user', Object.assign({}, { userName, appName }, this.identity))
+            .then(() => undefined);
     }
 
     /**
@@ -500,9 +502,9 @@ export class Application extends EmitterBase<ApplicationEvents> {
     }
     // tslint:disable-next-line:function-name
     private _run(): Promise<void> {
-        return this.wire.sendAction('run-application', Object.assign({}, this.identity, {
+        return this.wire.sendAction('run-application', Object.assign({}, {
             manifestUrl: this._manifestUrl
-        })).then(() => undefined);
+        }, this.identity)).then(() => undefined);
     }
 
     /**
@@ -532,9 +534,9 @@ export class Application extends EmitterBase<ApplicationEvents> {
      * @tutorial Application.setTrayIcon
      */
     public setTrayIcon(iconUrl: string): Promise<void> {
-        return this.wire.sendAction('set-tray-icon', Object.assign({}, this.identity, {
+        return this.wire.sendAction('set-tray-icon', Object.assign({}, {
             enabledIcon: iconUrl
-        })).then(() => undefined);
+        }, this.identity)).then(() => undefined);
     }
 
     /**
@@ -547,8 +549,8 @@ export class Application extends EmitterBase<ApplicationEvents> {
      * @tutorial Application.setShortcuts
      */
     public setShortcuts(config: ShortCutConfig): Promise<void> {
-        return this.wire.sendAction('set-shortcuts', Object.assign({}, this.identity, {data: config})
-               ).then(() => undefined);
+        return this.wire.sendAction('set-shortcuts', Object.assign({}, { data: config }, this.identity))
+            .then(() => undefined);
     }
 
     /**
@@ -559,7 +561,8 @@ export class Application extends EmitterBase<ApplicationEvents> {
      * @tutorial Application.setZoomLevel
      */
     public setZoomLevel(level: number): Promise<void> {
-        return this.wire.sendAction('set-application-zoom-level', Object.assign({}, this.identity, { level })).then(() => undefined);
+        return this.wire.sendAction('set-application-zoom-level', Object.assign({}, { level }, this.identity))
+            .then(() => undefined);
     }
 
     /**
@@ -569,7 +572,7 @@ export class Application extends EmitterBase<ApplicationEvents> {
      * @tutorial Application.setAppLogUsername
      */
     public async setAppLogUsername(username: string): Promise<void> {
-        await this.wire.sendAction('set-app-log-username', Object.assign({data: username}, this.identity));
+        await this.wire.sendAction('set-app-log-username', Object.assign({ data: username }, this.identity));
     }
 
     /**

@@ -99,6 +99,7 @@ fin.System.removeAllListeners("monitor-info-changed");
 * window-options-changed (see {@tutorial Window.EventEmitter})
 * window-navigation-rejected (see {@tutorial Window.EventEmitter})
 * window-not-responding (see {@tutorial Window.EventEmitter})
+* window-performance-report (see {@tutorial Window.EventEmitter})
 * window-preload-scripts-state-changed (see {@tutorial Window.EventEmitter})
 * window-preload-scripts-state-changing (see {@tutorial Window.EventEmitter})
 * window-reloaded (see {@tutorial Window.EventEmitter})

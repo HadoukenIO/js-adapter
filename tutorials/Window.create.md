@@ -1,4 +1,5 @@
 Creates a new Window.
+
 # Example
 ```js
 async function createWindow() {

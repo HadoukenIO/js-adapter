@@ -1,4 +1,5 @@
 Removes focus from the window
+
 # Example
 ```js
 async function blurWindow() {

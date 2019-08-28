@@ -99,6 +99,14 @@ export interface WindowBeginBoundsChangingEvent<Topic, Type> extends WindowEvent
     windowState: 'minimized' | 'normal' | 'maximized';
 }
 
+export interface WindowEndBoundsChangingEvent<Topic, Type> extends WindowEvent<Topic, Type> {
+    height: number;
+    left: number;
+    top: number;
+    width: number;
+    windowState: 'minimized' | 'normal' | 'maximized';
+}
+
 export interface WindowBoundsChange<Topic, Type> extends WindowEvent<Topic, Type> {
     changeType: 0 | 1 | 2;
     deferred: boolean;
@@ -125,6 +133,12 @@ export interface WindowGroupChanged<Topic, Type> extends WindowEvent<Topic, Type
     targetWindowName: string;
 }
 
+export interface WindowPerformanceReport<Topic, Type> extends WindowEvent<Topic, Type> {
+    timing: typeof window.performance.timing;
+    timeOrigin: typeof window.performance.timeOrigin;
+    navigation: typeof window.performance.navigation;
+}
+
 export interface WindowEventMapping<Topic = string, Type = string> extends BaseEventMap {
     'auth-requested': WindowAuthRequestedEvent<Topic, Type>;
     'begin-user-bounds-changing': WindowBeginBoundsChangingEvent<Topic, Type>;
@@ -138,7 +152,7 @@ export interface WindowEventMapping<Topic = string, Type = string> extends BaseE
     'disabled-movement-bounds-changed': WindowBoundsChange<Topic, Type>;
     'disabled-movement-bounds-changing': WindowBoundsChange<Topic, Type>;
     'embedded': WindowEvent<Topic, Type>;
-    'end-user-bounds-changing': WindowBeginBoundsChangingEvent<Topic, Type>;
+    'end-user-bounds-changing': WindowEndBoundsChangingEvent<Topic, Type>;
     'external-process-exited': WindowExternalProcessExitedEvent<Topic, Type>;
     'external-process-started': WindowExternalProcessStartedEvent<Topic, Type>;
     'focused': WindowEvent<Topic, Type>;
@@ -149,6 +163,7 @@ export interface WindowEventMapping<Topic = string, Type = string> extends BaseE
     'minimized': WindowEvent<Topic, Type>;
     'navigation-rejected': WindowNavigationRejectedEvent<Topic, Type>;
     'options-changed': WindowOptionsChangedEvent<Topic, Type>;
+    'performance-report': WindowPerformanceReport<Topic, Type>;
     'preload-scripts-state-changed': WindowPreloadScriptsStateChangeEvent<Topic, Type>;
     'preload-scripts-state-changing': WindowPreloadScriptsStateChangeEvent<Topic, Type>;
     'resource-load-failed': WindowResourceLoadFailedEvent<Topic, Type>;
@@ -183,6 +198,7 @@ export interface PropagatedWindowEventMapping<Topic = string, Type = string> ext
     'window-minimized': WindowEvent<Topic, Type>;
     'window-navigation-rejected': WindowNavigationRejectedEvent<Topic, Type>;
     'window-options-changed': WindowOptionsChangedEvent<Topic, Type>;
+    'window-performance-report': WindowPerformanceReport<Topic, Type>;
     'window-preload-scripts-state-changed': WindowPreloadScriptsStateChangeEvent<Topic, Type>;
     'window-preload-scripts-state-changing': WindowPreloadScriptsStateChangedEvent<Topic, Type>;
     'window-resource-load-failed': WindowResourceLoadFailedEvent<Topic, Type>;

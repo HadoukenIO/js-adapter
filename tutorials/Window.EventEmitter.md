@@ -98,6 +98,7 @@ finWindow.removeAllListeners("bounds-changed");
 * minimized
 * options-changed
 * navigation-rejected
+* performance-report
 * preload-scripts-state-changed
 * preload-scripts-state-changing
 * reloaded
@@ -135,15 +136,16 @@ Generated at the beginning of a user-driven change to a window's size or positio
 ```js
 {
 
-    height: 2,      //the height of the window prior to change.
-    left: 2,        //the left-most coordinate of the window prior to change.
-    name: "windowName", //(string) the name of the window.
-    top: 2,         //the top-most coordinate of the window prior to change.
+    height: 2,              //the height of the window prior to change.
+    left: 2,                //the left-most coordinate of the window prior to change.
+    name: "windowName",     //(string) the name of the window.
+    reason: "self"          //the reason for the bounds change: 'animation' | 'group-animation' | 'self' | 'group'      
+    top: 2,                 //the top-most coordinate of the window prior to change.
     topic: "window",
     type: "begin-user-bounds-changing",
-    uuid: "appUUID",//the UUID of the application the window belongs to.
-    width: 2,       //the width of the window prior to change.
-    windowState: "normal" // the state of the window: "minimized", "normal", or "maximized"
+    uuid: "appUUID",        //the UUID of the application the window belongs to.
+    width: 2,               //the width of the window prior to change.
+    windowState: "normal"   //the state of the window: "minimized", "normal", or "maximized"
 }
 ```
 
@@ -260,7 +262,7 @@ Generated when a window has crashed.
 ```
 
 #### disabled-movement-bounds-changed
-Generated when the window movement is disabled after all prevent user changes in window's size and/or position have completed.
+Generated after a change to a window's size and/or position is attempted while window movement is disabled.
 ```js
 //This response has the following shape:
 {
@@ -282,7 +284,7 @@ Generated when the window movement is disabled after all prevent user changes in
 ```
 
 #### disabled-movement-bounds-changing
-Generated when the window movement is disabled during prevented user changes to a window's size and/or position.
+Generated while a change to a window's size and/or position is attempted while window movement is disabled.
 ```js
 //This response has the following shape:
 {
@@ -462,8 +464,8 @@ Generated when a window joins/leaves a group and/or when the group a window is a
         }
     ],
     sourceWindowAppUuid: "appUUID", //The UUID of the application the sourceWindow belongs to The source window is the window in which (merge/join/leave)group(s) was called.
-    sourceWindowName: "sourceWindowName", the name of the sourcewindow. The source window is the window in which (merge/join/leave)group(s) was called.
-    targetGroup: [ //All the windows in the group the targetWindow orginated from
+    sourceWindowName: "sourceWindowName", //the name of the sourceWindow. The source window is the window in which (merge/join/leave)group(s) was called.
+    targetGroup: [ //All the windows in the group the targetWindow originated from
         {
             appUuid: "appUUID", //The UUID of the application this window entry belongs to.
             windowName: "windowName" //The name of this window entry.
@@ -529,6 +531,7 @@ Generated when a window is minimized.
 }
 ```
 
+#### options-changed
 Generated after window options are changed using the window.updateOptions method. Will not fire if the diff object is empty.
 ```js
 {
@@ -720,5 +723,45 @@ Generated when a window's user movement becomes enabled.
     topic: "window",
     type: "user-movement-enabled",
     uuid: "AppUUID" //(string) the UUID of the application the window belongs to.
+}
+```
+
+#### performance-report
+Generated when window finishes loading. Provides performance and navigation data.
+```js
+//This response has the following shape:
+{
+    topic: "window",
+    type: "performance-report",
+    uuid: "appUUID", //(string) the UUID of the application the window belongs to.
+    name: "windowName",
+    navigation: {
+        redirectCount: 0,
+        type: 0
+    },
+    timeOrigin: 1561991787065.651,
+    timing: {
+        connectEnd: 0,
+        connectStart: 0,
+        domComplete: 1561991787504,
+        domContentLoadedEventEnd: 1561991787503,
+        domContentLoadedEventStart: 1561991787503,
+        domInteractive: 1561991787503,
+        domLoading: 1561991787283,
+        domainLookupEnd: 0,
+        domainLookupStart: 0,
+        fetchStart: 0,
+        loadEventEnd: 0,
+        loadEventStart: 1561991787504,
+        navigationStart: 1561991787065,
+        redirectEnd: 0,
+        redirectStart: 0,
+        requestStart: 0,
+        responseEnd: 1561991787282,
+        responseStart: 0,
+        secureConnectionStart: 0,
+        unloadEventEnd: 0,
+        unloadEventStart: 0
+    }
 }
 ```
