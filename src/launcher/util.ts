@@ -1,8 +1,8 @@
 import * as path from 'path';
-import * as https from 'https';
 import * as fs from 'fs';
 import { exec } from 'child_process';
 import { promisify, promiseMap } from '../util/promises';
+import { fetch } from '../util/http';
 
 const stat = promisify(fs.stat);
 export async function exists(path: string): Promise<Boolean> {
@@ -12,22 +12,6 @@ export async function exists(path: string): Promise<Boolean> {
     } catch (e) {
         return false;
     }
-}
-
-export async function get(url: string): Promise<any> {
-    return new Promise((resolve, reject) => {
-        const request = https.get(url, (response) => {
-            if (response.statusCode < 200 || response.statusCode > 299) {
-                reject(new Error('Failed to load page, status code: ' + response.statusCode));
-            }
-            const body: string[] = [];
-            response.on('data', (chunk: string): void => {
-                body.push(chunk);
-            });
-            response.on('end', (): void => resolve(body.join('')));
-        });
-        request.on('error', (err) => reject(err));
-    });
 }
 
 export async function unzip(file: string, dest: string) {
@@ -63,31 +47,6 @@ export async function rmDir(dirPath: string, removeSelf: boolean = true) {
     }
 }
 
-export async function downloadFile(url: string, writeLocation: string) {
-    return new Promise((resolve, reject) => {
-        try {
-            https.get(url, (response) => {
-                if (response.statusCode !== 200) {
-                    if (response.statusCode === 404) {
-                        reject(new Error('Specified runtime not available for OS'));
-                    } else {
-                        reject(new Error('Issue Downloading ' + response.statusCode));
-                    }
-                } else {
-                    const file = fs.createWriteStream(writeLocation);
-                    response.pipe(file);
-                    file.on('finish', () => {
-                        file.close();
-                        resolve();
-                    });
-                }
-            });
-        } catch (e) {
-            reject(e);
-        }
-    });
-}
-
 export async function resolveRuntimeVersion(versionOrChannel: string): Promise<string> {
     const splitVersion = versionOrChannel.split('.');
     const isVersion = splitVersion.length > 1 && splitVersion.every(x => x === '*' || /^\d+$/.test(x));
@@ -95,8 +54,8 @@ export async function resolveRuntimeVersion(versionOrChannel: string): Promise<s
         const mustMatch = takeWhile(splitVersion, (x: string) => x !== '*');
         if (4 - mustMatch.length > 0) {
             //    tslint:disable-next-line:no-backbone-get-set-outside-model
-            const res = await get('https://cdn.openfin.co/release/runtimeVersions');
-            const versions = res.split('\r\n');
+            const res = await fetch('https://cdn.openfin.co/release/runtimeVersions');
+            const versions = res.split('\n');
             const match = first(versions, (v: string) => v.split('.').slice(0, mustMatch.length).join('.') === mustMatch.join('.'));
             if (match) {
                 return match;
@@ -107,7 +66,7 @@ export async function resolveRuntimeVersion(versionOrChannel: string): Promise<s
     }
     try {
         // tslint:disable-next-line:no-backbone-get-set-outside-model
-        return await get(`https://cdn.openfin.co/release/runtime/${versionOrChannel}`);
+        return await fetch(`https://cdn.openfin.co/release/runtime/${versionOrChannel}`);
     } catch (err) {
         throw Error('Could not resolve runtime version');
     }

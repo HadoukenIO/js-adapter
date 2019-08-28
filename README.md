@@ -26,15 +26,13 @@ async function launchApp() {
     const version = await fin.System.getVersion();
     console.log("Connected to Hadouken version", version);
 
-    const app = await fin.Application.create({
-	name: "adapter-test-app",
-	url: 'http://hadouken.io/',
-	uuid: "adapter-test-app",
-	autoShow: true,
-	nonPersistent : true
+    await fin.Application.start({
+        name: "adapter-test-app",
+        url: 'http://hadouken.io/',
+        uuid: "adapter-test-app",
+        autoShow: true,
+        nonPersistent : true
     });
-
-    await app.run();
 }
 
 launchApp().then(() => {
@@ -61,15 +59,13 @@ async function launchApp() {
     const version = await fin.System.getVersion();
     console.log("Connected to Hadouken version", version);
 
-    const app = await fin.Application.create({
+    await fin.Application.start({
         name: "adapter-test-app",
         url: 'http://hadouken.io/',
         uuid: "adapter-test-app",
         autoShow: true,
         nonPersistent : true
     });
-
-    await app.run();
 }
 
 launchApp().then(() => {
@@ -144,3 +140,13 @@ git submodule init
 git submodule update
 npm run doc
 ```
+
+## License
+The code in this repository is covered by the included license.
+
+However, if you run this code, it may call on the OpenFin RVM or OpenFin Runtime, which are covered by OpenFin's Developer, Community, and Enterprise licenses. You can learn more about OpenFin licensing at the links listed below or just email us at support@openfin.co with questions.
+
+https://openfin.co/developer-agreement/
+https://openfin.co/licensing/
+
+

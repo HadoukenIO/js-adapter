@@ -33,11 +33,14 @@ function mapKeyFromEvent(event: RuntimeEvent): string[] {
     if (topic === 'frame') {
         const { uuid, name } = <RuntimeEvent<'frame'>>event;
         return [topic, uuid, name];
-    } if (topic === 'window') {
+    } else if (topic === 'window') {
         const { uuid, name } = <RuntimeEvent<'window'>> event;
         return [topic, uuid, name];
-    } if (topic === 'application') {
+    } else if (topic === 'application') {
         const { uuid } = <RuntimeEvent<'application'>> event;
+        return [topic, uuid];
+    } else if (topic === 'external-window') {
+        const { uuid } = <RuntimeEvent<'external-window'>> event;
         return [topic, uuid];
     }
     return [topic];

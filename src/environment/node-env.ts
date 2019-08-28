@@ -3,7 +3,8 @@ import { randomBytes } from 'crypto';
 import { Environment } from './environment';
 import { PortDiscovery } from '../transport/port-discovery';
 import { NewConnectConfig } from '../transport/wire';
-import { NotImplementedError } from '../transport/transport-errors';
+import { NotImplementedError, NotSupportedError } from '../transport/transport-errors';
+import { Identity } from '../identity';
 
 export default class NodeEnvironment implements Environment {
     private messageCounter = 0;
@@ -34,5 +35,8 @@ export default class NodeEnvironment implements Environment {
 
     public isWindowExists = (uuid: string, name: string): boolean => {
         throw new NotImplementedError('Not Implemented');
+    }
+    public getWebWindow = (identity: Identity): Window => {
+        throw new NotSupportedError('Not supported outside of OpenFin web context');
     }
 }

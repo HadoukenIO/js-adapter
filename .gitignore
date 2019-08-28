@@ -19,3 +19,4 @@ cache.dat
 /apps
 hadouken-js-adapter-*.tgz
 /core
+/.vscode

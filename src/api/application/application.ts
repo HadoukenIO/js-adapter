@@ -4,9 +4,10 @@ import { _Window } from '../window/window';
 import { Point } from '../system/point';
 import { MonitorInfo } from '../system/monitor';
 import Transport from '../../transport/transport';
-import Bounds from '../window/bounds';
+import { Bounds } from '../../shapes';
 import { ApplicationEvents } from '../events/application';
 import { ApplicationOption } from './applicationOption';
+import { validateIdentity } from '../../util/validate';
 
 export interface TrayIconClickReply extends Point, Reply<'application', 'tray-icon-clicked'> {
     button: number;
@@ -45,17 +46,17 @@ export interface TrayInfo {
 }
 
 /**
- * @typedef {object} Application~options
+ * @typedef {object} ApplicationOption
  * @summary Application creation options.
- * @desc This is the options object required by {@link Application.create Application.create}.
+ * @desc This is the options object required by {@link Application.start Application.start}.
  *
  * The following options are required:
- * * `uuid` is required in the app manifest as well as by {@link Application.create Application.create}
- * * `name` is optional in the app manifest but required by {@link Application.create Application.create}
- * * `url` is optional in both the app manifest {@link Application.create Application.create} and  but is usually given
+ * * `uuid` is required in the app manifest as well as by {@link Application.start Application.start}
+ * * `name` is optional in the app manifest but required by {@link Application.start Application.start}
+ * * `url` is optional in both the app manifest {@link Application.start Application.start} and  but is usually given
  * (defaults to `"about:blank"` when omitted).
  *
- * _This jsdoc typedef mirrors the `ApplicationOptions` TypeScript interface in `@types/openfin`._
+ * _This jsdoc typedef mirrors the `ApplicationOption` TypeScript interface in `@types/openfin`._
  *
  * **IMPORTANT NOTE:**
  * This object inherits all the properties of the window creation {@link Window~options options} object,
@@ -114,8 +115,12 @@ export default class ApplicationModule extends Base {
      * @tutorial Application.wrap
      * @static
      */
-    public wrap(identity: Identity): Promise<Application> {
-        return Promise.resolve(new Application(this.wire, identity));
+    public async wrap(identity: Identity): Promise<Application> {
+        const errorMsg = validateIdentity(identity);
+        if (errorMsg) {
+            throw new Error(errorMsg);
+        }
+        return new Application(this.wire, identity);
     }
 
     /**
@@ -126,13 +131,33 @@ export default class ApplicationModule extends Base {
      * @static
      */
     public wrapSync(identity: Identity): Application {
+        const errorMsg = validateIdentity(identity);
+        if (errorMsg) {
+            throw new Error(errorMsg);
+        }
         return new Application(this.wire, identity);
     }
+
     // tslint:disable-next-line:function-name
     private async _create(appOptions: ApplicationOption): Promise<Application> {
+        //set defaults:
+        if (appOptions.waitForPageLoad === void 0) {
+            appOptions.waitForPageLoad = false;
+        }
+        if (appOptions.autoShow === void 0) {
+            appOptions.autoShow = true;
+        }
         await this.wire.sendAction('create-application', appOptions);
         return await this.wrap({ uuid: appOptions.uuid });
     }
+
+    /**
+    * DEPRECATED method to create a new Application. Use {@link Application.start} instead.
+    * @param { ApplicationOption } appOptions
+    * @return {Promise.<Application>}
+    * @tutorial Application.create
+    * @ignore
+    */
     public create(appOptions: ApplicationOption): Promise<Application> {
         console.warn('Deprecation Warning: fin.Application.create is deprecated. Please use fin.Application.start');
         return this._create(appOptions);
@@ -462,6 +487,13 @@ export class Application extends EmitterBase<ApplicationEvents> {
         return this.wire.sendAction('restart-application', this.identity).then(() => undefined);
     }
 
+    /**
+     * DEPRECATED method to run the application.
+     * Needed when starting application via {@link Application.create}, but NOT needed when starting via {@link Application.start}.
+     * @return {Promise.<void>}
+     * @tutorial Application.run
+     * @ignore
+     */
     public run(): Promise<void> {
         console.warn('Deprecation Warning: Application.run is deprecated Please use fin.Application.start');
         return this._run();
@@ -506,7 +538,7 @@ export class Application extends EmitterBase<ApplicationEvents> {
     }
 
     /**
-     * Sets new application's shortcut configuration.
+     * Sets new application's shortcut configuration. Windows only.
      * @param { ShortCutConfig } config New application's shortcut configuration.
      * @param { boolean } [config.desktop] - Enable/disable desktop shortcut.
      * @param { boolean } [config.startMenu] - Enable/disable start menu shortcut.
