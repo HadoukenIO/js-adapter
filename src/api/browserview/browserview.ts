@@ -3,7 +3,7 @@ import { BaseEventMap } from '../events/base';
 import Transport from '../../transport/transport';
 import { Identity } from '../../identity';
 import { Base } from '../base';
-interface AutoResizeOptions {
+export interface AutoResizeOptions {
     /**
      * If true, the view's width will grow and shrink together with the window. false
      * by default.
@@ -14,6 +14,16 @@ interface AutoResizeOptions {
      * by default.
      */
     height: boolean;
+    /**
+     * If true, the view's x position and width will grow and shrink proportionly with
+     * the window. false by default.
+     */
+    horizontal: boolean;
+    /**
+     * If true, the view's y position and height will grow and shrink proportinaly with
+     * the window. false by default.
+     */
+    vertical: boolean;
 }
 export interface BrowserViewOptions {
     autoResize?: AutoResizeOptions;
