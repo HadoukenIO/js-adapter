@@ -13,8 +13,9 @@ import GlobalHotkey from './global-hotkey';
 import { Identity } from '../identity';
 import { BrowserViewModule } from './browserview/browserview';
 
-const _wireMap: WeakMap<Fin, Transport> = new WeakMap();
 export default class Fin extends EventEmitter {
+    private  wire: Transport;
+
     public System: System;
     public Window: _WindowModule;
     public Application: Application;
@@ -28,13 +29,12 @@ export default class Fin extends EventEmitter {
     public BrowserView: BrowserViewModule;
 
     get me(): Identity {
-        const wire = _wireMap.get(this);
-        return wire.me;
+        return this.wire.me;
     }
 
     constructor(wire: Transport) {
         super();
-        _wireMap.set(this, wire);
+        this.wire = wire;
         this.System = new System(wire);
         this.Window = new _WindowModule(wire);
         this.Application = new Application(wire);
