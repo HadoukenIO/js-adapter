@@ -15,7 +15,8 @@ import {
     UnexpectedActionError,
     DuplicateCorrelationError,
     NoAckError,
-    RuntimeError
+    RuntimeError,
+    NotSupportedError
 } from './transport-errors';
 import { RuntimeEvent } from '../api/events/base';
 import {EventAggregator} from '../api/events/eventAggregator';
@@ -58,6 +59,20 @@ class Transport extends EventEmitter {
         this.me = { uuid, name };
         const wire = _wireMap.get(this);
         wire.connectSync();
+    }
+
+    // This function is only used in our tests.
+    public getPort = (): string => {
+        if (this.environment.constructor.name !== 'NodeEnvironment') {
+            throw new NotSupportedError('getPort is not supported in an OpenFin Render process');
+        }
+        const wire = _wireMap.get(this);
+        return wire.wire.url.split(':').slice(-1)[0];
+    }
+
+    public shutdown(): Promise<void> {
+        const wire = _wireMap.get(this);
+        return wire.shutdown();
     }
 
     public async connect(config: InternalConnectConfig): Promise<string> {

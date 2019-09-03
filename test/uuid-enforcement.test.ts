@@ -106,7 +106,7 @@ describe('UUID Enforcement', async function () {
             failedFirstTry = true;
         }
         // @ts-ignore - wire is private
-        await runtime1.wire.wire.shutdown();
+        await runtime1.wire.shutdown();
         let failedSecondTry = false;
         try {
             await externalConnection(dupeUuid);
