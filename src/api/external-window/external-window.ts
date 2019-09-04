@@ -21,8 +21,11 @@ export default class ExternalWindowModule extends Base {
      * @tutorial Window.wrap
      */
     public async wrap(identity: Identity): Promise<ExternalWindow> {
-        await this.wire.sendAction('register-native-external-window', identity);
-        return new ExternalWindow(this.wire, identity);
+        const response = await this.wire.sendAction('register-native-external-window', identity);
+        // Allow core to provide uuid if none is provided by user,
+        // or nativeId when wrapping via a uuid obtained from `launchExternalProcess`
+        const identityFromCore = response.payload.data;
+        return new ExternalWindow(this.wire, identityFromCore);
     }
 }
 
