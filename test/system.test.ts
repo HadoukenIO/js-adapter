@@ -318,6 +318,24 @@ describe('System.', function () {
             .then(() => assert(true)));
     });
 
+    describe('getAllExternalWindows()', () => {
+        it('should not include uuids for unregistered windows', async () => {
+            const externalWindows = await fin.System.getAllExternalWindows();
+            const windowWithUuid = externalWindows.find(win => win.uuid);
+            assert(!windowWithUuid);
+        });
+        it('should include uuids for registered windows', async () => {
+            const externalProcess = await fin.System.launchExternalProcess({ path: 'notepad', uuid: 'trev' });
+            // TODO: remove this when the 'external-window-created' event is working properly
+            await new Promise(r => setTimeout(r, 300));
+            const wrapped = await fin.ExternalWindow.wrap(externalProcess);
+            const externalWindows = await fin.System.getAllExternalApplications();
+            const uuidFound = !!externalWindows.find(win => win.uuid === 'trev');
+            assert(uuidFound, 'Failed to find requested uuid assigned to external window');
+        });
+        it('should include nativeId for all windows');
+    })
+
     describe('resolveUuid()', () => {
         it('should resolve a known uuid', () => fin.System.resolveUuid(fin.me.uuid).then(data => {
             assert(data.uuid === fin.me.uuid, `Expected ${data.uuid} to match ${fin.me.uuid}`);
