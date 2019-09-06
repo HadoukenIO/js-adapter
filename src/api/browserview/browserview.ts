@@ -71,8 +71,8 @@ export class BrowserView extends WebContents<BaseEventMap> {
     public getInfo = async () => {
         const ack = await this.wire.sendAction('get-browser-view-info', {...this.identity});
         return ack.payload.data;
-    } 
-    
+    }
+
     /**
     * Retrieves the window the view is currently attached to.
     * @experimental
