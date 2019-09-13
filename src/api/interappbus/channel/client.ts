@@ -20,8 +20,8 @@ export class ChannelClient extends ChannelBase {
     }
 
     public async disconnect(): Promise<void> {
-        const { channelName } = this.providerIdentity;
-        await this.sendRaw('disconnect-from-channel', { channelName });
+        const { channelName, uuid, name } = this.providerIdentity;
+        await this.sendRaw('disconnect-from-channel', { channelName, uuid, name });
         const { channelId } = this.providerIdentity;
         this.removeChannel(channelId);
     }
