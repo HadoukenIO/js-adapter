@@ -2,7 +2,7 @@ import { _Window } from '../window/window';
 import { AnchorType, Bounds } from '../../shapes';
 import { Base, EmitterBase } from '../base';
 import { ExternalWindowEvents } from '../events/externalWindow';
-import { GroupWindowIdentity, Identity } from '../../identity';
+import { GroupWindowIdentity, Identity, ExternalWindowIdentity } from '../../identity';
 import Transport from '../../transport/transport';
 
 /**
@@ -18,8 +18,9 @@ export default class ExternalWindowModule extends Base {
      * @return {Promise.<ExternalWindow>}
      * @static
      * @experimental
-     * @tutorial Window.wrap
+     * @tutorial ExternalWindow.wrap
      */
+
     public async wrap(identity: Identity): Promise<ExternalWindow> {
         const response = await this.wire.sendAction('register-native-external-window', identity);
         // Allow core to provide uuid if none is provided by user,
@@ -36,8 +37,8 @@ export default class ExternalWindowModule extends Base {
  * External Windows are useful for grouping, moving and resizing non-openfin applications
  * as well as listening to events that are dispatched by these applications.<br>
  * They are also compatible with OpenFin's Layouts service to facilitate
- * a complete positional control over all running applications.<br>
- * External Windows has the ability to listen for <a href="tutorial-ExternalWindow.EventEmitter.html"> external window specific events</a>.
+ * complete positional control over all running applications.<br>
+ * External Windows has the ability to listen for <a href="tutorial-ExternalWindow.EventEmitter.html"> external window-specific events</a>.
  * @class
  * @alias ExternalWindow
  * @hideconstructor

@@ -50,7 +50,7 @@ InterApplicationBus.Channel.connect = function (options:any) { }
 
 /**
  *
- * Listen for newly created channels.
+ * Listens for channel connections.
  * @param {InterApplicationBus.Channel~ConnectionEvent} listener - callback to execute.
  * @returns {Promise<void>}
  * @tutorial Channel.onChannelConnect
