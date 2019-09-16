@@ -742,9 +742,9 @@ export class _Window extends WebContents<WindowEvents> {
     * Retrieves window's attached views.
     * @experimental
     * @return {Promise.Array.<BrowserView>}
-    * @tutorial Window.getViews
+    * @tutorial Window.getCurrentViews
     */
-    public async getViews(): Promise<Array<BrowserView>> {
+    public async getCurrentViews(): Promise<Array<BrowserView>> {
         const { payload } = await this.wire.sendAction<{ data: Identity[] }>('window-get-views', this.identity);
         return payload.data.map(id => new BrowserView(this.wire, id));
     }

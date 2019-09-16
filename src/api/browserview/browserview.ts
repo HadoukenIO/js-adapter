@@ -76,11 +76,11 @@ export class BrowserView extends WebContents<BaseEventMap> {
     /**
     * Retrieves the window the view is currently attached to.
     * @experimental
-    * @return {Promise.Array.<_Window>}
+    * @return {Promise.<_Window>}
     * @tutorial BrowserView.getCurrentWindow
     */
     public getCurrentWindow = async () => {
-        const ack = await this.wire.sendAction('get-view-window', {...this.identity});
+        const ack = await this.wire.sendAction<{data: Identity}>('get-view-window', {...this.identity});
         return new _Window(this.wire, ack.payload.data);
     }
 }
