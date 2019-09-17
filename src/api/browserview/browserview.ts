@@ -58,11 +58,20 @@ export class BrowserView extends WebContents<BaseEventMap> {
     public attach = async (target: Identity) => {
         await this.wire.sendAction('attach-browser-view', {target, ...this.identity});
     }
-    public show = async (target: Identity) => {
-        await this.wire.sendAction('show-browser-view', { target, ...this.identity });
+
+    /**
+    * Destroys the current view
+    * @return {Promise.<void>}
+    * @tutorial BrowserView.destroy
+    */
+    public destroy = async () => {
+        await this.wire.sendAction('destroy-browser-view', { ...this.identity });
     }
-    public hide = async (target: Identity) => {
-        await this.wire.sendAction('hide-browser-view', { target, ...this.identity });
+    public show = async () => {
+        await this.wire.sendAction('show-browser-view', { ...this.identity });
+    }
+    public hide = async () => {
+        await this.wire.sendAction('hide-browser-view', { ...this.identity });
     }
     public setBounds = async (bounds: any) => {
         await this.wire.sendAction('set-browser-view-bounds', {bounds, ...this.identity});
