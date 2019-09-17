@@ -8,6 +8,7 @@ import { Bounds } from '../../shapes';
 import { ApplicationEvents } from '../events/application';
 import { ApplicationOption } from './applicationOption';
 import { validateIdentity } from '../../util/validate';
+import { BrowserView } from '../browserview/browserview';
 
 export interface TrayIconClickReply extends Point, Reply<'application', 'tray-icon-clicked'> {
     button: number;
@@ -43,6 +44,11 @@ export interface TrayInfo {
     monitorInfo: MonitorInfo;
     x: number;
     y: number;
+}
+
+export interface ManifestInfo {
+    uuid: string;
+    manifestUrl: string;
 }
 
 /**
@@ -173,6 +179,19 @@ export default class ApplicationModule extends Base {
         const app = await this._create(appOptions);
         await this.wire.sendAction('run-application', { uuid: appOptions.uuid });
         return app;
+    }
+
+    /**
+     * Asynchronously starts a batch of applications given an array of application identifiers and manifestUrls.
+     * Returns once the RVM is finished attempting to launch the applications.
+     * @param { Array.<ManifestInfo> } applications
+     * @return {Promise.<void>}
+     * @static
+     * @tutorial Application.startManyManifests
+     * @experimental
+     */
+    public async startManyManifests(applications: Array<ManifestInfo>): Promise<void> {
+        return this.wire.sendAction('run-applications', { applications }).then(() => undefined);
     }
 
     /**
@@ -440,7 +459,16 @@ export class Application extends EmitterBase<ApplicationEvents> {
         return this.wire.sendAction('get-shortcuts', this.identity)
             .then(({ payload }) => payload.data);
     }
-
+    /**
+    * Retrieves current application's views.
+    * @experimental
+    * @return {Promise.Array.<BrowserView>}
+    * @tutorial Application.getViews
+    */
+    public async getViews(): Promise<Array<BrowserView>> {
+        const {payload} = await this.wire.sendAction<{ data: Identity[] }>('application-get-views', this.identity);
+        return payload.data.map(id => new BrowserView(this.wire, id));
+    }
     /**
      * Returns the current zoom level of the application.
      * @return {Promise.<number>}

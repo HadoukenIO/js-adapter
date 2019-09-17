@@ -72,4 +72,8 @@ export default class OpenFinEnvironment implements Environment {
     public getWebWindow = (identity: Identity): Window => {
         return fin.__internal_.getWebWindow(identity.name);
     }
+
+    public getCurrentEntityIdentity = (): Identity => {
+        return fin.__internal_.entityInfo;
+    }
 }

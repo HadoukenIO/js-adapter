@@ -3,6 +3,7 @@ import Transport from '../../transport/transport';
 import { Identity } from '../../identity';
 import { Base } from '../base';
 import { ViewEvents } from '../events/browserview';
+import { _Window } from '../window/window';
 export interface AutoResizeOptions {
     /**
      * If true, the view's width will grow and shrink together with the window. false
@@ -59,11 +60,20 @@ export class BrowserView extends WebContents<ViewEvents> {
     public attach = async (target: Identity) => {
         await this.wire.sendAction('attach-browser-view', {target, ...this.identity});
     }
-    public show = async (target: Identity) => {
-        await this.wire.sendAction('show-browser-view', { target, ...this.identity });
+
+    /**
+    * Destroys the current view
+    * @return {Promise.<void>}
+    * @tutorial BrowserView.destroy
+    */
+    public destroy = async () => {
+        await this.wire.sendAction('destroy-browser-view', { ...this.identity });
     }
-    public hide = async (target: Identity) => {
-        await this.wire.sendAction('hide-browser-view', { target, ...this.identity });
+    public show = async () => {
+        await this.wire.sendAction('show-browser-view', { ...this.identity });
+    }
+    public hide = async () => {
+        await this.wire.sendAction('hide-browser-view', { ...this.identity });
     }
     public setBounds = async (bounds: any) => {
         await this.wire.sendAction('set-browser-view-bounds', {bounds, ...this.identity});
@@ -71,5 +81,16 @@ export class BrowserView extends WebContents<ViewEvents> {
     public getInfo = async () => {
         const ack = await this.wire.sendAction('get-browser-view-info', {...this.identity});
         return ack.payload.data;
+    }
+    /**
+    * Retrieves the window the view is currently attached to.
+    * @experimental
+    * @return {Promise.<
+    >}
+    * @tutorial BrowserView.getCurrentWindow
+    */
+    public getCurrentWindow = async () => {
+        const { payload: { data } } = await this.wire.sendAction<{data: Identity}>('get-view-window', {...this.identity});
+        return new _Window(this.wire, data);
     }
 }

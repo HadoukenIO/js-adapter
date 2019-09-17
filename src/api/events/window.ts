@@ -99,6 +99,14 @@ export interface WindowBoundsChange<Topic, Type> extends WindowEvent<Topic, Type
     width: number;
 }
 
+export interface WillMoveOrResize<Topic, Type> extends WindowEvent<Topic, Type> {
+    height: number;
+    left: number;
+    top: number;
+    width: number;
+    monitorScaleFactor: number;
+}
+
 export interface WindowGroupChanged<Topic, Type> extends WindowEvent<Topic, Type> {
     memberOf: 'source' | 'target' | 'nothing';
     reason: 'leave' | 'join' | 'merge' | 'disband';
@@ -155,6 +163,8 @@ export interface WindowEventMapping<Topic = string, Type = string> extends WebCo
     'shown': WindowEvent<Topic, Type>;
     'user-movement-disabled': WindowEvent<Topic, Type>;
     'user-movement-enabled': WindowEvent<Topic, Type>;
+    'will-move': WillMoveOrResize<Topic, Type>;
+    'will-resize': WillMoveOrResize<Topic, Type>;
 }
 
 export interface PropagatedWindowEventMapping<Topic = string, Type = string> extends BaseEventMap {
@@ -187,6 +197,8 @@ export interface PropagatedWindowEventMapping<Topic = string, Type = string> ext
     'window-shown': WindowEvent<Topic, Type>;
     'window-user-movement-disabled': WindowEvent<Topic, Type>;
     'window-user-movement-enabled': WindowEvent<Topic, Type>;
+    'window-will-move': WillMoveOrResize<Topic, Type>;
+    'window-will-resize': WillMoveOrResize<Topic, Type>;
 }
 
 // This is the type we should be using. It takes the more generic mapping and applies the proper Topic and Type to each event

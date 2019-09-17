@@ -67,7 +67,7 @@ externalApp.removeListener("connected", callback);
 #### {@link ExternalApplication#removeAllListeners removeAllListeners([event])}
 Removes all listeners, or those of the specified event.
 ```js
-const externalApp = fin.ExternalApplication.wrapSync('my-uuid');
+const externalApp = await fin.ExternalApplication.wrap({ uuid: 'my-uuid'});
 externalApp.removeAllListeners("connected");
 ```
 
