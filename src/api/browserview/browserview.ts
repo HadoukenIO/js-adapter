@@ -53,7 +53,8 @@ export class BrowserViewModule extends Base {
 
 export class BrowserView extends WebContents<ViewEvents> {
     constructor(wire: Transport, public identity: Identity) {
-        super(wire, identity, 'browserview');
+        super(wire, identity, 'view');
+        this.topic = 'view';
     }
     public attach = async (target: Identity) => {
         await this.wire.sendAction('attach-browser-view', {target, ...this.identity});
