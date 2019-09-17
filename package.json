@@ -1,6 +1,6 @@
 {
     "name": "hadouken-js-adapter",
-    "version": "1.43.1",
+    "version": "1.44.1",
     "license": "Apache-2.0",
     "repository": "https://github.com/HadoukenIO/js-adapter",
     "main": "./out/src/main.js",
