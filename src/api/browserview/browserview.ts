@@ -80,7 +80,7 @@ export class BrowserView extends WebContents<BaseEventMap> {
     * @tutorial BrowserView.getCurrentWindow
     */
     public getCurrentWindow = async () => {
-        const ack = await this.wire.sendAction<{data: Identity}>('get-view-window', {...this.identity});
-        return new _Window(this.wire, ack.payload.data);
+        const { payload: { data } } = await this.wire.sendAction<{data: Identity}>('get-view-window', {...this.identity});
+        return new _Window(this.wire, data);
     }
 }
