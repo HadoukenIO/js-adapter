@@ -2,7 +2,7 @@ import { _Window } from '../window/window';
 import { AnchorType, Bounds } from '../../shapes';
 import { Base, EmitterBase } from '../base';
 import { ExternalWindowEvents } from '../events/externalWindow';
-import { GroupWindowIdentity, Identity, ExternalWindowIdentity } from '../../identity';
+import { GroupWindowIdentity, Identity } from '../../identity';
 import Transport from '../../transport/transport';
 
 /**
