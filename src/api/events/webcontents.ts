@@ -1,4 +1,4 @@
-import { BaseEventMap, WindowEvent } from "./base";
+import { BaseEventMap, WindowEvent } from './base';
 
 export interface WindowResourceLoadFailedEvent<Topic, Type> extends WindowEvent<Topic, Type> {
     errorCode: number;
@@ -18,7 +18,7 @@ export interface WindowResourceResponseReceivedEvent<Topic, Type> extends Window
     resourceType: 'mainFrame' | 'subFrame' | 'styleSheet' | 'script' | 'image' | 'object' | 'xhr' | 'other';
 }
 
-export interface WebContentsEventMapping<Topic = string, Type = string> extends BaseEventMap { 
+export interface WebContentsEventMapping<Topic = string, Type = string> extends BaseEventMap {
     'resource-load-failed': WindowResourceLoadFailedEvent<Topic, Type>;
     'resource-response-received': WindowResourceResponseReceivedEvent<Topic, Type>;
 }

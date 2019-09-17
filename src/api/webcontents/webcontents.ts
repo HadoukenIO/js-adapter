@@ -1,5 +1,4 @@
 import { EmitterBase } from '../base';
-import { BaseEventMap } from '../events/base';
 import { Identity } from '../../identity';
 import Transport from '../../transport/transport';
 import { WebContentsEventMapping } from '../events/webcontents';
