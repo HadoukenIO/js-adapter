@@ -64,13 +64,13 @@ export class BrowserView extends WebContents<BaseEventMap> {
     * @return {Promise.<void>}
     * @tutorial BrowserView.destroy
     */
-    public destroy = async (target: Identity) => {
+    public destroy = async () => {
         await this.wire.sendAction('destroy-browser-view', { ...this.identity });
     }
-    public show = async (target: Identity) => {
-        await this.wire.sendAction('show-browser-view', { target, ...this.identity });
+    public show = async () => {
+        await this.wire.sendAction('show-browser-view', { ...this.identity });
     }
-    public hide = async (target: Identity) => {
+    public hide = async () => {
         await this.wire.sendAction('hide-browser-view', { ...this.identity });
     }
     public setBounds = async (bounds: any) => {
