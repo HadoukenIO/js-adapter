@@ -221,6 +221,7 @@ export default class ApplicationModule extends Base {
     /**
      * Retrieves application's manifest and returns a running instance of the application.
      * @param {string} manifestUrl - The URL of app's manifest.
+     * @param { rvmLaunchOpts} [opts] - Parameters that the RVM will use.
      * @return {Promise.<Application>}
      * @tutorial Application.startFromManifest
      * @static
