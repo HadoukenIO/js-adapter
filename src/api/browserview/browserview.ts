@@ -85,8 +85,7 @@ export class BrowserView extends WebContents<ViewEvents> {
     /**
     * Retrieves the window the view is currently attached to.
     * @experimental
-    * @return {Promise.<
-    >}
+    * @return {Promise.<_Window>}
     * @tutorial BrowserView.getCurrentWindow
     */
     public getCurrentWindow = async () => {

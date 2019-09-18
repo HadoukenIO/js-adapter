@@ -78,7 +78,7 @@ view.removeAllListeners("closed");
 * hidden
 * destroyed
 
-### Application Events
+### BrowserView Events
 
 #### created
 Generated when a browserview is created.
