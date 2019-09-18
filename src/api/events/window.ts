@@ -1,7 +1,7 @@
 import { CrashedEvent } from './application';
 import {WindowEvent, BaseEventMap} from './base';
 import { WindowOptionDiff } from '../window/windowOption';
-import { WebContentsEventMapping } from './webcontents';
+import { WebContentsEventMapping, WindowResourceLoadFailedEvent, WindowResourceResponseReceivedEvent } from './webcontents';
 
 export type SpecificWindowEvent<Type> = WindowEvent<'window', Type>;
 
@@ -192,6 +192,8 @@ export interface PropagatedWindowEventMapping<Topic = string, Type = string> ext
     'window-performance-report': WindowPerformanceReport<Topic, Type>;
     'window-preload-scripts-state-changed': WindowPreloadScriptsStateChangeEvent<Topic, Type>;
     'window-preload-scripts-state-changing': WindowPreloadScriptsStateChangedEvent<Topic, Type>;
+    'window-resource-load-failed': WindowResourceLoadFailedEvent<Topic, Type>;
+    'window-resource-response-received': WindowResourceResponseReceivedEvent<Topic, Type>;
     'window-reloaded': WindowReloadedEvent<Topic, Type>;
     'window-restored': WindowEvent<Topic, Type>;
     'window-shown': WindowEvent<Topic, Type>;
