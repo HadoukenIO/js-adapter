@@ -15,7 +15,8 @@ import {
     UnexpectedActionError,
     DuplicateCorrelationError,
     NoAckError,
-    RuntimeError
+    RuntimeError,
+    NotImplementedError
 } from './transport-errors';
 import { RuntimeEvent } from '../api/events/base';
 import {EventAggregator} from '../api/events/eventAggregator';
@@ -24,11 +25,11 @@ declare var fin: any;
 
 export type MessageHandler = (data: any) => boolean;
 
+const _wireMap: WeakMap<Transport, any> = new WeakMap();
 class Transport extends EventEmitter {
     protected wireListeners: Map<number, { resolve: Function, reject: Function }> = new Map();
     protected uncorrelatedListener: Function;
     public me: Identity;
-    protected wire: Wire;
     public environment: Environment;
     public topicRefMap: Map<string, number> = new Map();
     public sendRaw: Wire['send'];
@@ -37,11 +38,12 @@ class Transport extends EventEmitter {
 
     constructor(wireType: WireConstructor, environment: Environment) {
         super();
-        this.wire = new wireType(this.onmessage.bind(this));
+        const wire = new wireType(this.onmessage.bind(this));
+        _wireMap.set(this, wire);
         this.environment = environment;
-        this.sendRaw = this.wire.send.bind(this.wire);
+        this.sendRaw = wire.send.bind(wire);
         this.registerMessageHandler(this.handleMessage.bind(this));
-        this.wire.on('disconnected', () => {
+        wire.on('disconnected', () => {
 
             for (const [, { reject }] of this.wireListeners){
                 reject('Remote connection has closed');
@@ -55,7 +57,22 @@ class Transport extends EventEmitter {
     public connectSync = (config: ConnectConfig): any => {
         const { uuid, name } = config;
         this.me = { uuid, name };
-        this.wire.connectSync();
+        const wire = _wireMap.get(this);
+        wire.connectSync();
+    }
+
+    // This function is only used in our tests.
+    public getPort = (): string => {
+        if (this.environment.constructor.name !== 'NodeEnvironment') {
+            throw new NotImplementedError('Not Implemented');
+        }
+        const wire = _wireMap.get(this);
+        return wire.wire.url.split(':').slice(-1)[0];
+    }
+
+    public shutdown(): Promise<void> {
+        const wire = _wireMap.get(this);
+        return wire.shutdown();
     }
 
     public async connect(config: InternalConnectConfig): Promise<string> {
@@ -72,8 +89,8 @@ class Transport extends EventEmitter {
         const reqAuthPayload = Object.assign({}, config, { type: 'file-token' });
 
         this.me = { uuid, name };
-
-        await this.wire.connect(address);
+        const wire = _wireMap.get(this);
+        await wire.connect(address);
 
         const requestExtAuthRet = await this.sendAction('request-external-authorization', {
             uuid,
@@ -120,8 +137,8 @@ class Transport extends EventEmitter {
                 payload,
                 messageId: id
             };
-
-            return this.wire.send(msg)
+            const wire = _wireMap.get(this);
+            return wire.send(msg)
                 .then(() => this.addWireListener(id, resolve, reject, uncorrelated))
                 .catch(reject);
         });
@@ -133,8 +150,8 @@ class Transport extends EventEmitter {
             data.messageId = id;
 
             const resolver = (data: any) => { resolve(data.payload); };
-
-            return this.wire.send(data)
+            const wire = _wireMap.get(this);
+            return wire.send(data)
                 .then(() => this.addWireListener(id, resolver, reject, false))
                 .catch(reject);
         });

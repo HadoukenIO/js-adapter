@@ -120,7 +120,7 @@ async function realmCachePath(realm: string): Promise<string> {
 
 export function getPort(fin: Fin): string {
     // @ts-ignore: TODO get current connection from fin
-    return fin.wire.wire.wire.url.split(':').slice(-1)[0];
+    return fin.wire.getPort();
 }
 
 // tslint:disable-next-line
