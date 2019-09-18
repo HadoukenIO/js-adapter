@@ -51,6 +51,11 @@ export interface ManifestInfo {
     manifestUrl: string;
 }
 
+export interface RvmLaunchOptions {
+    noUi?: boolean;
+    userAppConfigArgs?: object;
+}
+
 /**
  * @typedef {object} ApplicationOption
  * @summary Application creation options.
@@ -217,14 +222,15 @@ export default class ApplicationModule extends Base {
     /**
      * Retrieves application's manifest and returns a running instance of the application.
      * @param {string} manifestUrl - The URL of app's manifest.
+     * @param { rvmLaunchOpts} [opts] - Parameters that the RVM will use.
      * @return {Promise.<Application>}
      * @tutorial Application.startFromManifest
      * @static
      */
-    public async startFromManifest(manifestUrl: string): Promise<Application> {
+    public async startFromManifest(manifestUrl: string, opts?: RvmLaunchOptions): Promise<Application> {
         const app = await this._createFromManifest(manifestUrl);
         //@ts-ignore using private method without warning.
-        await app._run();
+        await app._run(opts);
         return app;
     }
     public createFromManifest(manifestUrl: string): Promise<Application> {
@@ -528,10 +534,12 @@ export class Application extends EmitterBase<ApplicationEvents> {
         console.warn('Deprecation Warning: Application.run is deprecated Please use fin.Application.start');
         return this._run();
     }
+
     // tslint:disable-next-line:function-name
-    private _run(): Promise<void> {
+    private _run(opts: RvmLaunchOptions = {}): Promise<void> {
         return this.wire.sendAction('run-application', Object.assign({}, {
-            manifestUrl: this._manifestUrl
+            manifestUrl: this._manifestUrl,
+            opts
         }, this.identity)).then(() => undefined);
     }
 
