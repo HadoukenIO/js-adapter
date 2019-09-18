@@ -1,5 +1,17 @@
 Gets the current bounds (top, bottom, right, left, width, height) of the window.
 
+Returned object will have the following shape:
+```ts
+{
+    bottom: number;
+    height: number;
+    left: number;
+    right: number;
+    top: number;
+    width: number;
+}
+```
+
 # Example
 ```js
 async function getBounds() {

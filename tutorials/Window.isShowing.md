@@ -1,4 +1,4 @@
-Determines if the window is currently showing.
+Returns `true` if window is showing, `false` if hidden.
 
 # Example
 ```js
