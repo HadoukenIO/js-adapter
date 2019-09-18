@@ -15,6 +15,7 @@ Pull Request process: https://github.com/openfin/Internal-Wiki/wiki/Pull-Request
 - [ ] Integration tests added in this repo and in the [test dashboard](https://testing-dashboard.openfin.co/#/app/dashboard)
 - [ ] manual tests are [changed or added](https://github.com/openfin/test_apps)
 - [ ] relevant documentation is changed or added
+- [ ] new/modified @types and function signatures [added to DefinitelyTyped](https://github.com/openfin/Internal-Wiki/wiki/How-to-Update-DefinitelyTyped)
 - [ ] PR title starts with the JIRA ticket [pull request process](https://github.com/openfin/Internal-Wiki/wiki/Pull-Request-Process)
 - [ ] PR release notes describe the change in a way relevant to app-developers
 - [ ] PR has assigned reviewers
