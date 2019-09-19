@@ -81,67 +81,67 @@ view.removeAllListeners("closed");
 ### BrowserView Events
 
 #### created
-Generated when a browserview is created.
+Generated when a BrowserView is created.
 ```js
 //This response has the following shape:
 {
-    name: "browserviewname" // the name of the browserview
-    target: {uuid: 'windowUuid', name: 'windowName'}, // the window this browserview will attach to
+    name: "BrowserViewName" // the name of the BrowserView
+    target: {uuid: 'windowUuid', name: 'windowName'}, // the window this BrowserView will attach to
     topic: "view",
     type: "created",
-    uuid: "454C7F31-A915-4EA2-83F2-CFA655453C52" // the uuid of the browserview
+    uuid: "454C7F31-A915-4EA2-83F2-CFA655453C52" // the uuid of the BrowserView
 }
 ```
 
 #### attached
-Generated when a browserview attaches to a window.
+Generated when a BrowserView attaches to a window. This event will fire during creation of a BrowserView. In that case, `previousTarget` identity will be the same as `target` identity.
 ```js
 //This response has the following shape:
 {
-    name: "browserviewname" // the name of the browserview
-    previousTarget: {uuid: 'previousWindowUuid', name: 'previousWindowName'}, // the window this browserview was previously attached to
-    target: {uuid: 'windowUuid', name: 'windowName'}, // the window this browserview will attach to
+    name: "BrowserViewName" // the name of the BrowserView
+    previousTarget: {uuid: 'previousWindowUuid', name: 'previousWindowName'}, // the window this BrowserView was previously attached to
+    target: {uuid: 'windowUuid', name: 'windowName'}, // the window this BrowserView will attach to
     topic: "view",
     type: "attached",
-    uuid: "454C7F31-A915-4EA2-83F2-CFA655453C52" // the uuid of the browserview
+    uuid: "454C7F31-A915-4EA2-83F2-CFA655453C52" // the uuid of the BrowserView
 }
 ```
 
 #### shown
-Generated when a browserview is shown.
+Generated when a BrowserView is shown. This event will fire during creation of a BrowserView.
 ```js
 //This response has the following shape:
 {
-    name: "browserviewname" // the name of the browserview
-    target: {uuid: 'windowUuid', name: 'windowName'}, // the window this browserview is attached to
+    name: "BrowserViewName" // the name of the BrowserView
+    target: {uuid: 'windowUuid', name: 'windowName'}, // the window this BrowserView is attached to
     topic: "view",
     type: "shown",
-    uuid: "454C7F31-A915-4EA2-83F2-CFA655453C52" // the uuid of the browserview
+    uuid: "454C7F31-A915-4EA2-83F2-CFA655453C52" // the uuid of the BrowserView
 }
 ```
 
 #### hidden
-Generated when a browserview is hidden.
+Generated when a BrowserView is hidden.
 ```js
 //This response has the following shape:
 {
-    name: "browserviewname" // the name of the browserview
-    target: {uuid: 'windowUuid', name: 'windowName'}, // the window this browserview is attached to
+    name: "BrowserViewName" // the name of the BrowserView
+    target: {uuid: 'windowUuid', name: 'windowName'}, // the window this BrowserView is attached to
     topic: "view",
     type: "hidden",
-    uuid: "454C7F31-A915-4EA2-83F2-CFA655453C52" // the uuid of the browserview
+    uuid: "454C7F31-A915-4EA2-83F2-CFA655453C52" // the uuid of the BrowserView
 }
 ```
 
 #### destroyed
-Generated when a browserview is destroyed.
+Generated when a BrowserView is destroyed.
 ```js
 //This response has the following shape:
 {
-    name: "browserviewname" // the name of the browserview
-    target: {uuid: 'windowUuid', name: 'windowName'}, // the window this browserview was attached to
+    name: "BrowserViewName" // the name of the BrowserView
+    target: {uuid: 'windowUuid', name: 'windowName'}, // the window this BrowserView was attached to
     topic: "view",
     type: "destroyed",
-    uuid: "454C7F31-A915-4EA2-83F2-CFA655453C52" // the uuid of the browserview
+    uuid: "454C7F31-A915-4EA2-83F2-CFA655453C52" // the uuid of the BrowserView
 }
 ```
