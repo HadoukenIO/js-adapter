@@ -10,6 +10,7 @@ import { ExternalWindow } from '../external-window/external-window';
 import { validateIdentity } from '../../util/validate';
 import { WebContents } from '../webcontents/webcontents';
 import { BrowserView } from '../browserview/browserview';
+import Layout from '../layout/layout';
 
 /**
  * @lends Window
@@ -76,6 +77,16 @@ export default class _WindowModule extends Base {
      */
     public getCurrentSync(): _Window {
         return this.wrapSync(this.wire.me);
+    }
+
+    public async _initLayout(container: HTMLElement) {
+        const config = await this.wire.sendAction('get-window-options', this.wire.me).then(({ payload }) => payload.data.layout);
+
+        if(globalThis.hasOwnProperty('GoldenLayout')) {
+            new Layout(config, container);
+        } else {
+            document.addEventListener('golden-layout-ready', () => new Layout(config, container))
+        }
     }
 }
 
