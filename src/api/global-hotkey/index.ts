@@ -62,7 +62,7 @@ export default class GlobalHotkey extends EmitterBase<GlobalHotkeyEvents> {
 
     /**
      * Checks if a given hotkey has been registered
-     * @return {Promise.<bookean>}
+     * @return {Promise.<boolean>}
      * @tutorial GlobalHotkey.isRegistered
      */
     public async isRegistered(hotkey: string): Promise<boolean> {
