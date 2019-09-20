@@ -1,8 +1,8 @@
 import { WebContents } from '../webcontents/webcontents';
-import { BaseEventMap } from '../events/base';
 import Transport from '../../transport/transport';
 import { Identity } from '../../identity';
 import { Base } from '../base';
+import { ViewEvents } from '../events/browserview';
 import { _Window } from '../window/window';
 export interface AutoResizeOptions {
     /**
@@ -52,9 +52,10 @@ export class BrowserViewModule extends Base {
     }
 }
 
-export class BrowserView extends WebContents<BaseEventMap> {
+export class BrowserView extends WebContents<ViewEvents> {
     constructor(wire: Transport, public identity: Identity) {
-        super(wire, identity, 'browserview');
+        super(wire, identity, 'view');
+        this.topic = 'view';
     }
     public attach = async (target: Identity) => {
         await this.wire.sendAction('attach-browser-view', {target, ...this.identity});
@@ -81,7 +82,6 @@ export class BrowserView extends WebContents<BaseEventMap> {
         const ack = await this.wire.sendAction('get-browser-view-info', {...this.identity});
         return ack.payload.data;
     }
-
     /**
     * Retrieves the window the view is currently attached to.
     * @experimental

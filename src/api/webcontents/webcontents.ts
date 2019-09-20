@@ -1,9 +1,9 @@
 import { EmitterBase } from '../base';
-import { BaseEventMap } from '../events/base';
 import { Identity } from '../../identity';
 import Transport from '../../transport/transport';
+import { WebContentsEventMapping } from '../events/webcontents';
 
-export class WebContents<T extends BaseEventMap> extends EmitterBase<T> {
+export class WebContents<T extends WebContentsEventMapping> extends EmitterBase<T> {
     constructor(wire: Transport, identity: Identity, public entityType: string) {
         super(wire, [entityType, identity.uuid, identity.name]);
     }

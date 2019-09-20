@@ -3,7 +3,7 @@ import { FrameEvent } from './frame';
 //This file exports base event types to level specific events
 //Those files map event names to event shapes and use a mapped type to specify topic and type
 export type RuntimeEvent<Topic = string, Type = string> =
-    Topic extends 'window' ? WindowEvent<Topic, Type> :
+    Topic extends 'window' | 'view' ? WindowEvent<Topic, Type> :
     Topic extends 'frame' ? FrameEvent<Type> :
     Topic extends 'application' ? ApplicationEvent<Topic, Type>:
     Topic extends 'external-window' ? ApplicationEvent<Topic, Type>:

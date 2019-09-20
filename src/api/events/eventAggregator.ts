@@ -42,6 +42,9 @@ function mapKeyFromEvent(event: RuntimeEvent): string[] {
     } else if (topic === 'external-window') {
         const { uuid } = <RuntimeEvent<'external-window'>> event;
         return [topic, uuid];
+    } else if (topic === 'view') {
+        const { uuid, name } = <RuntimeEvent<'view'>> event;
+        return [topic, uuid, name];
     }
     return [topic];
 }
