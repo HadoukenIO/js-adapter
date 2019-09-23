@@ -111,6 +111,11 @@ fin.System.removeAllListeners("monitor-info-changed");
 * window-user-movement-enabled (see {@tutorial Window.EventEmitter})
 * window-will-move (see {@tutorial Window.EventEmitter})
 * window-will-resize (see {@tutorial Window.EventEmitter})
+* view-created (see {@tutorial BrowserView.EventEmitter})
+* view-attached (see {@tutorial BrowserView.EventEmitter})
+* view-shown (see {@tutorial BrowserView.EventEmitter})
+* view-hidden (see {@tutorial BrowserView.EventEmitter})
+* view-destroyed (see {@tutorial BrowserView.EventEmitter})
 
 ### System Events
 
@@ -351,5 +356,71 @@ Generated when a window gains focus.
     topic: "system",
     type: "window-focused",
     uuid: "454C7F31-A915-4EA2-83F2-CFA655453C52" // the UUID of the application
+}
+```
+
+#### view-created
+Generated when a child BrowserView is created.
+```js
+//This response has the following shape:
+{
+    name: "BrowserViewName" // the name of the BrowserView
+    target: {uuid: 'windowUuid', name: 'windowName'}, // the window this BrowserView will attach to
+    topic: "view",
+    type: "created",
+    uuid: "454C7F31-A915-4EA2-83F2-CFA655453C52" // the uuid of the BrowserView
+}
+```
+
+#### view-attached
+Generated when a child BrowserView attaches to a window. This event will fire during creation of a BrowserView. In that case, `previousTarget` identity will be the same as `target` identity.
+```js
+//This response has the following shape:
+{
+    name: "BrowserViewName" // the name of the BrowserView
+    previousTarget: {uuid: 'previousWindowUuid', name: 'previousWindowName'}, // the window this BrowserView was previously attached to
+    target: {uuid: 'windowUuid', name: 'windowName'}, // the window this BrowserView will attach to
+    topic: "view",
+    type: "attached",
+    uuid: "454C7F31-A915-4EA2-83F2-CFA655453C52" // the uuid of the BrowserView
+}
+```
+
+#### view-shown
+Generated when a child BrowserView is shown. This event will fire during creation of a BrowserView.
+```js
+//This response has the following shape:
+{
+    name: "BrowserViewName" // the name of the BrowserView
+    target: {uuid: 'windowUuid', name: 'windowName'}, // the window this BrowserView is attached to
+    topic: "view",
+    type: "shown",
+    uuid: "454C7F31-A915-4EA2-83F2-CFA655453C52" // the uuid of the BrowserView
+}
+```
+
+#### view-hidden
+Generated when a child BrowserView is hidden.
+```js
+//This response has the following shape:
+{
+    name: "BrowserViewName" // the name of the BrowserView
+    target: {uuid: 'windowUuid', name: 'windowName'}, // the window this BrowserView is attached to
+    topic: "view",
+    type: "hidden",
+    uuid: "454C7F31-A915-4EA2-83F2-CFA655453C52" // the uuid of the BrowserView
+}
+```
+
+#### view-destroyed
+Generated when a child BrowserView is destroyed.
+```js
+//This response has the following shape:
+{
+    name: "BrowserViewName" // the name of the BrowserView
+    target: {uuid: 'windowUuid', name: 'windowName'}, // the window this BrowserView was attached to
+    topic: "view",
+    type: "destroyed",
+    uuid: "454C7F31-A915-4EA2-83F2-CFA655453C52" // the uuid of the BrowserView
 }
 ```

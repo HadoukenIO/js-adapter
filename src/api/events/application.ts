@@ -2,6 +2,7 @@ import { WindowEvent, BaseEventMap, ApplicationEvent } from './base';
 import { WindowAlertRequestedEvent, WindowAuthRequestedEvent, WindowEndLoadEvent,
     PropagatedWindowEvents, WindowPerformanceReport } from './window';
 import { Bounds } from '../../shapes';
+import { PropagatedViewEvents } from './browserview';
 
 export interface CrashedEvent {
     reason: 'normal-termination' | 'abnormal-termination' | 'killed' | 'crashed' | 'still-running' | 'launch-failed' | 'out-of-memory';
@@ -59,7 +60,9 @@ export interface PropagatedApplicationEventMapping<Topic = string, Type = string
     'window-start-load': WindowEvent<Topic, Type>;
 }
 
-export type ApplicationEvents = PropagatedWindowEvents<'application'> & {
+export type ApplicationEvents = PropagatedWindowEvents<'application'>
+    & PropagatedViewEvents<'application'>
+    & {
     [Type in keyof ApplicationEventMapping]: ApplicationEventMapping<'application', Type>[Type];
 };
 export type PropagatedApplicationEvents<Topic> = {
