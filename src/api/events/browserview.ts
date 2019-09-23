@@ -21,7 +21,6 @@ export type ViewEvents = {
     [Type in keyof ViewEventMapping]: ViewEventMapping<'view', Type>[Type];
 };
 
-
 export type PropagatedViewEvents<Topic> = {
     [Type in keyof PropagatedViewEventMapping]: PropagatedViewEventMapping<Topic, Type>[Type]
 };
