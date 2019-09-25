@@ -565,13 +565,13 @@ export class Application extends EmitterBase<ApplicationEvents> {
 
     /**
      * Adds a customizable icon in the system tray.  To listen for a click on the icon use the `tray-icon-clicked` event.
-     * @param { string } iconUrl Image URL to be used as the icon
+     * @param { string } icon Image URL or base64 encoded string to be used as the icon
      * @return {Promise.<void>}
      * @tutorial Application.setTrayIcon
      */
-    public setTrayIcon(iconUrl: string): Promise<void> {
+    public setTrayIcon(icon: string): Promise<void> {
         return this.wire.sendAction('set-tray-icon', Object.assign({}, {
-            enabledIcon: iconUrl
+            enabledIcon: icon
         }, this.identity)).then(() => undefined);
     }
 
