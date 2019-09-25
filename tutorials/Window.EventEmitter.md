@@ -109,6 +109,8 @@ finWindow.removeAllListeners("bounds-changed");
 * shown
 * user-movement-disabled
 * user-movement-enabled
+* view-attached
+* view-detached
 * will-move
 * will-resize
 
@@ -725,6 +727,36 @@ Generated when a window's user movement becomes enabled.
     topic: "window",
     type: "user-movement-enabled",
     uuid: "AppUUID" //(string) the UUID of the application the window belongs to.
+}
+```
+
+#### view-attached
+Generated when a window has a view attached to it.
+```js
+//This response has the following shape:
+{
+    name: "windowOne" // the name of this Window
+    previousTarget: {uuid: 'previousWindowUuid', name: 'previousWindowName'}, // the identity of the window this BrowserView is being detached from
+    target: {uuid: 'windowUuid', name: 'windowOne'}, // the identity of the window this BrowserView is attaching to
+    topic: "window",
+    type: "view-attached",
+    uuid: "AppUUID" // the UUID of the application this window belongs to.
+    viewIdentity: {uuid: 'viewUuid', name: 'viewName'}, // the identity of the BrowserView
+}
+```
+
+#### view-detached
+Generated when a window has a view detached from it.
+```js
+//This response has the following shape:
+{
+    name: "windowOne" // the name of this Window
+    previousTarget: {uuid: 'previousWindowUuid', name: 'previousWindowName'}, // the identity of the window this BrowserView is being detached from
+    target: {uuid: 'windowUuid', name: 'windowOne'}, // the identity of the window this BrowserView is attaching to
+    topic: "window",
+    type: "view-attached",
+    uuid: "AppUUID" // the UUID of the application this window belongs to.
+    viewIdentity: {uuid: 'viewUuid', name: 'viewName'}, // the identity of the BrowserView
 }
 ```
 
