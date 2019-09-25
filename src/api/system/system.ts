@@ -163,7 +163,7 @@ import { _Window } from '../window/window';
  * @typedef { object } FrameInfo
  * @property { string } name The name of the frame
  * @property { string } uuid The uuid of the frame
- * @property { entityType } entityType The entity type, could be 'window', 'iframe', 'external connection' or 'unknown'
+ * @property { EntityType } entityType The entity type, could be 'window', 'iframe', 'external connection' or 'unknown'
  * @property { Identity } parent The parent identity
  */
 
@@ -270,7 +270,7 @@ import { _Window } from '../window/window';
 /**
  * ProcessInfo interface
  * @typedef { object } ProcessInfo
- * @property { numder } cpuUsage The percentage of total CPU usage
+ * @property { number } cpuUsage The percentage of total CPU usage
  * @property { string } name The application name
  * @property { number } nonPagedPoolUsage The current nonpaged pool usage in bytes
  * @property { number } pageFaultCount The number of page faults
@@ -282,14 +282,14 @@ import { _Window } from '../window/window';
  * @property { number } peakWorkingSetSize The peak working set size in bytes
  * @property { number } processId The native process identifier
  * @property { string } uuid The application UUID
- * @property { nubmer } workingSetSize The current working set size (both shared and private data) in bytes
+ * @property { number } workingSetSize The current working set size (both shared and private data) in bytes
  */
 
 /**
  * ProxyConfig interface
  * @typedef { object } ProxyConfig
  * @property { string } proxyAddress The configured proxy address
- * @property { numder } proxyPort The configured proxy port
+ * @property { number } proxyPort The configured proxy port
  * @property { string } type The proxy Type
  */
 
@@ -313,9 +313,9 @@ import { _Window } from '../window/window';
  * Rect interface
  * @typedef { object } Rect
  * @property { number } bottom The bottom-most coordinate
- * @property { nubmer } left The left-most coordinate
+ * @property { number } left The left-most coordinate
  * @property { number } right The right-most coordinate
- * @property { nubmer } top The top-most coordinate
+ * @property { number } top The top-most coordinate
  */
 
 /**
@@ -340,7 +340,7 @@ import { _Window } from '../window/window';
  * @typedef { object } RuntimeInfo
  * @property { string } architecture The runtime build architecture
  * @property { string } manifestUrl The runtime manifest URL
- * @property { nubmer } port The runtime websocket port
+ * @property { number } port The runtime websocket port
  * @property { string } securityRealm The runtime security realm
  * @property { string } version The runtime version
  * @property { object } args the command line argument used to start the Runtime

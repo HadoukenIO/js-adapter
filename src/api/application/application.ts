@@ -222,7 +222,7 @@ export default class ApplicationModule extends Base {
     /**
      * Retrieves application's manifest and returns a running instance of the application.
      * @param {string} manifestUrl - The URL of app's manifest.
-     * @param { rvmLaunchOpts} [opts] - Parameters that the RVM will use.
+     * @param {RvmLaunchOptions} [opts] - Parameters that the RVM will use.
      * @return {Promise.<Application>}
      * @tutorial Application.startFromManifest
      * @static
@@ -555,7 +555,7 @@ export class Application extends EmitterBase<ApplicationEvents> {
     /**
      * Sends a message to the RVM to upload the application's logs. On success,
      * an object containing logId is returned.
-     * @return {Promise.<any>}
+     * @return {Promise.<LogInfo>}
      * @tutorial Application.sendApplicationLog
      */
     public async sendApplicationLog(): Promise<LogInfo> {
