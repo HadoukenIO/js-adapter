@@ -200,13 +200,6 @@ import { _Window } from '../window/window';
  * @property { string } uuid The uuid of the application
  */
 
- /**
- * InstalledRuntimes interface
- * @typedef { object } InstalledRuntimes
- * @property { string } action The name of action: "get-installed-runtimes"
- * @property { Array<string> } runtimes The version numbers of each installed runtime
- */
-
 /**
  * LogInfo interface
  * @typedef { object } LogInfo
