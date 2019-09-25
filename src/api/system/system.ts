@@ -205,8 +205,15 @@ import { _Window } from '../window/window';
  * @typedef { object } LogInfo
  * @property { string } name The filename of the log
  * @property { number } size The size of the log in bytes
- * @property { string } date The unix time at which the log was created "Thu Jan 08 2015 14:40:30 GMT-0500 (Eastern Standard Time)""
+ * @property { string } date The unix time at which the log was created "Thu Jan 08 2015 14:40:30 GMT-0500 (Eastern Standard Time)"
  */
+
+/**
+* ManifestInfo interface
+* @typedef { object } ManifestInfo
+* @property { string } uuid The uuid of the application
+* @property { string } manifestUrl The runtime manifest URL
+*/
 
 /**
  * MonitorDetails interface
