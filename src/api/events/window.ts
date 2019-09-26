@@ -140,7 +140,6 @@ export interface WindowEventMapping<Topic = string, Type = string> extends WebCo
     'closed': WindowEvent<Topic, Type>;
     'closing': WindowEvent<Topic, Type>;
     'crashed': CrashedEvent & WindowEvent<Topic, Type>;
-    'did-change-theme-color': WindowEvent<Topic, Type>;
     'disabled-movement-bounds-changed': WindowBoundsChange<Topic, Type>;
     'disabled-movement-bounds-changing': WindowBoundsChange<Topic, Type>;
     'embedded': WindowEvent<Topic, Type>;
@@ -154,8 +153,6 @@ export interface WindowEventMapping<Topic = string, Type = string> extends WebCo
     'maximized': WindowEvent<Topic, Type>;
     'minimized': WindowEvent<Topic, Type>;
     'navigation-rejected': WindowNavigationRejectedEvent<Topic, Type>;
-    'page-favicon-updated': WindowEvent<Topic, Type>;
-    'page-title-updated': WindowEvent<Topic, Type>;
     'options-changed': WindowOptionsChangedEvent<Topic, Type>;
     'performance-report': WindowPerformanceReport<Topic, Type>;
     'preload-scripts-state-changed': WindowPreloadScriptsStateChangeEvent<Topic, Type>;

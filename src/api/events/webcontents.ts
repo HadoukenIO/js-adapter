@@ -21,4 +21,7 @@ export interface WindowResourceResponseReceivedEvent<Topic, Type> extends Window
 export interface WebContentsEventMapping<Topic = string, Type = string> extends BaseEventMap {
     'resource-load-failed': WindowResourceLoadFailedEvent<Topic, Type>;
     'resource-response-received': WindowResourceResponseReceivedEvent<Topic, Type>;
+    'did-change-theme-color': WindowEvent<Topic, Type>;
+    'page-favicon-updated': WindowEvent<Topic, Type>;
+    'page-title-updated': WindowEvent<Topic, Type>;
 }
