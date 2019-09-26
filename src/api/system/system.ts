@@ -24,6 +24,10 @@ import { CrashReporterOption } from './crashReporterOption';
 import { SystemEvents } from '../events/system';
 import { _Window } from '../window/window';
 
+interface ServiceIdentifier {
+    name: string;
+}
+
 /**
  * AppAssetInfo interface
  * @typedef { object } AppAssetInfo
@@ -432,10 +436,6 @@ import { _Window } from '../window/window';
  * @typedef { object } ServiceIdentifier
  * @property { string } name The name of the service
  */
-
- interface ServiceIdentifier {
-     name: string;
- }
 
 /**
  * An object representing the core of OpenFin Runtime. Allows the developer
