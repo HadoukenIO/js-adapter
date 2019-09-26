@@ -1,10 +1,9 @@
 import { Base } from '../base';
 import { Identity, GroupWindowIdentity } from '../../identity';
-import { Bounds } from '../../shapes';
 import { Application } from '../application/application';
 import Transport from '../../transport/transport';
 import { WindowEvents } from '../events/window';
-import { AnchorType, Transition, TransitionOptions } from '../../shapes';
+import { AnchorType, Bounds, Transition, TransitionOptions } from '../../shapes';
 import { WindowOption } from './windowOption';
 import { EntityType } from '../frame/frame';
 import { ExternalWindow } from '../external-window/external-window';
@@ -194,10 +193,12 @@ interface WindowMovementOptions {
  * Default is white.
  *
  * @property {object} [contentNavigation]
- * Restrict navigation to URLs that match a whitelisted pattern. See [here](https://developer.chrome.com/extensions/match_patterns)
- * for more details.
+ * Restrict navigation to URLs that match a whitelisted pattern.
+ * In the lack of a whitelist, navigation to URLs that match a blacklisted pattern would be prohibited.
+ * See [here](https://developer.chrome.com/extensions/match_patterns) for more details.
  * @property {string[]} [contentNavigation.whitelist=[]] List of whitelisted URLs.
- *
+ * @property {string[]} [contentNavigation.blacklist=[]] List of blacklisted URLs.
+
  * @property {boolean} [contextMenu=true] - _Updatable._
  * A flag to show the context menu when right-clicking on a window.
  * Gives access to the devtools for the window.
@@ -214,7 +215,7 @@ interface WindowMovementOptions {
  * @property {number} [cornerRounding.height=0] The height in pixels.
  * @property {number} [cornerRounding.width=0] The width in pixels.
  *
- * @property {string} [customData=""] - _Updatable._
+ * @property {any} [customData=""] - _Updatable._
  * A field that the user can attach serializable data to to be ferried around with the window options.
  * _When omitted, the default value of this property is the empty string (`""`)._
  *
@@ -554,6 +555,15 @@ export class _Window extends WebContents<WindowEvents> {
      * @tutorial Window.stopNavigation
      */
 
+    /**
+    * Reloads the window current page
+    * @function reload
+    * @memberOf Window
+    * @instance
+    * @return {Promise.<void>}
+    * @tutorial Window.reload
+    */
+
     // create a new window
     public createWindow(options: WindowOption): Promise<_Window> {
         return new Promise((resolve, reject) => {
@@ -659,6 +669,15 @@ export class _Window extends WebContents<WindowEvents> {
      */
     public focus(): Promise<void> {
         return this.wire.sendAction('focus-window', this.identity).then(() => undefined);
+    }
+
+    /**
+     * Centers the window on its current screen.
+     * @return {Promise.<void>}
+     * @tutorial Window.center
+     */
+    public center(): Promise<void> {
+        return this.wire.sendAction('center-window', this.identity).then(() => undefined);
     }
 
     /**
@@ -899,6 +918,7 @@ export class _Window extends WebContents<WindowEvents> {
 
     /**
      * Joins the same window group as the specified window.
+     * Joining a group with native windows is currently not supported(method will nack).
      * @param { _Window | ExternalWindow } target The window whose group is to be joined
      * @return {Promise.<void>}
      * @tutorial Window.joinGroup
@@ -907,17 +927,6 @@ export class _Window extends WebContents<WindowEvents> {
         return this.wire.sendAction('join-window-group', Object.assign({}, {
             groupingUuid: target.identity.uuid,
             groupingWindowName: target.identity.name
-        }, this.identity)).then(() => undefined);
-    }
-
-    /**
-     * Reloads the window current page
-     * @return {Promise.<void>}
-     * @tutorial Window.reload
-     */
-    public reload(ignoreCache: boolean = false): Promise<void> {
-        return this.wire.sendAction('reload-window', Object.assign({}, {
-            ignoreCache
         }, this.identity)).then(() => undefined);
     }
 

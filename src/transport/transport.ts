@@ -56,7 +56,6 @@ class Transport extends EventEmitter {
         const { uuid, name } = config;
         this.me = { uuid, name };
         this.wire.connectSync();
-
     }
 
     public async connect(config: InternalConnectConfig): Promise<string> {

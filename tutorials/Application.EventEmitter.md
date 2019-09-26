@@ -93,7 +93,7 @@ app.removeAllListeners("closed");
 * window-created
 * window-disabled-movement-bounds-changed (see {@tutorial Window.EventEmitter})
 * window-disabled-movement-bounds-changing (see {@tutorial Window.EventEmitter})
-* window-embedded (see {@tutorial Window.addListener})
+* window-embedded (see {@tutorial Window.EventEmitter})
 * window-end-load
 * window-external-process-exited (see {@tutorial Window.EventEmitter})
 * window-external-process-started (see {@tutorial Window.EventEmitter})
@@ -120,6 +120,8 @@ app.removeAllListeners("closed");
 * window-start-load
 * window-user-movement-disabled (see {@tutorial Window.EventEmitter})
 * window-user-movement-enabled (see {@tutorial Window.EventEmitter})
+* window-will-move (see {@tutorial Window.EventEmitter})
+* window-will-resize (see {@tutorial Window.EventEmitter})
 
 ### Application Events
 
