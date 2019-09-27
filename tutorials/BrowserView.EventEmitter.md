@@ -104,7 +104,7 @@ Generated when a view has crashed.
 ```js
 //This response has the following shape:
 {
-    name: "windowOne", //the name of the window.
+    name: "BrowserViewName" // the name of the BrowserView
     reason: "killed", //possible values:
                       //  "normal-termination"    zero exit status
                       //  "abnormal-termination"  non-zero exit status
@@ -115,7 +115,7 @@ Generated when a view has crashed.
                       //  "out-of-memory"         process died due to oom
     topic: "view",
     type: "crashed",
-    uuid: "AppUUID" //(string) the UUID of the application the window belongs to.
+    uuid: "454C7F31-A915-4EA2-83F2-CFA655453C52" // the uuid of the BrowserView
 }
 ```
 
@@ -150,10 +150,10 @@ Emitted when a page's theme color changes. This is usually due to encountering a
 ```js
 {
     color: "#FF0000",
-    name: "windowOne", //the name of the window.
+    name: "BrowserViewName" // the name of the BrowserView
     topic: "view",
     type: "did-change-theme-color",
-    uuid: "AppUUID" //(string) the UUID of the application the window belongs to.
+    uuid: "454C7F31-A915-4EA2-83F2-CFA655453C52" // the uuid of the BrowserView
 }
 ```
 
@@ -177,10 +177,10 @@ Emitted when page receives favicon urls.
     favicons: [
         "http://www.openfin.co/favicon.ico"
     ],
-    name: "windowOne", //the name of the window.
+    name: "BrowserViewName" // the name of the BrowserView
     topic: "view",
     type: "page-favicon-updated",
-    uuid: "AppUUID" //(string) the UUID of the application the window belongs to.
+    uuid: "454C7F31-A915-4EA2-83F2-CFA655453C52" // the uuid of the BrowserView
 }
 ```
 
@@ -189,11 +189,11 @@ Fired when page title is set during navigation. explicitSet is false when title 
 ```js
 {
     explicitSet: true, // false when title is synthesized from file url.
-    name: "windowOne", //the name of the window.
+    name: "BrowserViewName" // the name of the BrowserView
     title: "testTitle",
     topic: "view",
     type: "page-title-updated",
-    uuid: "AppUUID" //(string) the UUID of the application the window belongs to.
+    uuid: "454C7F31-A915-4EA2-83F2-CFA655453C52" // the uuid of the BrowserView
 }
 ```
 
