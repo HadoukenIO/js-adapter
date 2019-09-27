@@ -84,7 +84,6 @@ view.removeAllListeners("closed");
 
 ### BrowserView Events
 
-
 #### attached
 Generated when a BrowserView attaches to a window. This event will fire during creation of a BrowserView. In that case, `previousTarget` identity will be the same as `target` identity.
 ```js
