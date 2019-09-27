@@ -163,6 +163,8 @@ export interface WindowEventMapping<Topic = string, Type = string> extends WebCo
     'shown': WindowEvent<Topic, Type>;
     'user-movement-disabled': WindowEvent<Topic, Type>;
     'user-movement-enabled': WindowEvent<Topic, Type>;
+    'view-attached': WindowEvent<Topic, Type>;
+    'view-detached': WindowEvent<Topic, Type>;
     'will-move': WillMoveOrResize<Topic, Type>;
     'will-resize': WillMoveOrResize<Topic, Type>;
 }
