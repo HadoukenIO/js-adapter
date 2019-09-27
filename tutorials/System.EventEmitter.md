@@ -387,7 +387,7 @@ Generated when a child BrowserView attaches to a window. This event will fire du
 ```
 
 #### view-shown
-Generated when a child BrowserView is shown. This event will fire during creation of a BrowserView.
+Generated when a BrowserView is shown. This event will fire during creation of a BrowserView.
 ```js
 //This response has the following shape:
 {
@@ -400,7 +400,7 @@ Generated when a child BrowserView is shown. This event will fire during creatio
 ```
 
 #### view-hidden
-Generated when a child BrowserView is hidden.
+Generated when a BrowserView is hidden.
 ```js
 //This response has the following shape:
 {
@@ -413,7 +413,7 @@ Generated when a child BrowserView is hidden.
 ```
 
 #### view-destroyed
-Generated when a child BrowserView is destroyed.
+Generated when a BrowserView is destroyed.
 ```js
 //This response has the following shape:
 {
