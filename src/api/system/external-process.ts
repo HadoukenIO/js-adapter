@@ -43,5 +43,6 @@ export interface ExternalProcessInfo {
 }
 
 export interface ServiceConfiguration {
+    config: object;
     name: string;
 }

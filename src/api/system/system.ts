@@ -361,6 +361,19 @@ interface ServiceIdentifier {
  * @property { string } 'working-dir' The working directory
  */
 
+ /**
+ * ServiceIdentifier interface
+ * @typedef { object } ServiceIdentifier
+ * @property { string } name The name of the service
+ */
+
+ /**
+ * ServiceConfiguration interface
+ * @typedef { object } ServiceConfiguration
+ * @property { object } config The service configuration
+ * @property { string } name The name of the service
+ */
+
 /**
  * ShortCutConfig interface
  * @typedef { object } ShortCutConfig
@@ -429,12 +442,6 @@ interface ServiceIdentifier {
  * @property { Array<WindowDetail> } childWindows The array of child windows details
  * @property { WindowDetail } mainWindow The main window detail
  * @property { string } uuid The uuid of the application
- */
-
- /**
- * Service identifier
- * @typedef { object } ServiceIdentifier
- * @property { string } name The name of the service
  */
 
 /**
