@@ -139,7 +139,6 @@ export interface WindowEventMapping<Topic = string, Type = string> extends WebCo
     'close-requested': WindowEvent<Topic, Type>;
     'closed': WindowEvent<Topic, Type>;
     'closing': WindowEvent<Topic, Type>;
-    'crashed': CrashedEvent & WindowEvent<Topic, Type>;
     'disabled-movement-bounds-changed': WindowBoundsChange<Topic, Type>;
     'disabled-movement-bounds-changing': WindowBoundsChange<Topic, Type>;
     'embedded': WindowEvent<Topic, Type>;
