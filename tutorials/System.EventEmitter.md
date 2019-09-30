@@ -111,6 +111,11 @@ fin.System.removeAllListeners("monitor-info-changed");
 * window-user-movement-enabled (see {@tutorial Window.EventEmitter})
 * window-will-move (see {@tutorial Window.EventEmitter})
 * window-will-resize (see {@tutorial Window.EventEmitter})
+* view-created (see {@tutorial BrowserView.EventEmitter})
+* view-attached (see {@tutorial BrowserView.EventEmitter})
+* view-shown (see {@tutorial BrowserView.EventEmitter})
+* view-hidden (see {@tutorial BrowserView.EventEmitter})
+* view-destroyed (see {@tutorial BrowserView.EventEmitter})
 
 ### System Events
 
