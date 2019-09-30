@@ -23,7 +23,6 @@ const InterApplicationBus: any = {};
  *  * {@link InterApplicationBus.Channel.create create(channelName)}
  *  * {@link InterApplicationBus.Channel.connect connect(channelName, options)}
  */
-//tslint:disable-next-line
 InterApplicationBus.Channel = function() {};
 
 /**
@@ -73,7 +72,7 @@ InterApplicationBus.Channel.onChannelDisconnect = function () { }
  *
  * ##### Constructor
  *
- * Returned by {@link Channel.create Channel.create}.
+ * Returned by {@link InterApplicationBus.Channel.create Channel.create}.
  *
  * ##### Synchronous Methods
  *  * {@link Channel#ChannelProvider#destroy destroy()}
@@ -95,6 +94,8 @@ InterApplicationBus.Channel.onChannelDisconnect = function () { }
  *
  * @memberof! Channel#
  * @hideconstructor
+ * @property {Identity[]}  connections an array containing all the identities of connecting clients.
+ *
  */
 class ChannelProvider {
 
@@ -106,7 +107,6 @@ class ChannelProvider {
     * @returns {Promise<void>}
     * @tutorial ChannelProvider.destroy
     */
-
    destroy() { }
 
     /**
@@ -217,7 +217,7 @@ class ChannelProvider {
  * from the provider by registering an action via {@link Channel#ChannelClient#register register}.
  *
  * ##### Constructor
- * Returned by {@link Channel.connect Channel.connect}.
+ * Returned by {@link InterApplicationBus.Channel.connect Channel.connect}.
  *
  * ##### Synchronous Methods
  *  * {@link Channel#ChannelClient#disconnect disconnect()}
