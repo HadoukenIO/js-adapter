@@ -14,7 +14,7 @@ export default class ExternalWindowModule extends Base {
      * an existing external window.<br>
      * Note: This method is restricted by default and must be enabled via
      * <a href="https://developers.openfin.co/docs/api-security">API security settings</a>.
-     * @param { Identity } identity
+     * @param { ExternalWindowIdentity } identity
      * @return {Promise.<ExternalWindow>}
      * @static
      * @experimental

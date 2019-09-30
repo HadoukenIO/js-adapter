@@ -266,7 +266,7 @@ class ChannelClient {
     * Register an action to be called by the provider of the channel.
     * @param {string} action - Name of the action to be registered for the channel provider to later invoke.
     * @param {Action} listener - Function representing the action to be taken on a provider dispatch.
-    * @returns {Boolean}
+    * @returns {boolean}
     * @tutorial Channel.register
     */
     register() { }
