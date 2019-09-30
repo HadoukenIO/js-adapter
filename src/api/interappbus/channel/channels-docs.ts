@@ -43,7 +43,7 @@ InterApplicationBus.Channel.create = function () { }
  * @param {InterApplicationBus.Channel~ConnectOptions} options - Connection options.
  * @returns {Promise<Channel#ChannelClient>} Returns promise that resolves with an instance of {@link Channel#ChannelClient ChannelClient}.
  * @tutorial Channel.connect
-
+ *
  */
 InterApplicationBus.Channel.connect = function (options:any) { }
 
@@ -265,7 +265,7 @@ class ChannelClient {
     *
     * Register an action to be called by the provider of the channel.
     * @param {string} action - Name of the action to be registered for the channel provider to later invoke.
-    * @param {Action} listener - Function representing the action to be taken on a provider dispatch.
+    * @param {Channel#ChannelClient~Action} listener - Function representing the action to be taken on a provider dispatch.
     * @returns {boolean}
     * @tutorial Channel.register
     */
