@@ -75,12 +75,12 @@ InterApplicationBus.Channel.onChannelDisconnect = function () { }
  * Returned by {@link InterApplicationBus.Channel.create Channel.create}.
  *
  * ##### Synchronous Methods
- *  * {@link Channel#ChannelProvider#destroy destroy()}
  *  * {@link Channel#ChannelProvider#publish publish(action, payload)}
  *  * {@link Channel#ChannelProvider#register register(action, listener)}
  *  * {@link Channel#ChannelProvider#remove remove(action)}
  *
  * ##### Asynchronous Methods
+ *  * {@link Channel#ChannelProvider#destroy destroy()}
  *  * {@link Channel#ChannelProvider#dispatch dispatch(to, action, payload)}
  *
  * ##### Middleware
@@ -124,7 +124,7 @@ class ChannelProvider {
     *
     * Register an action to be called
     * @param {string} action - Name of the action to be registered for channel clients to later invoke.
-    * @param {Action} listener - Function representing the action to be taken on a client dispatch.
+    * @param {Channel#ChannelProvider~Action} listener - Function representing the action to be taken on a client dispatch.
     * @returns {boolean} - Boolean representing the successful registration of the action.
     * @tutorial Channel.register
     */
@@ -220,11 +220,11 @@ class ChannelProvider {
  * Returned by {@link InterApplicationBus.Channel.connect Channel.connect}.
  *
  * ##### Synchronous Methods
- *  * {@link Channel#ChannelClient#disconnect disconnect()}
  *  * {@link Channel#ChannelClient#register register(action, listener)}
  *  * {@link Channel#ChannelClient#remove remove(action)}
  *
  * ##### Asynchronous Methods
+ *  * {@link Channel#ChannelClient#disconnect disconnect()}
  *  * {@link Channel#ChannelClient#dispatch dispatch(action, payload)}
  *
  * ##### Middleware
