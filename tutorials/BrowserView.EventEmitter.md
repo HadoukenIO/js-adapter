@@ -72,26 +72,17 @@ view.removeAllListeners("closed");
 
 ### Supported BrowserView event types
 
-* created
 * attached
-* shown
-* hidden
+* crashed
+* created
+* did-change-theme-color
 * destroyed
+* hidden
+* page-favicon-updated
+* page-title-updated
+* shown
 
 ### BrowserView Events
-
-#### created
-Generated when a BrowserView is created.
-```js
-//This response has the following shape:
-{
-    name: "BrowserViewName" // the name of the BrowserView
-    target: {uuid: 'windowUuid', name: 'windowName'}, // the window this BrowserView will attach to
-    topic: "view",
-    type: "created",
-    uuid: "454C7F31-A915-4EA2-83F2-CFA655453C52" // the uuid of the BrowserView
-}
-```
 
 #### attached
 Generated when a BrowserView attaches to a window. This event will fire during creation of a BrowserView. In that case, `previousTarget` identity will be the same as `target` identity.
@@ -107,15 +98,60 @@ Generated when a BrowserView attaches to a window. This event will fire during c
 }
 ```
 
-#### shown
-Generated when a BrowserView is shown. This event will fire during creation of a BrowserView.
+#### crashed
+Generated when a view has crashed.
 ```js
 //This response has the following shape:
 {
     name: "BrowserViewName" // the name of the BrowserView
-    target: {uuid: 'windowUuid', name: 'windowName'}, // the window this BrowserView is attached to
+    reason: "killed", //possible values:
+                      //  "normal-termination"    zero exit status
+                      //  "abnormal-termination"  non-zero exit status
+                      //  "killed"                e.g. SIGKILL or task manager kill
+                      //  "crashed"               e.g. Segmentation fault
+                      //  "still-running"         child hasn't exited yet
+                      //  "launch-failed"         child process never launched
+                      //  "out-of-memory"         process died due to oom
     topic: "view",
-    type: "shown",
+    type: "crashed",
+    uuid: "454C7F31-A915-4EA2-83F2-CFA655453C52" // the uuid of the BrowserView
+}
+```
+
+#### created
+Generated when a BrowserView is created.
+```js
+//This response has the following shape:
+{
+    name: "BrowserViewName" // the name of the BrowserView
+    target: {uuid: 'windowUuid', name: 'windowName'}, // the window this BrowserView will attach to
+    topic: "view",
+    type: "created",
+    uuid: "454C7F31-A915-4EA2-83F2-CFA655453C52" // the uuid of the BrowserView
+}
+```
+
+#### destroyed
+Generated when a BrowserView is destroyed.
+```js
+//This response has the following shape:
+{
+    name: "BrowserViewName" // the name of the BrowserView
+    target: {uuid: 'windowUuid', name: 'windowName'}, // the window this BrowserView was attached to
+    topic: "view",
+    type: "destroyed",
+    uuid: "454C7F31-A915-4EA2-83F2-CFA655453C52" // the uuid of the BrowserView
+}
+```
+
+#### did-change-theme-color
+Emitted when a page's theme color changes. This is usually due to encountering a meta tag: <meta name='theme-color' content='#ff0000'>
+```js
+{
+    color: "#FF0000",
+    name: "BrowserViewName" // the name of the BrowserView
+    topic: "view",
+    type: "did-change-theme-color",
     uuid: "454C7F31-A915-4EA2-83F2-CFA655453C52" // the uuid of the BrowserView
 }
 ```
@@ -133,15 +169,42 @@ Generated when a BrowserView is hidden.
 }
 ```
 
-#### destroyed
-Generated when a BrowserView is destroyed.
+#### page-favicon-updated
+Emitted when page receives favicon urls.
+```js
+{
+    favicons: [
+        "http://www.openfin.co/favicon.ico"
+    ],
+    name: "BrowserViewName" // the name of the BrowserView
+    topic: "view",
+    type: "page-favicon-updated",
+    uuid: "454C7F31-A915-4EA2-83F2-CFA655453C52" // the uuid of the BrowserView
+}
+```
+
+#### page-title-updated
+Fired when page title is set during navigation. explicitSet is false when title is synthesized from file url.
+```js
+{
+    explicitSet: true, // false when title is synthesized from file url.
+    name: "BrowserViewName" // the name of the BrowserView
+    title: "testTitle",
+    topic: "view",
+    type: "page-title-updated",
+    uuid: "454C7F31-A915-4EA2-83F2-CFA655453C52" // the uuid of the BrowserView
+}
+```
+
+#### shown
+Generated when a BrowserView is shown. This event will fire during creation of a BrowserView.
 ```js
 //This response has the following shape:
 {
     name: "BrowserViewName" // the name of the BrowserView
-    target: {uuid: 'windowUuid', name: 'windowName'}, // the window this BrowserView was attached to
+    target: {uuid: 'windowUuid', name: 'windowName'}, // the window this BrowserView is attached to
     topic: "view",
-    type: "destroyed",
+    type: "shown",
     uuid: "454C7F31-A915-4EA2-83F2-CFA655453C52" // the uuid of the BrowserView
 }
 ```

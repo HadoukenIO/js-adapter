@@ -81,6 +81,7 @@ finWindow.removeAllListeners("bounds-changed");
 * closed
 * closing
 * crashed
+* did-change-theme-color
 * disabled-movement-bounds-changed
 * disabled-movement-bounds-changing
 * embedded
@@ -98,6 +99,8 @@ finWindow.removeAllListeners("bounds-changed");
 * minimized
 * options-changed
 * navigation-rejected
+* page-favicon-updated
+* page-title-updated
 * performance-report
 * preload-scripts-state-changed
 * preload-scripts-state-changing
@@ -261,6 +264,18 @@ Generated when a window has crashed.
                       //  "out-of-memory"         process died due to oom
     topic: "window",
     type: "crashed",
+    uuid: "AppUUID" //(string) the UUID of the application the window belongs to.
+}
+```
+
+#### did-change-theme-color
+Emitted when a page's theme color changes. This is usually due to encountering a meta tag: <meta name='theme-color' content='#ff0000'>
+```js
+{
+    color: "#FF0000",
+    name: "windowOne", //the name of the window.
+    topic: "window",
+    type: "did-change-theme-color",
     uuid: "AppUUID" //(string) the UUID of the application the window belongs to.
 }
 ```
@@ -572,6 +587,33 @@ Generated when window navigation is rejected as per ContentNavigation whitelist/
     topic: "window",
     type: "navigation-rejected",
     url: "http://blocked-content.url",
+    uuid: "AppUUID" //(string) the UUID of the application the window belongs to.
+}
+```
+
+#### page-favicon-updated
+Emitted when page receives favicon urls.
+```js
+{
+    favicons: [
+        "http://www.openfin.co/favicon.ico"
+    ],
+    name: "windowOne", //the name of the window.
+    topic: "window",
+    type: "page-favicon-updated",
+    uuid: "AppUUID" //(string) the UUID of the application the window belongs to.
+}
+```
+
+#### page-title-updated
+Fired when page title is set during navigation. explicitSet is false when title is synthesized from file url.
+```js
+{
+    explicitSet: true, // false when title is synthesized from file url.
+    name: "windowOne", //the name of the window.
+    title: "testTitle",
+    topic: "window",
+    type: "page-title-updated",
     uuid: "AppUUID" //(string) the UUID of the application the window belongs to.
 }
 ```
