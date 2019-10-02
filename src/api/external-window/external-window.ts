@@ -51,7 +51,7 @@ export class ExternalWindow extends EmitterBase<ExternalWindowEvents> {
      * Brings the external window to the front of the window stack.
      * @return {Promise.<void>}
      * @experimental
-     * @tutorial Window.bringToFront
+     * @tutorial ExternalWindow.bringToFront
      */
     public async bringToFront(): Promise<void> {
         await this.wire.sendAction('bring-external-window-to-front', this.identity);
@@ -61,7 +61,7 @@ export class ExternalWindow extends EmitterBase<ExternalWindowEvents> {
      * Closes the external window.
      * @return {Promise.<void>}
      * @experimental
-     * @tutorial Window.close
+     * @tutorial ExternalWindow.close
     */
     public async close(): Promise<void> {
         await this.wire.sendAction('close-external-window', this.identity);
@@ -72,7 +72,7 @@ export class ExternalWindow extends EmitterBase<ExternalWindowEvents> {
      * Flashes the external window’s frame and taskbar icon until stopFlashing is called.
      * @return {Promise.<void>}
      * @experimental
-     * @tutorial Window.flash
+     * @tutorial ExternalWindow.flash
      */
     public async flash(): Promise<void> {
         await this.wire.sendAction('flash-external-window', this.identity);
@@ -83,7 +83,7 @@ export class ExternalWindow extends EmitterBase<ExternalWindowEvents> {
      * @return {Promise.<void>}
      * @emits ExternalWindow#focused
      * @experimental
-     * @tutorial Window.focus
+     * @tutorial ExternalWindow.focus
      */
     public async focus(): Promise<void> {
         await this.wire.sendAction('focus-external-window', this.identity);
@@ -93,7 +93,7 @@ export class ExternalWindow extends EmitterBase<ExternalWindowEvents> {
      * Gets the current bounds (top, left, etc.) of the external window.
      * @return {Promise.<Bounds>}
      * @experimental
-     * @tutorial Window.getBounds
+     * @tutorial ExternalWindow.getBounds
     */
     public async getBounds(): Promise<Bounds> {
         const { payload: { data } } = await this.wire.sendAction('get-external-window-bounds', this.identity);
@@ -101,12 +101,13 @@ export class ExternalWindow extends EmitterBase<ExternalWindowEvents> {
     }
 
     /**
+     * NOTE: Group methods on `ExternalWindow`s are currently unstable. This functionality will be addressed in a future update.
      * Retrieves an array containing wrapped external windows that are grouped
      * with this external window. If a window is not in a group an empty array
      * is returned.
      * @return {Promise.<Array<ExternalWindow|_Window>>}
      * @experimental
-     * @tutorial Window.getGroup
+     * @tutorial ExternalWindow.getGroup
      */
     public async getGroup(): Promise<Array<ExternalWindow | _Window>> {
         const { payload: { data } } = await this.wire.sendAction('get-external-window-group', this.identity);
@@ -128,7 +129,7 @@ export class ExternalWindow extends EmitterBase<ExternalWindowEvents> {
      * Gets an information object for the window.
      * @return {Promise.<any>}
      * @experimental
-     * @tutorial Window.getInfo
+     * @tutorial ExternalWindow.getInfo
      */
     public async getInfo(): Promise<any> {
         const { payload: { data } } = await this.wire.sendAction('get-external-window-info', this.identity);
@@ -139,7 +140,7 @@ export class ExternalWindow extends EmitterBase<ExternalWindowEvents> {
      * Gets an external window's options.
      * @return {Promise.<any>}
      * @experimental
-     * @tutorial Window.getOptions
+     * @tutorial ExternalWindow.getOptions
      */
     public async getOptions(): Promise<any> {
         const { payload: { data } } = await this.wire.sendAction('get-external-window-options', this.identity);
@@ -147,11 +148,11 @@ export class ExternalWindow extends EmitterBase<ExternalWindowEvents> {
     }
 
     /**
-     * Gets the current state ("minimized", "maximized", or "restored") of
+     * Gets the current state ("minimized", "maximized", or "normal") of
      * the external window.
      * @return {Promise.<string>}
      * @experimental
-     * @tutorial Window.getState
+     * @tutorial ExternalWindow.getState
      */
     public async getState(): Promise<string> {
         const { payload: { data } } = await this.wire.sendAction('get-external-window-state', this.identity);
@@ -162,7 +163,7 @@ export class ExternalWindow extends EmitterBase<ExternalWindowEvents> {
      * Hides the external window.
      * @return {Promise.<void>}
      * @experimental
-     * @tutorial Window.hide
+     * @tutorial ExternalWindow.hide
      */
     public async hide(): Promise<void> {
         await this.wire.sendAction('hide-external-window', this.identity);
@@ -172,7 +173,7 @@ export class ExternalWindow extends EmitterBase<ExternalWindowEvents> {
      * Determines if the external window is currently showing.
      * @return {Promise.<boolean>}
      * @experimental
-     * @tutorial Window.isShowing
+     * @tutorial ExternalWindow.isShowing
      */
     public async isShowing(): Promise<boolean> {
         const { payload: { data } } = await this.wire.sendAction('is-external-window-showing', this.identity);
@@ -180,11 +181,12 @@ export class ExternalWindow extends EmitterBase<ExternalWindowEvents> {
     }
 
     /**
+     * NOTE: Group methods on `ExternalWindow`s are currently unstable. This functionality will be addressed in a future update.
      * Joins the same window group as the specified window. Currently unsupported (method will nack).
      * @param { _Window | ExternalWindow } target The window whose group is to be joined
      * @return {Promise.<void>}
      * @experimental
-     * @tutorial Window.joinGroup
+     * @tutorial ExternalWindow.joinGroup
      */
     public async joinGroup(target: ExternalWindow | _Window): Promise<void> {
         const { identity: { uuid, name } } = target;
@@ -194,11 +196,12 @@ export class ExternalWindow extends EmitterBase<ExternalWindowEvents> {
     }
 
     /**
+     * NOTE: Group methods on `ExternalWindow`s are currently unstable. This functionality will be addressed in a future update.
      * Leaves the current window group so that the window can be moved
      * independently of those in the group.
      * @return {Promise.<void>}
      * @experimental
-     * @tutorial Window.leaveGroup
+     * @tutorial ExternalWindow.leaveGroup
      */
     public async leaveGroup(): Promise<void> {
         await this.wire.sendAction('leave-external-window-group', this.identity);
@@ -208,18 +211,19 @@ export class ExternalWindow extends EmitterBase<ExternalWindowEvents> {
      * Maximizes the external window.
      * @return {Promise.<void>}
      * @experimental
-     * @tutorial Window.maximize
+     * @tutorial ExternalWindow.maximize
      */
     public async maximize(): Promise<void> {
         await this.wire.sendAction('maximize-external-window', this.identity);
     }
 
     /**
+     * NOTE: Group methods on `ExternalWindow`s are currently unstable. This functionality will be addressed in a future update.
      * Merges the instance's window group with the same window group as the specified window
      * @param { _Window | ExternalWindow } target The window whose group is to be merged with
      * @return {Promise.<void>}
      * @experimental
-     * @tutorial Window.mergeGroups
+     * @tutorial ExternalWindow.mergeGroups
      */
     public async mergeGroups(target: ExternalWindow | _Window): Promise<void> {
         const { identity: { uuid, name } } = target;
@@ -232,7 +236,7 @@ export class ExternalWindow extends EmitterBase<ExternalWindowEvents> {
      * Minimizes the external window.
      * @return {Promise.<void>}
      * @experimental
-     * @tutorial Window.minimize
+     * @tutorial ExternalWindow.minimize
      */
     public async minimize(): Promise<void> {
         await this.wire.sendAction('minimize-external-window', this.identity);
@@ -244,7 +248,7 @@ export class ExternalWindow extends EmitterBase<ExternalWindowEvents> {
      * @param { number } deltaTop The change in the top position of the window
      * @return {Promise.<void>}
      * @experimental
-     * @tutorial Window.moveBy
+     * @tutorial ExternalWindow.moveBy
      */
     public async moveBy(deltaLeft: number, deltaTop: number): Promise<void> {
         const payload = { ...this.identity, deltaLeft, deltaTop };
@@ -257,7 +261,7 @@ export class ExternalWindow extends EmitterBase<ExternalWindowEvents> {
      * @param { number } top The top position of the window
      * @return {Promise.<void>}
      * @experimental
-     * @tutorial Window.moveTo
+     * @tutorial ExternalWindow.moveTo
      */
     public async moveTo(left: number, top: number): Promise<void> {
         const payload = { ...this.identity, left, top };
@@ -273,7 +277,7 @@ export class ExternalWindow extends EmitterBase<ExternalWindowEvents> {
      * If undefined, the default is "top-left".
      * @return {Promise.<void>}
      * @experimental
-     * @tutorial Window.resizeBy
+     * @tutorial ExternalWindow.resizeBy
      */
     public async resizeBy(deltaWidth: number, deltaHeight: number, anchor: AnchorType): Promise<void> {
         const payload = {
@@ -294,7 +298,7 @@ export class ExternalWindow extends EmitterBase<ExternalWindowEvents> {
      * If undefined, the default is "top-left".
      * @return {Promise.<void>}
      * @experimental
-     * @tutorial Window.resizeTo
+     * @tutorial ExternalWindow.resizeTo
      */
     public async resizeTo(width: number, height: number, anchor: AnchorType): Promise<void> {
         const payload = {
@@ -310,18 +314,18 @@ export class ExternalWindow extends EmitterBase<ExternalWindowEvents> {
      * Restores the external window to its normal state (i.e. unminimized, unmaximized).
      * @return {Promise.<void>}
      * @experimental
-     * @tutorial Window.restore
+     * @tutorial ExternalWindow.restore
      */
     public async restore(): Promise<void> {
         await this.wire.sendAction('restore-external-window', this.identity);
     }
 
     /**
-     * Will bring the external window to the front of the entire stack and
-     * give it focus.
+     * Brings the external window to the front of the entire stack and
+     * gives it focus.
      * @return {Promise.<void>}
      * @experimental
-     * @tutorial Window.setAsForeground
+     * @tutorial ExternalWindow.setAsForeground
      */
     public async setAsForeground(): Promise<void> {
         await this.wire.sendAction('set-external-window-as-foreground', this.identity);
@@ -332,7 +336,7 @@ export class ExternalWindow extends EmitterBase<ExternalWindowEvents> {
      * @property { Bounds } bounds
      * @return {Promise.<void>}
      * @experimental
-     * @tutorial Window.setBounds
+     * @tutorial ExternalWindow.setBounds
      */
     public async setBounds(bounds: Bounds): Promise<void> {
         const payload = { ...this.identity, ...bounds };
@@ -343,7 +347,7 @@ export class ExternalWindow extends EmitterBase<ExternalWindowEvents> {
      * Shows the external window if it is hidden.
      * @return {Promise.<void>}
      * @experimental
-     * @tutorial Window.show
+     * @tutorial ExternalWindow.show
      */
     public async show(): Promise<void> {
         await this.wire.sendAction('show-external-window', this.identity);
@@ -357,7 +361,7 @@ export class ExternalWindow extends EmitterBase<ExternalWindowEvents> {
      * @param { number } top The top position of the window
      * @return {Promise.<void>}
      * @experimental
-     * @tutorial Window.showAt
+     * @tutorial ExternalWindow.showAt
      */
     public async showAt(left: number, top: number): Promise<void> {
         const payload = {
@@ -372,18 +376,19 @@ export class ExternalWindow extends EmitterBase<ExternalWindowEvents> {
      * Stops the taskbar icon from flashing.
      * @return {Promise.<void>}
      * @experimental
-     * @tutorial Window.stopFlashing
+     * @tutorial ExternalWindow.stopFlashing
      */
     public async stopFlashing(): Promise<void> {
         await this.wire.sendAction('stop-external-window-flashing', this.identity);
     }
 
     /**
+     * NOTE: Group methods on `ExternalWindow`s are currently unstable. This functionality will be addressed in a future update.
      * Updates the external window using the passed options
      * @param {*} options Changes an external window's options
      * @return {Promise.<void>}
      * @experimental
-     * @tutorial Window.updateOptions
+     * @tutorial ExternalWindow.updateOptions
      */
     public async updateOptions(options: any): Promise<void> {
         const payload = { ...this.identity, options };

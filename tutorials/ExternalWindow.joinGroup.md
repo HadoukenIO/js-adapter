@@ -1,0 +1,1 @@
+Group methods on `ExternalWindow`s are currently unstable. This functionality will be addressed in a future update.
