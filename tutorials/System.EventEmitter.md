@@ -81,6 +81,7 @@ fin.System.removeAllListeners("monitor-info-changed");
 * window-closing
 * window-crashed
 * window-created
+* window-did-change-theme-color (see {@tutorial Window.EventEmitter})
 * window-disabled-movement-bounds-changed (see {@tutorial Window.EventEmitter})
 * window-disabled-movement-bounds-changing (see {@tutorial Window.EventEmitter})
 * window-embedded (see {@tutorial Window.EventEmitter})
@@ -100,6 +101,8 @@ fin.System.removeAllListeners("monitor-info-changed");
 * window-navigation-rejected (see {@tutorial Window.EventEmitter})
 * window-not-responding (see {@tutorial Window.EventEmitter})
 * window-performance-report (see {@tutorial Window.EventEmitter})
+* window-page-favicon-updated (see {@tutorial Window.EventEmitter})
+* window-page-title-updated (see {@tutorial Window.EventEmitter})
 * window-preload-scripts-state-changed (see {@tutorial Window.EventEmitter})
 * window-preload-scripts-state-changing (see {@tutorial Window.EventEmitter})
 * window-reloaded (see {@tutorial Window.EventEmitter})
@@ -109,13 +112,19 @@ fin.System.removeAllListeners("monitor-info-changed");
 * window-start-load (see {@tutorial Window.EventEmitter})
 * window-user-movement-disabled (see {@tutorial Window.EventEmitter})
 * window-user-movement-enabled (see {@tutorial Window.EventEmitter})
+* window-view-attached (see {@tutorial Window.EventEmitter})
+* window-view-detached (see {@tutorial Window.EventEmitter})
 * window-will-move (see {@tutorial Window.EventEmitter})
 * window-will-resize (see {@tutorial Window.EventEmitter})
-* view-created (see {@tutorial BrowserView.EventEmitter})
 * view-attached (see {@tutorial BrowserView.EventEmitter})
-* view-shown (see {@tutorial BrowserView.EventEmitter})
-* view-hidden (see {@tutorial BrowserView.EventEmitter})
+* view-crashed (see {@tutorial BrowserView.EventEmitter})
+* view-created (see {@tutorial BrowserView.EventEmitter})
+* view-did-change-theme-color (see {@tutorial BrowserView.EventEmitter})
 * view-destroyed (see {@tutorial BrowserView.EventEmitter})
+* view-hidden (see {@tutorial BrowserView.EventEmitter})
+* view-page-favicon-updated (see {@tutorial BrowserView.EventEmitter})
+* view-page-title-updated (see {@tutorial BrowserView.EventEmitter})
+* view-shown (see {@tutorial BrowserView.EventEmitter})
 
 ### System Events
 

@@ -53,11 +53,25 @@ export interface PropagatedApplicationEventMapping<Topic = string, Type = string
     'application-started': ApplicationEvent<Topic, Type>;
     'application-tray-icon-clicked': TrayIconClicked<Topic, Type>;
     'window-created': WindowEvent<Topic, Type>;
+    'window-did-change-theme-color': WindowEvent<Topic, Type>;
     'window-end-load': WindowEndLoadEvent<Topic, Type>;
     'window-not-responding': WindowEvent<Topic, Type>;
+    'window-page-favicon-updated': WindowEvent<Topic, Type>;
+    'window-page-title-updated': WindowEvent<Topic, Type>;
     'window-performance-report': WindowPerformanceReport<Topic, Type>;
     'window-responding': WindowEvent<Topic, Type>;
+    'window-view-attached': WindowEvent<Topic, Type>;
+    'window-view-detached': WindowEvent<Topic, Type>;
     'window-start-load': WindowEvent<Topic, Type>;
+    'view-attached': WindowEvent<Topic, Type>;
+    'view-crashed': CrashedEvent & WindowEvent<Topic, Type>;
+    'view-created': WindowEvent<Topic, Type>;
+    'view-did-change-theme-color': WindowEvent<Topic, Type>;
+    'view-destroyed': WindowEvent<Topic, Type>;
+    'view-hidden': WindowEvent<Topic, Type>;
+    'view-page-favicon-updated': WindowEvent<Topic, Type>;
+    'view-page-title-updated': WindowEvent<Topic, Type>;
+    'view-shown': WindowEvent<Topic, Type>;
 }
 
 export type ApplicationEvents = PropagatedWindowEvents<'application'>
