@@ -1092,6 +1092,7 @@ export default class System extends EmitterBase<SystemEvents> {
      * Note: This method is restricted by default and must be enabled via
      * <a href="https://developers.openfin.co/docs/api-security">API security settings</a>.
      * @return {Promise.Array.<Identity>}
+     * @tutorial System.getAllExternalWindows
      * @experimental
      */
     public getAllExternalWindows(): Promise<Array<Identity>> {
