@@ -9,7 +9,7 @@ import { EntityType } from '../frame/frame';
 import { ExternalWindow } from '../external-window/external-window';
 import { validateIdentity } from '../../util/validate';
 import { WebContents } from '../webcontents/webcontents';
-import { BrowserView } from '../browserview/browserview';
+import { View } from '../view/view';
 
 /**
  * @lends Window
@@ -750,12 +750,12 @@ export class _Window extends WebContents<WindowEvents> {
     /**
     * Retrieves window's attached views.
     * @experimental
-    * @return {Promise.Array.<BrowserView>}
+    * @return {Promise.Array.<View>}
     * @tutorial Window.getCurrentViews
     */
-    public async getCurrentViews(): Promise<Array<BrowserView>> {
+    public async getCurrentViews(): Promise<Array<View>> {
         const { payload } = await this.wire.sendAction<{ data: Identity[] }>('window-get-views', this.identity);
-        return payload.data.map(id => new BrowserView(this.wire, id));
+        return payload.data.map(id => new View(this.wire, id));
     }
 
     /*

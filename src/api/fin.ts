@@ -11,7 +11,7 @@ import ExternalWindow from './external-window/external-window';
 import _FrameModule from './frame/frame';
 import GlobalHotkey from './global-hotkey';
 import { Identity } from '../identity';
-import { BrowserViewModule } from './browserview/browserview';
+import { ViewModule } from './view/view';
 
 export default class Fin extends EventEmitter {
     private  wire: Transport;
@@ -26,7 +26,8 @@ export default class Fin extends EventEmitter {
     public ExternalWindow: ExternalWindow;
     public Frame: _FrameModule;
     public GlobalHotkey: GlobalHotkey;
-    public BrowserView: BrowserViewModule;
+    public View: ViewModule;
+    private BrowserView: ViewModule;
 
     get me(): Identity {
         return this.wire.me;
@@ -45,7 +46,8 @@ export default class Fin extends EventEmitter {
         this.ExternalWindow = new ExternalWindow(wire);
         this.Frame = new _FrameModule(wire);
         this.GlobalHotkey = new GlobalHotkey(wire);
-        this.BrowserView = new BrowserViewModule(wire);
+        this.View = new ViewModule(wire);
+        this.BrowserView = this.View;
 
         //Handle disconnect events
         wire.on('disconnected', () => {

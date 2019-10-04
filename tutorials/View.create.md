@@ -1,9 +1,9 @@
-Creates a new BrowserView.
+Creates a new View.
 # Example
 ```js
-async function createBrowserView() {
+async function createView() {
     const me = await fin.Window.getCurrent();
-    return fin.BrowserView.create({ 
+    return fin.View.create({ 
         url: 'https://google.com', 
         name: 'browserViewNameCreate', 
         target: me.identity, 
@@ -11,5 +11,5 @@ async function createBrowserView() {
     });
 }
 
-createBrowserView().then(() => console.log('BrowserView created.')).catch(err => console.log(err));
+createView().then(() => console.log('View created.')).catch(err => console.log(err));
 ```

@@ -778,12 +778,12 @@ Generated when a window has a view attached to it.
 //This response has the following shape:
 {
     name: "windowOne" // the name of this Window
-    previousTarget: {uuid: 'previousWindowUuid', name: 'previousWindowName'}, // the identity of the window this BrowserView is being detached from
-    target: {uuid: 'windowUuid', name: 'windowOne'}, // the identity of the window this BrowserView is attaching to
+    previousTarget: {uuid: 'previousWindowUuid', name: 'previousWindowName'}, // the identity of the window this View is being detached from
+    target: {uuid: 'windowUuid', name: 'windowOne'}, // the identity of the window this View is attaching to
     topic: "window",
     type: "view-attached",
     uuid: "AppUUID" // the UUID of the application this window belongs to.
-    viewIdentity: {uuid: 'viewUuid', name: 'viewName'}, // the identity of the BrowserView
+    viewIdentity: {uuid: 'viewUuid', name: 'viewName'}, // the identity of the View
 }
 ```
 
@@ -793,12 +793,12 @@ Generated when a window has a view detached from it.
 //This response has the following shape:
 {
     name: "windowOne" // the name of this Window
-    previousTarget: {uuid: 'previousWindowUuid', name: 'previousWindowName'}, // the identity of the window this BrowserView is being detached from
-    target: {uuid: 'windowUuid', name: 'windowOne'}, // the identity of the window this BrowserView is attaching to
+    previousTarget: {uuid: 'previousWindowUuid', name: 'previousWindowName'}, // the identity of the window this View is being detached from
+    target: {uuid: 'windowUuid', name: 'windowOne'}, // the identity of the window this View is attaching to
     topic: "window",
     type: "view-attached",
     uuid: "AppUUID" // the UUID of the application this window belongs to.
-    viewIdentity: {uuid: 'viewUuid', name: 'viewName'}, // the identity of the BrowserView
+    viewIdentity: {uuid: 'viewUuid', name: 'viewName'}, // the identity of the View
 }
 ```
 

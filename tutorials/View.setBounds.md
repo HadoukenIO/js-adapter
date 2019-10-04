@@ -1,10 +1,10 @@
-Shows the BrowserView on a window.
+Shows the View on a window.
 # Example
 ```js
 let browserView;
-async function createBrowserView() {
+async function createView() {
     const me = await fin.Window.getCurrent();
-    return fin.BrowserView.create({ 
+    return fin.View.create({ 
         url: 'https://google.com', 
         name: 'browserViewNameSetBounds', 
         target: me.identity, 
@@ -12,11 +12,11 @@ async function createBrowserView() {
     });
 }
 
-async function setBrowserViewBounds() {
-    await createBrowserView();
-    console.log('BrowserView created.');
+async function setViewBounds() {
+    await createView();
+    console.log('View created.');
     const me = await fin.Window.getCurrent();
-    browserView = fin.BrowserView.wrapSync({ uuid: me.identity.uuid, name: 'browserViewNameSetBounds' });
+    browserView = fin.View.wrapSync({ uuid: me.identity.uuid, name: 'browserViewNameSetBounds' });
     await browserView.setBounds({
         x: 100,
         y: 100,
@@ -25,7 +25,7 @@ async function setBrowserViewBounds() {
     });
 }
 
-setBrowserViewBounds()
-    .then(() => console.log('BrowserView set to new bounds.'))
+setViewBounds()
+    .then(() => console.log('View set to new bounds.'))
     .catch(err => console.log(err));
 ```

@@ -1,10 +1,10 @@
-Attaches a BrowserView to a window.
+Attaches a View to a window.
 # Example
 ```js
 let browserView;
-async function createBrowserView() {
+async function createView() {
     const me = await fin.Window.getCurrent();
-    return fin.BrowserView.create({ 
+    return fin.View.create({ 
         url: 'https://google.com', 
         name: 'browserViewNameAttach', 
         target: me.identity, 
@@ -12,11 +12,11 @@ async function createBrowserView() {
     });
 }
 
-async function attachBrowserView() {
-    await createBrowserView();
-    console.log('BrowserView created.');
+async function attachView() {
+    await createView();
+    console.log('View created.');
     const me = await fin.Window.getCurrent();
-    browserView = fin.BrowserView.wrapSync({ uuid: me.identity.uuid, name: 'browserViewNameAttach' });
+    browserView = fin.View.wrapSync({ uuid: me.identity.uuid, name: 'browserViewNameAttach' });
     const winOption = {
         name:'winOptionName',
         defaultWidth: 300,
@@ -29,7 +29,7 @@ async function attachBrowserView() {
     browserView.attach(newWindow.identity);
 }
 
-attachBrowserView()
-    .then(() => console.log('BrowserView attached to new window.'))
+attachView()
+    .then(() => console.log('View attached to new window.'))
     .catch(err => console.log(err));
 ```

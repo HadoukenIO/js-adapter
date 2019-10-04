@@ -8,7 +8,7 @@ import { Bounds } from '../../shapes';
 import { ApplicationEvents } from '../events/application';
 import { ApplicationOption } from './applicationOption';
 import { validateIdentity } from '../../util/validate';
-import { BrowserView } from '../browserview/browserview';
+import { View } from '../view/view';
 
 export interface TrayIconClickReply extends Point, Reply<'application', 'tray-icon-clicked'> {
     button: number;
@@ -468,12 +468,12 @@ export class Application extends EmitterBase<ApplicationEvents> {
     /**
     * Retrieves current application's views.
     * @experimental
-    * @return {Promise.Array.<BrowserView>}
+    * @return {Promise.Array.<View>}
     * @tutorial Application.getViews
     */
-    public async getViews(): Promise<Array<BrowserView>> {
+    public async getViews(): Promise<Array<View>> {
         const {payload} = await this.wire.sendAction<{ data: Identity[] }>('application-get-views', this.identity);
-        return payload.data.map(id => new BrowserView(this.wire, id));
+        return payload.data.map(id => new View(this.wire, id));
     }
     /**
      * Returns the current zoom level of the application.

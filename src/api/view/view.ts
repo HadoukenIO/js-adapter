@@ -2,7 +2,7 @@ import { WebContents } from '../webcontents/webcontents';
 import Transport from '../../transport/transport';
 import { Identity } from '../../identity';
 import { Base } from '../base';
-import { ViewEvents } from '../events/browserview';
+import { ViewEvents } from '../events/view';
 import { _Window } from '../window/window';
 export interface AutoResizeOptions {
     /**
@@ -26,10 +26,10 @@ export interface AutoResizeOptions {
      */
     vertical: boolean;
 }
-export interface BrowserViewOptions {
+export interface ViewOptions {
     autoResize?: AutoResizeOptions;
 }
-export interface BrowserViewCreationOptions extends BrowserViewOptions {
+export interface ViewCreationOptions extends ViewOptions {
     name: string;
     url: string;
     target: Identity;
@@ -41,18 +41,18 @@ export interface BrowserViewCreationOptions extends BrowserViewOptions {
     };
 }
 
-export class BrowserViewModule extends Base {
-    public async create(options: BrowserViewCreationOptions) {
+export class ViewModule extends Base {
+    public async create(options: ViewCreationOptions) {
         const uuid = this.wire.me.uuid;
         await this.wire.sendAction('create-browser-view' , {...options, uuid});
         return this.wrapSync({uuid, name: options.name});
     }
     public wrapSync(identity: Identity) {
-        return new BrowserView(this.wire, identity);
+        return new View(this.wire, identity);
     }
 }
 
-export class BrowserView extends WebContents<ViewEvents> {
+export class View extends WebContents<ViewEvents> {
     constructor(wire: Transport, public identity: Identity) {
         super(wire, identity, 'view');
         this.topic = 'view';
@@ -64,7 +64,7 @@ export class BrowserView extends WebContents<ViewEvents> {
     /**
     * Destroys the current view
     * @return {Promise.<void>}
-    * @tutorial BrowserView.destroy
+    * @tutorial View.destroy
     */
     public destroy = async () => {
         await this.wire.sendAction('destroy-browser-view', { ...this.identity });
@@ -86,7 +86,7 @@ export class BrowserView extends WebContents<ViewEvents> {
     * Retrieves the window the view is currently attached to.
     * @experimental
     * @return {Promise.<_Window>}
-    * @tutorial BrowserView.getCurrentWindow
+    * @tutorial View.getCurrentWindow
     */
     public getCurrentWindow = async () => {
         const { payload: { data } } = await this.wire.sendAction<{data: Identity}>('get-view-window', {...this.identity});

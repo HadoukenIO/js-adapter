@@ -2,7 +2,7 @@ import { WindowEvent, BaseEventMap, ApplicationEvent } from './base';
 import { WindowAlertRequestedEvent, WindowAuthRequestedEvent, WindowEndLoadEvent,
     PropagatedWindowEvents, WindowPerformanceReport } from './window';
 import { Bounds } from '../../shapes';
-import { PropagatedViewEvents } from './browserview';
+import { PropagatedViewEvents } from './view';
 
 export interface CrashedEvent {
     reason: 'normal-termination' | 'abnormal-termination' | 'killed' | 'crashed' | 'still-running' | 'launch-failed' | 'out-of-memory';

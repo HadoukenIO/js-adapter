@@ -2,7 +2,7 @@ import { BaseEvent, ApplicationEvent, BaseEventMap } from './base';
 import { MonitorInfo } from '../system/monitor';
 import { PropagatedWindowEvents } from './window';
 import { PropagatedApplicationEvents } from './application';
-import { PropagatedViewEvents } from './browserview';
+import { PropagatedViewEvents } from './view';
 
 export interface IdleEvent<Topic, Type> extends BaseEvent<Topic, Type> {
     elapsedTime: number;
