@@ -39,13 +39,14 @@ export interface BrowserViewCreationOptions extends BrowserViewOptions {
         width: number;
         height: number;
     };
+    parent: Identity;
 }
 
 export class BrowserViewModule extends Base {
     public async create(options: BrowserViewCreationOptions) {
         const uuid = this.wire.me.uuid;
-        await this.wire.sendAction('create-browser-view' , {...options, uuid});
-        return this.wrapSync({uuid, name: options.name});
+        await this.wire.sendAction('create-browser-view', { ...options, uuid });
+        return this.wrapSync({ uuid, name: options.name });
     }
     public wrapSync(identity: Identity) {
         return new BrowserView(this.wire, identity);
@@ -58,7 +59,7 @@ export class BrowserView extends WebContents<ViewEvents> {
         this.topic = 'view';
     }
     public attach = async (target: Identity) => {
-        await this.wire.sendAction('attach-browser-view', {target, ...this.identity});
+        await this.wire.sendAction('attach-browser-view', { target, ...this.identity });
     }
 
     /**
@@ -76,10 +77,10 @@ export class BrowserView extends WebContents<ViewEvents> {
         await this.wire.sendAction('hide-browser-view', { ...this.identity });
     }
     public setBounds = async (bounds: any) => {
-        await this.wire.sendAction('set-browser-view-bounds', {bounds, ...this.identity});
+        await this.wire.sendAction('set-browser-view-bounds', { bounds, ...this.identity });
     }
     public getInfo = async () => {
-        const ack = await this.wire.sendAction('get-browser-view-info', {...this.identity});
+        const ack = await this.wire.sendAction('get-browser-view-info', { ...this.identity });
         return ack.payload.data;
     }
     /**
@@ -89,7 +90,7 @@ export class BrowserView extends WebContents<ViewEvents> {
     * @tutorial BrowserView.getCurrentWindow
     */
     public getCurrentWindow = async () => {
-        const { payload: { data } } = await this.wire.sendAction<{data: Identity}>('get-view-window', {...this.identity});
+        const { payload: { data } } = await this.wire.sendAction<{ data: Identity }>('get-view-window', { ...this.identity });
         return new _Window(this.wire, data);
     }
 }
