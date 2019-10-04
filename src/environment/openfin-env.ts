@@ -36,8 +36,9 @@ export default class OpenFinEnvironment implements Environment {
                 return reject(new Error('Child window uuid must match the parent window\'s uuid: ' + parentUuid));
             }
 
-            if (this.isWindowExists(opt.uuid, opt.name)) {
-                return reject(new Error('Trying to create a window that already exists'));
+            if (fin.__internal_.entityExists(opt.uuid, opt.name)) {
+                return reject(new Error('Trying to create a Window with name-uuid combination already in use - ' +
+                    JSON.stringify({ name: opt.name, uuid: opt.uuid })));
             }
 
             // we should register the window name with the core asap to prevent
