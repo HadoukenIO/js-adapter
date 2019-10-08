@@ -26,4 +26,5 @@ export interface WebContentsEventMapping<Topic = string, Type = string> extends 
     'page-favicon-updated': WindowEvent<Topic, Type>;
     'page-title-updated': WindowEvent<Topic, Type>;
     'crashed': CrashedEvent & WindowEvent<Topic, Type>;
+    'found-in-page': WindowEvent<Topic, Type>;
 }
