@@ -429,7 +429,7 @@ describe('Window.', function() {
         it('Fulfilled', async () => {
             testWindow.addListener('found-in-page', (e) => {
                 assert(e.name === 'found-in-page');
-            })
+            });
 
             testWindow.findInPage('a');
         });
