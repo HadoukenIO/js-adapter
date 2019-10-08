@@ -425,6 +425,16 @@ describe('Window.', function() {
         });
     });
 
+    describe('findInPage()', () => {
+        it('Fulfilled', async () => {
+            testWindow.addListener('found-in-page', (e) => {
+                assert(e.name === 'found-in-page');
+            })
+
+            testWindow.findInPage('a');
+        });
+    });
+
     describe('navigate()', () => {
         it('Fulfilled', () => testWindow.navigate('https://www.google.com').then(() => assert(true)));
     });
