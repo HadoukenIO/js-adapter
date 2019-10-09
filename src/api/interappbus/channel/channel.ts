@@ -1,5 +1,5 @@
 import { Identity } from '../../../identity';
-import Transport, { Message } from '../../../transport/transport';
+import Transport from '../../../transport/transport';
 
 const idOrResult = (func: (...args: any[]) => any) => (...args: any[] ) => {
     const res = func(...args);
@@ -34,19 +34,19 @@ export class ChannelBase {
     private postAction: (...args: any[]) => any;
     private errorMiddleware: (...args: any[]) => any;
     private defaultSet: boolean;
-    protected send: (to: Identity, action: string, payload: any) => Promise<Message<void>>;
     protected providerIdentity: ProviderIdentity;
-    protected sendRaw: Transport['sendAction'];
 
-    constructor (providerIdentity: ProviderIdentity, send: Transport['sendAction']) {
+    constructor (providerIdentity: ProviderIdentity, send: Transport['sendAction'], protecteds: any = {}) {
         this.defaultSet = false;
         this.providerIdentity = providerIdentity;
         this.subscriptions = new Map<string, () => any>();
         this.defaultAction = () => {
             throw new Error('No action registered');
         };
-        this.sendRaw = send;
-        this.send = async (to: Identity, action: string, payload: any) => {
+
+        // below two functions will be used by subclass. This is to avoid mistakenly attempt to use them from client side.
+        protecteds.sendRaw = send;
+        protecteds.send = async (to: Identity, action: string, payload: any) => {
             const raw = await send('send-channel-message', { ...to, providerIdentity: this.providerIdentity, action, payload })
             .catch(reason => {
                 throw new Error(reason.message);

@@ -5,20 +5,21 @@ import { Identity } from '../../../main';
 export type ConnectionListener = (identity: Identity, connectionMessage?: any) => any;
 export type DisconnectionListener = (identity: Identity) => any;
 
+const _supers: any = {};
 export class ChannelProvider extends ChannelBase {
     private connectListener: ConnectionListener;
     private disconnectListener: ConnectionListener;
     public connections: Identity[];
 
     constructor(providerIdentity: ProviderIdentity, send: Transport['sendAction']) {
-        super(providerIdentity, send);
+        super(providerIdentity, send, _supers);
         this.connectListener = () => undefined;
         this.disconnectListener = () => undefined;
         this.connections = [];
     }
 
     public dispatch(to: Identity, action: string, payload: any): Promise<any> {
-        return this.send(to, action, payload);
+        return _supers.send(to, action, payload);
     }
 
     public async processConnection(senderId: Identity, payload: any) {
@@ -27,7 +28,7 @@ export class ChannelProvider extends ChannelBase {
     }
 
     public publish(action: string, payload: any): Promise<any>[] {
-        return this.connections.map(to => this.send(to, action, payload));
+        return this.connections.map(to => _supers.send(to, action, payload));
     }
 
     public onConnection(listener: ConnectionListener): void {
@@ -40,7 +41,7 @@ export class ChannelProvider extends ChannelBase {
 
     public async destroy(): Promise<void> {
         const { channelName } = this.providerIdentity;
-        await this.sendRaw('destroy-channel', { channelName });
+        await _supers.sendRaw('destroy-channel', { channelName });
         const { channelId } = this.providerIdentity;
         this.removeChannel(channelId);
     }
