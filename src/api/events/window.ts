@@ -2,6 +2,7 @@ import { CrashedEvent } from './application';
 import {WindowEvent, BaseEventMap} from './base';
 import { WindowOptionDiff } from '../window/windowOption';
 import { WebContentsEventMapping, WindowResourceLoadFailedEvent, WindowResourceResponseReceivedEvent } from './webcontents';
+import { PropagatedViewEventMapping } from './browserview';
 
 export type SpecificWindowEvent<Type> = WindowEvent<'window', Type>;
 
@@ -162,8 +163,6 @@ export interface WindowEventMapping<Topic = string, Type = string> extends WebCo
     'shown': WindowEvent<Topic, Type>;
     'user-movement-disabled': WindowEvent<Topic, Type>;
     'user-movement-enabled': WindowEvent<Topic, Type>;
-    'view-attached': WindowEvent<Topic, Type>;
-    'view-detached': WindowEvent<Topic, Type>;
     'will-move': WillMoveOrResize<Topic, Type>;
     'will-resize': WillMoveOrResize<Topic, Type>;
 }
@@ -200,14 +199,27 @@ export interface PropagatedWindowEventMapping<Topic = string, Type = string> ext
     'window-shown': WindowEvent<Topic, Type>;
     'window-user-movement-disabled': WindowEvent<Topic, Type>;
     'window-user-movement-enabled': WindowEvent<Topic, Type>;
+    'window-view-attached': WindowEvent<Topic, Type>;
+    'window-view-crashed': CrashedEvent & WindowEvent<Topic, Type>;
+    'window-view-created': WindowEvent<Topic, Type>;
+    'window-view-destroyed': WindowEvent<Topic, Type>;
+    'window-view-detached': WindowEvent<Topic, Type>;
+    'window-view-did-change-theme-color': WindowEvent<Topic, Type>;
+    'window-view-hidden': WindowEvent<Topic, Type>;
+    'window-view-page-favicon-updated': WindowEvent<Topic, Type>;
+    'window-view-page-title-updated': WindowEvent<Topic, Type>;
+    'view-resource-load-failed': WindowResourceLoadFailedEvent<Topic, Type>;
+    'view-resource-response-received': WindowResourceResponseReceivedEvent<Topic, Type>;
+    'window-view-shown': WindowEvent<Topic, Type>;
     'window-will-move': WillMoveOrResize<Topic, Type>;
     'window-will-resize': WillMoveOrResize<Topic, Type>;
 }
 
 // This is the type we should be using. It takes the more generic mapping and applies the proper Topic and Type to each event
-export type WindowEvents = {
-    [Type in keyof WindowEventMapping]: WindowEventMapping<'window', Type>[Type];
-};
+export type WindowEvents = PropagatedViewEventMapping<'window'>
+    & {
+        [Type in keyof WindowEventMapping]: WindowEventMapping<'window', Type>[Type];
+    };
 
 export type PropagatedWindowEvents<Topic> = {
     [Type in keyof PropagatedWindowEventMapping]: PropagatedWindowEventMapping<Topic, Type>[Type]

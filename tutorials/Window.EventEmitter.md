@@ -113,7 +113,17 @@ finWindow.removeAllListeners("bounds-changed");
 * user-movement-disabled
 * user-movement-enabled
 * view-attached
+* view-crashed (see {@tutorial BrowserView.EventEmitter})
+* view-created (see {@tutorial BrowserView.EventEmitter})
+* view-destroyed (see {@tutorial BrowserView.EventEmitter})
 * view-detached
+* view-did-change-theme-color (see {@tutorial BrowserView.EventEmitter})
+* view-hidden (see {@tutorial BrowserView.EventEmitter})
+* view-page-favicon-updated (see {@tutorial BrowserView.EventEmitter})
+* view-page-title-updated (see {@tutorial BrowserView.EventEmitter})
+* view-resource-load-failed (see {@tutorial BrowserView.EventEmitter})
+* view-resource-response-received (see {@tutorial BrowserView.EventEmitter})
+* view-shown (see {@tutorial BrowserView.EventEmitter})
 * will-move
 * will-resize
 
@@ -675,7 +685,7 @@ Generated when an HTTP load was cancelled or failed.
 {
     name: "windowName",
     topic: "window",
-    type: "resource-response-received",
+    type: "resource-response-failed",
     uuid: "454C7F31-A915-4EA2-83F2-CFA655453C52", //the UUID of the application
     errorCode: -102,                              //the Chromium error code
     errorDescription: "",

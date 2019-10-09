@@ -75,11 +75,14 @@ view.removeAllListeners("closed");
 * attached
 * crashed
 * created
-* did-change-theme-color
 * destroyed
+* detached
+* did-change-theme-color
 * hidden
 * page-favicon-updated
 * page-title-updated
+* resource-load-failed
+* resource-response-received
 * shown
 
 ### BrowserView Events
@@ -144,6 +147,20 @@ Generated when a BrowserView is destroyed.
 }
 ```
 
+#### detached
+Generated when a BrowserView detaches from a window.
+```js
+//This response has the following shape:
+{
+    name: "BrowserViewName" // the name of the BrowserView
+    previousTarget: {uuid: 'previousWindowUuid', name: 'previousWindowName'}, // the window this BrowserView was previously attached to
+    target: {uuid: 'windowUuid', name: 'windowName'}, // the window this BrowserView will attach to
+    topic: "view",
+    type: "detached",
+    uuid: "454C7F31-A915-4EA2-83F2-CFA655453C52" // the uuid of the BrowserView
+}
+```
+
 #### did-change-theme-color
 Emitted when a page's theme color changes. This is usually due to encountering a meta tag: <meta name='theme-color' content='#ff0000'>
 ```js
@@ -193,6 +210,49 @@ Fired when page title is set during navigation. explicitSet is false when title 
     topic: "view",
     type: "page-title-updated",
     uuid: "454C7F31-A915-4EA2-83F2-CFA655453C52" // the uuid of the BrowserView
+}
+```
+
+#### resource-load-failed
+Generated when an HTTP load was cancelled or failed.
+```js
+{
+    name: "BrowserViewName",
+    topic: "view",
+    type: "resource-response-failed",
+    uuid: "454C7F31-A915-4EA2-83F2-CFA655453C52", //the UUID of the application
+    errorCode: -102,                              //the Chromium error code
+    errorDescription: "",
+    validatedURL: "http://bad-domain/dead-link.html",
+    isMainFrame: true
+}
+```
+
+#### resource-response-received
+Generated when an HTTP resource request has received response details.
+```js
+{
+    name: "BrowserViewName",
+    topic: "view",
+    type: "resource-response-received",
+    uuid: "454C7F31-A915-4EA2-83F2-CFA655453C52", //the UUID of the application
+    status: false,
+    newUrl: "https://www.google.com/?gws_rd=ssl", //the URL of the responded resource
+    originalUrl: "http://www.google.com/",        //the requested URL
+    httpResponseCode: 200,
+    requestMethod: "GET",
+    referrer: "",                                 //the URL of the referrer
+    headers: {                                    //HTTP response headers
+        "cache-control": [
+            "private, max-age=0"
+        ],
+        "content-type": [
+            "text/html; charset=UTF-8"
+        ]
+    },
+    resourceType: "mainFrame"                     //"mainFrame", "subFrame",
+                                                  //"styleSheet", "script", "image",
+                                                  //"object", "xhr", or "other"
 }
 ```
 
