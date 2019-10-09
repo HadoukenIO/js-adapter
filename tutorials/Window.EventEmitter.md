@@ -91,6 +91,7 @@ finWindow.removeAllListeners("bounds-changed");
 * file-download-completed
 * file-download-progress
 * file-download-started
+* found-in-page
 * focused
 * group-changed
 * hidden
@@ -146,7 +147,7 @@ Generated at the beginning of a user-driven change to a window's size or positio
     height: 2,              //the height of the window prior to change.
     left: 2,                //the left-most coordinate of the window prior to change.
     name: "windowName",     //(string) the name of the window.
-    reason: "self"          //the reason for the bounds change: 'animation' | 'group-animation' | 'self' | 'group'      
+    reason: "self"          //the reason for the bounds change: 'animation' | 'group-animation' | 'self' | 'group'
     top: 2,                 //the top-most coordinate of the window prior to change.
     topic: "window",
     type: "begin-user-bounds-changing",
@@ -446,6 +447,30 @@ Generated when a file download has started.
     topic: 'window',
     uuid: "AppUUID", //(string) the UUID of the application the window belongs to.
     name: "windowOne" //the name of the window.
+}
+```
+
+#### found-in-page
+Generated when a result is available when calling Window.findInPage
+```js
+//This response has the following shape:
+{
+    name: "windowOne", //the name of the window.
+    result: {
+        requestId: 1, // request id returned by the findInPage call.
+        activeMatchOrdinal: 2, // Position of the active match.
+        matches: 5, // Number of Matches.
+        selectionArea: {
+            height: 17,
+            width: 10,
+            x: 124,
+            y: 173
+        }, // Rectangle - Coordinates of first match region.
+        finalUpdate: true
+    }, // Event details,
+    topic: 'window',
+    type: "found-in-page",
+    uuid: "AppUUID", //(string) the UUID of the application the window belongs to.
 }
 ```
 
@@ -820,7 +845,7 @@ Generated when a window is moved by the user.  For use with monitor scaling that
 ```
 
 #### will-resize
-Generated when a window is resized by the user.  For use with monitor scaling that is not 100%.  Bounds are given in physical pixels (not adjusted for monitor scale factor).  The event will fire when a user resize is blocked by window options such as maxWidth or minHeight but not if the window is not resizable.  
+Generated when a window is resized by the user.  For use with monitor scaling that is not 100%.  Bounds are given in physical pixels (not adjusted for monitor scale factor).  The event will fire when a user resize is blocked by window options such as maxWidth or minHeight but not if the window is not resizable.
 ```js
 //This response has the following shape:
 {
