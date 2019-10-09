@@ -120,8 +120,6 @@ interface FindInPageOptions {
     medialCapitalAsWordStart: boolean;
 }
 
-type stopFindInPageAction = 'clearSelection' | 'keepSelection' | 'activateSelection';
-
 /**
  * @typedef {object} Window~options
  * @summary Window creation options.
