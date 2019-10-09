@@ -112,6 +112,16 @@ interface WindowMovementOptions {
     moveIndependently: boolean;
 }
 
+interface FindInPageOptions {
+    forward: boolean;
+    findNext: boolean;
+    matchCase: boolean;
+    wordStart: boolean;
+    medialCapitalAsWordStart: boolean;
+}
+
+type stopFindInPageAction = 'clearSelection' | 'keepSelection' | 'activateSelection';
+
 /**
  * @typedef {object} Window~options
  * @summary Window creation options.
@@ -351,6 +361,17 @@ interface WindowMovementOptions {
  */
 
 /**
+ * @typedef {object} FindInPageOptions
+ * @property {boolean} [forward=true] Whether to search forward or backward.
+ * @property {boolean} [findNext=false] Whether the operation is first request or a follow up.
+ * @property {boolean} [matchCase=false] Whether search should be case-sensitive.
+ * @property {boolean} [wordStart=false] Whether to look only at the start of words.
+ * @property {boolean} [medialCapitalAsWordStart=false]
+ * When combined with wordStart, accepts a match in the middle of a word if the match begins with an uppercase letter followed by a<br>
+ * lowercase or non-letter. Accepts several other intra-word matches.
+ */
+
+/**
  * @typedef {object} Transition
  * @property {Opacity} opacity - The Opacity transition
  * @property {Position} position - The Position transition
@@ -517,6 +538,31 @@ export class _Window extends WebContents<WindowEvents> {
      * @instance
      * @return {Promise.<void>}
      * @tutorial Window.setZoomLevel
+     */
+
+    /**
+     * Find and highlight text on a page.
+     * @param { string } searchTerm Term to find in page
+     * @param { FindInPageOptions } options Search options
+     * @function findInPage
+     * @memberOf Window
+     * @instance
+     * @return {Promise.<number>}
+     * @tutorial Window.findInPage
+     */
+
+    /**
+     * Stops any findInPage call with the provided action.
+     * @param {string} action
+     * Action to execute when stopping a find in page:<br>
+     * "clearSelection" - Clear the selection.<br>
+     * "keepSelection" - Translate the selection into a normal selection.<br>
+     * "activateSelection" - Focus and click the selection node.<br>
+     * @function stopFindInPage
+     * @memberOf Window
+     * @instance
+     * @return {Promise.<void>}
+     * @tutorial Window.stopFindInPage
      */
 
     /**
