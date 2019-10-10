@@ -36,7 +36,7 @@ export class ChannelBase {
     private defaultSet: boolean;
     protected providerIdentity: ProviderIdentity;
 
-    constructor (providerIdentity: ProviderIdentity, send: Transport['sendAction'], protecteds: any = {}) {
+    constructor (providerIdentity: ProviderIdentity, send: Transport['sendAction'], superMap: WeakMap<ChannelBase, any>) {
         this.defaultSet = false;
         this.providerIdentity = providerIdentity;
         this.subscriptions = new Map<string, () => any>();
@@ -44,7 +44,8 @@ export class ChannelBase {
             throw new Error('No action registered');
         };
 
-        // below two functions will be used by subclass. This is to avoid mistakenly attempt to use them from client side.
+        // The below two functions are only used by subclass, but not exposed to public. So a malicious site will not be able to use them.
+        const protecteds: any = {};
         protecteds.sendRaw = send;
         protecteds.send = async (to: Identity, action: string, payload: any) => {
             const raw = await send('send-channel-message', { ...to, providerIdentity: this.providerIdentity, action, payload })
@@ -53,6 +54,7 @@ export class ChannelBase {
             });
             return raw.payload.data.result;
         };
+        superMap.set(this, protecteds);
     }
 
     public async processAction(action: string, payload: any, senderIdentity: ProviderIdentity) {
