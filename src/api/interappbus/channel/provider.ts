@@ -18,7 +18,12 @@ export class ChannelProvider extends ChannelBase {
     }
 
     public dispatch(to: Identity, action: string, payload: any): Promise<any> {
-        return this.send(to, action, payload);
+        // verify if the client is valid
+        if (this.connections.some(c => c.name === to.name && c.uuid === to.uuid)) {
+            return this.send(to, action, payload);
+        } else {
+            throw new Error('Not a valid client');
+        }
     }
 
     public async processConnection(senderId: Identity, payload: any) {
