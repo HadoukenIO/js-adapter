@@ -201,7 +201,7 @@ Emitted when page receives favicon urls.
 ```
 
 #### page-title-updated
-Fired when page title is set during navigation. explicitSet is false when title is synthesized from file url.
+Fired when page title is set during navigation. The explicitSet parameter is false when title is synthesized from file url.
 ```js
 {
     explicitSet: true, // false when title is synthesized from file url.
