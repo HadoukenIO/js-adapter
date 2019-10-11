@@ -25,7 +25,8 @@ const webpackConfig = {
     output: {
         path: path.resolve(__dirname, 'out'),
         filename: 'js-adapter.js'
-    }
+    },
+    devtool: 'inline-source-map'
 };
 const serverParams = {
     root: path.resolve('html'),
