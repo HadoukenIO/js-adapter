@@ -42,7 +42,7 @@ export class ChannelProvider extends ChannelBase {
     public async destroy(): Promise<void> {
         const protectedObj = _supersMap.get(this);
         const { channelName, channelId } = protectedObj.providerIdentity;
-        await protectedObj.get(this).sendRaw('destroy-channel', { channelName });
+        await protectedObj.sendRaw('destroy-channel', { channelName });
         this.removeChannel(channelId);
     }
 
