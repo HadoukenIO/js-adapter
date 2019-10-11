@@ -174,7 +174,7 @@ Generated when a BrowserView is hidden.
 Generated when view navigation is rejected as per contentNavigation whitelist/blacklist rules.
 ```js
 {
-    name: "view1", //the name of the window.
+    name: "view1", //the name of the view.
     topic: "view",
     type: "navigation-rejected",
     url: "http://blocked-content.url",
