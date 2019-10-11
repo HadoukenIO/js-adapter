@@ -13,7 +13,8 @@ export class ChannelClient extends ChannelBase {
     }
 
     public async dispatch(action: string, payload?: any): Promise<any> {
-        return _supersMap.get(this).send(this.providerIdentity, action, payload);
+        const protectedObj = _supersMap.get(this);
+        return protectedObj.send(protectedObj.providerIdentity, action, payload);
     }
 
     public onDisconnection(listener: DisconnectionListener): void {
@@ -21,9 +22,9 @@ export class ChannelClient extends ChannelBase {
     }
 
     public async disconnect(): Promise<void> {
-        const { channelName, uuid, name } = this.providerIdentity;
-        await _supersMap.get(this).sendRaw('disconnect-from-channel', { channelName, uuid, name });
-        const { channelId } = this.providerIdentity;
+        const protectedObj = _supersMap.get(this);
+        const { channelName, uuid, name, channelId } = protectedObj.providerIdentity;
+        await protectedObj.sendRaw('disconnect-from-channel', { channelName, uuid, name });
         this.removeChannel(channelId);
     }
 }
