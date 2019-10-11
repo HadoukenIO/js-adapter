@@ -5,6 +5,7 @@
             "out/src",
             "out/src/api",
             "out/src/api/window",
+            "out/src/api/browserview",
             "out/src/api/system",
             "out/src/api/clipboard",
             "out/src/api/interappbus",

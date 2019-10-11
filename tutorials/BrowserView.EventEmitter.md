@@ -78,6 +78,7 @@ view.removeAllListeners("closed");
 * did-change-theme-color
 * destroyed
 * hidden
+* navigation-rejected
 * page-favicon-updated
 * page-title-updated
 * shown
@@ -166,6 +167,18 @@ Generated when a BrowserView is hidden.
     topic: "view",
     type: "hidden",
     uuid: "454C7F31-A915-4EA2-83F2-CFA655453C52" // the uuid of the BrowserView
+}
+```
+
+#### navigation-rejected
+Generated when view navigation is rejected as per contentNavigation whitelist/blacklist rules.
+```js
+{
+    name: "view1", //the name of the window.
+    topic: "view",
+    type: "navigation-rejected",
+    url: "http://blocked-content.url",
+    uuid: "AppUUID" //(string) the UUID of the application the window belongs to.
 }
 ```
 

@@ -41,7 +41,17 @@ export interface BrowserViewCreationOptions extends BrowserViewOptions {
     };
 }
 
+/**
+ * @lends View
+ */
 export class BrowserViewModule extends Base {
+    /**
+     * Creates a new View.
+     * @param { View~options } options - View creation options
+     * @return {Promise.<View>}
+     * @tutorial View.create
+     * @static
+     */
     public async create(options: BrowserViewCreationOptions) {
         const uuid = this.wire.me.uuid;
         await this.wire.sendAction('create-browser-view' , {...options, uuid});
@@ -93,3 +103,15 @@ export class BrowserView extends WebContents<ViewEvents> {
         return new _Window(this.wire, data);
     }
 }
+/**
+ * @typedef {object} View~options
+ * @summary View creation options.
+ * @desc This is the options object required by {@link View.create View.create}.
+ *
+ * @property {object} [contentNavigation]
+ * Restrict navigation to URLs that match a whitelisted pattern.
+ * In the lack of a whitelist, navigation to URLs that match a blacklisted pattern would be prohibited.
+ * See [here](https://developer.chrome.com/extensions/match_patterns) for more details.
+ * @property {string[]} [contentNavigation.whitelist=[]] List of whitelisted URLs.
+ * @property {string[]} [contentNavigation.blacklist=[]] List of blacklisted URLs.
+ */
