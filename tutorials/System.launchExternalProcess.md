@@ -1,4 +1,5 @@
-Runs an executable or batch file.
+Runs an executable or batch file. If an unused UUID is provided in options, it will be used. If no UUID is provided, OpenFin will assign one.
+
 **Note:** Since _appAssets_ relies on the RVM, which is missing on MAC_OS, 'alias' is not available. Instead provide the full path e.g. _/Applications/Calculator.app/Contents/MacOS/Calculator_.
 
 ### Examples
