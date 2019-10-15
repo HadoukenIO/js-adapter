@@ -1,5 +1,5 @@
 import { Identity } from '../../../identity';
-import Transport from '../../../transport/transport';
+import Transport, { Message } from '../../../transport/transport';
 
 const idOrResult = (func: (...args: any[]) => any) => (...args: any[] ) => {
     const res = func(...args);
@@ -26,6 +26,23 @@ export interface ChannelMessagePayload extends Identity {
     payload: any;
 }
 
+export class ProtectedItems {
+    public providerIdentity: ProviderIdentity;
+    public send: (to: Identity, action: string, payload: any) => Promise<Message<void>>;
+    public sendRaw: Transport['sendAction'];
+    constructor(providerIdentity: ProviderIdentity, send: Transport['sendAction']) {
+        this.providerIdentity = providerIdentity;
+        this.sendRaw = send;
+        this.send = async (to: Identity, action: string, payload: any) => {
+            const raw = await send('send-channel-message', { ...to, providerIdentity: this.providerIdentity, action, payload })
+            .catch(reason => {
+                throw new Error(reason.message);
+            });
+            return raw.payload.data.result;
+        };
+    }
+}
+
 export class ChannelBase {
     protected removeChannel: (mapKey: string) => void;
     protected subscriptions: any;
@@ -35,25 +52,17 @@ export class ChannelBase {
     private errorMiddleware: (...args: any[]) => any;
     private defaultSet: boolean;
 
-    constructor (providerIdentity: ProviderIdentity, send: Transport['sendAction'], superMap: WeakMap<ChannelBase, any>) {
+    constructor (providerIdentity: ProviderIdentity, send: Transport['sendAction'],
+        channelProtectedMap: WeakMap<ChannelBase, ProtectedItems>) {
         this.defaultSet = false;
         this.subscriptions = new Map<string, () => any>();
         this.defaultAction = () => {
             throw new Error('No action registered');
         };
 
-        // The below two functions are only used by subclass, but not exposed to public. So a malicious site will not be able to use them.
-        const protecteds: any = {};
-        protecteds.providerIdentity = providerIdentity;
-        protecteds.sendRaw = send;
-        protecteds.send = async (to: Identity, action: string, payload: any) => {
-            const raw = await send('send-channel-message', { ...to, providerIdentity: protecteds.providerIdentity, action, payload })
-            .catch(reason => {
-                throw new Error(reason.message);
-            });
-            return raw.payload.data.result;
-        };
-        superMap.set(this, protecteds);
+        // The items in ProtectedItems are only used by subclass, but not exposed to public.
+        // Use this way to avoid a malicious site to access them directly.
+        channelProtectedMap.set(this, new ProtectedItems(providerIdentity, send));
     }
 
     public async processAction(action: string, payload: any, senderIdentity: ProviderIdentity) {
