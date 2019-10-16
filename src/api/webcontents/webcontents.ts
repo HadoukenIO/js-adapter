@@ -43,7 +43,7 @@ export class WebContents<T extends WebContentsEventMapping> extends EmitterBase<
         }, this.identity)).then(() => undefined);
     }
 
-    public findInPage(searchTerm: string, options?: FindInPageOptions): Promise<number> {
+    public findInPage(searchTerm: string, options?: FindInPageOptions): Promise<void> {
         return this.wire.sendAction('find-in-page', Object.assign({}, this.identity, { searchTerm, options }))
             .then(({ payload }) => payload.data);
     }
