@@ -3,6 +3,7 @@ import { Fin } from '../src/main';
 import * as assert from 'assert';
 import { cleanOpenRuntimes } from './multi-runtime-utils';
 import { ExternalProcessRequestType, ExitCode } from '../src/api/system/external-process';
+import { ExternalWindow } from '../src/api/external-window/external-window';
 
 describe('System.', function () {
     let fin: Fin;
@@ -316,6 +317,63 @@ describe('System.', function () {
 
         it('Fulfilled', () => fin.System.getAllExternalApplications()
             .then(() => assert(true)));
+    });
+
+    describe('getAllExternalWindows()', () => {
+        it('should not include uuids for unregistered windows', async () => {
+            const externalWindows = await fin.System.getAllExternalWindows();
+            const windowWithUuid = externalWindows.find(win => !!win.uuid);
+            assert(!windowWithUuid);
+        });
+        it('should include uuids for registered windows', (done) => {
+            let listener: (externalWindowInfo: any) => void;
+            let wrapped: ExternalWindow;
+            let timeout: NodeJS.Timer;
+            const cleanup = async () => {
+                clearTimeout(timeout);
+                if (wrapped) {
+                    wrapped.close();
+                }
+                fin.System.removeListener('external-window-shown', listener);
+            };
+            const runTest = () => {
+                // Returning a promise because Mocha tests will not fail gracefully if our
+                // assert fails in an event listener.
+                return new Promise(async (resolve, reject) => {
+                    const uuid = 'trev';
+                    listener = async (externalWindowInfo: any) => {
+                        if (externalWindowInfo.uuid === uuid) {
+                            wrapped = await fin.ExternalWindow.wrap(externalWindowInfo);
+                            const externalWindows = await fin.System.getAllExternalWindows();
+                            const uuidFound = !!externalWindows.find(win => win.uuid === uuid);
+                            resolve(uuidFound);
+                        }
+                    };
+                    await fin.System.addListener('external-window-shown', listener);
+                    await fin.System.launchExternalProcess({ path: 'notepad', uuid });
+                    timeout = setTimeout(async () => {
+                        await cleanup();
+                        assert(false, '"external-window-shown" event did not fire');
+                        done();
+                    }, 3000);
+                });
+            };
+            runTest()
+            .then(async uuidFound => {
+                await cleanup();
+                assert(uuidFound, 'Failed to find requested uuid assigned to external window');
+                done();
+            })
+            .catch(async err => {
+                await cleanup();
+                assert(false, err);
+                done();
+            });
+        });
+        it('should include nativeId for all windows', async () => {
+            const externalWindows = await fin.System.getAllExternalWindows();
+            assert(externalWindows.every(win => win.hasOwnProperty('nativeId')));
+        });
     });
 
     describe('resolveUuid()', () => {
