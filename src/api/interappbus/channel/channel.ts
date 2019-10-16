@@ -73,21 +73,21 @@ export class ChannelBase {
         }
     }
 
-    public beforeAction(func: Action) {
+    public beforeAction(func: Action): void {
         if (this.preAction) {
             throw new Error('Already registered beforeAction middleware');
         }
         this.preAction = idOrResult(func);
     }
 
-    public onError(func: (action: string, error: any, id: Identity) => any) {
+    public onError(func: (action: string, error: any, id: Identity) => any): void {
         if (this.errorMiddleware) {
             throw new Error('Already registered error middleware');
         }
         this.errorMiddleware = func;
     }
 
-    public afterAction(func: Action) {
+    public afterAction(func: Action): void {
         if (this.postAction) {
             throw new Error('Already registered afterAction middleware');
         }
@@ -107,7 +107,7 @@ export class ChannelBase {
         }
     }
 
-    public register(topic: string, listener: Action) {
+    public register(topic: string, listener: Action): boolean {
         if (this.subscriptions.has(topic)) {
             throw new Error(`Subscription already registered for action: ${topic}. Unsubscribe before adding new subscription`);
         } else {
