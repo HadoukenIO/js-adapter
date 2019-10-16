@@ -1,4 +1,8 @@
-Stop findInPage call with the specified action
+Stop a [findInPage](Window.findInPage) call by specifying any of these actions:
+
+* clearSelection - Clear the selection.
+* keepSelection - Translate the selection into a normal selection.
+* activateSelection - Focus and click the selection node.
 
 # Example
 ```js
