@@ -2,6 +2,7 @@ import { EmitterBase } from '../base';
 import { Identity } from '../../identity';
 import Transport from '../../transport/transport';
 import { WebContentsEventMapping } from '../events/webcontents';
+import { FindInPageOptions } from '../window/window';
 
 export class WebContents<T extends WebContentsEventMapping> extends EmitterBase<T> {
     constructor(wire: Transport, identity: Identity, public entityType: string) {
@@ -42,7 +43,7 @@ export class WebContents<T extends WebContentsEventMapping> extends EmitterBase<
         }, this.identity)).then(() => undefined);
     }
 
-    public findInPage(searchTerm: string, options?: any): Promise<number> {
+    public findInPage(searchTerm: string, options?: FindInPageOptions): Promise<number> {
         return this.wire.sendAction('find-in-page', Object.assign({}, this.identity, { searchTerm, options }))
             .then(({ payload }) => payload.data);
     }

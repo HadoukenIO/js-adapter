@@ -112,7 +112,7 @@ interface WindowMovementOptions {
     moveIndependently: boolean;
 }
 
-interface FindInPageOptions {
+export interface FindInPageOptions {
     forward: boolean;
     findNext: boolean;
     matchCase: boolean;
