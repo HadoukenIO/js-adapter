@@ -64,6 +64,12 @@ export class LayoutsModule {
         });
     };
 
+    public async closeLayout() {
+        const client = await this.getClient();
+
+        return client.dispatch('close-layout');
+    };
+
     public async reparentView(viewConfig: any, sourceWindow: Identity, destinationWindow: Identity) {
         const client = await this.getClient();
 
@@ -84,5 +90,17 @@ export class LayoutsModule {
         const client = await this.getClient();
 
         return client.dispatch('get-all-views');
+    };
+
+    public async getSnapshot() {
+        const client = await this.getClient();
+
+        return client.dispatch('get-snapshot');
+    };
+
+    public async applySnapshot(snapshot: any) {
+        const client = await this.getClient();
+
+        return client.dispatch('apply-snapshot', snapshot);
     };
 }
