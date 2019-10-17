@@ -5,4 +5,5 @@ export interface RuntimeInfo {
     securityRealm?: string;
     version: string;
     args: object;
+    chromeVersion: string;
 }
