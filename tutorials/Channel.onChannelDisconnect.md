@@ -3,11 +3,9 @@ Listens for any new channel disconnections:
 ### Example
 
 ````js
-const listener = (info) => console.log(info); // see return value below
+const listener = (channelPayload) => console.log(channelPayload); // see return value below
 
-fin.InterApplicationBus.Channel.onChannelDisconnect(channelPayload => {
-    console.log(channelPayload);
-});
+fin.InterApplicationBus.Channel.onChannelDisconnect(listener);
 
 // example shape
 {
