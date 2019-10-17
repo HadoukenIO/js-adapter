@@ -806,7 +806,7 @@ Generated when a window has a view detached from it.
     previousTarget: {uuid: 'previousWindowUuid', name: 'previousWindowName'}, // the identity of the window this BrowserView is being detached from
     target: {uuid: 'windowUuid', name: 'windowOne'}, // the identity of the window this BrowserView is attaching to
     topic: "window",
-    type: "view-attached",
+    type: "view-detached",
     uuid: "AppUUID" // the UUID of the application this window belongs to.
     viewIdentity: {uuid: 'viewUuid', name: 'viewName'}, // the identity of the BrowserView
 }

@@ -199,18 +199,6 @@ export interface PropagatedWindowEventMapping<Topic = string, Type = string> ext
     'window-shown': WindowEvent<Topic, Type>;
     'window-user-movement-disabled': WindowEvent<Topic, Type>;
     'window-user-movement-enabled': WindowEvent<Topic, Type>;
-    'window-view-attached': WindowEvent<Topic, Type>;
-    'window-view-crashed': CrashedEvent & WindowEvent<Topic, Type>;
-    'window-view-created': WindowEvent<Topic, Type>;
-    'window-view-destroyed': WindowEvent<Topic, Type>;
-    'window-view-detached': WindowEvent<Topic, Type>;
-    'window-view-did-change-theme-color': WindowEvent<Topic, Type>;
-    'window-view-hidden': WindowEvent<Topic, Type>;
-    'window-view-page-favicon-updated': WindowEvent<Topic, Type>;
-    'window-view-page-title-updated': WindowEvent<Topic, Type>;
-    'window-view-resource-load-failed': WindowResourceLoadFailedEvent<Topic, Type>;
-    'window-view-resource-response-received': WindowResourceResponseReceivedEvent<Topic, Type>;
-    'window-view-shown': WindowEvent<Topic, Type>;
     'window-will-move': WillMoveOrResize<Topic, Type>;
     'window-will-resize': WillMoveOrResize<Topic, Type>;
 }

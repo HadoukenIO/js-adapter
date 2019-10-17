@@ -125,25 +125,11 @@ app.removeAllListeners("closed");
 * window-start-load
 * window-user-movement-disabled (see {@tutorial Window.EventEmitter})
 * window-user-movement-enabled (see {@tutorial Window.EventEmitter})
-* window-view-attached (see {@tutorial BrowserView.EventEmitter})
-* window-view-crashed (see {@tutorial BrowserView.EventEmitter})
-* window-view-created (see {@tutorial BrowserView.EventEmitter})
-* window-view-destroyed (see {@tutorial BrowserView.EventEmitter})
-* window-view-detached (see {@tutorial BrowserView.EventEmitter})
-* window-view-did-change-theme-color (see {@tutorial BrowserView.EventEmitter})
-* window-view-hidden (see {@tutorial BrowserView.EventEmitter})
-* window-view-page-favicon-updated (see {@tutorial BrowserView.EventEmitter})
-* window-view-page-title-updated (see {@tutorial BrowserView.EventEmitter})
-* window-view-resource-load-failed (see {@tutorial BrowserView.EventEmitter})
-* window-view-resource-response-received (see {@tutorial BrowserView.EventEmitter})
-* window-view-shown (see {@tutorial BrowserView.EventEmitter})
 * window-will-move (see {@tutorial Window.EventEmitter})
 * window-will-resize (see {@tutorial Window.EventEmitter})
-* view-attached (see {@tutorial BrowserView.EventEmitter})
 * view-crashed (see {@tutorial BrowserView.EventEmitter})
 * view-created (see {@tutorial BrowserView.EventEmitter})
 * view-destroyed (see {@tutorial BrowserView.EventEmitter})
-* view-detached (see {@tutorial BrowserView.EventEmitter})
 * view-did-change-theme-color (see {@tutorial BrowserView.EventEmitter})
 * view-hidden (see {@tutorial BrowserView.EventEmitter})
 * view-page-favicon-updated (see {@tutorial BrowserView.EventEmitter})
@@ -151,6 +137,7 @@ app.removeAllListeners("closed");
 * view-resource-load-failed (see {@tutorial BrowserView.EventEmitter})
 * view-resource-response-received (see {@tutorial BrowserView.EventEmitter})
 * view-shown (see {@tutorial BrowserView.EventEmitter})
+* view-target-changed (see {@tutorial BrowserView.EventEmitter})
 
 ### Application Events
 

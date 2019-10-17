@@ -72,11 +72,9 @@ view.removeAllListeners("closed");
 
 ### Supported BrowserView event types
 
-* attached
 * crashed
 * created
 * destroyed
-* detached
 * did-change-theme-color
 * hidden
 * page-favicon-updated
@@ -84,22 +82,9 @@ view.removeAllListeners("closed");
 * resource-load-failed
 * resource-response-received
 * shown
+* target-changed
 
 ### BrowserView Events
-
-#### attached
-Generated when a BrowserView attaches to a window. This event will fire during creation of a BrowserView. In that case, `previousTarget` identity will be the same as `target` identity.
-```js
-//This response has the following shape:
-{
-    name: "BrowserViewName" // the name of the BrowserView
-    previousTarget: {uuid: 'previousWindowUuid', name: 'previousWindowName'}, // the window this BrowserView was previously attached to
-    target: {uuid: 'windowUuid', name: 'windowName'}, // the window this BrowserView will attach to
-    topic: "view",
-    type: "attached",
-    uuid: "454C7F31-A915-4EA2-83F2-CFA655453C52" // the uuid of the BrowserView
-}
-```
 
 #### crashed
 Generated when a view has crashed.
@@ -143,20 +128,6 @@ Generated when a BrowserView is destroyed.
     target: {uuid: 'windowUuid', name: 'windowName'}, // the window this BrowserView was attached to
     topic: "view",
     type: "destroyed",
-    uuid: "454C7F31-A915-4EA2-83F2-CFA655453C52" // the uuid of the BrowserView
-}
-```
-
-#### detached
-Generated when a BrowserView detaches from a window.
-```js
-//This response has the following shape:
-{
-    name: "BrowserViewName" // the name of the BrowserView
-    previousTarget: {uuid: 'previousWindowUuid', name: 'previousWindowName'}, // the window this BrowserView was previously attached to
-    target: {uuid: 'windowUuid', name: 'windowName'}, // the window this BrowserView will attach to
-    topic: "view",
-    type: "detached",
     uuid: "454C7F31-A915-4EA2-83F2-CFA655453C52" // the uuid of the BrowserView
 }
 ```
@@ -270,6 +241,20 @@ Generated when a BrowserView is shown. This event will fire during creation of a
     target: {uuid: 'windowUuid', name: 'windowName'}, // the window this BrowserView is attached to
     topic: "view",
     type: "shown",
+    uuid: "454C7F31-A915-4EA2-83F2-CFA655453C52" // the uuid of the BrowserView
+}
+```
+
+#### target-changed
+Generated when a BrowserView changes its Window target. This event will fire during creation of a BrowserView. In that case, `previousTarget` identity will be the same as `target` identity.
+```js
+//This response has the following shape:
+{
+    name: "BrowserViewName" // the name of the BrowserView
+    previousTarget: {uuid: 'previousWindowUuid', name: 'previousWindowName'}, // the window this BrowserView was previously attached to
+    target: {uuid: 'windowUuid', name: 'windowName'}, // the window this BrowserView will attach to
+    topic: "view",
+    type: "target-changed",
     uuid: "454C7F31-A915-4EA2-83F2-CFA655453C52" // the uuid of the BrowserView
 }
 ```
