@@ -125,11 +125,11 @@ app.removeAllListeners("closed");
 * window-start-load
 * window-user-movement-disabled (see {@tutorial Window.EventEmitter})
 * window-user-movement-enabled (see {@tutorial Window.EventEmitter})
-* window-view-attached (see {@tutorial Window.EventEmitter})
+* window-view-attached (see {@tutorial BrowserView.EventEmitter})
 * window-view-crashed (see {@tutorial BrowserView.EventEmitter})
 * window-view-created (see {@tutorial BrowserView.EventEmitter})
 * window-view-destroyed (see {@tutorial BrowserView.EventEmitter})
-* window-view-detached (see {@tutorial Window.EventEmitter})
+* window-view-detached (see {@tutorial BrowserView.EventEmitter})
 * window-view-did-change-theme-color (see {@tutorial BrowserView.EventEmitter})
 * window-view-hidden (see {@tutorial BrowserView.EventEmitter})
 * window-view-page-favicon-updated (see {@tutorial BrowserView.EventEmitter})

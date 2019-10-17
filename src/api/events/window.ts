@@ -208,8 +208,8 @@ export interface PropagatedWindowEventMapping<Topic = string, Type = string> ext
     'window-view-hidden': WindowEvent<Topic, Type>;
     'window-view-page-favicon-updated': WindowEvent<Topic, Type>;
     'window-view-page-title-updated': WindowEvent<Topic, Type>;
-    'view-resource-load-failed': WindowResourceLoadFailedEvent<Topic, Type>;
-    'view-resource-response-received': WindowResourceResponseReceivedEvent<Topic, Type>;
+    'window-view-resource-load-failed': WindowResourceLoadFailedEvent<Topic, Type>;
+    'window-view-resource-response-received': WindowResourceResponseReceivedEvent<Topic, Type>;
     'window-view-shown': WindowEvent<Topic, Type>;
     'window-will-move': WillMoveOrResize<Topic, Type>;
     'window-will-resize': WillMoveOrResize<Topic, Type>;
