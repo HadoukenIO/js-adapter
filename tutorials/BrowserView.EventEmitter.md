@@ -166,6 +166,7 @@ Emitted when a page's theme color changes. This is usually due to encountering a
 ```js
 {
     color: "#FF0000",
+    target: {uuid: 'windowUuid', name: 'windowName'}, // the window this BrowserView is attached to
     name: "BrowserViewName" // the name of the BrowserView
     topic: "view",
     type: "did-change-theme-color",
@@ -194,6 +195,7 @@ Emitted when page receives favicon urls.
         "http://www.openfin.co/favicon.ico"
     ],
     name: "BrowserViewName" // the name of the BrowserView
+    target: {uuid: 'windowUuid', name: 'windowName'}, // the window this BrowserView is attached to
     topic: "view",
     type: "page-favicon-updated",
     uuid: "454C7F31-A915-4EA2-83F2-CFA655453C52" // the uuid of the BrowserView
@@ -206,6 +208,7 @@ Fired when page title is set during navigation. The explicitSet parameter is fal
 {
     explicitSet: true, // false when title is synthesized from file url.
     name: "BrowserViewName" // the name of the BrowserView
+    target: {uuid: 'windowUuid', name: 'windowName'}, // the window this BrowserView is attached to
     title: "testTitle",
     topic: "view",
     type: "page-title-updated",
@@ -218,6 +221,7 @@ Generated when an HTTP load was cancelled or failed.
 ```js
 {
     name: "BrowserViewName",
+    target: {uuid: 'windowUuid', name: 'windowName'}, // the window this BrowserView is attached to
     topic: "view",
     type: "resource-response-failed",
     uuid: "454C7F31-A915-4EA2-83F2-CFA655453C52", //the UUID of the application
@@ -233,6 +237,7 @@ Generated when an HTTP resource request has received response details.
 ```js
 {
     name: "BrowserViewName",
+    target: {uuid: 'windowUuid', name: 'windowName'}, // the window this BrowserView is attached to
     topic: "view",
     type: "resource-response-received",
     uuid: "454C7F31-A915-4EA2-83F2-CFA655453C52", //the UUID of the application
