@@ -362,6 +362,13 @@ interface ServiceIdentifier {
  */
 
  /**
+  * RvmLaunchOptions interface
+  * @typedef { object } RvmLaunchOptions
+  * @property { boolean } [noUi] true if no UI when launching
+  * @property { object } [userAppConfigArgs] The user app configuration args
+  */
+
+ /**
  * ServiceIdentifier interface
  * @typedef { object } ServiceIdentifier
  * @property { string } name The name of the service
