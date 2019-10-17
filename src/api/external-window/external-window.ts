@@ -383,8 +383,8 @@ export class ExternalWindow extends EmitterBase<ExternalWindowEvents> {
     }
 
     /**
-     * NOTE: Group methods on `ExternalWindow`s are currently unstable. This functionality will be addressed in a future update.
      * Updates the external window using the passed options
+     * @ignore
      * @param {*} options Changes an external window's options
      * @return {Promise.<void>}
      * @experimental
