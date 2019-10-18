@@ -2,7 +2,7 @@ import { _Window } from '../window/window';
 import { AnchorType, Bounds } from '../../shapes';
 import { Base, EmitterBase } from '../base';
 import { ExternalWindowEvents } from '../events/externalWindow';
-import { GroupWindowIdentity, Identity, ExternalWindowIdentity } from '../../identity';
+import { GroupWindowIdentity, Identity } from '../../identity';
 import Transport from '../../transport/transport';
 
 /**
@@ -20,11 +20,13 @@ export default class ExternalWindowModule extends Base {
      * @experimental
      * @tutorial ExternalWindow.wrap
      */
-    public async wrap(identity: ExternalWindowIdentity): Promise<ExternalWindow> {
-        const responseFromCore = await this.wire.sendAction('register-native-external-window', identity);
-        const { payload: { data: { uuid, name, nativeId } } } = responseFromCore;
-        const finalIdentity = { uuid, name, nativeId };
-        return new ExternalWindow(this.wire, finalIdentity);
+
+    public async wrap(identity: Identity): Promise<ExternalWindow> {
+        const response = await this.wire.sendAction('register-native-external-window', identity);
+        // Allow core to provide uuid if none is provided by user,
+        // or nativeId when wrapping via a uuid obtained from `launchExternalProcess`
+        const identityFromCore = response.payload.data;
+        return new ExternalWindow(this.wire, identityFromCore);
     }
 }
 

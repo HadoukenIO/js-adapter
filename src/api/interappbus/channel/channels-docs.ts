@@ -15,15 +15,12 @@ const InterApplicationBus: any = {};
  * provider and client can dispatch actions that have been registered on their opposites, and dispatch returns a promise that resolves with a payload from the other
  * communication participant. There can be only one provider per channel, but many clients.  Version `9.61.35.*` or later is required for both communication partners.
  *
- * ##### Synchronous Methods
- *  * {@link InterApplicationBus.Channel.onChannelConnect onChannelConnect(ConnectionListener)}
- *  * {@link InterApplicationBus.Channel.onChannelDisconnect onChannelDisconnect(ConnectionListener)}
- *
  * ##### Asynchronous Methods
  *  * {@link InterApplicationBus.Channel.create create(channelName)}
  *  * {@link InterApplicationBus.Channel.connect connect(channelName, options)}
+ *  * {@link InterApplicationBus.Channel.onChannelConnect onChannelConnect(listener)}
+ *  * {@link InterApplicationBus.Channel.onChannelDisconnect onChannelDisconnect(listener)}
  */
-//tslint:disable-next-line
 InterApplicationBus.Channel = function() {};
 
 /**
@@ -44,7 +41,7 @@ InterApplicationBus.Channel.create = function () { }
  * @param {InterApplicationBus.Channel~ConnectOptions} options - Connection options.
  * @returns {Promise<Channel#ChannelClient>} Returns promise that resolves with an instance of {@link Channel#ChannelClient ChannelClient}.
  * @tutorial Channel.connect
-
+ *
  */
 InterApplicationBus.Channel.connect = function (options:any) { }
 
@@ -73,15 +70,17 @@ InterApplicationBus.Channel.onChannelDisconnect = function () { }
  *
  * ##### Constructor
  *
- * Returned by {@link Channel.create Channel.create}.
+ * Returned by {@link InterApplicationBus.Channel.create Channel.create}.
  *
  * ##### Synchronous Methods
- *  * {@link Channel#ChannelProvider#destroy destroy()}
+ *  * {@link Channel#ChannelProvider#onConnection onConnection(listener)}
+ *  * {@link Channel#ChannelProvider#onDisconnection onDisconnection(listener)}
  *  * {@link Channel#ChannelProvider#publish publish(action, payload)}
  *  * {@link Channel#ChannelProvider#register register(action, listener)}
  *  * {@link Channel#ChannelProvider#remove remove(action)}
  *
  * ##### Asynchronous Methods
+ *  * {@link Channel#ChannelProvider#destroy destroy()}
  *  * {@link Channel#ChannelProvider#dispatch dispatch(to, action, payload)}
  *
  * ##### Middleware
@@ -95,6 +94,8 @@ InterApplicationBus.Channel.onChannelDisconnect = function () { }
  *
  * @memberof! Channel#
  * @hideconstructor
+ * @property {Identity[]}  connections a read-only array containing all the identities of connecting clients.
+ *
  */
 class ChannelProvider {
 
@@ -106,7 +107,6 @@ class ChannelProvider {
     * @returns {Promise<void>}
     * @tutorial ChannelProvider.destroy
     */
-
    destroy() { }
 
     /**
@@ -124,7 +124,7 @@ class ChannelProvider {
     *
     * Register an action to be called
     * @param {string} action - Name of the action to be registered for channel clients to later invoke.
-    * @param {Action} listener - Function representing the action to be taken on a client dispatch.
+    * @param {Channel#ChannelProvider~Action} listener - Function representing the action to be taken on a client dispatch.
     * @returns {boolean} - Boolean representing the successful registration of the action.
     * @tutorial Channel.register
     */
@@ -175,7 +175,7 @@ class ChannelProvider {
     /**
      *
      * Register an error handler. This is called before responding on any error.
-     * @param {function} middleware - Function to be executed in case of an error.
+     * @param {Channel#ChannelProvider~Middleware} middleware - Function to be executed in case of an error.
      * @returns {void}
      * @tutorial ChannelMiddleware.onError
      */
@@ -217,14 +217,15 @@ class ChannelProvider {
  * from the provider by registering an action via {@link Channel#ChannelClient#register register}.
  *
  * ##### Constructor
- * Returned by {@link Channel.connect Channel.connect}.
+ * Returned by {@link InterApplicationBus.Channel.connect Channel.connect}.
  *
  * ##### Synchronous Methods
- *  * {@link Channel#ChannelClient#disconnect disconnect()}
+ *  * {@link Channel#ChannelClient#onDisconnection onDisconnection(listener)}
  *  * {@link Channel#ChannelClient#register register(action, listener)}
  *  * {@link Channel#ChannelClient#remove remove(action)}
  *
  * ##### Asynchronous Methods
+ *  * {@link Channel#ChannelClient#disconnect disconnect()}
  *  * {@link Channel#ChannelClient#dispatch dispatch(action, payload)}
  *
  * ##### Middleware
@@ -265,7 +266,7 @@ class ChannelClient {
     *
     * Register an action to be called by the provider of the channel.
     * @param {string} action - Name of the action to be registered for the channel provider to later invoke.
-    * @param {Action} listener - Function representing the action to be taken on a provider dispatch.
+    * @param {Channel#ChannelClient~Action} listener - Function representing the action to be taken on a provider dispatch.
     * @returns {boolean}
     * @tutorial Channel.register
     */
@@ -292,7 +293,7 @@ class ChannelClient {
 
     /**
      * Register an error handler. This is called before responding on any error.
-     * @param {function} middleware - Function to be executed in case of an error.
+     * @param {Channel#ChannelClient~Middleware} middleware - Function to be executed in case of an error.
      * @returns {void}
      * @tutorial ChannelMiddleware.onError
      */
@@ -350,7 +351,7 @@ class ChannelClient {
  * Middleware function signature
  * @callback Channel#ChannelClient~Middleware
  * @param {string} action - Action to be invoked.
- * @param {any} payload - Payload sent along with the message.
+ * @param {any} payload - Payload sent along with the message (or error for error middleware).
  * @param {Identity} identity - Identity of the sender.
 */
 /**

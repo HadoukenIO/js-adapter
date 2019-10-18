@@ -3,11 +3,9 @@ Listens for any new channel connections:
 ### Example
 
 ````js
-const listener = (info) => console.log(info); // see return value below
+const listener = (channelPayload) => console.log(channelPayload); // see return value below
 
-fin.InterApplicationBus.Channel.onChannelConnect(channelPayload => {
-    console.log(channelPayload);
-});
+fin.InterApplicationBus.Channel.onChannelConnect(listener);
 
 // example shape
 {
