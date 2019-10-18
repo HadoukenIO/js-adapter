@@ -1,5 +1,6 @@
 import { WebContentsEventMapping } from './webcontents';
 import { WindowEvent, BaseEventMap } from './base';
+import { WindowNavigationRejectedEvent } from './window';
 
 export interface ViewEventMapping<Topic = string, Type = string> extends WebContentsEventMapping {
     'attached': WindowEvent<Topic, Type>;
@@ -15,6 +16,7 @@ export interface PropagatedViewEventMapping<Topic = string, Type = string> exten
     'view-shown': WindowEvent<Topic, Type>;
     'view-hidden': WindowEvent<Topic, Type>;
     'view-destroyed': WindowEvent<Topic, Type>;
+    'view-navigation-rejected': WindowNavigationRejectedEvent<Topic, Type>;
 }
 
 export type ViewEvents = {

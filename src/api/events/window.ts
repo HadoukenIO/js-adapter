@@ -26,7 +26,7 @@ export interface WindowEndLoadEvent<Topic, Type> extends WindowEvent<Topic, Type
 }
 
 export interface WindowNavigationRejectedEvent<Topic, Type> extends WindowEvent<Topic, Type> {
-    sourceName: string;
+    sourceName?: string; // DEPRECATED
     url: string;
 }
 
@@ -151,7 +151,6 @@ export interface WindowEventMapping<Topic = string, Type = string> extends WebCo
     'initialized': WindowEvent<Topic, Type>;
     'maximized': WindowEvent<Topic, Type>;
     'minimized': WindowEvent<Topic, Type>;
-    'navigation-rejected': WindowNavigationRejectedEvent<Topic, Type>;
     'options-changed': WindowOptionsChangedEvent<Topic, Type>;
     'performance-report': WindowPerformanceReport<Topic, Type>;
     'preload-scripts-state-changed': WindowPreloadScriptsStateChangeEvent<Topic, Type>;

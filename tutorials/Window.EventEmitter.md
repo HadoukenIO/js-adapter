@@ -583,7 +583,7 @@ Generated when window navigation is rejected as per ContentNavigation whitelist/
 ```js
 {
     name: "windowOne", //the name of the window.
-    sourceName: "source of navigation window name",
+    sourceName: "source of navigation window name", // DEPRECATED
     topic: "window",
     type: "navigation-rejected",
     url: "http://blocked-content.url",

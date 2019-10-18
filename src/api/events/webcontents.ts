@@ -1,5 +1,6 @@
 import { BaseEventMap, WindowEvent } from './base';
 import { CrashedEvent } from './application';
+import { WindowNavigationRejectedEvent } from './window';
 
 export interface WindowResourceLoadFailedEvent<Topic, Type> extends WindowEvent<Topic, Type> {
     errorCode: number;
@@ -23,6 +24,7 @@ export interface WebContentsEventMapping<Topic = string, Type = string> extends 
     'resource-load-failed': WindowResourceLoadFailedEvent<Topic, Type>;
     'resource-response-received': WindowResourceResponseReceivedEvent<Topic, Type>;
     'did-change-theme-color': WindowEvent<Topic, Type>;
+    'navigation-rejected': WindowNavigationRejectedEvent<Topic, Type>;
     'page-favicon-updated': WindowEvent<Topic, Type>;
     'page-title-updated': WindowEvent<Topic, Type>;
     'crashed': CrashedEvent & WindowEvent<Topic, Type>;
