@@ -348,6 +348,7 @@ interface ServiceIdentifier {
  * @property { string } securityRealm The runtime security realm
  * @property { string } version The runtime version
  * @property { object } args the command line argument used to start the Runtime
+ * @property { string } chromeVersion The chrome version
  */
 
 /**
